@@ -206,3 +206,13 @@ uv run python -I -c 'from collections import Counter; from bikeplan.config impor
 
 Expect: The tests pass. The run prints `edges 189386`, `scored 71882` and `mixed_traffic_lts_km {1: 686.7, 2: 2380.0, 3: 775.8, 4: 304.3}`. Every scored edge is bike-legal with a speed and at least one lane, scored as mixed traffic whatever its facility.
 Artifact: `artifacts/P4.1/mixed.txt`
+
+### P4.2
+
+```bash
+uv run pytest tests/test_stress_painted.py -q
+uv run python -I -c 'from collections import Counter; from bikeplan.config import load_profile, load_region; from bikeplan.network import build, road_class; from bikeplan.stress import painted_lane_lts; r = load_region("regions/au-nsw-bayside.yaml"); p = load_profile(r.profile); g = build("data/cache/au-nsw-bayside/2026-10-01", r, p); e = [d for _, _, d in g.edges(data=True) if d["bike_ok"] and d.get("speed_kmh") and d["lanes_total"] > 0 and d["bike_facility"] == "painted_lane"]; km = Counter(); [km.update({painted_lane_lts(d, p.widths_m.parking_lane.value, road_class(d["highway"], p).parking.value): d["length_m"]}) for d in e]; print("painted_lane_edges", len(e)); print("painted_lane_lts_km", {k: round(v / 1000, 1) for k, v in sorted(km.items())})' | tee artifacts/P4.2/painted.txt
+```
+
+Expect: The tests pass. The run prints `painted_lane_edges 1061` and `painted_lane_lts_km {1: 2.7, 2: 40.5, 3: 21.8}`. Each edge is a bike-legal road edge tagged as a painted lane, scored with table 2 or 3 and capped by table 1.
+Artifact: `artifacts/P4.2/painted.txt`
