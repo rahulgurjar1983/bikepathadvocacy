@@ -15,10 +15,10 @@ Artifact: `artifacts/S0.1/gate-run.txt`
 ### S0.2
 
 ```bash
-uv run pytest gates/tests/test_loop.py gates/tests/test_ledger.py gates/tests/test_wait_ci.py -q
+uv run pytest gates/tests/test_loop.py gates/tests/test_ledger.py gates/tests/test_wait_ci.py gates/tests/test_ship_pr.py -q
 ```
 
-Expect: every loop, picker and CI wait test passes.
+Expect: every loop, picker, CI wait and PR shipping test passes.
 Artifact: `artifacts/S0.2/loop-tests.txt`
 
 ### S0.3
