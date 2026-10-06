@@ -150,3 +150,12 @@ def test_fr4_8_a_crossing_edge_is_raised_in_the_files(output):
     assert raised
     assert {f["properties"]["lts"] for f in raised} == {3}
     assert all("raised to LTS 3 by crossing" in f["properties"]["reason"] for f in raised)
+
+
+def test_nfr5_every_stress_score_carries_a_plain_reason(output):
+    features = json.loads((output / "stress.geojson").read_text())["features"]
+    for feature in features:
+        reason = feature["properties"]["reason"]
+        assert reason.count("; ") >= 1
+        assert f"LTS {feature['properties']['lts']}" in reason
+        assert ("AAA" in reason) and not reason.startswith("not AAA")
