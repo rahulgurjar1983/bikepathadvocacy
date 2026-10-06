@@ -10,6 +10,7 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 - The smoke test builds the Docker image for real. A cold build took about 8 minutes here, so run it once and expect the pre-push gate to be slow.
 - The Dockerfile pins the base by digest. Rebuild the pin with `docker buildx imagetools inspect python:3.12-slim`.
+- Region and profile checks live in `src/bikeplan/config.py`. `config_hash` takes any dataclass or dict, so the profile loader (P1.2) can reuse it. PyYAML is the one runtime dependency.
 
 ## Spec issues
 
