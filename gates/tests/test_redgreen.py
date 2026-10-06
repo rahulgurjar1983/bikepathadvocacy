@@ -41,7 +41,19 @@ def test_fr0_2_tests_then_code_passes(mini, capsys):
     mini.commit("feat: two")
     assert redgreen.main(["mixed", base]) == 0
     assert redgreen.main(["red", base]) == 0
-    assert "test_two" in capsys.readouterr().out
+    assert "1 touched test item(s) fail without the code" in capsys.readouterr().out
+
+
+def test_fr0_2_red_items_are_listed_only_when_verbose(mini, capsys):
+    base = mini.head()
+    mini.append("tests/test_core.py", NEW_TEST_TWO)
+    mini.commit("test: two")
+    mini.append("src/minipkg/core.py", NEW_CODE_TWO)
+    mini.commit("feat: two")
+    assert redgreen.main(["red", base]) == 0
+    assert "red: " not in capsys.readouterr().out
+    assert redgreen.main(["red", base, "--verbose"]) == 0
+    assert "red: tests/test_core.py::test_two" in capsys.readouterr().out
 
 
 def test_fr0_2_fake_test_is_rejected(mini, capsys):
@@ -249,7 +261,7 @@ def test_one_again():
     mini.commit("test: new module and a fake")
     mini.write("src/minipkg/newmod.py", "def three():\n    return 3\n")
     mini.commit("feat: three")
-    assert redgreen.main(["red", base]) == 1
+    assert redgreen.main(["red", base, "--verbose"]) == 1
     out = capsys.readouterr()
     assert "FAKE: tests/test_core.py::test_one_again" in out.out
     assert "red: tests/test_newmod.py::test_three" in out.out
