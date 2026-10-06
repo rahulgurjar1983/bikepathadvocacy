@@ -20,6 +20,7 @@ step uv run --frozen ruff format --check .
 step "${py[@]}" -m gates.nocomments
 step "${py[@]}" -m gates.srcgrep
 step "${py[@]}" -m gates.generic
+step "${py[@]}" -m gates.deps
 step "${py[@]}" -m gates.ledger check
 step "${py[@]}" -m gates.speccov
 step "${py[@]}" -m gates.verifydoc

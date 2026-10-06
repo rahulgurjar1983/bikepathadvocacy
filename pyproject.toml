@@ -4,8 +4,12 @@ version = "0.1.0"
 description = "Data-driven proposals for safe, connected, all-ages bike paths for any region"
 requires-python = ">=3.12,<3.13"
 dependencies = [
+    "networkx>=3.7",
+    "numpy>=2.5.3",
     "osmnx>=2.1.1",
+    "pyproj>=3.8.0",
     "pyyaml>=6",
+    "shapely>=2.1.2",
 ]
 
 [project.scripts]
@@ -17,6 +21,7 @@ build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
+    "deptry>=0.25.1",
     "pytest>=8.3",
     "pytest-cov>=6.0",
     "ruff>=0.12",
