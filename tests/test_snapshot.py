@@ -1,6 +1,6 @@
 import hashlib
-from pathlib import Path
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
 from threading import Thread
 from urllib.parse import parse_qs
 
@@ -374,7 +374,7 @@ def test_fr2_1_snapshot_fetch_writes_every_file_and_the_manifest(routed_overpass
 
     from bikeplan import main
 
-    endpoint, requests = routed_overpass_server
+    endpoint, _ = routed_overpass_server
     out = tmp_path / "snap"
     region = bayside_without_adapters(tmp_path)
 
