@@ -24,5 +24,10 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 None yet.
 - `boundary_geojson` joins relation ways into rings in plain Python, because shapely is not in the offline lock. `fetch_boundary` stores the raw reply only while it checks it, so an open relation leaves no file. The network query asks for XML; gzip is the job of the fetch command row.
-- `fetch_snapshot` in `src/bikeplan/snapshot.py` runs each adapter from the `ADAPTERS` dict as `adapter(region, box, out_dir)` and expects a list of `ManifestEntry` with `path` relative to the out dir. P2.4 adds `kontur_population` there. Until then a region that lists it fails the fetch, so real runs use a copy with `adapters: []`.
+- `fetch_snapshot` in `src/bikeplan/snapshot.py` runs each adapter from the `ADAPTERS` dict as `adapter(region, box, out_dir)` and expects a list of `ManifestEntry` with `path` relative to the out dir. `kontur_population` is now in it.
 - The Bayside network fetch takes about 3 minutes and gives a 5.5 MB gzip. Run it in the background.
+- The Kontur adapter finds the country file with the HDX query `fq=organization:kontur AND res_url:*kontur_population_<CC>_*`. A plain text search for the code ranks other countries first.
+- Kontur files have no spatial index, so the cut reads all rows. Australia has 517689 rows; the cut takes seconds.
+- `tests/fixtures/kontur/` holds a real HDX reply and a 28-hexagon cut of the real Australia file near 151.12, -33.93.
+- On 2026-10-07 `overpass-api.de` gave 504 on the Bayside network query twice. The run passed through `--endpoint https://overpass.private.coffee/api/interpreter` in 11 minutes.
+- To check a real cut, run `python3 -I -c` with `sqlite3`: sum `population` in `population.gpkg`, then sum the source rows with the same `h3` values. Both gave 873592 for Bayside.
