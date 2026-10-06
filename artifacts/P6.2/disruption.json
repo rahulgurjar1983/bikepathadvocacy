@@ -1,0 +1,80 @@
+{
+ "quietway": {
+  "fits": false,
+  "robust": null,
+  "disruption": {
+   "parking_spaces": 0,
+   "lane_km": 0.0,
+   "speed_km": 0.12,
+   "old_speed_kmh": 50,
+   "new_speed_kmh": 30,
+   "path_km": 0.0,
+   "vehicle_km": 0.0
+  }
+ },
+ "cycleway_in_spare": {
+  "fits": false,
+  "robust": null,
+  "disruption": {
+   "parking_spaces": 0,
+   "lane_km": 0.0,
+   "speed_km": 0.0,
+   "old_speed_kmh": null,
+   "new_speed_kmh": null,
+   "path_km": 0.0,
+   "vehicle_km": 0.0
+  }
+ },
+ "cycleway_parking_one_side": {
+  "fits": true,
+  "robust": "robust",
+  "disruption": {
+   "parking_spaces": 14,
+   "lane_km": 0.0,
+   "speed_km": 0.0,
+   "old_speed_kmh": null,
+   "new_speed_kmh": null,
+   "path_km": 0.0,
+   "vehicle_km": 0.0
+  }
+ },
+ "cycleway_parking_both_sides": {
+  "fits": true,
+  "robust": "robust",
+  "disruption": {
+   "parking_spaces": 28,
+   "lane_km": 0.0,
+   "speed_km": 0.0,
+   "old_speed_kmh": null,
+   "new_speed_kmh": null,
+   "path_km": 0.0,
+   "vehicle_km": 0.0
+  }
+ },
+ "road_diet": {
+  "fits": false,
+  "robust": null,
+  "disruption": {
+   "parking_spaces": 0,
+   "lane_km": 0.12,
+   "speed_km": 0.0,
+   "old_speed_kmh": null,
+   "new_speed_kmh": null,
+   "path_km": 0.0,
+   "vehicle_km": 600.0
+  }
+ },
+ "verge_path": {
+  "fits": false,
+  "robust": null,
+  "disruption": {
+   "parking_spaces": 0,
+   "lane_km": 0.0,
+   "speed_km": 0.0,
+   "old_speed_kmh": null,
+   "new_speed_kmh": null,
+   "path_km": 0.12,
+   "vehicle_km": 0.0
+  }
+ }
+}

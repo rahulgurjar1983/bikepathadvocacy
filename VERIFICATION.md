@@ -344,3 +344,23 @@ print(json.dumps(out, indent=1))
 
 Expect: The tests pass. For the six worked cases of spec 06, each of the six fixes shows its reason, and the fixes marked `[fits]` match the spec: case 1 fits only `quietway`, case 2 fits `cycleway_in_spare` at 3.5 m, case 6 fits `verge_path`.
 Artifact: `artifacts/P6.1/options.json`
+
+### P6.2
+
+```bash
+uv run pytest tests/test_fit_disruption.py -q
+mkdir -p artifacts/P6.2
+uv run python -c "
+import json, sys
+sys.path[:0] = ['src', 'tests']
+from bikeplan.config import load_profile
+from bikeplan.fit import options
+from test_fit_options import CASES
+p = load_profile('au-nsw', 'profiles')
+c = {**CASES[3], 'length_m': 120.0, 'width_low_m': 11.5}
+print(json.dumps({o['fix']: {'fits': o['fits'], 'robust': o['robust'], 'disruption': o['disruption']} for o in options(c, p)}, indent=1))
+" > artifacts/P6.2/disruption.json
+```
+
+Expect: The tests pass. For case 3 on a 120 m street with a low width of 11.5 m, `cycleway_parking_one_side` fits and is `robust`, and removes 14 parking spaces.
+Artifact: `artifacts/P6.2/disruption.json`

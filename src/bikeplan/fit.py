@@ -170,7 +170,7 @@ def verge_option(segment: dict, profile: Profile) -> dict:
     return verdict("verge_path", needs, verge, widths="desirable" if desirable else "minimum")
 
 
-def options(segment: dict, profile: Profile) -> list[dict]:
+def fit_options(segment: dict, profile: Profile) -> list[dict]:
     spare = spare_m(cross_section(segment, profile))
     parked = parked_flags(segment, profile)
     count = sum(parked)
@@ -212,3 +212,65 @@ def options(segment: dict, profile: Profile) -> list[dict]:
         found["road_diet"] = blocked("road_diet", unknown)
     found["verge_path"] = verge_option(segment, profile)
     return [found[fix] for fix in FIXES]
+
+
+def parking_spaces(length_m: float, sides: int, profile: Profile) -> int:
+    bay = profile.parking.bay_length_m.value
+    share = profile.parking.driveway_share.value
+    return sides * round(length_m / bay * (1 - share))
+
+
+def removed_sides(fix: str, parked: list[bool]) -> int:
+    if fix == "cycleway_parking_one_side":
+        return 1
+    if fix == "cycleway_parking_both_sides":
+        return 2
+    return 0
+
+
+def disruption_counts(fix: str, segment: dict, profile: Profile) -> dict:
+    km = (segment.get("length_m") or 0.0) / 1000
+    parked = parked_flags(segment, profile)
+    counts = {
+        "parking_spaces": parking_spaces(
+            segment.get("length_m") or 0.0, removed_sides(fix, parked), profile
+        ),
+        "lane_km": km if fix == "road_diet" else 0.0,
+        "speed_km": km if fix == "quietway" else 0.0,
+        "old_speed_kmh": None,
+        "new_speed_kmh": None,
+        "path_km": km if fix == "verge_path" else 0.0,
+        "vehicle_km": segment["adt"] * km if fix == "road_diet" else 0.0,
+    }
+    if fix == "quietway":
+        counts["old_speed_kmh"] = segment.get("speed_kmh")
+        counts["new_speed_kmh"] = profile.quietway.target_speed_kmh.value
+    return counts
+
+
+def disruption_score(counts: dict, weights) -> float:
+    return (
+        counts["parking_spaces"] * weights.parking_space
+        + counts["lane_km"] * weights.lane_km
+        + counts["speed_km"] * weights.speed_km
+        + counts["path_km"] * weights.path_km
+    )
+
+
+def options(segment: dict, profile: Profile) -> list[dict]:
+    found = fit_options(segment, profile)
+    low = segment.get("width_low_m")
+    at_low = (
+        {item["fix"]: item for item in fit_options({**segment, "width_m": low}, profile)}
+        if low is not None
+        else None
+    )
+    for item in found:
+        if not item["fits"]:
+            item["robust"] = None
+        elif at_low is None or at_low[item["fix"]]["fits"]:
+            item["robust"] = "robust"
+        else:
+            item["robust"] = "check on site"
+        item["disruption"] = disruption_counts(item["fix"], segment, profile)
+    return found
