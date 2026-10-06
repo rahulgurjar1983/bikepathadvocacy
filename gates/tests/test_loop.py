@@ -276,3 +276,10 @@ def test_nfr11_tests_ignore_loop_settings_of_the_caller():
         timeout=300,
     )
     assert result.returncode == 0, result.stdout[-2000:]
+
+
+def test_nfr11_caller_settings_are_found_by_prefix():
+    from gates.testenv import caller_settings
+
+    environ = {"RALPH_FALLBACK_BIN": "x", "GATE_BASE": "y", "PATH": "/bin", "HOME": "/h"}
+    assert caller_settings(environ) == ["GATE_BASE", "RALPH_FALLBACK_BIN"]
