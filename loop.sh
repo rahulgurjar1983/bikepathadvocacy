@@ -79,7 +79,7 @@ record_turn() {
 }
 
 commit_count() {
-  git rev-list --all --count 2>/dev/null || echo 0
+  git rev-list --branches --count 2>/dev/null || echo 0
 }
 
 main() {
@@ -141,6 +141,11 @@ main() {
     fi
     if [ "${RALPH_SKIP_SYNC:-0}" != 1 ]; then
       git fetch -q origin 2>>ralph.log || log "git fetch failed; working from the last fetch"
+      if ! git checkout -q main 2>>ralph.log || ! git merge -q --ff-only origin/main 2>>ralph.log; then
+        log "cannot return to an up-to-date main; commit or clear the work tree"
+        notify "cannot return to an up-to-date main; the loop stopped"
+        exit 1
+      fi
     fi
     if [ "$(cksum <"$self")" != "$fingerprint" ]; then
       log "loop.sh changed; starting the new copy for $((max - i)) turn(s)"

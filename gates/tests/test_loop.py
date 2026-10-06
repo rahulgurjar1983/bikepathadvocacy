@@ -28,6 +28,9 @@ fi
 if [ -n "${FAKE_COMMIT:-}" ]; then
   git commit -q --allow-empty -m "fake turn $n"
 fi
+if [ -n "${FAKE_RUN:-}" ]; then
+  bash -c "$FAKE_RUN"
+fi
 echo "$FAKE_NAME turn $n done"
 """
 
@@ -283,3 +286,41 @@ def test_nfr11_caller_settings_are_found_by_prefix():
 
     environ = {"RALPH_FALLBACK_BIN": "x", "GATE_BASE": "y", "PATH": "/bin", "HOME": "/h"}
     assert caller_settings(environ) == ["GATE_BASE", "RALPH_FALLBACK_BIN"]
+
+
+def with_origin(repo, tmp_path: Path) -> Path:
+    remote = tmp_path / "remote.git"
+    repo.git("clone", "-q", "--bare", str(repo.path), str(remote))
+    repo.git("remote", "add", "origin", str(remote))
+    repo.git("fetch", "-q", "origin")
+    return remote
+
+
+def test_fr0_13_each_turn_starts_from_fresh_main(loop_repo, tmp_path):
+    repo, env, state = loop_repo
+    remote = with_origin(repo, tmp_path)
+    repo.branch("loop/old-work")
+    upstream = tmp_path / "upstream"
+    subprocess.run(["git", "clone", "-q", str(remote), str(upstream)], check=True)
+    (upstream / "PROMPT.md").write_text("Fresh prompt from main.\n")
+    subprocess.run(["git", "-C", str(upstream), "commit", "-qam", "new prompt"], check=True)
+    subprocess.run(["git", "-C", str(upstream), "push", "-q", "origin", "HEAD:main"], check=True)
+    env["RALPH_SKIP_SYNC"] = "0"
+    result = run_loop(repo, env, "1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "Fresh prompt from main." in (state / "agent.args.1").read_text()
+    assert repo.git("branch", "--show-current") == "main"
+
+
+def test_fr0_22_commits_fetched_from_origin_are_not_progress(loop_repo, tmp_path):
+    repo, env, _state = loop_repo
+    with_origin(repo, tmp_path)
+    env["FAKE_RUN"] = (
+        'c=$(git commit-tree "HEAD^{tree}" -p HEAD -m upstream)'
+        ' && git push -q origin "$c:refs/heads/main" && git fetch -q origin'
+    )
+    result = run_loop(repo, env, "1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    row = (repo.path / ".ralph" / "usage.csv").read_text().splitlines()[-1].split(",")
+    assert row[5] == "no"
+    assert (repo.path / ".ralph" / "escalate").exists()

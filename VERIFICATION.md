@@ -30,6 +30,15 @@ uv run pytest gates/tests/test_hooks.py gates/tests/test_notify.py -q
 Expect: every hook and notify test passes.
 Artifact: `artifacts/S0.3/hook-tests.txt`
 
+### S0.4
+
+```bash
+gh pr view 5 --json state,mergeCommit,commits -q '.state, .mergeCommit.oid[0:7], (.commits[] | .messageHeadline)'
+```
+
+Expect: `MERGED`, then the test, feat and docs commits of P0.1 in that order. The CI run on the merge commit passed, and `.ralph/usage.csv` holds the turn's cost.
+Artifact: `artifacts/S0.4/loop-e2e.txt`
+
 ### P0.1
 
 ```bash
