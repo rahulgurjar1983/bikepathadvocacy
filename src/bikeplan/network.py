@@ -1,13 +1,15 @@
 import gzip
+import hashlib
 import json
 import math
 import re
 import tempfile
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 import networkx as nx
 import osmnx as ox
-from pyproj import CRS
+from pyproj import CRS, Transformer
 
 from bikeplan.config import Profile, Region
 
@@ -63,6 +65,7 @@ SHARED_VALUES = {"shared_lane", "share_busway"}
 PROTECTING_SEPARATION = {"kerb", "bollard", "flex_post", "planter"}
 NO_PARKING = {"no", "no_parking", "no_stopping", "separate"}
 OPTIONAL_FIELDS = ["bike_lane_width_m", "width_tag_m", "width_drop_reason"]
+POINT_HIGHWAYS = {"traffic_signals", "crossing"}
 FEET_M = 0.3048
 WIDTH_RANGE_M = (2.0, 40.0)
 
@@ -267,10 +270,31 @@ def set_lengths(graph: nx.MultiDiGraph) -> None:
             )
         data["length_m"] = length
         data["osm_way"] = first(data["osmid"])
+        ends = f"{min(u, v)}:{max(u, v)}"
+        data["segment_id"] = hashlib.sha256(f"{data['osm_way']}:{ends}".encode()).hexdigest()[:16]
         for key in OPTIONAL_FIELDS:
             value = data.get(key)
             if value is None or (isinstance(value, float) and math.isnan(value)):
                 data[key] = None
+
+
+def signal_points(xml: Path, crs: CRS) -> list[dict]:
+    to_metres = Transformer.from_crs(4326, crs, always_xy=True)
+    points = []
+    for _, node in ET.iterparse(xml):
+        if node.tag != "node":
+            continue
+        tags = {tag.get("k"): tag.get("v") for tag in node.iter("tag")}
+        signal = "traffic_signals" in (tags.get("highway"), tags.get("crossing"))
+        refuge = tags.get("crossing:island") == "yes"
+        crossing = tags.get("highway") in POINT_HIGHWAYS or "crossing" in tags
+        if signal or refuge or crossing:
+            x, y = to_metres.transform(float(node.get("lon")), float(node.get("lat")))
+            points.append(
+                {"osm_id": int(node.get("id")), "x": x, "y": y, "signal": signal, "refuge": refuge}
+            )
+        node.clear()
+    return points
 
 
 def build(snapshot: str | Path, region: Region, profile: Profile) -> nx.MultiDiGraph:
@@ -281,8 +305,30 @@ def build(snapshot: str | Path, region: Region, profile: Profile) -> nx.MultiDiG
         xml = Path(scratch) / "network.osm"
         xml.write_bytes(gzip.decompress((folder / "network.osm.gz").read_bytes()))
         graph = ox.graph_from_xml(xml, bidirectional=False, simplify=False, retain_all=True)
+        points = signal_points(xml, crs)
     mark_bike_access(graph, profile)
     graph = ox.simplify_graph(graph, edge_attrs_differ=KEPT_APART)
     graph = ox.project_graph(graph, to_crs=crs)
     set_lengths(graph)
+    graph.graph["points"] = points
     return graph
+
+
+def tag_share(graph: nx.MultiDiGraph, is_tag) -> float:
+    total = sum(data["length_m"] for _, _, data in graph.edges(data=True))
+    tagged = sum(d["length_m"] for _, _, d in graph.edges(data=True) if is_tag(d))
+    return tagged / total if total else 0.0
+
+
+def summarise(graph: nx.MultiDiGraph) -> dict:
+    segments = {}
+    for _, _, data in graph.edges(data=True):
+        if data["bike_ok"]:
+            segments[data["segment_id"]] = data["length_m"]
+    return {
+        "edges": graph.number_of_edges(),
+        "bike_km": sum(segments.values()) / 1000,
+        "speed_tag_share": tag_share(graph, lambda d: d["speed_source"] != "default"),
+        "lanes_tag_share": tag_share(graph, lambda d: d["lanes_source"] == "tag"),
+        "parking_tag_share": tag_share(graph, lambda d: d["parking"] != "unknown"),
+    }

@@ -4,6 +4,7 @@ import sys
 from importlib.metadata import version
 
 from bikeplan.config import ConfigError, Num, config_hash, load_profile, load_region
+from bikeplan.network import build, summarise
 from bikeplan.snapshot import (
     OVERPASS_ENDPOINT,
     OverpassError,
@@ -60,6 +61,9 @@ def build_parser() -> argparse.ArgumentParser:
             )
             if (name, sub) == ("config", "show"):
                 leaf.add_argument("region", help="Region file")
+            if (name, sub) == ("network", "summary"):
+                leaf.add_argument("region", help="Region file")
+                leaf.add_argument("--snapshot", required=True, help="Snapshot folder")
             if (name, sub) == ("snapshot", "fetch"):
                 leaf.add_argument("region", help="Region file")
                 leaf.add_argument("--out", required=True, help="Output directory")
@@ -101,6 +105,21 @@ def config_show(path: str) -> int:
     for line in profile_lines(profile):
         print(line)
     print(f"config_hash: {config_hash(region, profile)}")
+    return 0
+
+
+def network_summary(path: str, snapshot: str) -> int:
+    try:
+        region = load_region(path)
+        graph = build(snapshot, region, load_profile(region.profile))
+    except (ConfigError, OSError) as error:
+        print(error, file=sys.stderr)
+        return 1
+    figures = summarise(graph)
+    print(f"edges {figures['edges']}")
+    print(f"bike_km {figures['bike_km']:.3f}")
+    for key in ("speed", "lanes", "parking"):
+        print(f"{key}_tag_share {figures[f'{key}_tag_share']:.3f}")
     return 0
 
 
@@ -153,6 +172,8 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if (args.command, getattr(args, "subcommand", None)) == ("config", "show"):
         return config_show(args.region)
+    if (args.command, getattr(args, "subcommand", None)) == ("network", "summary"):
+        return network_summary(args.region, args.snapshot)
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "fetch"):
         return snapshot_fetch(args.region, args.out, args.endpoint)
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "verify"):
