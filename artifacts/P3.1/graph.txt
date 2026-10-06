@@ -1,3 +1,3 @@
 crs EPSG:32756
-edges 189160
+edges 189386
 bike_ok_km 4875.0

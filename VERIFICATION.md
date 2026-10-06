@@ -164,5 +164,15 @@ uv run pytest tests/test_network.py -q
 uv run python -I -c 'from bikeplan.config import load_profile, load_region; from bikeplan.network import build; r = load_region("regions/au-nsw-bayside.yaml"); g = build("data/cache/au-nsw-bayside/2026-10-01", r, load_profile(r.profile)); e = [d for _, _, d in g.edges(data=True)]; print("crs", g.graph["crs"]); print("edges", len(e)); print("bike_ok_km", round(sum(d["length_m"] for d in e if d["bike_ok"]) / 1000, 1))' | tee artifacts/P3.1/graph.txt
 ```
 
-Expect: The tests pass. The run prints `crs EPSG:32756`, `edges 189160` and `bike_ok_km 4875.0`.
+Expect: The tests pass. The run prints `crs EPSG:32756`, `edges 189386` and `bike_ok_km 4875.0`.
 Artifact: `artifacts/P3.1/graph.txt`
+
+### P3.2
+
+```bash
+uv run pytest tests/test_network_tags.py -q
+uv run python -I -c 'from collections import Counter; from bikeplan.config import load_profile, load_region; from bikeplan.network import build; r = load_region("regions/au-nsw-bayside.yaml"); g = build("data/cache/au-nsw-bayside/2026-10-01", r, load_profile(r.profile)); e = [d for _, _, d in g.edges(data=True)]; [print(k, dict(sorted(Counter(d[k] for d in e).items()))) for k in ("speed_source", "lanes_source", "adt_source")]' | tee artifacts/P3.2/traffic.txt
+```
+
+Expect: The tests pass. The run prints `speed_source {'default': 157709, 'tag': 31677}`, `lanes_source {'default': 168495, 'tag': 20891}` and `adt_source {'default': 189386}`.
+Artifact: `artifacts/P3.2/traffic.txt`
