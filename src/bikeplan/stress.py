@@ -1,4 +1,7 @@
+import math
 from bisect import bisect_left
+from collections import defaultdict
+from itertools import combinations
 
 from bikeplan.config import Profile
 from bikeplan.network import first, parking_on_side, road_class
@@ -42,6 +45,31 @@ WIDE_LANE_M = 1.83
 MIN_LANE_M = 1.22
 WIDE_REACH_M = 4.57
 MIN_REACH_M = 3.66
+POINT_RADIUS_M = 25.0
+STRAIGHT_TOLERANCE_DEG = 30.0
+CROSSING_SPEED_TOPS_KMH = [40.0, 50.0, 60.0]
+CROSSING_LANE_TOPS = [3, 5]
+CROSSING_TABLE = [
+    [1, 2, 4, 1, 1, 2],
+    [1, 2, 4, 1, 2, 3],
+    [2, 3, 4, 2, 3, 4],
+    [3, 4, 4, 3, 4, 4],
+]
+ROAD_RANK = {
+    name: rank
+    for rank, name in enumerate(
+        [
+            "living_street",
+            "service",
+            "residential",
+            "unclassified",
+            "tertiary",
+            "secondary",
+            "primary",
+            "trunk",
+        ]
+    )
+}
 
 
 def speed_band(speed_kmh: float) -> int:
@@ -142,3 +170,114 @@ def is_aaa(data: dict, lts: int, profile: Profile) -> bool:
         data["speed_kmh"] <= rule.max_speed_kmh.value and data["adt"] <= rule.max_adt.value
         for rule in profile.aaa.mixed_traffic
     )
+
+
+def junction_points(graph, radius_m: float = POINT_RADIUS_M) -> dict:
+    cells = defaultdict(list)
+    for point in graph.graph["points"]:
+        cells[(int(point["x"] // radius_m), int(point["y"] // radius_m))].append(point)
+    flags = {}
+    for node, data in graph.nodes(data=True):
+        cx, cy = int(data["x"] // radius_m), int(data["y"] // radius_m)
+        near = [
+            point
+            for dx in (-1, 0, 1)
+            for dy in (-1, 0, 1)
+            for point in cells.get((cx + dx, cy + dy), [])
+            if math.hypot(point["x"] - data["x"], point["y"] - data["y"]) <= radius_m
+        ]
+        flags[node] = {
+            "signal": any(point["signal"] for point in near),
+            "refuge": any(point["refuge"] for point in near),
+        }
+    return flags
+
+
+def crossing_lts(speed_kmh: float, lanes: int, refuge: bool) -> int:
+    row = bisect_left(CROSSING_SPEED_TOPS_KMH, speed_kmh)
+    column = bisect_left(CROSSING_LANE_TOPS, lanes) + 3 * bool(refuge)
+    return CROSSING_TABLE[row][column]
+
+
+def leg_bearing(graph, node, u, v, data) -> float:
+    geometry = data.get("geometry")
+    if geometry is not None:
+        coords = list(geometry.coords)
+    else:
+        coords = [
+            (graph.nodes[u]["x"], graph.nodes[u]["y"]),
+            (graph.nodes[v]["x"], graph.nodes[v]["y"]),
+        ]
+    start, towards = (coords[0], coords[1]) if node == u else (coords[-1], coords[-2])
+    return math.degrees(math.atan2(towards[0] - start[0], towards[1] - start[1])) % 360
+
+
+def junction_legs(graph, node) -> list[dict]:
+    legs = {}
+    for u, v, k, data in list(graph.in_edges(node, keys=True, data=True)) + list(
+        graph.out_edges(node, keys=True, data=True)
+    ):
+        if u == v:
+            continue
+        leg = legs.setdefault(
+            data["segment_id"],
+            {"data": data, "bearing": leg_bearing(graph, node, u, v, data), "keys": set()},
+        )
+        leg["keys"].add((u, v, k))
+    return list(legs.values())
+
+
+def leg_rank(leg: dict) -> int:
+    return ROAD_RANK.get(str(first(leg["data"].get("highway")) or "").removesuffix("_link"), -1)
+
+
+def is_straight(first_leg: dict, second_leg: dict) -> bool:
+    turn = abs(first_leg["bearing"] - second_leg["bearing"]) % 360
+    return abs(min(turn, 360 - turn) - 180) <= STRAIGHT_TOLERANCE_DEG
+
+
+def main_street(legs: list[dict]):
+    pairs = [
+        pair
+        for pair in combinations(legs, 2)
+        if all(leg["data"]["lanes_total"] > 0 for leg in pair) and is_straight(*pair)
+    ]
+    if not pairs:
+        return None
+    return max(
+        pairs,
+        key=lambda pair: (
+            sum(leg["data"]["lanes_total"] for leg in pair),
+            sum(leg_rank(leg) for leg in pair),
+        ),
+    )
+
+
+def raise_for_crossings(graph, lts: dict, profile: Profile) -> tuple[dict, dict]:
+    flags = junction_points(graph)
+    final = dict(lts)
+    crossings = {}
+    for node in graph.nodes:
+        if flags[node]["signal"]:
+            continue
+        legs = junction_legs(graph, node)
+        main = main_street(legs)
+        if main is None:
+            continue
+        lanes = max(leg["data"]["lanes_total"] for leg in main)
+        speed = max(leg["data"]["speed_kmh"] for leg in main)
+        score = crossing_lts(speed, lanes, flags[node]["refuge"])
+        for leg in legs:
+            if any(leg is street for street in main):
+                continue
+            for key in leg["keys"]:
+                if score > final[key]:
+                    final[key] = score
+                    crossings[key] = {
+                        "junction": node,
+                        "lts": score,
+                        "speed_kmh": speed,
+                        "lanes": lanes,
+                        "refuge": flags[node]["refuge"],
+                    }
+    return final, crossings
