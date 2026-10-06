@@ -186,3 +186,13 @@ uv run python -I -c 'from collections import Counter; from bikeplan.config impor
 
 Expect: The tests pass. The run prints `bike_facility {'none': 177389, 'off_road': 8230, 'painted_lane': 1066, 'protected': 292, 'shared': 2409}`, `parking {'no': 341, 'unknown': 187540, 'yes': 1505}`, `width_drop_reason {'out_of_range': 673, 'unreadable': 14, None: 188699}` and `width_tag_m set 2736`.
 Artifact: `artifacts/P3.3/tags.txt`
+
+### P3.4
+
+```bash
+uv run pytest tests/test_network_segments.py -q
+uv run bikeplan network summary regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 | tee artifacts/P3.4/network.txt
+```
+
+Expect: The tests pass. The run prints `edges 189386`, `bike_km 2620.742`, `speed_tag_share 0.192`, `lanes_tag_share 0.112` and `parking_tag_share 0.011`. Each share is the length of edges set by a tag over the length of all edges; `bike_km` counts each street segment once.
+Artifact: `artifacts/P3.4/network.txt`
