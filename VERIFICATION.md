@@ -249,6 +249,20 @@ cp "$OUT/stress_summary.json" artifacts/P4.5/
 Expect: The tests pass. The run prints `lts1_km 1404.402`, `lts2_km 2405.365`, `lts3_km 771.708`, `lts4_km 293.496` and `aaa_km 930.506`, and writes `stress.geojson` with 189386 edges, each with a reason. The summary counts the km of directed edges a bike may use.
 Artifact: `artifacts/P4.5/stress_summary.json`
 
+### P4.6
+
+```bash
+uv run pytest tests/test_network_clip.py tests/test_stress_report.py -q
+S=data/cache/au-nsw-bayside/2026-10-01
+uv run bikeplan network summary regions/au-nsw-bayside.yaml --snapshot $S > artifacts/P4.6/network_summary.txt
+OUT=$(mktemp -d)
+uv run bikeplan stress regions/au-nsw-bayside.yaml --snapshot $S --out "$OUT" > artifacts/P4.6/stress_lines.txt
+cp "$OUT/stress_summary.json" artifacts/P4.6/
+```
+
+Expect: The tests pass. The network summary prints `bike_km 591.099`. The stress run prints `lts1_km 153.619`, `lts2_km 265.721`, `lts3_km 93.973`, `lts4_km 77.786` and `aaa_km 114.676`, which sum to the same 591.099 km. Each segment counts once, clipped at the boundary.
+Artifact: `artifacts/P4.6/stress_summary.json`
+
 ### P5.1
 
 ```bash

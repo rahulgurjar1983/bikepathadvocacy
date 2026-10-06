@@ -123,13 +123,20 @@ def test_fr4_8_geojson_has_one_feature_per_edge_with_lts_aaa_and_reason(output):
 def test_fr4_8_summary_km_match_the_features(output):
     features = json.loads((output / "stress.geojson").read_text())["features"]
     summary = json.loads((output / "stress_summary.json").read_text())
-    bike = [f["properties"] for f in features if f["properties"]["bike_ok"]]
+    segments = {}
+    for feature in features:
+        p = feature["properties"]
+        if p["bike_ok"]:
+            segments.setdefault(p["segment_id"], []).append(p)
+    km_by_lts = {lts: 0.0 for lts in (1, 2, 3, 4)}
+    km_aaa = 0.0
+    for edges in segments.values():
+        km = edges[0]["length_m"] / 1000
+        km_by_lts[max(e["lts"] for e in edges)] += km
+        km_aaa += km * all(e["aaa"] for e in edges)
     for lts in (1, 2, 3, 4):
-        expected = sum(p["length_m"] for p in bike if p["lts"] == lts) / 1000
-        assert summary["km_by_lts"][str(lts)] == pytest.approx(expected, abs=1e-3)
-    assert summary["km_aaa"] == pytest.approx(
-        sum(p["length_m"] for p in bike if p["aaa"]) / 1000, abs=1e-3
-    )
+        assert summary["km_by_lts"][str(lts)] == pytest.approx(km_by_lts[lts], abs=1e-3)
+    assert summary["km_aaa"] == pytest.approx(km_aaa, abs=1e-3)
     assert sum(summary["km_by_lts"].values()) > 0
 
 

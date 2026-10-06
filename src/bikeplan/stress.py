@@ -8,7 +8,7 @@ from pathlib import Path
 from pyproj import Transformer
 
 from bikeplan.config import Profile
-from bikeplan.network import first, parking_on_side, road_class
+from bikeplan.network import bike_segments, first, parking_on_side, road_class
 
 SPEED_TOPS_KMH = [37.82, 45.87, 53.91, 61.96, 70.01, 78.05]
 MINOR_CLASSES = {"residential", "living_street", "service", "unclassified"}
@@ -429,14 +429,15 @@ def stress_summary(graph, scores: dict) -> dict:
         return {"km_by_lts": {str(lts): 0.0 for lts in range(1, 5)}, "km_aaa": 0.0}
 
     total, by_class = empty(), {}
-    for u, v, k, data in graph.edges(keys=True, data=True):
-        if not data["bike_ok"]:
-            continue
-        score, km = scores[(u, v, k)], data["length_m"] / 1000
-        name = str(first(data.get("highway")))
+    for segment in bike_segments(graph).values():
+        keys, datas = zip(*segment["edges"], strict=True)
+        lts = max(scores[key]["lts"] for key in keys)
+        aaa = all(scores[key]["aaa"] for key in keys)
+        km = segment["inside_m"] / 1000
+        name = str(first(datas[0].get("highway")))
         for bucket in (total, by_class.setdefault(name, empty())):
-            bucket["km_by_lts"][str(score["lts"])] += km
-            bucket["km_aaa"] += km * score["aaa"]
+            bucket["km_by_lts"][str(lts)] += km
+            bucket["km_aaa"] += km * aaa
     return {**total, "by_road_class": dict(sorted(by_class.items()))}
 
 
