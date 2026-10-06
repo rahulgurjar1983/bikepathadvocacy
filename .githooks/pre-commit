@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -uo pipefail
+root="$(git rev-parse --show-toplevel)"
+cd "$root" || exit 1
+
+if [ -n "${BIKEPLAN_PY:-}" ]; then
+  py=("$BIKEPLAN_PY")
+else
+  py=(uv run --frozen python)
+fi
+if [ -n "${BIKEPLAN_RUFF:-}" ]; then
+  ruff=("$BIKEPLAN_RUFF")
+else
+  ruff=(uv run --frozen ruff)
+fi
+
+mapfile -t staged < <(git diff --cached --name-only --diff-filter=ACMR -- '*.py')
+if [ "${#staged[@]}" -gt 0 ]; then
+  if ! "${ruff[@]}" format --check "${staged[@]}"; then
+    echo "pre-commit: rejected; run 'uv run ruff format' and stage the result" >&2
+    exit 1
+  fi
+fi
+if ! "${py[@]}" -m gates.nocomments --staged; then
+  echo "pre-commit: rejected; remove the comments from the staged code" >&2
+  exit 1
+fi
+exit 0

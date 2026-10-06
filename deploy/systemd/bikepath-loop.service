@@ -1,0 +1,24 @@
+[Unit]
+Description=Bike Path Advocacy Ralph loop (one PROGRESS.md row per turn, usage-limit aware)
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+WorkingDirectory=%h/claude/bikepathadvocacy
+ExecStart=/usr/bin/bash %h/claude/bikepathadvocacy/loop.sh 100000 --yolo
+CPUWeight=20
+IOWeight=20
+Nice=10
+MemoryHigh=40%
+MemoryMax=55%
+Restart=on-failure
+RestartSec=120
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=RALPH_FALLBACK_BIN=%h/.local/bin/codex
+Environment=RALPH_TURN_SECS=7200
+Environment=RALPH_BACKOFF_SECS=1800
+
+[Install]
+WantedBy=default.target
