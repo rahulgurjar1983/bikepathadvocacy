@@ -38,6 +38,18 @@ def missing_parts(lines: list[str]) -> list[str]:
     return missing
 
 
+def artifacts(lines: list[str]) -> list[str]:
+    named: list[str] = []
+    for line in lines:
+        if line.startswith("Artifact:"):
+            named.extend(re.findall(r"`([^`]+)`", line))
+    return named
+
+
+def artifact_exists(name: str) -> bool:
+    return name.startswith("https://") or Path(name).exists()
+
+
 def main(argv: list[str] | None = None) -> int:
     argparse.ArgumentParser(prog="gates.verifydoc").parse_args(argv)
     if not ledger.LEDGER.is_file():
@@ -47,6 +59,7 @@ def main(argv: list[str] | None = None) -> int:
     rows, _ = ledger.load()
     found = sections(DOC.read_text(encoding="utf-8"))
     problems: list[str] = []
+    checked = 0
     for row in rows:
         if not row.done:
             continue
@@ -55,11 +68,16 @@ def main(argv: list[str] | None = None) -> int:
             continue
         for part in missing_parts(found[row.ident]):
             problems.append(f"{row.ident}: section needs {part}")
+        for name in artifacts(found[row.ident]):
+            checked += 1
+            if not artifact_exists(name):
+                problems.append(f"{row.ident}: artifact {name} does not exist")
     for problem in problems:
         print(problem)
     if problems:
         return 1
-    print("verifydoc: ok")
+    noun = "artifact" if checked == 1 else "artifacts"
+    print(f"verifydoc: ok ({checked} {noun} checked)")
     return 0
 
 
