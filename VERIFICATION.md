@@ -293,3 +293,23 @@ json.dump(out, open('artifacts/P5.1/width_estimates.json', 'w'), indent=2)
 
 Expect: The tests pass. The run gives 88886 road edges with lanes, each with a lane estimate (4941.941 km), 1544 tag estimates (76.277 km) and 97 tag estimates dropped as out of range.
 Artifact: `artifacts/P5.1/width_estimates.json`
+
+### P5.2
+
+```bash
+uv run pytest tests/test_width_reserve.py -q
+PYTHONPATH=src uv run python -I -c "
+import json, sys
+sys.path[:0] = ['src', 'tests']
+from shapely.geometry import LineString
+from bikeplan.config import load_profile
+from bikeplan.width import reserve, reserve_estimate
+from test_width_reserve import rows
+r = reserve(LineString([(0, 0), (200, 0)]), rows(20))
+e = reserve_estimate(r, load_profile('au-nsw', 'profiles'))
+print(json.dumps({'reserve_m': r.width_m, 'spread_m': r.spread_m, 'lines': r.lines, 'width_m': e.width_m, 'low_m': e.low_m, 'high_m': e.high_m, 'confidence': e.confidence}, indent=1))
+" > artifacts/P5.2/reserve.json
+```
+
+Expect: The tests pass. A street between parcel rows 20 m apart gives a reserve of 20 m from 10 lines, and a width of 13 m with range 11.5 m to 14.5 m at low confidence. Real NSW parcels arrive with the cadastre adapter row.
+Artifact: `artifacts/P5.2/reserve.json`

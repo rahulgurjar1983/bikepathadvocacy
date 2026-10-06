@@ -1,0 +1,9 @@
+{
+ "reserve_m": 20.0,
+ "spread_m": 0.0,
+ "lines": 10,
+ "width_m": 13.0,
+ "low_m": 11.5,
+ "high_m": 14.5,
+ "confidence": "low"
+}
