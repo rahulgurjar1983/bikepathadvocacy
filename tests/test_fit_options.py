@@ -1,7 +1,7 @@
 import pytest
+from bikeplan.fit import cross_section, options
 
 from bikeplan.config import load_profile
-from bikeplan.fit import cross_section, options
 
 PROFILE = load_profile("au-nsw", "profiles")
 
@@ -99,9 +99,9 @@ def test_fr6_2_case_3_needs_parking_gone_from_one_side():
     assert one["fits"]
     assert one["spare_m"] == pytest.approx(3.9)
     assert one["needs_m"] == pytest.approx(3.0)
-    assert not found["cycleway_parking_both_sides"]["fits"] or found["cycleway_parking_both_sides"][
-        "spare_m"
-    ] == pytest.approx(6.0)
+    both = found["cycleway_parking_both_sides"]
+    assert both["fits"]
+    assert both["spare_m"] == pytest.approx(6.0)
 
 
 def test_fr6_2_case_5_road_diet_adds_a_lane_of_spare():
