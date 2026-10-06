@@ -41,7 +41,7 @@ ralph.log, .ralph/iter-*.log               scripts/gate.sh (same gates as CI)
 | FR-0.6 | Reading gate. Each changed Markdown file, except those listed in `.readability-allow`, reads at grade 11 or lower on Flesch-Kincaid, Gunning-Fog, Dale-Chall and `text_standard` (textstat 0.7.13). Code, tables, links and HTML are left out. Glossary terms are swapped for a plain word first. Dale-Chall counts a regular form of an easy word (such as a plural or `-ed` form) as easy, as the original method does. Pages under 30 words are skipped. The glossary is valid only when each one-word term is an acronym or not an easy word, and the joined explanations pass. `scripts/check-reply.sh` scores reply text the same way. | MUST |
 | FR-0.7 | Secret gate. gitleaks 8.30.1, fetched by `scripts/install-gitleaks.sh` and checked against its sha256, scans the commits in `BASE..HEAD`. Any finding fails the gate. | MUST |
 | FR-0.8 | Spec coverage gate. Each done row in `PROGRESS.md` cites at least one spec ID. Each cited ID has at least one test named `test_fr<a>_<b>_...` or `test_nfr<n>_...`. Each ID that a test name carries exists in `SPECIFICATION.md` or `specs/`. | MUST |
-| FR-0.9 | Verification gate. Each done row has a `### <row>` section in `VERIFICATION.md` with a fenced command block, a line that starts with `Expect:` and a line that starts with `Artifact:`. | MUST |
+| FR-0.9 | Verification gate. Each done row has a `### <row>` section in `VERIFICATION.md` with a fenced command block, a line that starts with `Expect:` and a line that starts with `Artifact:`. Each artifact the line names in backticks must be a file or folder in the repo, or an `https` URL. | MUST |
 | FR-0.10 | Inputs gate. On a branch whose name does not start with `input/`, the range may not change an input path: `specs/`, `SPECIFICATION.md`, `PROMPT.md`, `CLAUDE.md`, `loop.sh`, `gates/`, `.github/`, `.githooks/`, `deploy/systemd/`, `.readability-allow`, `scripts/gate.sh`, `scripts/test.sh`, `scripts/secretscan.sh`, `scripts/notify.sh`, `scripts/install-gitleaks.sh`, `scripts/check-reply.sh`, `scripts/install-hooks.sh`. The branch name comes from `GITHUB_HEAD_REF` when set. | MUST |
 | FR-0.11 | Coverage of `src/` and `gates/` is at least 80% of lines. | MUST |
 | FR-0.12 | `ruff check` and `ruff format --check` pass. | MUST |
@@ -74,7 +74,7 @@ Gate tests live in `gates/tests/`. Each builds a throwaway git repo and runs the
 | FR-0.6 | `test_readability.py` | Plain text passes; hard text fails; glossary terms help; bad glossary terms fail; short and exempt files are skipped; `--changed` scores only changed files; plural forms of easy words count as easy |
 | FR-0.7 | `test_secretscan.py` | A planted key fails the scan; a clean range passes |
 | FR-0.8 | `test_speccov.py` | Done rows need tests for each ID; unknown IDs fail; done rows need IDs; open rows are ignored |
-| FR-0.9 | `test_verifydoc.py` | Done rows need a full section; open rows do not |
+| FR-0.9 | `test_verifydoc.py` | Done rows need a full section; open rows do not; a named artifact must exist, or be a URL |
 | FR-0.10 | `test_inputs.py` | Loop branches may not touch inputs; input branches may; `GITHUB_HEAD_REF` wins |
 | FR-0.13 | `test_loop.py` | STOP exits; turns are capped; a usage limit sleeps and does not count; each turn logs; the picked row reaches the agent |
 | FR-0.14 | `test_ledger.py` | The top open row wins; locked and person rows are skipped; none left exits 3 |

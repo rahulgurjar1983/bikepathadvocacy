@@ -21,10 +21,32 @@ def test_fr0_9_done_row_needs_a_section(repo, capsys):
     assert "P1.1" in capsys.readouterr().out
 
 
-def test_fr0_9_complete_section_passes(repo):
+def test_fr0_9_complete_section_passes(repo, capsys):
     repo.write("PROGRESS.md", "- [x] **P1.1** Thing (FR-1.1)\n")
     repo.write("VERIFICATION.md", COMPLETE)
+    repo.write("artifacts/P1.1/version.txt", "0.1.0\n")
     assert verifydoc.main([]) == 0
+    assert "1 artifact checked" in capsys.readouterr().out
+
+
+def test_fr0_9_missing_artifact_file_fails(repo, capsys):
+    repo.write("PROGRESS.md", "- [x] **P1.1** Thing (FR-1.1)\n")
+    repo.write("VERIFICATION.md", COMPLETE)
+    assert verifydoc.main([]) == 1
+    assert "artifacts/P1.1/version.txt" in capsys.readouterr().out
+
+
+def test_fr0_9_release_url_artifact_is_accepted(repo, capsys):
+    repo.write("PROGRESS.md", "- [x] **P1.1** Thing (FR-1.1)\n")
+    repo.write(
+        "VERIFICATION.md",
+        COMPLETE.replace(
+            "`artifacts/P1.1/version.txt`",
+            "`https://github.com/o/r/releases/tag/report-x`",
+        ),
+    )
+    assert verifydoc.main([]) == 0
+    assert "1 artifact checked" in capsys.readouterr().out
 
 
 def test_fr0_9_missing_expect_fails(repo):
