@@ -76,6 +76,99 @@ class Region:
     proposals: Proposals
 
 
+@dataclass(frozen=True)
+class Num:
+    value: Any
+    source: str
+    assumption: bool
+
+
+@dataclass(frozen=True)
+class MixedTraffic:
+    max_speed_kmh: Num
+    max_adt: Num
+
+
+@dataclass(frozen=True)
+class Aaa:
+    mixed_traffic: list[MixedTraffic]
+    painted_lanes_count: Num
+
+
+@dataclass(frozen=True)
+class Width:
+    min: Num
+    desirable: Num | None
+
+
+@dataclass(frozen=True)
+class Widths:
+    one_way_cycleway: Width
+    two_way_cycleway: Width
+    separator_traffic: Width
+    separator_parking: Width
+    shared_path: Width
+    traffic_lane: Width
+    parking_lane: Num
+    verge_default: Num
+
+
+@dataclass(frozen=True)
+class Parking:
+    bay_length_m: Num
+    driveway_share: Num
+
+
+@dataclass(frozen=True)
+class RoadDiet:
+    max_adt: Num
+
+
+@dataclass(frozen=True)
+class Quietway:
+    target_speed_kmh: Num
+
+
+@dataclass(frozen=True)
+class Crossing:
+    refuge_min_m: Num
+
+
+@dataclass(frozen=True)
+class RoadClass:
+    speed_kmh: Num
+    adt: Num
+    lanes: Num
+
+
+@dataclass(frozen=True)
+class Profile:
+    id: str
+    name: str
+    aaa: Aaa
+    widths_m: Widths
+    parking: Parking
+    road_diet: RoadDiet
+    quietway: Quietway
+    crossing: Crossing
+    road_classes: dict[str, RoadClass]
+    implicit_speeds: dict[str, Num]
+
+
+ROAD_CLASS_NAMES = {
+    "living_street",
+    "service",
+    "residential",
+    "unclassified",
+    "tertiary",
+    "secondary",
+    "primary",
+    "trunk",
+}
+
+PROFILE_DIR = Path(__file__).resolve().parents[2] / "profiles"
+
+
 class Reader:
     def __init__(self, path: Path):
         self.path = path
@@ -176,6 +269,99 @@ class Reader:
                 )
             ),
         )
+
+
+class ProfileReader(Reader):
+    def num(self, raw: Any, key: str, kind: str = "number") -> Num:
+        data = self.mapping(raw, key, {"value", "source"}, {"value", "source"})
+        read = {"number": self.number, "bool": self.flag}[kind]
+        source = self.text(data["source"], f"{key}.source")
+        if not source.strip():
+            raise self.fail(f"{key}.source", "must not be empty")
+        return Num(read(data["value"], f"{key}.value"), source, source.startswith("assumption:"))
+
+    def flag(self, value: Any, key: str) -> bool:
+        if not isinstance(value, bool):
+            raise self.fail(key, "must be true or false")
+        return value
+
+    def group(self, raw: Any, key: str, cls: type) -> Any:
+        names = [f.name for f in dataclasses.fields(cls)]
+        data = self.mapping(raw, key, set(names), set(names))
+        return cls(*(self.num(data[name], f"{key}.{name}") for name in names))
+
+    def width(self, raw: Any, key: str) -> Width:
+        data = self.mapping(raw, key, {"min", "desirable"}, {"min"})
+        desirable = data.get("desirable")
+        return Width(
+            self.num(data["min"], f"{key}.min"),
+            None if desirable is None else self.num(desirable, f"{key}.desirable"),
+        )
+
+    def aaa(self, raw: Any) -> Aaa:
+        data = self.mapping(
+            raw,
+            "aaa",
+            {"mixed_traffic", "painted_lanes_count"},
+            {"mixed_traffic", "painted_lanes_count"},
+        )
+        tiers = data["mixed_traffic"]
+        if not isinstance(tiers, list) or not tiers:
+            raise self.fail("aaa.mixed_traffic", "must be a list with at least one item")
+        return Aaa(
+            [
+                self.group(tier, f"aaa.mixed_traffic[{index}]", MixedTraffic)
+                for index, tier in enumerate(tiers)
+            ],
+            self.num(data["painted_lanes_count"], "aaa.painted_lanes_count", "bool"),
+        )
+
+    def widths(self, raw: Any) -> Widths:
+        names = [f.name for f in dataclasses.fields(Widths)]
+        data = self.mapping(raw, "widths_m", set(names), set(names))
+        return Widths(
+            *(
+                self.num(data[name], f"widths_m.{name}")
+                if name in {"parking_lane", "verge_default"}
+                else self.width(data[name], f"widths_m.{name}")
+                for name in names
+            )
+        )
+
+    def road_classes(self, raw: Any) -> dict[str, RoadClass]:
+        data = self.mapping(raw, "road_classes", ROAD_CLASS_NAMES, ROAD_CLASS_NAMES)
+        return {
+            name: self.group(data[name], f"road_classes.{name}", RoadClass)
+            for name in sorted(ROAD_CLASS_NAMES)
+        }
+
+    def implicit_speeds(self, raw: Any) -> dict[str, Num]:
+        if not isinstance(raw, dict) or not raw:
+            raise self.fail("implicit_speeds", "must be a mapping of codes to km/h")
+        return {str(code): self.num(item, f"implicit_speeds.{code}") for code, item in raw.items()}
+
+
+def load_profile(id: str, directory: str | Path | None = None) -> Profile:
+    path = Path(directory or PROFILE_DIR) / f"{id}.yaml"
+    reader = ProfileReader(path)
+    try:
+        raw = yaml.safe_load(path.read_text())
+    except (OSError, yaml.YAMLError) as error:
+        raise ConfigError(f"{path}: cannot read: {error}") from error
+    names = {f.name for f in dataclasses.fields(Profile)}
+    data = reader.mapping(raw, "", names, names)
+    return Profile(
+        reader.text(data["id"], "id"),
+        reader.text(data["name"], "name"),
+        reader.aaa(data["aaa"]),
+        reader.widths(data["widths_m"]),
+        reader.group(data["parking"], "parking", Parking),
+        reader.group(data["road_diet"], "road_diet", RoadDiet),
+        reader.group(data["quietway"], "quietway", Quietway),
+        reader.group(data["crossing"], "crossing", Crossing),
+        reader.road_classes(data["road_classes"]),
+        reader.implicit_speeds(data["implicit_speeds"]),
+    )
 
 
 def load_region(path: str | Path) -> Region:

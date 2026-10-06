@@ -1,0 +1,178 @@
+id: au-nsw
+name: NSW (TfNSW Cycleway Design Toolbox and Austroads)
+aaa:
+  mixed_traffic:
+  - max_speed_kmh:
+      value: 30
+      source: TfNSW Cycleway Design Toolbox (2020)
+    max_adt:
+      value: 2000
+      source: TfNSW Cycleway Design Toolbox (2020)
+  painted_lanes_count:
+    value: false
+    source: 'TfNSW Cycleway Design Toolbox (2020): painted lanes are not separation'
+widths_m:
+  one_way_cycleway:
+    min:
+      value: 1.5
+      source: Austroads Guide to Road Design Part 6A
+    desirable:
+      value: 2.0
+      source: TfNSW Cycleway Design Toolbox (2020)
+  two_way_cycleway:
+    min:
+      value: 2.5
+      source: Austroads Guide to Road Design Part 6A
+    desirable:
+      value: 3.0
+      source: TfNSW Cycleway Design Toolbox (2020)
+  separator_traffic:
+    min:
+      value: 0.5
+      source: TfNSW Cycleway Design Toolbox (2020)
+    desirable:
+      value: 1.0
+      source: TfNSW Cycleway Design Toolbox (2020)
+  separator_parking:
+    min:
+      value: 1.0
+      source: TfNSW Cycleway Design Toolbox (2020)
+  shared_path:
+    min:
+      value: 3.0
+      source: Austroads Guide to Road Design Part 6A
+    desirable:
+      value: 4.0
+      source: TfNSW Cycleway Design Toolbox (2020)
+  traffic_lane:
+    min:
+      value: 3.0
+      source: Austroads Guide to Road Design Part 3 (60 km/h or less)
+  parking_lane:
+    value: 2.1
+    source: AS 2890.5
+  verge_default:
+    value: 3.5
+    source: 'assumption: typical Sydney footpath plus nature strip'
+parking:
+  bay_length_m:
+    value: 6.0
+    source: 'assumption: AS 2890.5 parallel bay plus gaps'
+  driveway_share:
+    value: 0.3
+    source: 'assumption: share of kerb lost to driveways on a local street'
+road_diet:
+  max_adt:
+    value: 20000
+    source: FHWA Road Diet Informational Guide (2014)
+quietway:
+  target_speed_kmh:
+    value: 30
+    source: TfNSW Cycleway Design Toolbox (2020)
+crossing:
+  refuge_min_m:
+    value: 1.8
+    source: Mekuria, Furth and Nixon (2012), Table 8 (six feet)
+road_classes:
+  living_street:
+    speed_kmh:
+      value: 10
+      source: 'assumption: typical posted limit for the class'
+    adt:
+      value: 200
+      source: 'assumption: typical daily traffic for the class'
+    lanes:
+      value: 1
+      source: 'assumption: typical lane count for the class when untagged'
+  service:
+    speed_kmh:
+      value: 20
+      source: 'assumption: typical posted limit for the class'
+    adt:
+      value: 200
+      source: 'assumption: typical daily traffic for the class'
+    lanes:
+      value: 1
+      source: 'assumption: typical lane count for the class when untagged'
+  residential:
+    speed_kmh:
+      value: 50
+      source: 'assumption: NSW Road Rules default urban limit of 50 km/h'
+    adt:
+      value: 750
+      source: 'assumption: typical daily traffic for the class'
+    lanes:
+      value: 2
+      source: 'assumption: typical lane count for the class when untagged'
+  unclassified:
+    speed_kmh:
+      value: 50
+      source: 'assumption: NSW Road Rules default urban limit of 50 km/h'
+    adt:
+      value: 1500
+      source: 'assumption: typical daily traffic for the class'
+    lanes:
+      value: 2
+      source: 'assumption: typical lane count for the class when untagged'
+  tertiary:
+    speed_kmh:
+      value: 50
+      source: 'assumption: NSW Road Rules default urban limit of 50 km/h'
+    adt:
+      value: 5000
+      source: 'assumption: typical daily traffic for the class'
+    lanes:
+      value: 2
+      source: 'assumption: typical lane count for the class when untagged'
+  secondary:
+    speed_kmh:
+      value: 60
+      source: 'assumption: typical posted limit for the class'
+    adt:
+      value: 12000
+      source: 'assumption: typical daily traffic for the class'
+    lanes:
+      value: 2
+      source: 'assumption: typical lane count for the class when untagged'
+  primary:
+    speed_kmh:
+      value: 60
+      source: 'assumption: typical posted limit for the class'
+    adt:
+      value: 25000
+      source: 'assumption: typical daily traffic for the class'
+    lanes:
+      value: 4
+      source: 'assumption: typical lane count for the class when untagged'
+  trunk:
+    speed_kmh:
+      value: 70
+      source: 'assumption: typical posted limit for the class'
+    adt:
+      value: 35000
+      source: 'assumption: typical daily traffic for the class'
+    lanes:
+      value: 4
+      source: 'assumption: typical lane count for the class when untagged'
+implicit_speeds:
+  AU:urban:
+    value: 50
+    source: 'OpenStreetMap Wiki, Default speed limits: AU:urban'
+  AU:rural:
+    value: 100
+    source: 'OpenStreetMap Wiki, Default speed limits: AU:rural'
+  AU:motorway:
+    value: 110
+    source: 'OpenStreetMap Wiki, Default speed limits: AU:motorway'
+  GB:nsl_restricted:
+    value: 48.28
+    source: 'OpenStreetMap Wiki, Default speed limits: GB:nsl_restricted'
+  GB:nsl_single:
+    value: 96.56
+    source: 'OpenStreetMap Wiki, Default speed limits: GB:nsl_single'
+  GB:nsl_dual:
+    value: 112.65
+    source: 'OpenStreetMap Wiki, Default speed limits: GB:nsl_dual'
+  GB:motorway:
+    value: 112.65
+    source: 'OpenStreetMap Wiki, Default speed limits: GB:motorway'
