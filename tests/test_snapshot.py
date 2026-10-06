@@ -265,8 +265,8 @@ def test_fr2_1_network_query_lists_every_highway_value_and_crossing_nodes():
         "trunk_link",
     ):
         assert value in query
-    assert "highway=traffic_signals" in query
-    assert "highway=crossing" in query
+    assert '"highway"="traffic_signals"' in query
+    assert '"highway"="crossing"' in query
     assert '["crossing"]' in query
     assert "-34.0,151.0,-33.9,151.1" in query
 
