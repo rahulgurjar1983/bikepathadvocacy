@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osm version="0.6" generator="bikeplan-test">
+<node id="4011" lat="-33.9100" lon="151.1200"/>
+<node id="4012" lat="-33.9100" lon="151.1211"/>
+<node id="4021" lat="-33.9106" lon="151.1200"/>
+<node id="4022" lat="-33.9106" lon="151.1211"/>
+<node id="4031" lat="-33.9112" lon="151.1200"/>
+<node id="4032" lat="-33.9112" lon="151.1211"/>
+<node id="4041" lat="-33.9118" lon="151.1200"/>
+<node id="4042" lat="-33.9118" lon="151.1211"/>
+<node id="4051" lat="-33.9124" lon="151.1200"/>
+<node id="4052" lat="-33.9124" lon="151.1211"/>
+<node id="4061" lat="-33.9130" lon="151.1200"/>
+<node id="4062" lat="-33.9130" lon="151.1211"/>
+<node id="4071" lat="-33.9136" lon="151.1200"/>
+<node id="4072" lat="-33.9136" lon="151.1211"/>
+<node id="4081" lat="-33.9142" lon="151.1200"/>
+<node id="4082" lat="-33.9142" lon="151.1211"/>
+<node id="4111" lat="-33.9148" lon="151.1200"/>
+<node id="4112" lat="-33.9148" lon="151.1211"/>
+<node id="4121" lat="-33.9154" lon="151.1200"/>
+<node id="4122" lat="-33.9154" lon="151.1211"/>
+<node id="4131" lat="-33.9160" lon="151.1200"/>
+<node id="4132" lat="-33.9160" lon="151.1211"/>
+<node id="4141" lat="-33.9166" lon="151.1200"/>
+<node id="4142" lat="-33.9166" lon="151.1211"/>
+<node id="4151" lat="-33.9172" lon="151.1200"/>
+<node id="4152" lat="-33.9172" lon="151.1211"/>
+<node id="4161" lat="-33.9178" lon="151.1200"/>
+<node id="4162" lat="-33.9178" lon="151.1211"/>
+<node id="4171" lat="-33.9184" lon="151.1200"/>
+<node id="4172" lat="-33.9184" lon="151.1211"/>
+<way id="401"><nd ref="4011"/><nd ref="4012"/><tag k="highway" v="residential"/><tag k="maxspeed" v="40"/></way>
+<way id="402"><nd ref="4021"/><nd ref="4022"/><tag k="highway" v="residential"/><tag k="maxspeed" v="30 mph"/></way>
+<way id="403"><nd ref="4031"/><nd ref="4032"/><tag k="highway" v="residential"/><tag k="maxspeed" v="AU:urban"/></way>
+<way id="404"><nd ref="4041"/><nd ref="4042"/><tag k="highway" v="residential"/><tag k="maxspeed" v="walk"/></way>
+<way id="405"><nd ref="4051"/><nd ref="4052"/><tag k="highway" v="secondary"/></way>
+<way id="406"><nd ref="4061"/><nd ref="4062"/><tag k="highway" v="residential"/><tag k="maxspeed" v="fast"/></way>
+<way id="407"><nd ref="4071"/><nd ref="4072"/><tag k="highway" v="residential"/><tag k="maxspeed" v="AU:bogus"/></way>
+<way id="408"><nd ref="4081"/><nd ref="4082"/><tag k="highway" v="residential"/></way>
+<way id="411"><nd ref="4111"/><nd ref="4112"/><tag k="highway" v="secondary"/><tag k="lanes" v="4"/></way>
+<way id="412"><nd ref="4121"/><nd ref="4122"/><tag k="highway" v="secondary"/><tag k="lanes" v="3"/></way>
+<way id="413"><nd ref="4131"/><nd ref="4132"/><tag k="highway" v="secondary"/><tag k="lanes" v="4"/><tag k="lanes:forward" v="3"/><tag k="lanes:backward" v="1"/></way>
+<way id="414"><nd ref="4141"/><nd ref="4142"/><tag k="highway" v="residential"/><tag k="oneway" v="yes"/><tag k="lanes" v="2"/></way>
+<way id="415"><nd ref="4151"/><nd ref="4152"/><tag k="highway" v="primary"/></way>
+<way id="416"><nd ref="4161"/><nd ref="4162"/><tag k="highway" v="residential"/><tag k="lanes" v="abc"/></way>
+<way id="417"><nd ref="4171"/><nd ref="4172"/><tag k="highway" v="residential"/><tag k="oneway" v="yes"/><tag k="lanes" v="1"/><tag k="cycleway:left" v="opposite_lane"/></way>
+</osm>
