@@ -13,14 +13,16 @@ from bikeplan.snapshot import (
     pull_snapshot,
     verify_snapshot,
 )
+from bikeplan.stress import write_stress
 
 LEAVES = {
-    "stress": "Score the stress level of each road edge",
     "access": "Score access to destinations",
     "propose": "Propose bike path projects",
     "run": "Run the full pipeline for a region",
     "verify": "Verify the outputs of a run",
 }
+
+STRESS_HELP = "Score the stress level of each road edge"
 
 GROUPS = {
     "config": {"show": "Show the resolved config"},
@@ -50,6 +52,10 @@ def build_parser() -> argparse.ArgumentParser:
     commands = parser.add_subparsers(dest="command", metavar="COMMAND", required=True)
     for name, text in LEAVES.items():
         commands.add_parser(name, help=text, description=text)
+    stress = commands.add_parser("stress", help=STRESS_HELP, description=STRESS_HELP)
+    stress.add_argument("region", help="Region file")
+    stress.add_argument("--snapshot", required=True, help="Snapshot folder")
+    stress.add_argument("--out", required=True, help="Output directory")
     for name, subs in GROUPS.items():
         group = commands.add_parser(name, help=GROUP_HELP[name], description=GROUP_HELP[name])
         group_commands = group.add_subparsers(
@@ -123,6 +129,20 @@ def network_summary(path: str, snapshot: str) -> int:
     return 0
 
 
+def stress(path: str, snapshot: str, out: str) -> int:
+    try:
+        region = load_region(path)
+        profile = load_profile(region.profile)
+        summary = write_stress(build(snapshot, region, profile), profile, out)
+    except (ConfigError, OSError) as error:
+        print(error, file=sys.stderr)
+        return 1
+    for lts, km in summary["km_by_lts"].items():
+        print(f"lts{lts}_km {km:.3f}")
+    print(f"aaa_km {summary['km_aaa']:.3f}")
+    return 0
+
+
 def snapshot_fetch(path: str, out: str, endpoint: str) -> int:
     try:
         manifest = fetch_snapshot(load_region(path), out, endpoint)
@@ -170,6 +190,8 @@ def snapshot_pull(manifest: str) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+    if args.command == "stress":
+        return stress(args.region, args.snapshot, args.out)
     if (args.command, getattr(args, "subcommand", None)) == ("config", "show"):
         return config_show(args.region)
     if (args.command, getattr(args, "subcommand", None)) == ("network", "summary"):

@@ -1,7 +1,11 @@
+import json
 import math
 from bisect import bisect_left
 from collections import defaultdict
 from itertools import combinations
+from pathlib import Path
+
+from pyproj import Transformer
 
 from bikeplan.config import Profile
 from bikeplan.network import first, parking_on_side, road_class
@@ -282,3 +286,166 @@ def raise_for_crossings(graph, lts: dict, profile: Profile) -> tuple[dict, dict]
                         "refuge": flags[node]["refuge"],
                     }
     return final, crossings
+
+
+def has_traffic(data: dict) -> bool:
+    return "speed_kmh" in data and data["lanes_total"] > 0
+
+
+def own_lts(data: dict, profile: Profile) -> int:
+    if data["bike_facility"] in OFF_ROAD_FACILITIES or not has_traffic(data):
+        return 1
+    return edge_lts(data, profile)
+
+
+def edge_aaa(data: dict, final: int, profile: Profile) -> bool:
+    if data["bike_facility"] not in OFF_ROAD_FACILITIES and not has_traffic(data):
+        return False
+    return is_aaa(data, final, profile)
+
+
+def rule_verdict(data: dict, profile: Profile) -> str:
+    rules = profile.aaa.mixed_traffic
+    for rule in rules:
+        speed, adt = rule.max_speed_kmh.value, rule.max_adt.value
+        if data["speed_kmh"] <= speed and data["adt"] <= adt:
+            return (
+                f"{data['speed_kmh']:g} km/h is within {speed:g} "
+                f"and ADT {data['adt']} is within {adt:g}"
+            )
+    rule = rules[0]
+    if data["speed_kmh"] > rule.max_speed_kmh.value:
+        return f"{data['speed_kmh']:g} km/h is above {rule.max_speed_kmh.value:g}"
+    return f"ADT {data['adt']} is above {rule.max_adt.value:g}"
+
+
+def aaa_verdict(data: dict, final: int, aaa: bool, profile: Profile) -> str:
+    facility = data["bike_facility"]
+    if aaa and facility in OFF_ROAD_FACILITIES:
+        return "AAA: off-road paths and protected lanes are AAA"
+    if aaa and facility == "painted_lane":
+        return "AAA: painted lanes count as AAA in this profile"
+    if aaa:
+        return f"AAA: {rule_verdict(data, profile)}"
+    if not data["bike_ok"]:
+        return "not AAA: bikes may not use it"
+    if facility == "painted_lane":
+        return "not AAA: painted lanes do not count as AAA"
+    verdict = rule_verdict(data, profile)
+    if final != 1 and " is within " in verdict:
+        return f"not AAA: LTS is {final}"
+    return f"not AAA: {verdict}"
+
+
+def traffic_text(data: dict) -> str:
+    return (
+        f"{data['speed_kmh']:g} km/h ({data['speed_source']}), "
+        f"ADT {data['adt']} ({data['adt_source']})"
+    )
+
+
+def own_text(data: dict, own: int, profile: Profile) -> str:
+    facility = data["bike_facility"]
+    if facility in OFF_ROAD_FACILITIES:
+        return f"off-road path -> LTS {own}"
+    if not has_traffic(data):
+        return f"no motor traffic -> LTS {own}"
+    if facility == "painted_lane":
+        parking = road_class(first(data.get("highway")), profile).parking.value
+        table = 3 if parking_beside(data, parking) else 2
+        lanes = lanes_each_way(data)
+        width = data["bike_lane_width_m"]
+        lane = "untagged" if width is None else f"{width:g} m"
+        plural = "lane" if lanes == 1 else "lanes"
+        return (
+            f"painted lane, table {table}, {lanes} {plural} each way, lane {lane}, "
+            f"{traffic_text(data)} -> LTS {own}"
+        )
+    return f"mixed traffic, type {street_type(data)}, {traffic_text(data)} -> LTS {own}"
+
+
+def edge_reason(data: dict, profile: Profile, own: int, final: int, crossing) -> str:
+    parts = [own_text(data, own, profile)]
+    if crossing is not None:
+        refuge = "refuge" if crossing["refuge"] else "no refuge"
+        parts.append(
+            f"raised to LTS {final} by crossing at junction {crossing['junction']} "
+            f"(main street {crossing['speed_kmh']:g} km/h, {crossing['lanes']} lanes, {refuge})"
+        )
+    aaa = edge_aaa(data, final, profile)
+    if aaa or has_traffic(data):
+        parts.append(aaa_verdict(data, final, aaa, profile))
+    else:
+        parts.append("not AAA: no motor traffic data")
+    return "; ".join(parts)
+
+
+def score_edges(graph, profile: Profile) -> dict:
+    own = {(u, v, k): own_lts(d, profile) for u, v, k, d in graph.edges(keys=True, data=True)}
+    final, crossings = raise_for_crossings(graph, own, profile)
+    return {
+        key: {
+            "lts": final[key],
+            "aaa": edge_aaa(data, final[key], profile),
+            "reason": edge_reason(data, profile, own[key], final[key], crossings.get(key)),
+        }
+        for u, v, k, data in graph.edges(keys=True, data=True)
+        for key in [(u, v, k)]
+    }
+
+
+def stress_features(graph, scores: dict) -> list[dict]:
+    to_lonlat = Transformer.from_crs(graph.graph["crs"], "EPSG:4326", always_xy=True)
+    features = []
+    for u, v, k, data in graph.edges(keys=True, data=True):
+        geometry = data.get("geometry")
+        if geometry is not None:
+            points = list(geometry.coords)
+        else:
+            points = [(graph.nodes[n]["x"], graph.nodes[n]["y"]) for n in (u, v)]
+        xs, ys = to_lonlat.transform([p[0] for p in points], [p[1] for p in points])
+        features.append(
+            {
+                "type": "Feature",
+                "geometry": {"type": "LineString", "coordinates": list(zip(xs, ys, strict=True))},
+                "properties": {
+                    "u": u,
+                    "v": v,
+                    "k": k,
+                    "osm_way": data.get("osm_way"),
+                    "segment_id": data["segment_id"],
+                    "highway": first(data.get("highway")),
+                    "length_m": round(data["length_m"], 2),
+                    "bike_ok": data["bike_ok"],
+                    **scores[(u, v, k)],
+                },
+            }
+        )
+    return features
+
+
+def stress_summary(graph, scores: dict) -> dict:
+    def empty():
+        return {"km_by_lts": {str(lts): 0.0 for lts in range(1, 5)}, "km_aaa": 0.0}
+
+    total, by_class = empty(), {}
+    for u, v, k, data in graph.edges(keys=True, data=True):
+        if not data["bike_ok"]:
+            continue
+        score, km = scores[(u, v, k)], data["length_m"] / 1000
+        name = str(first(data.get("highway")))
+        for bucket in (total, by_class.setdefault(name, empty())):
+            bucket["km_by_lts"][str(score["lts"])] += km
+            bucket["km_aaa"] += km * score["aaa"]
+    return {**total, "by_road_class": dict(sorted(by_class.items()))}
+
+
+def write_stress(graph, profile: Profile, out) -> dict:
+    scores = score_edges(graph, profile)
+    out = Path(out)
+    out.mkdir(parents=True, exist_ok=True)
+    collection = {"type": "FeatureCollection", "features": stress_features(graph, scores)}
+    (out / "stress.geojson").write_text(json.dumps(collection))
+    summary = stress_summary(graph, scores)
+    (out / "stress_summary.json").write_text(json.dumps(summary, indent=2) + "\n")
+    return summary
