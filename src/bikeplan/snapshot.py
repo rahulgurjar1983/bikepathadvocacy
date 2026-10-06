@@ -1,10 +1,12 @@
 import hashlib
+import json
 import time
 import urllib.error
 import urllib.request
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from datetime import UTC, datetime
 from importlib.metadata import version
+from itertools import pairwise
 from pathlib import Path
 from urllib.parse import urlencode
 
@@ -13,6 +15,42 @@ PROJECT_CONTACT = "https://github.com/rahulgurjar1983/bikepathadvocacy/issues"
 MAX_RETRIES = 3
 RETRY_BASE_SECONDS = 0.1
 REQUEST_TIMEOUT_SECONDS = 180
+QUERY_TIMEOUT_SECONDS = 900
+NETWORK_HIGHWAYS = (
+    "primary",
+    "primary_link",
+    "secondary",
+    "secondary_link",
+    "tertiary",
+    "tertiary_link",
+    "unclassified",
+    "residential",
+    "living_street",
+    "service",
+    "cycleway",
+    "path",
+    "footway",
+    "pedestrian",
+    "track",
+    "bridleway",
+    "steps",
+    "trunk",
+    "trunk_link",
+)
+PLACE_FILTERS = (
+    '["amenity"="school"]',
+    '["amenity"="college"]',
+    '["amenity"="university"]',
+    '["amenity"="nursing_home"]',
+    '["amenity"="social_facility"]',
+    '["amenity"="library"]',
+    '["railway"="station"]',
+    '["railway"="halt"]',
+    '["public_transport"="station"]',
+    '["amenity"="ferry_terminal"]',
+    '["railway"="tram_stop"]',
+    '["shop"]',
+)
 
 
 class OverpassError(RuntimeError):
@@ -95,3 +133,133 @@ class OverpassClient:
         if separator and settings.startswith("["):
             return f'{settings}[date:"{osm_date}"];{body}'
         return f'[date:"{osm_date}"];{query}'
+
+
+def box_text(box: tuple[float, float, float, float]) -> str:
+    return ",".join(str(value) for value in box)
+
+
+def network_query(box: tuple[float, float, float, float]) -> str:
+    area = box_text(box)
+    highways = "|".join(NETWORK_HIGHWAYS)
+    return (
+        f"[out:xml][timeout:{QUERY_TIMEOUT_SECONDS}];"
+        f'(way["highway"~"^({highways})$"]({area});>;'
+        f'node["highway"="traffic_signals"]({area});'
+        f'node["highway"="crossing"]({area});'
+        f'node["crossing"]({area}););'
+        "out meta;"
+    )
+
+
+def places_query(box: tuple[float, float, float, float]) -> str:
+    area = box_text(box)
+    filters = "".join(f"nwr{tag}({area});" for tag in PLACE_FILTERS)
+    return f"[out:json][timeout:{QUERY_TIMEOUT_SECONDS}];({filters});out center tags;"
+
+
+def boundary_query(relation: int) -> str:
+    return f"[out:json][timeout:{QUERY_TIMEOUT_SECONDS}];relation({relation});out geom;"
+
+
+def join_rings(ways: list[list[tuple[float, float]]]) -> list[list[tuple[float, float]]]:
+    pending = [list(way) for way in ways if way]
+    rings = []
+    while pending:
+        ring = pending.pop(0)
+        while ring[0] != ring[-1]:
+            for index, way in enumerate(pending):
+                if way[0] == ring[-1]:
+                    ring.extend(way[1:])
+                elif way[-1] == ring[-1]:
+                    ring.extend(reversed(way[:-1]))
+                elif way[-1] == ring[0]:
+                    ring[:0] = way[:-1]
+                elif way[0] == ring[0]:
+                    ring[:0] = list(reversed(way[1:]))
+                else:
+                    continue
+                del pending[index]
+                break
+            else:
+                raise OverpassError("boundary relation does not close into a polygon")
+        if len(ring) < 4:
+            raise OverpassError("boundary relation has a ring with fewer than 3 points")
+        rings.append(ring)
+    return rings
+
+
+def point_in_ring(point: tuple[float, float], ring: list[tuple[float, float]]) -> bool:
+    x, y = point
+    inside = False
+    for (x1, y1), (x2, y2) in pairwise(ring):
+        if (y1 > y) != (y2 > y) and x < (x2 - x1) * (y - y1) / (y2 - y1) + x1:
+            inside = not inside
+    return inside
+
+
+def boundary_geojson(response: dict) -> dict:
+    relations = [
+        element for element in response.get("elements", []) if element["type"] == "relation"
+    ]
+    if not relations:
+        raise OverpassError("boundary relation not found")
+    members = [
+        member
+        for member in relations[0].get("members", [])
+        if member["type"] == "way" and member.get("geometry")
+    ]
+
+    def role_ways(role: str) -> list[list[tuple[float, float]]]:
+        return [
+            [(point["lon"], point["lat"]) for point in member["geometry"]]
+            for member in members
+            if member.get("role") == role
+        ]
+
+    outers = join_rings(role_ways("outer"))
+    if not outers:
+        raise OverpassError("boundary relation has no outer ring")
+    polygons = [[ring] for ring in outers]
+    for hole in join_rings(role_ways("inner")):
+        owner = next((polygon for polygon in polygons if point_in_ring(hole[0], polygon[0])), None)
+        if owner is None:
+            raise OverpassError("boundary relation has an inner ring outside every outer ring")
+        owner.append(hole)
+    coordinates = [[[list(point) for point in ring] for ring in polygon] for polygon in polygons]
+    if len(coordinates) == 1:
+        geometry = {"type": "Polygon", "coordinates": coordinates[0]}
+    else:
+        geometry = {"type": "MultiPolygon", "coordinates": coordinates}
+    return {
+        "type": "Feature",
+        "properties": {"osm_relation": relations[0]["id"]},
+        "geometry": geometry,
+    }
+
+
+def fetch_boundary(
+    client: OverpassClient, relation: int, osm_date: str, output: str | Path
+) -> ManifestEntry:
+    output_path = Path(output)
+    scratch = output_path.with_name(output_path.name + ".raw")
+    entry = client.fetch(
+        boundary_query(relation),
+        osm_date,
+        scratch,
+        licence="ODbL 1.0",
+        attribution="© OpenStreetMap contributors",
+    )
+    try:
+        feature = boundary_geojson(json.loads(scratch.read_bytes()))
+    finally:
+        scratch.unlink()
+    content = json.dumps(feature, separators=(",", ":")).encode()
+    output_path.write_bytes(content)
+    return replace(
+        entry,
+        name=output_path.name,
+        path=output_path.as_posix(),
+        sha256=hashlib.sha256(content).hexdigest(),
+        bytes=len(content),
+    )

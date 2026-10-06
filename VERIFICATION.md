@@ -99,3 +99,13 @@ uv run pytest tests/test_snapshot.py -q --basetemp=/tmp/bikeplan-p21-pytest
 
 Expect: The replay fetch pins the requested date and stores the exact query. The manifest entry records the URL, licence, retrieval time and file hash. The client tests pass.
 Artifact: `artifacts/P2.1/manifest-entry.json`, `artifacts/P2.1/overpass.json`
+
+### P2.2
+
+```bash
+uv run python scripts/replay-boundary-queries.py
+uv run pytest tests/test_snapshot.py -q --basetemp=/tmp/bikeplan-p22-pytest
+```
+
+Expect: The replay fetch turns a closed relation into one polygon, and an open relation fails with no file written. The network query lists every highway value and the crossing nodes. The places query holds every place tag, `shop` and `out center tags`. The tests pass.
+Artifact: `artifacts/P2.2/boundary.geojson`, `artifacts/P2.2/network.query`, `artifacts/P2.2/places.query`

@@ -25,7 +25,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 ## Phase 2: Snapshot
 
 - [x] **P2.1** Overpass client: pinned date, retries, User-Agent and manifest entries (FR-2.2, FR-2.4, FR-2.10, NFR-4)
-- [ ] **P2.2** Boundary from a relation, and the network and places queries (FR-2.3, FR-7.10)
+- [x] **P2.2** Boundary from a relation, and the network and places queries (FR-2.3, FR-7.10)
 - [ ] **P2.3** `bikeplan snapshot fetch` writes every file and the manifest (FR-2.1)
 - [ ] **P2.4** Kontur population adapter (FR-2.8)
 - [ ] **P2.5** `bikeplan snapshot verify`, `publish` and `pull` (FR-2.5, FR-2.6, FR-2.7)
