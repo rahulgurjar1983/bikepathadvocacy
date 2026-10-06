@@ -129,3 +129,21 @@ def test_fr0_23_skipped_draft_checks_and_stale_runs_do_not_decide(tmp_path):
     result = wait_ci(tmp_path, rollups, fake=FAKE_GH_JQ)
     assert result.returncode == 4, result.stdout + result.stderr
     assert (tmp_path / "state" / "count").read_text().strip() == "3"
+
+
+def test_fr0_23_green_checks_with_auto_merge_on_wait_for_the_merge(tmp_path):
+    green = [check("gates", "COMPLETED", "SUCCESS"), check("test", "COMPLETED", "SUCCESS")]
+    rollups = [
+        json.dumps(
+            {
+                "state": "OPEN",
+                "autoMergeRequest": {"mergeMethod": "MERGE"},
+                "statusCheckRollup": green,
+            }
+        ),
+        json.dumps({"state": "MERGED", "autoMergeRequest": None, "statusCheckRollup": green}),
+    ]
+    result = wait_ci(tmp_path, rollups, fake=FAKE_GH_JQ)
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert result.stdout.splitlines() == ["wait-ci: PR 7 merged"]
+    assert (tmp_path / "state" / "count").read_text().strip() == "2"
