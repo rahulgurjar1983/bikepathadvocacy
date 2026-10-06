@@ -2,6 +2,11 @@ import gzip
 import hashlib
 import json
 import math
+import re
+import shutil
+import sqlite3
+import struct
+import tempfile
 import time
 import urllib.error
 import urllib.request
@@ -10,7 +15,7 @@ from datetime import UTC, datetime
 from importlib.metadata import version
 from itertools import pairwise
 from pathlib import Path
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlsplit
 
 from bikeplan.config import Region, config_hash, load_profile
 
@@ -21,6 +26,12 @@ RETRY_BASE_SECONDS = 0.1
 REQUEST_TIMEOUT_SECONDS = 180
 QUERY_TIMEOUT_SECONDS = 900
 METRES_PER_DEGREE = 111320
+EARTH_RADIUS_M = 6378137
+WEB_MERCATOR_SRS = 3857
+HDX_ENDPOINT = "https://data.humdata.org/api/3/action/package_search"
+KONTUR_FILE = re.compile(r"kontur_population_([A-Z]{2})_(\d{8})\.gpkg(\.gz)?$")
+GPKG_ENVELOPE_BYTES = {0: 0, 1: 32, 2: 48, 3: 48, 4: 64}
+GPKG_TABLES = ("gpkg_spatial_ref_sys", "gpkg_contents", "gpkg_geometry_columns")
 ADAPTERS: dict = {}
 NETWORK_HIGHWAYS = (
     "primary",
@@ -80,10 +91,47 @@ class ManifestEntry:
         return asdict(self)
 
 
+def project_user_agent(contact: str = PROJECT_CONTACT) -> str:
+    return f"bikeplan/{version('bikeplan')} (contact: {contact})"
+
+
+def with_retries(action):
+    for attempt in range(MAX_RETRIES + 1):
+        try:
+            return action()
+        except (urllib.error.URLError, OSError, TimeoutError) as error:
+            if isinstance(error, urllib.error.HTTPError):
+                error.close()
+            if attempt == MAX_RETRIES:
+                raise OverpassError(str(error)) from error
+            time.sleep(RETRY_BASE_SECONDS * 2**attempt)
+
+
+def read_url(url: str) -> bytes:
+    def attempt() -> bytes:
+        request = urllib.request.Request(url, headers={"User-Agent": project_user_agent()})
+        with urllib.request.urlopen(request, timeout=REQUEST_TIMEOUT_SECONDS) as response:
+            return response.read()
+
+    return with_retries(attempt)
+
+
+def download(url: str, output: Path) -> None:
+    def attempt() -> None:
+        request = urllib.request.Request(url, headers={"User-Agent": project_user_agent()})
+        with (
+            urllib.request.urlopen(request, timeout=REQUEST_TIMEOUT_SECONDS) as response,
+            output.open("wb") as file,
+        ):
+            shutil.copyfileobj(response, file)
+
+    with_retries(attempt)
+
+
 class OverpassClient:
     def __init__(self, endpoint: str = OVERPASS_ENDPOINT, contact: str = PROJECT_CONTACT):
         self.endpoint = endpoint
-        self.user_agent = f"bikeplan/{version('bikeplan')} (contact: {contact})"
+        self.user_agent = project_user_agent(contact)
 
     def fetch(
         self,
@@ -100,22 +148,15 @@ class OverpassClient:
             "Content-Type": "application/x-www-form-urlencoded",
             "User-Agent": self.user_agent,
         }
-        for attempt in range(MAX_RETRIES + 1):
+
+        def attempt() -> bytes:
             http_request = urllib.request.Request(
                 self.endpoint, data=body, headers=headers, method="POST"
             )
-            try:
-                with urllib.request.urlopen(
-                    http_request, timeout=REQUEST_TIMEOUT_SECONDS
-                ) as response:
-                    content = response.read()
-                break
-            except (urllib.error.URLError, OSError, TimeoutError) as error:
-                if isinstance(error, urllib.error.HTTPError):
-                    error.close()
-                if attempt == MAX_RETRIES:
-                    raise OverpassError(str(error)) from error
-                time.sleep(RETRY_BASE_SECONDS * 2**attempt)
+            with urllib.request.urlopen(http_request, timeout=REQUEST_TIMEOUT_SECONDS) as response:
+                return response.read()
+
+        content = with_retries(attempt)
 
         output_path = Path(output)
         output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -304,6 +345,206 @@ def finish_entry(entry: ManifestEntry, out: Path, content: bytes) -> ManifestEnt
         sha256=hashlib.sha256(content).hexdigest(),
         bytes=len(content),
     )
+
+
+def web_mercator(lon: float, lat: float) -> tuple[float, float]:
+    x = EARTH_RADIUS_M * math.radians(lon)
+    y = EARTH_RADIUS_M * math.log(math.tan(math.pi / 4 + math.radians(lat) / 2))
+    return x, y
+
+
+def gpkg_rings(blob: bytes) -> list[list[tuple[float, float]]]:
+    if blob[:2] != b"GP":
+        raise OverpassError("geometry is not a GeoPackage blob")
+    flags = blob[3]
+    if flags & 0x10:
+        return []
+    offset = 8 + GPKG_ENVELOPE_BYTES[(flags >> 1) & 7]
+    rings, _ = wkb_rings(blob, offset)
+    return rings
+
+
+def wkb_rings(blob: bytes, offset: int) -> tuple[list[list[tuple[float, float]]], int]:
+    order = "<" if blob[offset] == 1 else ">"
+    kind = struct.unpack_from(f"{order}I", blob, offset + 1)[0]
+    offset += 5
+    if kind == 6:
+        count = struct.unpack_from(f"{order}I", blob, offset)[0]
+        offset += 4
+        rings = []
+        for _ in range(count):
+            parts, offset = wkb_rings(blob, offset)
+            rings.extend(parts)
+        return rings, offset
+    if kind != 3:
+        raise OverpassError(f"geometry type {kind} is not a polygon")
+    count = struct.unpack_from(f"{order}I", blob, offset)[0]
+    offset += 4
+    rings = []
+    for _ in range(count):
+        points = struct.unpack_from(f"{order}I", blob, offset)[0]
+        offset += 4
+        values = struct.unpack_from(f"{order}{2 * points}d", blob, offset)
+        offset += 16 * points
+        rings.append(list(zip(values[::2], values[1::2], strict=True)))
+    return rings, offset
+
+
+def segments_cross(a, b, c, d) -> bool:
+    def side(p, q, r) -> float:
+        return (q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0])
+
+    def between(p, q, r) -> bool:
+        return min(p[0], q[0]) <= r[0] <= max(p[0], q[0]) and min(p[1], q[1]) <= r[1] <= max(
+            p[1], q[1]
+        )
+
+    d1, d2, d3, d4 = side(c, d, a), side(c, d, b), side(a, b, c), side(a, b, d)
+    if ((d1 > 0) != (d2 > 0) and d1 * d2 != 0) and ((d3 > 0) != (d4 > 0) and d3 * d4 != 0):
+        return True
+    return (
+        (d1 == 0 and between(c, d, a))
+        or (d2 == 0 and between(c, d, b))
+        or (d3 == 0 and between(a, b, c))
+        or (d4 == 0 and between(a, b, d))
+    )
+
+
+def ring_touches_box(ring: list[tuple[float, float]], box: tuple[float, float, float, float]):
+    min_x, min_y, max_x, max_y = box
+    xs, ys = [x for x, _ in ring], [y for _, y in ring]
+    if max(xs) < min_x or min(xs) > max_x or max(ys) < min_y or min(ys) > max_y:
+        return False
+    if any(min_x <= x <= max_x and min_y <= y <= max_y for x, y in ring):
+        return True
+    corners = [(min_x, min_y), (max_x, min_y), (max_x, max_y), (min_x, max_y)]
+    if any(point_in_ring(corner, ring) for corner in corners):
+        return True
+    sides = list(zip(corners, corners[1:] + corners[:1], strict=True))
+    return any(segments_cross(a, b, c, d) for a, b in pairwise(ring) for c, d in sides)
+
+
+def cut_geopackage(source: Path, box: tuple[float, float, float, float], output: Path) -> None:
+    south, west, north, east = box
+    area = (*web_mercator(west, south), *web_mercator(east, north))
+    reader = sqlite3.connect(f"file:{source}?mode=ro", uri=True)
+    writer = sqlite3.connect(output)
+    try:
+        layer = reader.execute(
+            "select c.table_name, g.column_name, g.srs_id from gpkg_contents c "
+            "join gpkg_geometry_columns g on g.table_name = c.table_name "
+            "where c.data_type = 'features'"
+        ).fetchone()
+        if layer is None:
+            raise OverpassError("GeoPackage has no feature table")
+        table, column, srs = layer
+        if srs != WEB_MERCATOR_SRS:
+            raise OverpassError(f"GeoPackage uses SRS {srs}, not {WEB_MERCATOR_SRS}")
+        names = [row[1] for row in reader.execute(f'pragma table_info("{table}")')]
+        if "population" not in names:
+            raise OverpassError(f"GeoPackage table {table} has no population column")
+        for name in (*GPKG_TABLES, table):
+            sql = reader.execute(
+                "select sql from sqlite_master where type = 'table' and name = ?", (name,)
+            ).fetchone()[0]
+            writer.execute(sql)
+        writer.executemany(
+            "insert into gpkg_spatial_ref_sys values (?, ?, ?, ?, ?, ?)",
+            reader.execute(
+                "select srs_name, srs_id, organization, organization_coordsys_id, definition, "
+                "description from gpkg_spatial_ref_sys where srs_id in (-1, 0, 4326, ?)",
+                (srs,),
+            ),
+        )
+        for name in GPKG_TABLES[1:]:
+            rows = reader.execute(f"select * from {name} where table_name = ?", (table,))
+            for row in rows:
+                marks = ", ".join("?" * len(row))
+                writer.execute(f"insert into {name} values ({marks})", row)
+        geometry = names.index(column)
+        marks = ", ".join("?" * len(names))
+        points = []
+        for row in reader.execute(f'select * from "{table}"'):
+            rings = gpkg_rings(row[geometry]) if row[geometry] else []
+            if rings and ring_touches_box(rings[0], area):
+                writer.execute(f'insert into "{table}" values ({marks})', row)
+                points.extend(rings[0])
+        if points:
+            writer.execute(
+                "update gpkg_contents set min_x = ?, min_y = ?, max_x = ?, max_y = ? "
+                "where table_name = ?",
+                (
+                    min(x for x, _ in points),
+                    min(y for _, y in points),
+                    max(x for x, _ in points),
+                    max(y for _, y in points),
+                    table,
+                ),
+            )
+        writer.execute("pragma application_id = 1196444487")
+        writer.execute("pragma user_version = 10200")
+        writer.commit()
+    finally:
+        reader.close()
+        writer.close()
+
+
+def kontur_population(
+    region: Region,
+    box: tuple[float, float, float, float],
+    out: str | Path,
+    hdx: str | None = None,
+) -> list[ManifestEntry]:
+    out_path = Path(out)
+    out_path.mkdir(parents=True, exist_ok=True)
+    country = region.country.upper()
+    query = urlencode(
+        {"fq": f"organization:kontur AND res_url:*kontur_population_{country}_*", "rows": 10}
+    )
+    search_url = f"{hdx or HDX_ENDPOINT}?{query}"
+    reply = json.loads(read_url(search_url))
+    candidates = [
+        (match.group(2), package["name"], resource["url"])
+        for package in reply["result"]["results"]
+        if package["name"].startswith("kontur-population-")
+        for resource in package["resources"]
+        if (match := KONTUR_FILE.search(urlsplit(resource["url"]).path))
+        and match.group(1) == country
+    ]
+    if not candidates:
+        raise OverpassError(f"no Kontur population GeoPackage on HDX for {country}")
+    _, dataset, url = max(candidates)
+    output = out_path / "population.gpkg"
+    with tempfile.TemporaryDirectory(dir=out_path) as scratch:
+        archive = Path(scratch) / "source.download"
+        download(url, archive)
+        source = Path(scratch) / "source.gpkg"
+        if url.endswith(".gz"):
+            with gzip.open(archive) as packed, source.open("wb") as unpacked:
+                shutil.copyfileobj(packed, unpacked)
+        else:
+            archive.rename(source)
+        cut = Path(scratch) / "population.gpkg"
+        cut_geopackage(source, box, cut)
+        content = cut.read_bytes()
+    output.write_bytes(content)
+    return [
+        ManifestEntry(
+            name=output.name,
+            path=output.name,
+            sha256=hashlib.sha256(content).hexdigest(),
+            bytes=len(content),
+            source="Kontur Population via the Humanitarian Data Exchange",
+            request=json.dumps({"search": search_url, "dataset": dataset}),
+            url=url,
+            licence="CC BY 4.0",
+            attribution="Kontur Population dataset, Kontur Inc.",
+            retrieved_at=timestamp(),
+        )
+    ]
+
+
+ADAPTERS["kontur_population"] = kontur_population
 
 
 def fetch_snapshot(region: Region, out: str | Path, endpoint: str = OVERPASS_ENDPOINT) -> dict:

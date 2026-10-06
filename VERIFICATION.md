@@ -119,3 +119,15 @@ uv run bikeplan snapshot fetch "$TMP/region.yaml" --out "$OUT"
 
 Expect: The command exits 0. The output folder holds `boundary.geojson`, `network.osm.gz`, `places.json` and `manifest.json`. The manifest lists each file with its sha256 and size.
 Artifact: `artifacts/P2.3/manifest.json`, `artifacts/P2.3/fetch.log`
+
+### P2.4
+
+```bash
+uv run pytest tests/test_kontur.py -q
+uv run bikeplan snapshot fetch regions/au-nsw-bayside.yaml --out "$OUT" --endpoint https://overpass.private.coffee/api/interpreter
+curl -s https://geodata-eu-central-1-kontur-public.s3.amazonaws.com/kontur_datasets/kontur_population_AU_20231101.gpkg.gz | gunzip > "$TMP/au.gpkg"
+python3 -I -c "import sqlite3,sys; cut=dict(sqlite3.connect(sys.argv[1]).execute('select h3,population from population')); src=sqlite3.connect(sys.argv[2]).execute('select h3,population from population'); print('hexagons', len(cut)); print('cut_population', sum(cut.values())); print('source_population_same_hexagons', sum(p for h,p in src if h in cut))" "$OUT/population.gpkg" "$TMP/au.gpkg"
+```
+
+Expect: All 9 tests pass. The fetch exits 0 and the manifest lists `population.gpkg` from `kontur_population_AU_20231101.gpkg.gz` under CC BY 4.0. The cut holds 282 hexagons with 873592 people, the same sum as those rows in the source file.
+Artifact: `artifacts/P2.4/manifest.json`, `artifacts/P2.4/fetch.log`, `artifacts/P2.4/population-check.txt`
