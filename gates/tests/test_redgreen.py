@@ -253,3 +253,30 @@ def test_one_again():
     out = capsys.readouterr()
     assert "FAKE: tests/test_core.py::test_one_again" in out.out
     assert "red: tests/test_newmod.py::test_three" in out.out
+
+
+def test_fr0_2_renamed_test_file_with_unchanged_tests_needs_no_proof(mini, capsys):
+    base = mini.head()
+    mini.git("mv", "tests/test_core.py", "tests/test_core_moved.py")
+    mini.commit("rename test file")
+    assert redgreen.main(["red", base]) == 0
+    assert "nothing to check" in capsys.readouterr().out
+
+
+def test_fr0_2_renamed_test_file_with_a_new_fake_is_rejected(mini, capsys):
+    base = mini.head()
+    mini.git("mv", "tests/test_core.py", "tests/test_core_moved.py")
+    mini.append(
+        "tests/test_core_moved.py",
+        """
+
+
+def test_one_again():
+    assert one() == 1
+""",
+    )
+    mini.commit("rename and add a fake")
+    assert redgreen.main(["red", base]) == 1
+    out = capsys.readouterr().out
+    assert "FAKE: tests/test_core_moved.py::test_one_again" in out
+    assert "::test_one " not in out
