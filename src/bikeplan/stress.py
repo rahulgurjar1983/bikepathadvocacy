@@ -1,6 +1,7 @@
 from bisect import bisect_left
 
-from bikeplan.network import first, parking_on_side
+from bikeplan.config import Profile
+from bikeplan.network import first, parking_on_side, road_class
 
 SPEED_TOPS_KMH = [37.82, 45.87, 53.91, 61.96, 70.01, 78.05]
 MINOR_CLASSES = {"residential", "living_street", "service", "unclassified"}
@@ -36,6 +37,7 @@ TABLE_3 = {
     "two": ([2, 3, 3, 3], [3, 3, 3, 3]),
     "other": ([3, 3, 3, 3], [3, 3, 3, 3]),
 }
+OFF_ROAD_FACILITIES = {"off_road", "protected"}
 WIDE_LANE_M = 1.83
 MIN_LANE_M = 1.22
 WIDE_REACH_M = 4.57
@@ -117,3 +119,26 @@ def painted_lane_lts(data: dict, parking_lane_m: float, class_parking: bool) -> 
     if reach is not None and reach < MIN_REACH_M:
         return mixed
     return min(table_3_lts(data, lanes, reach), mixed)
+
+
+def edge_lts(data: dict, profile: Profile) -> int:
+    if data["bike_facility"] in OFF_ROAD_FACILITIES:
+        return 1
+    if data["bike_facility"] == "painted_lane":
+        parking = road_class(first(data.get("highway")), profile).parking.value
+        return painted_lane_lts(data, profile.widths_m.parking_lane.value, parking)
+    return mixed_traffic_lts(data)
+
+
+def is_aaa(data: dict, lts: int, profile: Profile) -> bool:
+    if not data["bike_ok"] or lts != 1:
+        return False
+    facility = data["bike_facility"]
+    if facility in OFF_ROAD_FACILITIES:
+        return True
+    if facility == "painted_lane":
+        return bool(profile.aaa.painted_lanes_count.value)
+    return any(
+        data["speed_kmh"] <= rule.max_speed_kmh.value and data["adt"] <= rule.max_adt.value
+        for rule in profile.aaa.mixed_traffic
+    )
