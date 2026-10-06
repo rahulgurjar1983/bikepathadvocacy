@@ -324,3 +324,71 @@ def test_fr0_22_commits_fetched_from_origin_are_not_progress(loop_repo, tmp_path
     row = (repo.path / ".ralph" / "usage.csv").read_text().splitlines()[-1].split(",")
     assert row[5] == "no"
     assert (repo.path / ".ralph" / "escalate").exists()
+
+
+FAKE_CODEX = """#!/usr/bin/env bash
+printf '%s\\n' "$@" > "$FAKE_STATE/codex.args"
+cat > /dev/null
+printf '%s\\n' "$FAKE_CODEX_OUT"
+exit "${FAKE_CODEX_EXIT:-0}"
+"""
+
+
+def codex_env(loop_repo, tmp_path, out: list[dict], exit_code: int = 0):
+    repo, env, state = loop_repo
+    codex = tmp_path / "codex"
+    codex.write_text(FAKE_CODEX)
+    codex.chmod(0o755)
+    env.update(
+        {
+            "FAKE_LIMIT_ON": "1",
+            "RALPH_FALLBACK_BIN": str(codex),
+            "FAKE_CODEX_OUT": "\n".join(json.dumps(line) for line in out),
+            "FAKE_CODEX_EXIT": str(exit_code),
+        }
+    )
+    return repo, env, state
+
+
+def first_row(repo) -> list[str]:
+    return (repo.path / ".ralph" / "usage.csv").read_text().splitlines()[1].split(",")
+
+
+def test_fr0_13_limit_words_in_fallback_tool_output_are_not_a_limit(loop_repo, tmp_path):
+    echoed = {
+        "type": "item.completed",
+        "item": {
+            "type": "command_execution",
+            "aggregated_output": "Both ended at the usage limit.",
+        },
+    }
+    failed = {"type": "turn.failed", "error": {"message": "stream disconnected"}}
+    repo, env, _state = codex_env(loop_repo, tmp_path, [echoed, failed], exit_code=1)
+    result = run_loop(repo, env, "1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert first_row(repo)[3] == "fallback"
+    assert "usage limit hit" not in (repo.path / "ralph.log").read_text()
+
+
+def test_fr0_13_fallback_at_capacity_counts_as_a_limit(loop_repo, tmp_path):
+    failed = {"type": "turn.failed", "error": {"message": "Selected model is at capacity."}}
+    repo, env, _state = codex_env(loop_repo, tmp_path, [failed], exit_code=1)
+    result = run_loop(repo, env, "1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "usage limit hit" in (repo.path / "ralph.log").read_text()
+    assert first_row(repo)[3] != "fallback"
+
+
+def test_fr0_21_fallback_turn_logs_its_tokens(loop_repo, tmp_path):
+    usage = {
+        "input_tokens": 14046,
+        "cached_input_tokens": 11008,
+        "cache_write_input_tokens": 7,
+        "output_tokens": 5,
+    }
+    done = {"type": "turn.completed", "usage": usage}
+    repo, env, state = codex_env(loop_repo, tmp_path, [done])
+    result = run_loop(repo, env, "1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert first_row(repo)[3:] == ["fallback", "0", "no", "", "3038", "7", "11008", "5", "1"]
+    assert "--json" in (state / "codex.args").read_text().splitlines()
