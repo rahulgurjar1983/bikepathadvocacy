@@ -175,7 +175,7 @@ def test_fr2_3_two_outer_rings_become_a_multipolygon():
     from bikeplan.snapshot import boundary_geojson
 
     far = ("outer", [(10, 10), (12, 10), (12, 12), (10, 12), (10, 10)])
-    geometry = boundary_geojson(relation_response(SQUARE_HALVES + [far]))["geometry"]
+    geometry = boundary_geojson(relation_response([*SQUARE_HALVES, far]))["geometry"]
 
     assert geometry["type"] == "MultiPolygon"
     assert len(geometry["coordinates"]) == 2
@@ -185,7 +185,7 @@ def test_fr2_3_inner_ring_becomes_a_hole_of_its_outer_ring():
     from bikeplan.snapshot import boundary_geojson
 
     hole = ("inner", [(1, 1), (2, 1), (2, 2), (1, 2), (1, 1)])
-    geometry = boundary_geojson(relation_response(SQUARE_HALVES + [hole]))["geometry"]
+    geometry = boundary_geojson(relation_response([*SQUARE_HALVES, hole]))["geometry"]
 
     assert geometry["type"] == "Polygon"
     assert len(geometry["coordinates"]) == 2
@@ -293,8 +293,7 @@ def test_fr7_10_places_query_holds_every_place_tag_shop_and_out_center_tags():
     assert '["shop"]' in query
     assert "out center tags" in query
     assert "-34.0,151.0,-33.9,151.1" in query
-    for kind in ("node", "way", "relation"):
-        assert kind in query
+    assert query.count("nwr[") == 12
 
 
 def test_fr7_10_places_query_keeps_the_date_line_when_fetched(overpass_replay_server, tmp_path):
