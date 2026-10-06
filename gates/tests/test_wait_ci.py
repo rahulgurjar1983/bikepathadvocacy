@@ -170,3 +170,23 @@ def test_fr0_23_missing_required_check_exits_five(tmp_path):
         "wait-ci: PR 7 never reported the required checks: smoke; "
         "run git merge origin/main and push"
     ]
+
+
+def test_fr0_23_cancelled_check_waits_for_the_run_that_replaced_it(tmp_path):
+    t0, t1 = "2026-10-06T15:46:45Z", "2026-10-06T15:46:50Z"
+    cancelled = [
+        check("gates", "COMPLETED", "CANCELLED", t0),
+        check("test", "IN_PROGRESS", None, t0),
+    ]
+    green = [
+        check("gates", "COMPLETED", "CANCELLED", t0),
+        check("gates", "COMPLETED", "SUCCESS", t1),
+        check("test", "COMPLETED", "SUCCESS", t1),
+    ]
+    rollups = [
+        json.dumps({"state": "OPEN", "statusCheckRollup": cancelled}),
+        json.dumps({"state": "MERGED", "statusCheckRollup": green}),
+    ]
+    result = wait_ci(tmp_path, rollups, fake=FAKE_GH_JQ)
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert result.stdout.splitlines() == ["wait-ci: PR 7 merged"]
