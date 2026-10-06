@@ -176,3 +176,13 @@ uv run python -I -c 'from collections import Counter; from bikeplan.config impor
 
 Expect: The tests pass. The run prints `speed_source {'default': 157709, 'tag': 31677}`, `lanes_source {'default': 168495, 'tag': 20891}` and `adt_source {'default': 189386}`.
 Artifact: `artifacts/P3.2/traffic.txt`
+
+### P3.3
+
+```bash
+uv run pytest tests/test_network_sides.py -q
+uv run python -I -c 'from collections import Counter; from bikeplan.config import load_profile, load_region; from bikeplan.network import build; r = load_region("regions/au-nsw-bayside.yaml"); g = build("data/cache/au-nsw-bayside/2026-10-01", r, load_profile(r.profile)); e = [d for _, _, d in g.edges(data=True)]; [print(k, dict(sorted(Counter(d[k] for d in e).items(), key=str))) for k in ("bike_facility", "parking", "width_drop_reason")]; print("width_tag_m set", sum(d["width_tag_m"] is not None for d in e))' | tee artifacts/P3.3/tags.txt
+```
+
+Expect: The tests pass. The run prints `bike_facility {'none': 177389, 'off_road': 8230, 'painted_lane': 1066, 'protected': 292, 'shared': 2409}`, `parking {'no': 341, 'unknown': 187540, 'yes': 1505}`, `width_drop_reason {'out_of_range': 673, 'unreadable': 14, None: 188699}` and `width_tag_m set 2736`.
+Artifact: `artifacts/P3.3/tags.txt`
