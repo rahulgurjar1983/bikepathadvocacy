@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osm version="0.6" generator="bikeplan-test">
+<node id="5011" lat="-33.9100" lon="151.1200"/>
+<node id="5012" lat="-33.9100" lon="151.1211"/>
+<node id="5021" lat="-33.9106" lon="151.1200"/>
+<node id="5022" lat="-33.9106" lon="151.1211"/>
+<node id="5031" lat="-33.9112" lon="151.1200"/>
+<node id="5032" lat="-33.9112" lon="151.1211"/>
+<node id="5041" lat="-33.9118" lon="151.1200"/>
+<node id="5042" lat="-33.9118" lon="151.1211"/>
+<node id="5051" lat="-33.9124" lon="151.1200"/>
+<node id="5052" lat="-33.9124" lon="151.1211"/>
+<node id="5061" lat="-33.9130" lon="151.1200"/>
+<node id="5062" lat="-33.9130" lon="151.1211"/>
+<node id="5071" lat="-33.9136" lon="151.1200"/>
+<node id="5072" lat="-33.9136" lon="151.1211"/>
+<node id="5081" lat="-33.9142" lon="151.1200"/>
+<node id="5082" lat="-33.9142" lon="151.1211"/>
+<node id="5091" lat="-33.9148" lon="151.1200"/>
+<node id="5092" lat="-33.9148" lon="151.1211"/>
+<node id="5101" lat="-33.9154" lon="151.1200"/>
+<node id="5102" lat="-33.9154" lon="151.1211"/>
+<node id="5111" lat="-33.9160" lon="151.1200"/>
+<node id="5112" lat="-33.9160" lon="151.1211"/>
+<node id="5121" lat="-33.9166" lon="151.1200"/>
+<node id="5122" lat="-33.9166" lon="151.1211"/>
+<node id="5131" lat="-33.9172" lon="151.1200"/>
+<node id="5132" lat="-33.9172" lon="151.1211"/>
+<node id="5141" lat="-33.9178" lon="151.1200"/>
+<node id="5142" lat="-33.9178" lon="151.1211"/>
+<node id="5211" lat="-33.9184" lon="151.1200"/>
+<node id="5212" lat="-33.9184" lon="151.1211"/>
+<node id="5221" lat="-33.9190" lon="151.1200"/>
+<node id="5222" lat="-33.9190" lon="151.1211"/>
+<node id="5231" lat="-33.9196" lon="151.1200"/>
+<node id="5232" lat="-33.9196" lon="151.1211"/>
+<node id="5241" lat="-33.9202" lon="151.1200"/>
+<node id="5242" lat="-33.9202" lon="151.1211"/>
+<node id="5251" lat="-33.9208" lon="151.1200"/>
+<node id="5252" lat="-33.9208" lon="151.1211"/>
+<node id="5261" lat="-33.9214" lon="151.1200"/>
+<node id="5262" lat="-33.9214" lon="151.1211"/>
+<node id="5271" lat="-33.9220" lon="151.1200"/>
+<node id="5272" lat="-33.9220" lon="151.1211"/>
+<node id="5281" lat="-33.9226" lon="151.1200"/>
+<node id="5282" lat="-33.9226" lon="151.1211"/>
+<node id="5411" lat="-33.9232" lon="151.1200"/>
+<node id="5412" lat="-33.9232" lon="151.1211"/>
+<node id="5421" lat="-33.9238" lon="151.1200"/>
+<node id="5422" lat="-33.9238" lon="151.1211"/>
+<node id="5431" lat="-33.9244" lon="151.1200"/>
+<node id="5432" lat="-33.9244" lon="151.1211"/>
+<node id="5441" lat="-33.9250" lon="151.1200"/>
+<node id="5442" lat="-33.9250" lon="151.1211"/>
+<node id="5451" lat="-33.9256" lon="151.1200"/>
+<node id="5452" lat="-33.9256" lon="151.1211"/>
+<node id="5461" lat="-33.9262" lon="151.1200"/>
+<node id="5462" lat="-33.9262" lon="151.1211"/>
+<node id="5471" lat="-33.9268" lon="151.1200"/>
+<node id="5472" lat="-33.9268" lon="151.1211"/>
+<node id="5481" lat="-33.9274" lon="151.1200"/>
+<node id="5482" lat="-33.9274" lon="151.1211"/>
+<node id="5491" lat="-33.9280" lon="151.1200"/>
+<node id="5492" lat="-33.9280" lon="151.1211"/>
+<way id="501"><nd ref="5011"/><nd ref="5012"/><tag k="highway" v="cycleway"/></way>
+<way id="502"><nd ref="5021"/><nd ref="5022"/><tag k="highway" v="path"/><tag k="bicycle" v="designated"/></way>
+<way id="503"><nd ref="5031"/><nd ref="5032"/><tag k="highway" v="footway"/><tag k="bicycle" v="designated"/></way>
+<way id="504"><nd ref="5041"/><nd ref="5042"/><tag k="highway" v="residential"/><tag k="cycleway:both" v="track"/></way>
+<way id="505"><nd ref="5051"/><nd ref="5052"/><tag k="highway" v="residential"/><tag k="cycleway:left" v="separate"/></way>
+<way id="506"><nd ref="5061"/><nd ref="5062"/><tag k="highway" v="residential"/><tag k="cycleway:both" v="lane"/></way>
+<way id="507"><nd ref="5071"/><nd ref="5072"/><tag k="highway" v="residential"/><tag k="cycleway:left" v="lane"/><tag k="cycleway:left:separation" v="kerb"/></way>
+<way id="508"><nd ref="5081"/><nd ref="5082"/><tag k="highway" v="residential"/><tag k="cycleway:both" v="shared_lane"/></way>
+<way id="509"><nd ref="5091"/><nd ref="5092"/><tag k="highway" v="residential"/><tag k="cycleway:both" v="share_busway"/></way>
+<way id="510"><nd ref="5101"/><nd ref="5102"/><tag k="highway" v="residential"/></way>
+<way id="511"><nd ref="5111"/><nd ref="5112"/><tag k="highway" v="residential"/><tag k="cycleway" v="lane"/></way>
+<way id="512"><nd ref="5121"/><nd ref="5122"/><tag k="highway" v="residential"/><tag k="cycleway:left" v="lane"/><tag k="cycleway:left:width" v="1.5"/></way>
+<way id="513"><nd ref="5131"/><nd ref="5132"/><tag k="highway" v="residential"/><tag k="cycleway:both" v="lane"/><tag k="cycleway:both:separation" v="flex_post"/></way>
+<way id="514"><nd ref="5141"/><nd ref="5142"/><tag k="highway" v="residential"/><tag k="cycleway:both" v="lane"/><tag k="cycleway:both:separation" v="no"/></way>
+<way id="521"><nd ref="5211"/><nd ref="5212"/><tag k="highway" v="residential"/><tag k="parking:both" v="lane"/></way>
+<way id="522"><nd ref="5221"/><nd ref="5222"/><tag k="highway" v="residential"/><tag k="parking:left" v="no"/><tag k="parking:right" v="street_side"/></way>
+<way id="523"><nd ref="5231"/><nd ref="5232"/><tag k="highway" v="residential"/><tag k="parking:lane:both" v="parallel"/></way>
+<way id="524"><nd ref="5241"/><nd ref="5242"/><tag k="highway" v="residential"/><tag k="parking:lane:left" v="no_parking"/><tag k="parking:lane:right" v="diagonal"/></way>
+<way id="525"><nd ref="5251"/><nd ref="5252"/><tag k="highway" v="residential"/><tag k="parking:both" v="separate"/></way>
+<way id="526"><nd ref="5261"/><nd ref="5262"/><tag k="highway" v="residential"/><tag k="parking:both" v="no_stopping"/></way>
+<way id="527"><nd ref="5271"/><nd ref="5272"/><tag k="highway" v="residential"/></way>
+<way id="528"><nd ref="5281"/><nd ref="5282"/><tag k="highway" v="residential"/><tag k="parking:both" v="no"/><tag k="parking:lane:both" v="parallel"/></way>
+<way id="541"><nd ref="5411"/><nd ref="5412"/><tag k="highway" v="residential"/><tag k="width" v="7"/></way>
+<way id="542"><nd ref="5421"/><nd ref="5422"/><tag k="highway" v="residential"/><tag k="width" v="7.5 m"/></way>
+<way id="543"><nd ref="5431"/><nd ref="5432"/><tag k="highway" v="residential"/><tag k="width" v="23'"/></way>
+<way id="544"><nd ref="5441"/><nd ref="5442"/><tag k="highway" v="residential"/><tag k="width" v="23 ft"/></way>
+<way id="545"><nd ref="5451"/><nd ref="5452"/><tag k="highway" v="residential"/><tag k="width" v="50"/></way>
+<way id="546"><nd ref="5461"/><nd ref="5462"/><tag k="highway" v="residential"/><tag k="width" v="1"/></way>
+<way id="547"><nd ref="5471"/><nd ref="5472"/><tag k="highway" v="residential"/><tag k="width:carriageway" v="6"/><tag k="width" v="12"/></way>
+<way id="548"><nd ref="5481"/><nd ref="5482"/><tag k="highway" v="residential"/><tag k="width" v="abc"/></way>
+<way id="549"><nd ref="5491"/><nd ref="5492"/><tag k="highway" v="residential"/></way>
+</osm>
