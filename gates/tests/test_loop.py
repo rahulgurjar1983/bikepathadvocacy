@@ -392,3 +392,14 @@ def test_fr0_21_fallback_turn_logs_its_tokens(loop_repo, tmp_path):
     assert result.returncode == 0, result.stdout + result.stderr
     assert first_row(repo)[3:] == ["fallback", "0", "no", "", "3038", "7", "11008", "5", "1"]
     assert "--json" in (state / "codex.args").read_text().splitlines()
+
+
+def test_fr0_22_a_new_row_after_a_turn_with_no_commit_keeps_the_small_model(loop_repo):
+    repo, env, state = loop_repo
+    env["FAKE_RUN"] = (
+        "sed -i 's/- \\[ \\] \\*\\*P0.2\\*\\*/- [x] **P0.2**/' PROGRESS.md"
+        " && printf -- '- [ ] **P0.3** Later thing (FR-11.3)\\n' >> PROGRESS.md"
+    )
+    run_loop(repo, env, "2")
+    assert "P0.3" in (state / "agent.args.2").read_text()
+    assert flag_value(args_of(state, 2), "--model") == "sonnet"
