@@ -199,7 +199,7 @@ main() {
     note="You are one turn of the Ralph loop. Work on this row only: ${row}. Follow PROMPT.md."
     row_id="${row%% *}"
     model="$base_model"
-    if [ -f .ralph/escalate ]; then
+    if [ "$(cat .ralph/escalate 2>/dev/null)" = "$row_id" ]; then
       model="$escalate_model"
     fi
     before="$(commit_count)"
@@ -250,7 +250,7 @@ main() {
       progress=yes
       rm -f .ralph/escalate
     else
-      touch .ralph/escalate
+      printf '%s\n' "$row_id" >.ralph/escalate
     fi
     record_turn "$i" "$row_id" "$model" "$agent_status" "$progress" "$turn_log"
     sleep "$pause"
