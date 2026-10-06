@@ -6,12 +6,13 @@ from shapely import Point, unary_union
 from shapely.geometry import LineString
 
 from bikeplan.config import Profile
-from bikeplan.network import bike_facility, parking_on_side, road_class
+from bikeplan.network import bike_facility, bike_segments, parking_on_side, road_class
 
 LANE_MARGIN_M = 0.3
 PAINTED_LANE_M = 1.5
 LANE_RANGE_M = (1.0, 1.5)
 TAG_RANGE_M = 0.5
+ADAPTER_RANGE_M = 0.5
 WIDTH_LIMITS_M = (3.0, 40.0)
 SIDES = ("left", "right")
 RESERVE_STEP_M = 20.0
@@ -119,9 +120,24 @@ def range_reason(estimate: Estimate) -> str | None:
     return f"{estimate.width_m:g} m is outside {low:g} m to {high:g} m"
 
 
-def estimates(data: dict, profile: Profile) -> tuple[list[Estimate], list[tuple[str, str]]]:
+def adapter_estimate(data: dict) -> Estimate | None:
+    width = data.get("width_measured_m")
+    if width is None:
+        return None
+    return Estimate(width, width - ADAPTER_RANGE_M, width + ADAPTER_RANGE_M, "adapter", "high")
+
+
+def estimates(
+    data: dict, profile: Profile, found_reserve: Reserve | None = None
+) -> tuple[list[Estimate], list[tuple[str, str]]]:
     kept, dropped = [], []
-    for found in (tag_estimate(data), lane_estimate(data, profile)):
+    from_reserve = reserve_estimate(found_reserve, profile) if found_reserve else None
+    for found in (
+        adapter_estimate(data),
+        tag_estimate(data),
+        from_reserve,
+        lane_estimate(data, profile),
+    ):
         if found is None:
             continue
         reason = range_reason(found)
@@ -130,3 +146,37 @@ def estimates(data: dict, profile: Profile) -> tuple[list[Estimate], list[tuple[
         else:
             kept.append(found)
     return kept, dropped
+
+
+def fuse(
+    data: dict, profile: Profile, reserve_m: float | None = None, spread_m: float = 0.0
+) -> dict:
+    found_reserve = None if reserve_m is None else Reserve(reserve_m, spread_m, 0)
+    kept, dropped = estimates(data, profile, found_reserve)
+    best = kept[0] if kept else None
+    return {
+        "width_m": best.width_m if best else None,
+        "width_low_m": best.low_m if best else None,
+        "width_high_m": best.high_m if best else None,
+        "width_source": best.source if best else None,
+        "width_confidence": best.confidence if best else None,
+        "reserve_m": reserve_m,
+        "estimates": kept,
+        "dropped": dropped,
+    }
+
+
+def check_links(lat: float, lon: float) -> dict:
+    return {
+        "street_view": f"https://www.google.com/maps/@?api=1&map_action=pano&viewpoint={lat},{lon}",
+        "mapillary": f"https://www.mapillary.com/app/?lat={lat}&lng={lon}&z=18",
+    }
+
+
+def width_summary(graph, profile: Profile) -> dict:
+    km: dict[tuple[str, str], float] = {}
+    for segment in bike_segments(graph).values():
+        found = fuse(segment["edges"][0][1], profile)
+        key = (found["width_source"] or "none", found["width_confidence"] or "none")
+        km[key] = km.get(key, 0.0) + segment["inside_m"] / 1000
+    return km

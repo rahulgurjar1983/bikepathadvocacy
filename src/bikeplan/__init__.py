@@ -14,6 +14,7 @@ from bikeplan.snapshot import (
     verify_snapshot,
 )
 from bikeplan.stress import write_stress
+from bikeplan.width import width_summary
 
 LEAVES = {
     "access": "Score access to destinations",
@@ -67,7 +68,7 @@ def build_parser() -> argparse.ArgumentParser:
             )
             if (name, sub) == ("config", "show"):
                 leaf.add_argument("region", help="Region file")
-            if (name, sub) == ("network", "summary"):
+            if (name, sub) in {("network", "summary"), ("width", "summary")}:
                 leaf.add_argument("region", help="Region file")
                 leaf.add_argument("--snapshot", required=True, help="Snapshot folder")
             if (name, sub) == ("snapshot", "fetch"):
@@ -126,6 +127,19 @@ def network_summary(path: str, snapshot: str) -> int:
     print(f"bike_km {figures['bike_km']:.3f}")
     for key in ("speed", "lanes", "parking"):
         print(f"{key}_tag_share {figures[f'{key}_tag_share']:.3f}")
+    return 0
+
+
+def width_summary_command(path: str, snapshot: str) -> int:
+    try:
+        region = load_region(path)
+        profile = load_profile(region.profile)
+        km = width_summary(build(snapshot, region, profile), profile)
+    except (ConfigError, OSError) as error:
+        print(error, file=sys.stderr)
+        return 1
+    for (source, confidence), value in sorted(km.items()):
+        print(f"{source} {confidence} {value:.3f}")
     return 0
 
 
@@ -194,6 +208,8 @@ def main(argv: list[str] | None = None) -> int:
         return stress(args.region, args.snapshot, args.out)
     if (args.command, getattr(args, "subcommand", None)) == ("config", "show"):
         return config_show(args.region)
+    if (args.command, getattr(args, "subcommand", None)) == ("width", "summary"):
+        return width_summary_command(args.region, args.snapshot)
     if (args.command, getattr(args, "subcommand", None)) == ("network", "summary"):
         return network_summary(args.region, args.snapshot)
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "fetch"):
