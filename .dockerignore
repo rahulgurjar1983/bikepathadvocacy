@@ -1,0 +1,8 @@
+.git
+.venv
+.tools
+.ralph
+.ruff_cache
+artifacts
+out
+__pycache__
