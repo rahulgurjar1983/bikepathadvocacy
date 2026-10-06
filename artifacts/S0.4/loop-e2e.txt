@@ -1,0 +1,10 @@
+$ gh pr view 5 --json number,state,mergeCommit,commits -q ...
+PR 5 MERGED merge 6d6d3e6
+7b4e7f2 test(P0.1): version, help and subcommand frame (red)
+f38d827 feat(P0.1): bikeplan version, help and subcommand frame
+dac48b6 docs(P0.1): verification for the CLI frame
+$ gh run list --commit <merge> --json name,conclusion
+CI push success
+$ head -n 2 .ralph/usage.csv
+utc,turn,row,model,exit,progress,cost_usd,input,cache_write,cache_read,output,api_calls
+2026-10-06T11:07:15Z,1,P0.1,sonnet,0,yes,0.1804,22,24868,209497,3902,11

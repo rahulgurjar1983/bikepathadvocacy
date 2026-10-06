@@ -24,7 +24,7 @@ loop.sh --(gates.ledger pick: top open row)--> claude -p PROMPT.md --> loop/<row
 ralph.log, .ralph/iter-*.log               scripts/gate.sh (same gates as CI)
                                                                 |
                                                                 v
-                                     PR -> CI jobs `gates` + `test` -> auto-merge (merge commit)
+                                     PR -> CI jobs `gates` + `test` + `smoke` -> auto-merge (merge commit)
 ```
 
 ## 4. Functional requirements
@@ -33,7 +33,7 @@ ralph.log, .ralph/iter-*.log               scripts/gate.sh (same gates as CI)
 
 | ID | Requirement | Priority |
 |----|-------------|----------|
-| FR-0.1 | CI runs on every ready PR to `main`, on every push to `main`, nightly, and on demand. Draft PRs skip CI. The jobs `gates` and `test` are required checks on `main`. PRs merge with a merge commit so each test commit and code commit stays in history. | MUST |
+| FR-0.1 | CI runs on every ready PR to `main`, on every push to `main`, nightly, and on demand. Draft PRs skip CI. The jobs `gates`, `test` and `smoke` are required checks on `main`. PRs merge with a merge commit so each test commit and code commit stays in history. | MUST |
 | FR-0.2 | Red-green gate. `mixed BASE`: no commit in `BASE..HEAD` (merges left out) changes both a test path (`tests/`, `gates/tests/`) and a code path (`src/`, `gates/` outside its tests, `scripts/`). `red BASE`: build the `BASE` tree, lay the HEAD test folders and `pyproject.toml` and `uv.lock` over it, and run each touched test item. A touched item is a test item that is new or whose function body changed. Each one must fail or error. A pass or a skip is reported as `FAKE` and the gate fails. The base code must shadow any installed copy of the package. It prints one count line; `--verbose` also lists each red item. If the base run cannot load a `conftest.py` because it needs the new code, every touched item counts as red; any other failure to start pytest stops the gate. | MUST |
 | FR-0.3 | Test retention gate. A branch may not drop a test function that `BASE` holds, unless a commit in the range carries a `Retires: <row>` trailer. Renamed files are followed. | MUST |
 | FR-0.4 | No-comment gate. Python files under `src/`, `tests/`, `gates/` and `scripts/` hold no comment tokens, except a shebang on line 1 and `noqa`, `type:` or `pragma:` markers. Shell files (`loop.sh`, `scripts/*.sh`, `.githooks/*`) hold no full-line comments except the shebang. A `--staged` mode reads the staged copy. | MUST |
@@ -112,7 +112,7 @@ scripts/gate.sh 2>&1 | tee "$LOG"
 | Spec ID | Evidence | Check |
 |---------|----------|-------|
 | FR-0.2 to FR-0.19 | The gate tests pass in the `test` job | `uv run pytest gates/tests -q` |
-| FR-0.1 | Branch protection lists the two required checks | `gh api repos/rahulgurjar1983/bikepathadvocacy/branches/main/protection --jq .required_status_checks.contexts` |
+| FR-0.1 | Branch protection lists the three required checks | `gh api repos/rahulgurjar1983/bikepathadvocacy/branches/main/protection --jq .required_status_checks.contexts` |
 | FR-0.11 | Coverage report shows at least 80% | `grep -E '^TOTAL' "$LOG"` |
 
 ## 8. Resolved questions
