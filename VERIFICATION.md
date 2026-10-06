@@ -5,12 +5,12 @@ Each finished row has a section here. Run the command from the repo root after `
 ### S0.1
 
 ```bash
-scripts/install-gitleaks.sh
-uv run pytest gates/tests -q -k "not test_loop and not test_hooks and not test_notify"
+git fetch origin
+scripts/gate.sh
 ```
 
-Expect: every gate test passes, and the run ends with `passed` and no `failed`.
-Artifact: `artifacts/S0.1/gate-tests.txt`
+Expect: each gate prints its OK line, the red-green check lists every new gate test as red on the base tree, and the run ends with `== gate: all green (branch)`.
+Artifact: `artifacts/S0.1/gate-run.txt`
 
 ### S0.2
 

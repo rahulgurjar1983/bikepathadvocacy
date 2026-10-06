@@ -1,0 +1,214 @@
+== gate: scripts/install-gitleaks.sh
+gitleaks 8.30.1 ready at /home/oem/claude/bikepathadvocacy/.tools/bin/gitleaks
+== gate: uv run --frozen ruff check .
+All checks passed!
+== gate: uv run --frozen ruff format --check .
+39 files already formatted
+== gate: uv run --frozen python -m gates.nocomments
+nocomments: ok
+== gate: uv run --frozen python -m gates.srcgrep
+srcgrep: ok
+== gate: uv run --frozen python -m gates.generic
+generic: ok
+== gate: uv run --frozen python -m gates.ledger check
+ledger: 3 rows ok
+== gate: uv run --frozen python -m gates.speccov
+speccov: ok (16 spec IDs have tests)
+== gate: uv run --frozen python -m gates.verifydoc
+verifydoc: ok
+== gate: uv run --frozen python -m gates.readability --changed f5bdbb8682698228061b18385bfbcde2dea60d2e
+skip AGENTS.md  [19 words]
+ok   CLAUDE.md  [FK=3.0 FOG=3.8 DC=9 TS=3.0]
+ok   GLOSSARY.md  [FK=3.3 FOG=5.5 DC=7 TS=3.0]
+ok   PROMPT.md  [FK=1.8 FOG=4.1 DC=7 TS=3.0]
+ok   README.md  [FK=4.0 FOG=6.7 DC=7 TS=6.0]
+ok   SPECIFICATION.md  [FK=3.7 FOG=6.0 DC=7 TS=5.0]
+ok   VERIFICATION.md  [FK=4.4 FOG=5.7 DC=7 TS=6.0]
+ok   specs/00-scaffold.md  [FK=4.8 FOG=7.6 DC=9 TS=7.0]
+skip specs/REGISTRY.md  [26 words]
+readability: 0 failure(s); every page must read at grade 11 or lower
+== gate: uv run --frozen python -m gates.inputs --base f5bdbb8682698228061b18385bfbcde2dea60d2e
+inputs: input/scaffold is an input branch; inputs may change
+== gate: uv run --frozen python -m gates.redgreen mixed f5bdbb8682698228061b18385bfbcde2dea60d2e
+redgreen: no commit mixes tests and code
+== gate: uv run --frozen python -m gates.retention --base f5bdbb8682698228061b18385bfbcde2dea60d2e
+retention: ok (no test the base holds was dropped)
+== gate: scripts/secretscan.sh f5bdbb8682698228061b18385bfbcde2dea60d2e
+12:15PM INF 5 commits scanned.
+12:15PM INF scanned ~164119 bytes (164.12 KB) in 267ms
+12:15PM INF no leaks found
+== gate: uv run --frozen python -m gates.redgreen red f5bdbb8682698228061b18385bfbcde2dea60d2e
+red: gates/tests/test_generic.py::test_fr0_16_missing_denylist_fails_hard fails without the code (good)
+red: gates/tests/test_generic.py::test_fr0_17_adapters_may_name_regions fails without the code (good)
+red: gates/tests/test_generic.py::test_fr0_17_multi_word_names_are_caught fails without the code (good)
+red: gates/tests/test_generic.py::test_fr0_17_region_name_in_core_code_fails fails without the code (good)
+red: gates/tests/test_generic.py::test_fr0_17_words_match_whole_words_only fails without the code (good)
+red: gates/tests/test_hooks.py::test_fr0_15_install_hooks_points_git_at_the_hook_folder fails without the code (good)
+red: gates/tests/test_hooks.py::test_fr0_15_pre_commit_passes_clean_code fails without the code (good)
+red: gates/tests/test_hooks.py::test_fr0_15_pre_commit_rejects_a_staged_comment fails without the code (good)
+red: gates/tests/test_hooks.py::test_fr0_15_pre_commit_rejects_unformatted_code fails without the code (good)
+red: gates/tests/test_hooks.py::test_fr0_15_pre_push_runs_the_gate_script fails without the code (good)
+red: gates/tests/test_inputs.py::test_fr0_10_github_head_ref_wins fails without the code (good)
+red: gates/tests/test_inputs.py::test_fr0_10_input_branch_may_touch_inputs fails without the code (good)
+red: gates/tests/test_inputs.py::test_fr0_10_loop_branch_cannot_touch_an_input[.githooks/pre-push] fails without the code (good)
+red: gates/tests/test_inputs.py::test_fr0_10_loop_branch_cannot_touch_an_input[.github/workflows/ci.yml] fails without the code (good)
+red: gates/tests/test_inputs.py::test_fr0_10_loop_branch_cannot_touch_an_input[.readability-allow] fails without the code (good)
+red: gates/tests/test_inputs.py::test_fr0_10_loop_branch_cannot_touch_an_input[CLAUDE.md] fails without the code (good)
+red: gates/tests/test_inputs.py::test_fr0_10_loop_branch_cannot_touch_an_input[PROMPT.md] fails without the code (good)
+red: gates/tests/test_inputs.py::test_fr0_10_loop_branch_cannot_touch_an_input[SPECIFICATION.md] fails without the code (good)
+red: gates/tests/test_inputs.py::test_fr0_10_loop_branch_cannot_touch_an_input[deploy/systemd/bikepath-loop.service] fails without the code (good)
+red: gates/tests/test_inputs.py::test_fr0_10_loop_branch_cannot_touch_an_input[gates/redgreen.py] fails without the code (good)
+red: gates/tests/test_inputs.py::test_fr0_10_loop_branch_cannot_touch_an_input[loop.sh] fails without the code (good)
+red: gates/tests/test_inputs.py::test_fr0_10_loop_branch_cannot_touch_an_input[scripts/check-reply.sh] fails without the code (good)
+red: gates/tests/test_inputs.py::test_fr0_10_loop_branch_cannot_touch_an_input[scripts/gate.sh] fails without the code (good)
+red: gates/tests/test_inputs.py::test_fr0_10_loop_branch_cannot_touch_an_input[scripts/install-gitleaks.sh] fails without the code (good)
+red: gates/tests/test_inputs.py::test_fr0_10_loop_branch_cannot_touch_an_input[scripts/install-hooks.sh] fails without the code (good)
+red: gates/tests/test_inputs.py::test_fr0_10_loop_branch_cannot_touch_an_input[scripts/notify.sh] fails without the code (good)
+red: gates/tests/test_inputs.py::test_fr0_10_loop_branch_cannot_touch_an_input[scripts/secretscan.sh] fails without the code (good)
+red: gates/tests/test_inputs.py::test_fr0_10_loop_branch_cannot_touch_an_input[scripts/test.sh] fails without the code (good)
+red: gates/tests/test_inputs.py::test_fr0_10_loop_branch_cannot_touch_an_input[specs/01-config.md] fails without the code (good)
+red: gates/tests/test_inputs.py::test_fr0_10_loop_branch_may_touch_code fails without the code (good)
+red: gates/tests/test_ledger.py::test_fr0_14_locked_and_person_rows_are_skipped fails without the code (good)
+red: gates/tests/test_ledger.py::test_fr0_14_no_open_row_exits_three fails without the code (good)
+red: gates/tests/test_ledger.py::test_fr0_14_started_row_is_picked_first fails without the code (good)
+red: gates/tests/test_ledger.py::test_fr0_16_missing_ledger_fails_hard fails without the code (good)
+red: gates/tests/test_ledger.py::test_fr0_18_good_rows_pass fails without the code (good)
+red: gates/tests/test_ledger.py::test_fr0_18_malformed_row_fails fails without the code (good)
+red: gates/tests/test_ledger.py::test_fr0_18_repeated_id_fails fails without the code (good)
+red: gates/tests/test_ledger.py::test_fr0_18_unknown_mark_fails fails without the code (good)
+red: gates/tests/test_loop.py::test_fr0_13_broken_ledger_stops_the_loop fails without the code (good)
+red: gates/tests/test_loop.py::test_fr0_13_fallback_runs_when_the_main_agent_is_limited fails without the code (good)
+red: gates/tests/test_loop.py::test_fr0_13_hold_file_pauses_until_removed fails without the code (good)
+red: gates/tests/test_loop.py::test_fr0_13_loop_reloads_itself_when_changed fails without the code (good)
+red: gates/tests/test_loop.py::test_fr0_13_no_open_row_waits_then_ends_when_capped fails without the code (good)
+red: gates/tests/test_loop.py::test_fr0_13_picked_row_reaches_the_agent fails without the code (good)
+red: gates/tests/test_loop.py::test_fr0_13_stop_file_ends_the_loop fails without the code (good)
+red: gates/tests/test_loop.py::test_fr0_13_time_bound_stops_a_stuck_turn fails without the code (good)
+red: gates/tests/test_loop.py::test_fr0_13_turns_are_capped_and_logged fails without the code (good)
+red: gates/tests/test_loop.py::test_fr0_13_usage_limit_turn_is_not_counted fails without the code (good)
+red: gates/tests/test_nocomments.py::test_fr0_4_files_outside_the_code_folders_are_ignored fails without the code (good)
+red: gates/tests/test_nocomments.py::test_fr0_4_hash_inside_a_string_passes fails without the code (good)
+red: gates/tests/test_nocomments.py::test_fr0_4_inline_comment_fails fails without the code (good)
+red: gates/tests/test_nocomments.py::test_fr0_4_loop_and_hook_comments_fail fails without the code (good)
+red: gates/tests/test_nocomments.py::test_fr0_4_pragmas_and_shebang_pass fails without the code (good)
+red: gates/tests/test_nocomments.py::test_fr0_4_python_comment_line_fails fails without the code (good)
+red: gates/tests/test_nocomments.py::test_fr0_4_shell_comment_line_fails fails without the code (good)
+red: gates/tests/test_nocomments.py::test_fr0_4_shell_without_comments_passes fails without the code (good)
+red: gates/tests/test_nocomments.py::test_fr0_4_staged_mode_reads_the_index fails without the code (good)
+red: gates/tests/test_nocomments.py::test_fr0_4_untracked_code_files_are_checked fails without the code (good)
+red: gates/tests/test_notify.py::test_fr0_19_api_failure_exits_non_zero fails without the code (good)
+red: gates/tests/test_notify.py::test_fr0_19_dry_run_prints_the_note fails without the code (good)
+red: gates/tests/test_notify.py::test_fr0_19_missing_config_fails fails without the code (good)
+red: gates/tests/test_notify.py::test_fr0_19_sends_the_note_to_the_bot_api fails without the code (good)
+red: gates/tests/test_readability.py::test_fr0_16_missing_textstat_fails_hard fails without the code (good)
+red: gates/tests/test_readability.py::test_fr0_6_acronym_glossary_term_passes fails without the code (good)
+red: gates/tests/test_readability.py::test_fr0_6_all_mode_scores_every_tracked_file fails without the code (good)
+red: gates/tests/test_readability.py::test_fr0_6_changed_mode_scores_only_changed_files fails without the code (good)
+red: gates/tests/test_readability.py::test_fr0_6_check_reply_script_runs_the_same_gate fails without the code (good)
+red: gates/tests/test_readability.py::test_fr0_6_code_tables_and_links_are_left_out fails without the code (good)
+red: gates/tests/test_readability.py::test_fr0_6_easy_glossary_term_fails fails without the code (good)
+red: gates/tests/test_readability.py::test_fr0_6_exempt_files_are_skipped fails without the code (good)
+red: gates/tests/test_readability.py::test_fr0_6_glossary_terms_are_swapped_out fails without the code (good)
+red: gates/tests/test_readability.py::test_fr0_6_hard_glossary_explanations_fail fails without the code (good)
+red: gates/tests/test_readability.py::test_fr0_6_hard_text_fails fails without the code (good)
+red: gates/tests/test_readability.py::test_fr0_6_plain_text_passes fails without the code (good)
+red: gates/tests/test_readability.py::test_fr0_6_plural_forms_of_easy_words_count_as_easy fails without the code (good)
+red: gates/tests/test_readability.py::test_fr0_6_reply_mode_scores_text fails without the code (good)
+red: gates/tests/test_readability.py::test_fr0_6_short_files_are_skipped fails without the code (good)
+red: gates/tests/test_redgreen.py::test_fr0_16_missing_pytest_fails_hard fails without the code (good)
+red: gates/tests/test_redgreen.py::test_fr0_2_bad_usage_exits_two fails without the code (good)
+red: gates/tests/test_redgreen.py::test_fr0_2_base_code_shadows_an_installed_copy fails without the code (good)
+red: gates/tests/test_redgreen.py::test_fr0_2_collection_error_in_one_file_does_not_hide_a_fake fails without the code (good)
+red: gates/tests/test_redgreen.py::test_fr0_2_deleted_test_needs_no_proof fails without the code (good)
+red: gates/tests/test_redgreen.py::test_fr0_2_docs_beside_tests_are_not_mixed fails without the code (good)
+red: gates/tests/test_redgreen.py::test_fr0_2_fake_test_is_rejected fails without the code (good)
+red: gates/tests/test_redgreen.py::test_fr0_2_import_error_on_base_counts_as_red fails without the code (good)
+red: gates/tests/test_redgreen.py::test_fr0_2_mixed_commit_is_rejected fails without the code (good)
+red: gates/tests/test_redgreen.py::test_fr0_2_mixed_skips_commits_from_the_base_branch fails without the code (good)
+red: gates/tests/test_redgreen.py::test_fr0_2_new_param_row_for_new_behaviour_passes fails without the code (good)
+red: gates/tests/test_redgreen.py::test_fr0_2_new_param_row_that_already_passes_is_fake fails without the code (good)
+red: gates/tests/test_redgreen.py::test_fr0_2_skipped_test_is_fake fails without the code (good)
+red: gates/tests/test_redgreen.py::test_fr0_2_tests_then_code_passes fails without the code (good)
+red: gates/tests/test_redgreen.py::test_fr0_2_unchanged_tests_are_not_graded fails without the code (good)
+red: gates/tests/test_redgreen.py::test_fr0_2_worktree_is_removed_after_the_check fails without the code (good)
+red: gates/tests/test_retention.py::test_fr0_3_body_edit_passes fails without the code (good)
+red: gates/tests/test_retention.py::test_fr0_3_class_methods_are_tracked fails without the code (good)
+red: gates/tests/test_retention.py::test_fr0_3_deleted_file_fails fails without the code (good)
+red: gates/tests/test_retention.py::test_fr0_3_dropped_test_fails fails without the code (good)
+red: gates/tests/test_retention.py::test_fr0_3_new_tests_pass fails without the code (good)
+red: gates/tests/test_retention.py::test_fr0_3_rename_keeps_tests fails without the code (good)
+red: gates/tests/test_retention.py::test_fr0_3_retires_trailer_allows_a_drop fails without the code (good)
+red: gates/tests/test_secretscan.py::test_fr0_16_missing_gitleaks_fails_hard fails without the code (good)
+red: gates/tests/test_secretscan.py::test_fr0_7_clean_range_passes fails without the code (good)
+red: gates/tests/test_secretscan.py::test_fr0_7_planted_key_fails fails without the code (good)
+red: gates/tests/test_speccov.py::test_fr0_16_missing_ledger_fails_hard fails without the code (good)
+red: gates/tests/test_speccov.py::test_fr0_8_done_row_needs_a_test_for_each_id fails without the code (good)
+red: gates/tests/test_speccov.py::test_fr0_8_done_row_with_tests_passes fails without the code (good)
+red: gates/tests/test_speccov.py::test_fr0_8_done_row_without_ids_fails fails without the code (good)
+red: gates/tests/test_speccov.py::test_fr0_8_gate_tests_count_too fails without the code (good)
+red: gates/tests/test_speccov.py::test_fr0_8_nfr_ids_are_covered fails without the code (good)
+red: gates/tests/test_speccov.py::test_fr0_8_open_rows_are_ignored fails without the code (good)
+red: gates/tests/test_speccov.py::test_fr0_8_unknown_id_in_a_test_name_fails fails without the code (good)
+red: gates/tests/test_srcgrep.py::test_fr0_5_from_import_module_file_read_fails fails without the code (good)
+red: gates/tests/test_srcgrep.py::test_fr0_5_inspect_getsource_fails fails without the code (good)
+red: gates/tests/test_srcgrep.py::test_fr0_5_module_file_read_fails fails without the code (good)
+red: gates/tests/test_srcgrep.py::test_fr0_5_normal_test_passes fails without the code (good)
+red: gates/tests/test_srcgrep.py::test_fr0_5_package_option_names_the_product fails without the code (good)
+red: gates/tests/test_srcgrep.py::test_fr0_5_source_path_in_a_test_fails fails without the code (good)
+red: gates/tests/test_verifydoc.py::test_fr0_16_missing_verification_file_fails_hard fails without the code (good)
+red: gates/tests/test_verifydoc.py::test_fr0_9_a_section_ends_at_the_next_heading fails without the code (good)
+red: gates/tests/test_verifydoc.py::test_fr0_9_complete_section_passes fails without the code (good)
+red: gates/tests/test_verifydoc.py::test_fr0_9_done_row_needs_a_section fails without the code (good)
+red: gates/tests/test_verifydoc.py::test_fr0_9_missing_artifact_fails fails without the code (good)
+red: gates/tests/test_verifydoc.py::test_fr0_9_missing_command_fails fails without the code (good)
+red: gates/tests/test_verifydoc.py::test_fr0_9_missing_expect_fails fails without the code (good)
+red: gates/tests/test_verifydoc.py::test_fr0_9_open_rows_need_nothing fails without the code (good)
+redgreen: 125 touched test item(s) fail without the code
+== gate: scripts/test.sh
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/oem/claude/bikepathadvocacy
+configfile: pyproject.toml
+testpaths: tests, gates/tests
+plugins: cov-7.1.0
+collected 125 items
+
+gates/tests/test_generic.py .....                                        [  4%]
+gates/tests/test_hooks.py .....                                          [  8%]
+gates/tests/test_inputs.py ....................                          [ 24%]
+gates/tests/test_ledger.py ........                                      [ 30%]
+gates/tests/test_loop.py ..........                                      [ 38%]
+gates/tests/test_nocomments.py ..........                                [ 46%]
+gates/tests/test_notify.py ....                                          [ 49%]
+gates/tests/test_readability.py ...............                          [ 61%]
+gates/tests/test_redgreen.py ................                            [ 74%]
+gates/tests/test_retention.py .......                                    [ 80%]
+gates/tests/test_secretscan.py ...                                       [ 82%]
+gates/tests/test_speccov.py ........                                     [ 88%]
+gates/tests/test_srcgrep.py ......                                       [ 93%]
+gates/tests/test_verifydoc.py ........                                   [100%]
+
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.12.3-final-0 ________________
+
+Name                       Stmts   Miss  Cover   Missing
+--------------------------------------------------------
+gates/common.py               39      7    82%   17-18, 20, 56-59
+gates/generic.py              38      1    97%   46
+gates/inputs.py               41      3    93%   56-57, 68
+gates/ledger.py               71      4    94%   80-82, 91
+gates/nocomments.py           81      6    93%   28-29, 76-77, 85, 98
+gates/readability.py         151      7    95%   11-12, 70, 191, 206-207, 224
+gates/redgreen.py            199     20    90%   94-95, 109-111, 167, 173, 185, 217, 234, 257-258, 269-270, 279, 291, 296, 328-329, 333
+gates/retention.py            56      5    91%   38, 41, 57-58, 73
+gates/speccov.py              72      3    96%   32, 75, 90
+gates/srcgrep.py              57      5    91%   13, 47-49, 72
+gates/verifydoc.py            57      2    96%   44, 67
+src/bikeplan/__init__.py       2      2     0%   1-2
+--------------------------------------------------------
+TOTAL                        864     65    92%
+
+1 file skipped due to complete coverage.
+Required test coverage of 80% reached. Total coverage: 92.48%
+======================= 125 passed in 112.58s (0:01:52) ========================
+== gate: all green (branch)
