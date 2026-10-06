@@ -1,0 +1,2 @@
+painted_lane_edges 1061
+painted_lane_lts_km {1: 2.7, 2: 40.5, 3: 21.8}
