@@ -221,3 +221,18 @@ def test_fr4_5_a_leg_keeps_its_own_lts_when_higher(profile):
     )
     own = lts_of(graph, 4)
     assert raise_for_crossings(graph, own, profile)[0] == own
+
+
+def test_fr4_5_a_leg_with_lanes_but_no_speed_is_not_a_main_street(profile):
+    graph = leg_graph(
+        [
+            (100, 0, "motorway", 4, None),
+            (-100, 0, "motorway", 4, None),
+            (0, -100, "residential", 2, 50.0),
+        ]
+    )
+    for _, _, data in graph.edges(data=True):
+        if data["speed_kmh"] is None:
+            del data["speed_kmh"]
+    own = lts_of(graph, 1)
+    assert raise_for_crossings(graph, own, profile)[0] == own
