@@ -1,0 +1,10 @@
+{
+  "edges_with_lanes": 88886,
+  "lanes_estimates": 88886,
+  "tag_estimates": 1544,
+  "lanes_km": 4941.941,
+  "tag_km": 76.277,
+  "dropped": {
+    "osm_tag": 97
+  }
+}

@@ -248,3 +248,34 @@ cp "$OUT/stress_summary.json" artifacts/P4.5/
 
 Expect: The tests pass. The run prints `lts1_km 1404.402`, `lts2_km 2405.365`, `lts3_km 771.708`, `lts4_km 293.496` and `aaa_km 930.506`, and writes `stress.geojson` with 189386 edges, each with a reason. The summary counts the km of directed edges a bike may use.
 Artifact: `artifacts/P4.5/stress_summary.json`
+
+### P5.1
+
+```bash
+uv run pytest tests/test_width_estimates.py -q
+PYTHONPATH=src uv run python -c "
+import json
+from collections import Counter
+from bikeplan.config import load_profile, load_region
+from bikeplan.network import build
+from bikeplan.width import estimates
+p = load_profile('au-nsw', 'profiles')
+g = build('data/cache/au-nsw-bayside/2026-10-01', load_region('regions/au-nsw-bayside.yaml'), p)
+km, n, drops = Counter(), Counter(), Counter()
+for u, v, d in g.edges(data=True):
+    if not d.get('lanes_total'):
+        continue
+    kept, dropped = estimates(d, p)
+    n['edges'] += 1
+    for s, _ in dropped:
+        drops[s] += 1
+    for e in kept:
+        km[e.source] += d['length'] / 1000
+        n[e.source] += 1
+out = {'edges_with_lanes': n['edges'], 'lanes_estimates': n['lanes'], 'tag_estimates': n['osm_tag'], 'lanes_km': round(km['lanes'], 3), 'tag_km': round(km['osm_tag'], 3), 'dropped': dict(drops)}
+json.dump(out, open('artifacts/P5.1/width_estimates.json', 'w'), indent=2)
+"
+```
+
+Expect: The tests pass. The run gives 88886 road edges with lanes, each with a lane estimate (4941.941 km), 1544 tag estimates (76.277 km) and 97 tag estimates dropped as out of range.
+Artifact: `artifacts/P5.1/width_estimates.json`
