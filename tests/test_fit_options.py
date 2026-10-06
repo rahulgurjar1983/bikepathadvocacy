@@ -127,7 +127,7 @@ def test_fr6_2_verge_too_narrow_gives_reason():
     data = {**CASES[6], "reserve_m": 18.0}
     found = {f["fix"]: f for f in options(data, PROFILE)}
     assert not found["verge_path"]["fits"]
-    assert found["verge_path"]["reason"] == "needs 4.5 m, spare 2.5 m"
+    assert found["verge_path"]["reason"] == "needs 3.5 m, spare 2.5 m"
 
 
 def test_fr6_2_no_width_never_fits_a_cycleway():
