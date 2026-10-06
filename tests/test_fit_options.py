@@ -1,7 +1,7 @@
 import pytest
-from bikeplan.fit import cross_section, options
 
 from bikeplan.config import load_profile
+from bikeplan.fit import cross_section, options
 
 PROFILE = load_profile("au-nsw", "profiles")
 
