@@ -139,6 +139,7 @@ class RoadClass:
     speed_kmh: Num
     adt: Num
     lanes: Num
+    parking: Num
 
 
 @dataclass(frozen=True)
@@ -288,7 +289,12 @@ class ProfileReader(Reader):
     def group(self, raw: Any, key: str, cls: type) -> Any:
         names = [f.name for f in dataclasses.fields(cls)]
         data = self.mapping(raw, key, set(names), set(names))
-        return cls(*(self.num(data[name], f"{key}.{name}") for name in names))
+        return cls(
+            *(
+                self.num(data[name], f"{key}.{name}", "bool" if name == "parking" else "number")
+                for name in names
+            )
+        )
 
     def width(self, raw: Any, key: str) -> Width:
         data = self.mapping(raw, key, {"min", "desirable"}, {"min"})

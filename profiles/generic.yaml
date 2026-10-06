@@ -84,6 +84,9 @@ road_classes:
     lanes:
       value: 1
       source: 'assumption: typical lane count for the class when untagged'
+    parking:
+      value: true
+      source: 'assumption: kerb parking is usual on this class when parking is untagged'
   service:
     speed_kmh:
       value: 20
@@ -94,6 +97,9 @@ road_classes:
     lanes:
       value: 1
       source: 'assumption: typical lane count for the class when untagged'
+    parking:
+      value: false
+      source: 'assumption: kerb parking is not usual on this class when parking is untagged'
   residential:
     speed_kmh:
       value: 50
@@ -104,6 +110,9 @@ road_classes:
     lanes:
       value: 2
       source: 'assumption: typical lane count for the class when untagged'
+    parking:
+      value: true
+      source: 'assumption: kerb parking is usual on this class when parking is untagged'
   unclassified:
     speed_kmh:
       value: 50
@@ -114,6 +123,9 @@ road_classes:
     lanes:
       value: 2
       source: 'assumption: typical lane count for the class when untagged'
+    parking:
+      value: true
+      source: 'assumption: kerb parking is usual on this class when parking is untagged'
   tertiary:
     speed_kmh:
       value: 50
@@ -124,6 +136,9 @@ road_classes:
     lanes:
       value: 2
       source: 'assumption: typical lane count for the class when untagged'
+    parking:
+      value: true
+      source: 'assumption: kerb parking is usual on this class when parking is untagged'
   secondary:
     speed_kmh:
       value: 60
@@ -134,6 +149,9 @@ road_classes:
     lanes:
       value: 2
       source: 'assumption: typical lane count for the class when untagged'
+    parking:
+      value: true
+      source: 'assumption: kerb parking is usual on this class when parking is untagged'
   primary:
     speed_kmh:
       value: 60
@@ -144,6 +162,9 @@ road_classes:
     lanes:
       value: 4
       source: 'assumption: typical lane count for the class when untagged'
+    parking:
+      value: false
+      source: 'assumption: kerb parking is not usual on this class when parking is untagged'
   trunk:
     speed_kmh:
       value: 70
@@ -154,6 +175,9 @@ road_classes:
     lanes:
       value: 4
       source: 'assumption: typical lane count for the class when untagged'
+    parking:
+      value: false
+      source: 'assumption: kerb parking is not usual on this class when parking is untagged'
 implicit_speeds:
   AU:urban:
     value: 50
