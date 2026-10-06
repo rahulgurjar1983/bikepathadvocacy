@@ -1,0 +1,50 @@
+{
+ "1": {
+  "quietway": "ADT 750 is within 2000 [fits]",
+  "cycleway_in_spare": "needs 3.5 m, spare 1.8 m",
+  "cycleway_parking_one_side": "needs 3 m, spare 3.9 m [fits]",
+  "cycleway_parking_both_sides": "needs 6 m, spare 6 m [fits]",
+  "road_diet": "needs 2 lanes each way, has 1",
+  "verge_path": "road reserve unknown"
+ },
+ "2": {
+  "quietway": "ADT 5000 is over 2000",
+  "cycleway_in_spare": "needs 3.5 m, spare 3.8 m [fits]",
+  "cycleway_parking_one_side": "needs 4.5 m, spare 5.9 m [fits]",
+  "cycleway_parking_both_sides": "needs 6 m, spare 8 m [fits]",
+  "road_diet": "needs 2 lanes each way, has 1",
+  "verge_path": "road reserve unknown"
+ },
+ "3": {
+  "quietway": "ADT 5000 is over 2000",
+  "cycleway_in_spare": "needs 3.5 m, spare 1.8 m",
+  "cycleway_parking_one_side": "needs 3 m, spare 3.9 m [fits]",
+  "cycleway_parking_both_sides": "needs 6 m, spare 6 m [fits]",
+  "road_diet": "needs 2 lanes each way, has 1",
+  "verge_path": "road reserve unknown"
+ },
+ "4": {
+  "quietway": "ADT 25000 is over 2000",
+  "cycleway_in_spare": "needs 4 m, spare 4 m [fits]",
+  "cycleway_parking_one_side": "no parking to remove",
+  "cycleway_parking_both_sides": "no parking to remove",
+  "road_diet": "ADT 25000 is over 20000",
+  "verge_path": "road reserve unknown"
+ },
+ "5": {
+  "quietway": "ADT 15000 is over 2000",
+  "cycleway_in_spare": "needs 3 m, spare 1 m",
+  "cycleway_parking_one_side": "no parking to remove",
+  "cycleway_parking_both_sides": "no parking to remove",
+  "road_diet": "needs 4 m, spare 4 m [fits]",
+  "verge_path": "road reserve unknown"
+ },
+ "6": {
+  "quietway": "ADT 25000 is over 2000",
+  "cycleway_in_spare": "needs 3 m, spare 1 m",
+  "cycleway_parking_one_side": "no parking to remove",
+  "cycleway_parking_both_sides": "no parking to remove",
+  "road_diet": "ADT 25000 is over 20000",
+  "verge_path": "needs 4.5 m, spare 7 m [fits]"
+ }
+}
