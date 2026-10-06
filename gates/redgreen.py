@@ -38,6 +38,16 @@ import json
 import os
 
 RESULTS = {}
+with open(os.environ["REDGREEN_SELECT"]) as handle:
+    WANTED = set(json.load(handle))
+
+
+def pytest_collection_modifyitems(session, config, items):
+    kept = [item for item in items if item.nodeid in WANTED]
+    dropped = [item for item in items if item.nodeid not in WANTED]
+    if dropped:
+        config.hook.pytest_deselected(items=dropped)
+    items[:] = kept
 
 
 def pytest_runtest_logreport(report):
@@ -181,10 +191,23 @@ def run_items(tree: Path, items: list[str], python: str, work: Path) -> dict[str
     plugin_dir.mkdir()
     (plugin_dir / f"{PLUGIN_NAME}.py").write_text(PLUGIN_SOURCE)
     results = work / "results.json"
+    select = work / "select.json"
+    select.write_text(json.dumps(items))
+    files = sorted({item.split("::", 1)[0] for item in items})
     env = clean_env([plugin_dir, tree / "src", tree])
     env["REDGREEN_RESULTS"] = str(results)
+    env["REDGREEN_SELECT"] = str(select)
     subprocess.run(
-        [python, "-m", "pytest", "-q", "-p", PLUGIN_NAME, *items],
+        [
+            python,
+            "-m",
+            "pytest",
+            "-q",
+            "--continue-on-collection-errors",
+            "-p",
+            PLUGIN_NAME,
+            *files,
+        ],
         cwd=tree,
         env=env,
         capture_output=True,
