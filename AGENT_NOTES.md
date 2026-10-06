@@ -31,3 +31,4 @@ None yet.
 - `tests/fixtures/kontur/` holds a real HDX reply and a 28-hexagon cut of the real Australia file near 151.12, -33.93.
 - On 2026-10-07 `overpass-api.de` gave 504 on the Bayside network query twice. The run passed through `--endpoint https://overpass.private.coffee/api/interpreter` in 11 minutes.
 - To check a real cut, run `python3 -I -c` with `sqlite3`: sum `population` in `population.gpkg`, then sum the source rows with the same `h3` values. Both gave 873592 for Bayside.
+- `verify_snapshot`, `publish_snapshot` and `pull_snapshot` live in `src/bikeplan/snapshot.py` and call `gh` through `run_gh`. Publish verifies first and uploads with `--clobber`; pull copies the manifest into the cache folder so verify can read it. Tests put a stand-in `gh` script on `PATH`.

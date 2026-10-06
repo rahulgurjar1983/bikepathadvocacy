@@ -28,7 +28,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 - [x] **P2.2** Boundary from a relation, and the network and places queries (FR-2.3, FR-7.10)
 - [x] **P2.3** `bikeplan snapshot fetch` writes every file and the manifest (FR-2.1)
 - [x] **P2.4** Kontur population adapter (FR-2.8)
-- [ ] **P2.5** `bikeplan snapshot verify`, `publish` and `pull` (FR-2.5, FR-2.6, FR-2.7)
+- [x] **P2.5** `bikeplan snapshot verify`, `publish` and `pull` (FR-2.5, FR-2.6, FR-2.7)
 - [ ] **P2.6** Bayside snapshot for 2026-10-01 published, then pulled and verified on a fresh clone (FR-2.9)
 
 ## Phase 3: Network

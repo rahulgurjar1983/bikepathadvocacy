@@ -4,7 +4,14 @@ import sys
 from importlib.metadata import version
 
 from bikeplan.config import ConfigError, Num, config_hash, load_profile, load_region
-from bikeplan.snapshot import OVERPASS_ENDPOINT, OverpassError, fetch_snapshot
+from bikeplan.snapshot import (
+    OVERPASS_ENDPOINT,
+    OverpassError,
+    fetch_snapshot,
+    publish_snapshot,
+    pull_snapshot,
+    verify_snapshot,
+)
 
 LEAVES = {
     "stress": "Score the stress level of each road edge",
@@ -19,7 +26,12 @@ GROUPS = {
     "network": {"summary": "Summarise the road network"},
     "width": {"summary": "Summarise road widths"},
     "fit": {"summary": "Summarise cycleway fit"},
-    "snapshot": {"fetch": "Fetch the input data of a region"},
+    "snapshot": {
+        "fetch": "Fetch the input data of a region",
+        "verify": "Check a snapshot folder against its manifest",
+        "publish": "Upload a snapshot to its release and copy its manifest",
+        "pull": "Download a snapshot from its release and verify it",
+    },
 }
 
 GROUP_HELP = {
@@ -52,6 +64,10 @@ def build_parser() -> argparse.ArgumentParser:
                 leaf.add_argument("region", help="Region file")
                 leaf.add_argument("--out", required=True, help="Output directory")
                 leaf.add_argument("--endpoint", default=OVERPASS_ENDPOINT, help="Overpass endpoint")
+            if (name, sub) in {("snapshot", "verify"), ("snapshot", "publish")}:
+                leaf.add_argument("directory", help="Snapshot folder")
+            if (name, sub) == ("snapshot", "pull"):
+                leaf.add_argument("manifest", help="Manifest file")
     return parser
 
 
@@ -99,10 +115,50 @@ def snapshot_fetch(path: str, out: str, endpoint: str) -> int:
     return 0
 
 
+def snapshot_verify(directory: str) -> int:
+    try:
+        passed, failed = verify_snapshot(directory)
+    except (OSError, ValueError) as error:
+        print(error, file=sys.stderr)
+        return 1
+    for line in passed:
+        print(line)
+    for line in failed:
+        print(line, file=sys.stderr)
+    return 1 if failed else 0
+
+
+def snapshot_publish(directory: str) -> int:
+    code = snapshot_verify(directory)
+    if code:
+        return code
+    try:
+        publish_snapshot(directory)
+    except OSError as error:
+        print(error, file=sys.stderr)
+        return 1
+    return 0
+
+
+def snapshot_pull(manifest: str) -> int:
+    try:
+        target = pull_snapshot(manifest)
+    except (OSError, ValueError) as error:
+        print(error, file=sys.stderr)
+        return 1
+    return snapshot_verify(str(target))
+
+
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if (args.command, getattr(args, "subcommand", None)) == ("config", "show"):
         return config_show(args.region)
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "fetch"):
         return snapshot_fetch(args.region, args.out, args.endpoint)
+    if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "verify"):
+        return snapshot_verify(args.directory)
+    if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "publish"):
+        return snapshot_publish(args.directory)
+    if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "pull"):
+        return snapshot_pull(args.manifest)
     return 0
