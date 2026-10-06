@@ -240,7 +240,8 @@ def main_street(legs: list[dict]):
     pairs = [
         pair
         for pair in combinations(legs, 2)
-        if all(leg["data"]["lanes_total"] > 0 for leg in pair) and is_straight(*pair)
+        if all(leg["data"]["lanes_total"] > 0 and "speed_kmh" in leg["data"] for leg in pair)
+        and is_straight(*pair)
     ]
     if not pairs:
         return None
