@@ -3,7 +3,7 @@ import os
 
 from gates.common import ToolMissing, default_base, fail_hard, git
 
-INPUT_PREFIXES = ("specs/", "gates/", ".github/", ".githooks/", "deploy/systemd/")
+INPUT_PREFIXES = ("specs/", "gates/", ".github/", ".githooks/", "deploy/systemd/", "scripts/lib/")
 INPUT_FILES = frozenset(
     {
         "SPECIFICATION.md",
