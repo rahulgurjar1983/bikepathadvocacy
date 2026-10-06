@@ -10,6 +10,10 @@ if [ -n "${FAKE_GH_FAIL:-}" ]; then
   echo "gh: could not reach GitHub" >&2
   exit 1
 fi
+if [ "$1" = api ]; then
+  printf '%s\\n' "${FAKE_GH_REQUIRED:-}"
+  exit 0
+fi
 n=$(( $(cat "$FAKE_GH_STATE/count" 2>/dev/null || echo 0) + 1 ))
 echo "$n" > "$FAKE_GH_STATE/count"
 line="$(sed -n "${n}p" "$FAKE_GH_STATE/states")"
@@ -21,6 +25,10 @@ printf '%s\\n' "$line"
 
 
 FAKE_GH_JQ = """#!/usr/bin/env bash
+if [ "$1" = api ]; then
+  printf '%s\\n' "${FAKE_GH_REQUIRED:-}"
+  exit 0
+fi
 n=$(( $(cat "$FAKE_GH_STATE/count" 2>/dev/null || echo 0) + 1 ))
 echo "$n" > "$FAKE_GH_STATE/count"
 query=""
@@ -147,3 +155,18 @@ def test_fr0_23_green_checks_with_auto_merge_on_wait_for_the_merge(tmp_path):
     assert result.returncode == 0, result.stdout + result.stderr
     assert result.stdout.splitlines() == ["wait-ci: PR 7 merged"]
     assert (tmp_path / "state" / "count").read_text().strip() == "2"
+
+
+def test_fr0_23_missing_required_check_exits_five(tmp_path):
+    green = [check("gates", "COMPLETED", "SUCCESS"), check("test", "COMPLETED", "SUCCESS")]
+    rollup = json.dumps(
+        {"state": "OPEN", "autoMergeRequest": {"mergeMethod": "MERGE"}, "statusCheckRollup": green}
+    )
+    result = wait_ci(
+        tmp_path, [rollup], fake=FAKE_GH_JQ, FAKE_GH_REQUIRED="gates test smoke", WAIT_CI_SECS="5"
+    )
+    assert result.returncode == 5, result.stdout + result.stderr
+    assert result.stdout.splitlines() == [
+        "wait-ci: PR 7 never reported the required checks: smoke; "
+        "run git merge origin/main and push"
+    ]
