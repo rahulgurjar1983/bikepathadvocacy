@@ -1,0 +1,5 @@
+edges 189386
+bike_km 591.099
+speed_tag_share 0.192
+lanes_tag_share 0.112
+parking_tag_share 0.011
