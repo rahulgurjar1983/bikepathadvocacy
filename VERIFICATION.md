@@ -216,3 +216,13 @@ uv run python -I -c 'from collections import Counter; from bikeplan.config impor
 
 Expect: The tests pass. The run prints `painted_lane_edges 1061` and `painted_lane_lts_km {1: 2.7, 2: 40.5, 3: 21.8}`. Each edge is a bike-legal road edge tagged as a painted lane, scored with table 2 or 3 and capped by table 1.
 Artifact: `artifacts/P4.2/painted.txt`
+
+### P4.3
+
+```bash
+uv run pytest tests/test_stress_aaa.py -q
+uv run python -I -c 'from collections import Counter; from bikeplan.config import load_profile, load_region; from bikeplan.network import build; from bikeplan.stress import edge_lts, is_aaa; r = load_region("regions/au-nsw-bayside.yaml"); p = load_profile(r.profile); g = build("data/cache/au-nsw-bayside/2026-10-01", r, p); e = [d for _, _, d in g.edges(data=True) if d["bike_ok"] and d.get("speed_kmh") and d["lanes_total"] > 0 or d["bike_ok"] and d["bike_facility"] in {"off_road", "protected"}]; lts, aaa = Counter(), Counter(); [(lts.update({edge_lts(d, p): d["length_m"]}), aaa.update({d["bike_facility"]: d["length_m"]}) if is_aaa(d, edge_lts(d, p), p) else None) for d in e]; print("edges", len(e)); print("lts_km", {k: round(v / 1000, 1) for k, v in sorted(lts.items())}); print("aaa_km", {k: round(v / 1000, 1) for k, v in sorted(aaa.items())})' | tee artifacts/P4.3/aaa.txt
+```
+
+Expect: The tests pass. The run prints `edges 80074`, `lts_km {1: 1077.6, 2: 2405.5, 3: 753.9, 4: 291.5}` and `aaa_km {'none': 549.2, 'off_road': 381.8, 'protected': 9.8, 'shared': 3.0}`. Paths and protected lanes score 1; AAA needs LTS 1 and a path, a protected lane or a mixed-traffic rule of the profile.
+Artifact: `artifacts/P4.3/aaa.txt`
