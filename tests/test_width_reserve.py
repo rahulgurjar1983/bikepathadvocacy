@@ -28,7 +28,7 @@ def test_fr5_3_straight_street_between_parcel_rows_gives_the_gap():
 
 
 def test_fr5_3_lines_with_a_gap_on_one_side_are_skipped():
-    skip = {("north", index) for index in range(0, 6)}
+    skip = {("north", index) for index in range(0, 3)}
     found = reserve(LineString([(0, 0), (200, 0)]), rows(20, skip=skip))
     assert found.width_m == pytest.approx(20)
 
