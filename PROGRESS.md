@@ -33,7 +33,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 
 ## Phase 3: Network
 
-- [ ] **P3.1** Graph from OSM XML in metres, with bike access and one-way rules (FR-3.1, FR-3.2, FR-3.3)
+- [x] **P3.1** Graph from OSM XML in metres, with bike access and one-way rules (FR-3.1, FR-3.2, FR-3.3)
 - [ ] **P3.2** Speed and lane parsing with profile defaults (FR-3.4, FR-3.5, FR-3.10)
 - [ ] **P3.3** Bike facility, parking and width tags (FR-3.6, FR-3.7, FR-3.8)
 - [ ] **P3.4** Stable segment IDs, signal points and `bikeplan network summary` on Bayside (FR-3.9, FR-3.11, FR-3.12)

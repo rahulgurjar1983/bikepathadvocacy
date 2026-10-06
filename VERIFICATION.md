@@ -156,3 +156,13 @@ uv run bikeplan snapshot verify data/cache/au-nsw-bayside/2026-10-01
 
 Expect: The test passes. Pull downloads the four files from the release `snapshot-au-nsw-bayside-2026-10-01` and verify prints `ok` with the sha256 of `boundary.geojson`, `network.osm.gz`, `places.json` and `population.gpkg`, then exits 0.
 Artifact: `artifacts/P2.6/verify.log`
+
+### P3.1
+
+```bash
+uv run pytest tests/test_network.py -q
+uv run python -I -c 'from bikeplan.config import load_profile, load_region; from bikeplan.network import build; r = load_region("regions/au-nsw-bayside.yaml"); g = build("data/cache/au-nsw-bayside/2026-10-01", r, load_profile(r.profile)); e = [d for _, _, d in g.edges(data=True)]; print("crs", g.graph["crs"]); print("edges", len(e)); print("bike_ok_km", round(sum(d["length_m"] for d in e if d["bike_ok"]) / 1000, 1))' | tee artifacts/P3.1/graph.txt
+```
+
+Expect: The tests pass. The run prints `crs EPSG:32756`, `edges 189160` and `bike_ok_km 4875.0`.
+Artifact: `artifacts/P3.1/graph.txt`

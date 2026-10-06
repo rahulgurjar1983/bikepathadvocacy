@@ -4,10 +4,10 @@ from math import asin, cos, radians, sin, sqrt
 from pathlib import Path
 
 import pytest
-from bikeplan.network import build
 from pyproj import CRS
 
 from bikeplan.config import load_profile, load_region
+from bikeplan.network import build
 
 FIXTURE = Path("tests/fixtures/network/cases.osm")
 BOUNDARY = {
