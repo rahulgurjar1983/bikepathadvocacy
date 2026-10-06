@@ -107,3 +107,10 @@ def test_fr4_2_unknown_parking_follows_class_default():
     data = lane("one", 58.0, 2.0, "unknown", adt=100000)
     assert score(data, class_parking=False) == 2
     assert score(data, class_parking=True) == 3
+
+
+def test_fr4_2_zero_lanes_count_as_one_lane():
+    data = {**lane("one", 58.0, 1.83), "lanes_dir": 0}
+    assert score(data) == 2
+    data = {**lane("one", 58.0, 2.5, "yes"), "lanes_dir": 0}
+    assert score(data) == 2
