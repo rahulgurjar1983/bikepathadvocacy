@@ -292,3 +292,32 @@ def test_one_again():
     out = capsys.readouterr().out
     assert "FAKE: tests/test_core_moved.py::test_one_again" in out
     assert "::test_one " not in out
+
+
+def test_fr0_2_conftest_that_needs_new_code_counts_as_red(mini, capsys):
+    base = mini.head()
+    mini.write(
+        "tests/conftest.py",
+        """
+        import pytest
+
+        from minipkg.helper import value
+
+
+        @pytest.fixture
+        def answer():
+            return value()
+        """,
+    )
+    mini.write(
+        "tests/test_answer.py",
+        """
+        def test_answer(answer):
+            assert answer == 42
+        """,
+    )
+    mini.commit("test: answer fixture")
+    mini.write("src/minipkg/helper.py", "def value():\n    return 42\n")
+    mini.commit("feat: helper")
+    assert redgreen.main(["red", base]) == 0
+    assert "conftest" in capsys.readouterr().out

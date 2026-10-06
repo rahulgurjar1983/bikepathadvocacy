@@ -209,7 +209,7 @@ def run_items(tree: Path, items: list[str], python: str, work: Path) -> dict[str
     env = clean_env([plugin_dir, tree / "src", tree])
     env["REDGREEN_RESULTS"] = str(results)
     env["REDGREEN_SELECT"] = str(select)
-    subprocess.run(
+    completed = subprocess.run(
         [
             python,
             "-m",
@@ -225,9 +225,12 @@ def run_items(tree: Path, items: list[str], python: str, work: Path) -> dict[str
         capture_output=True,
         text=True,
     )
-    if not results.is_file():
-        raise ToolMissing("the base run wrote no results, so pytest could not start there")
-    return json.loads(results.read_text())
+    if results.is_file():
+        return json.loads(results.read_text())
+    if "ImportError while loading conftest" in completed.stdout + completed.stderr:
+        print("redgreen: a conftest.py needs the new code, so each touched item is red on the base")
+        return {f"collect::{name}": "failed" for name in files}
+    raise ToolMissing("the base run wrote no results, so pytest could not start there")
 
 
 def judge(items: list[str], results: dict[str, str]) -> tuple[list[str], list[str], list[str]]:

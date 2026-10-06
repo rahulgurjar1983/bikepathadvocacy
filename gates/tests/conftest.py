@@ -6,6 +6,8 @@ from pathlib import Path
 
 import pytest
 
+from gates.testenv import caller_settings
+
 ROOT = Path(__file__).resolve().parents[2]
 
 GIT_ENV_DROP = (
@@ -63,6 +65,12 @@ class Repo:
 
     def branch(self, name: str) -> None:
         self.git("checkout", "-q", "-b", name)
+
+
+@pytest.fixture(autouse=True)
+def hermetic_env(monkeypatch: pytest.MonkeyPatch) -> None:
+    for name in caller_settings(os.environ):
+        monkeypatch.delenv(name, raising=False)
 
 
 @pytest.fixture

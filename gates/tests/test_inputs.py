@@ -22,6 +22,7 @@ INPUT_PATHS = [
     "scripts/install-gitleaks.sh",
     "scripts/check-reply.sh",
     "scripts/install-hooks.sh",
+    "scripts/lib/step.sh",
 ]
 
 

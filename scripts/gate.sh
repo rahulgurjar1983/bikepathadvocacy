@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
-cd "$(dirname "$0")/.."
+root="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$root"
 
 mode="${1:-branch}"
 for tool in git uv; do
@@ -10,26 +11,7 @@ for tool in git uv; do
   fi
 done
 
-step() {
-  local name="$*" out start status
-  if [ "${GATE_VERBOSE:-0}" = 1 ]; then
-    echo "== gate: $name"
-    "$@"
-    return
-  fi
-  out="$(mktemp)"
-  start=$SECONDS
-  if "$@" >"$out" 2>&1; then
-    echo "ok   $name ($((SECONDS - start))s)"
-    rm -f "$out"
-    return
-  fi
-  status=$?
-  echo "FAIL $name (exit $status); last 60 lines:"
-  tail -n 60 "$out"
-  rm -f "$out"
-  exit "$status"
-}
+. "$root/scripts/lib/step.sh"
 
 py=(uv run --frozen python)
 step scripts/install-gitleaks.sh

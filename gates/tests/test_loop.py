@@ -262,3 +262,24 @@ def test_fr0_22_a_turn_with_a_commit_keeps_the_small_model(loop_repo):
     assert flag_value(args_of(state, 2), "--model") == "sonnet"
     rows = (repo.path / ".ralph" / "usage.csv").read_text().splitlines()
     assert rows[1].split(",")[5] == "yes"
+
+
+def test_nfr11_tests_ignore_loop_settings_of_the_caller():
+    test_id = "gates/tests/test_loop.py::test_fr0_13_usage_limit_turn_is_not_counted"
+    env = dict(os.environ, RALPH_FALLBACK_BIN="/bin/false", RALPH_MODEL="caller-model")
+    result = subprocess.run(
+        [sys.executable, "-m", "pytest", test_id, "-q"],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        timeout=300,
+    )
+    assert result.returncode == 0, result.stdout[-2000:]
+
+
+def test_nfr11_caller_settings_are_found_by_prefix():
+    from gates.testenv import caller_settings
+
+    environ = {"RALPH_FALLBACK_BIN": "x", "GATE_BASE": "y", "PATH": "/bin", "HOME": "/h"}
+    assert caller_settings(environ) == ["GATE_BASE", "RALPH_FALLBACK_BIN"]

@@ -34,7 +34,7 @@ ralph.log, .ralph/iter-*.log               scripts/gate.sh (same gates as CI)
 | ID | Requirement | Priority |
 |----|-------------|----------|
 | FR-0.1 | CI runs on every ready PR to `main`, on every push to `main`, nightly, and on demand. Draft PRs skip CI. The jobs `gates` and `test` are required checks on `main`. PRs merge with a merge commit so each test commit and code commit stays in history. | MUST |
-| FR-0.2 | Red-green gate. `mixed BASE`: no commit in `BASE..HEAD` (merges left out) changes both a test path (`tests/`, `gates/tests/`) and a code path (`src/`, `gates/` outside its tests, `scripts/`). `red BASE`: build the `BASE` tree, lay the HEAD test folders and `pyproject.toml` and `uv.lock` over it, and run each touched test item. A touched item is a test item that is new or whose function body changed. Each one must fail or error. A pass or a skip is reported as `FAKE` and the gate fails. The base code must shadow any installed copy of the package. It prints one count line; `--verbose` also lists each red item. | MUST |
+| FR-0.2 | Red-green gate. `mixed BASE`: no commit in `BASE..HEAD` (merges left out) changes both a test path (`tests/`, `gates/tests/`) and a code path (`src/`, `gates/` outside its tests, `scripts/`). `red BASE`: build the `BASE` tree, lay the HEAD test folders and `pyproject.toml` and `uv.lock` over it, and run each touched test item. A touched item is a test item that is new or whose function body changed. Each one must fail or error. A pass or a skip is reported as `FAKE` and the gate fails. The base code must shadow any installed copy of the package. It prints one count line; `--verbose` also lists each red item. If the base run cannot load a `conftest.py` because it needs the new code, every touched item counts as red; any other failure to start pytest stops the gate. | MUST |
 | FR-0.3 | Test retention gate. A branch may not drop a test function that `BASE` holds, unless a commit in the range carries a `Retires: <row>` trailer. Renamed files are followed. | MUST |
 | FR-0.4 | No-comment gate. Python files under `src/`, `tests/`, `gates/` and `scripts/` hold no comment tokens, except a shebang on line 1 and `noqa`, `type:` or `pragma:` markers. Shell files (`loop.sh`, `scripts/*.sh`, `.githooks/*`) hold no full-line comments except the shebang. A `--staged` mode reads the staged copy. | MUST |
 | FR-0.5 | No-source-reading gate. Test files may not name a file under `src/` that ends in `.py`, call `inspect.getsource`, `getsourcelines` or `getsourcefile`, or read `__file__` of a module imported from the product package. | MUST |
@@ -42,7 +42,7 @@ ralph.log, .ralph/iter-*.log               scripts/gate.sh (same gates as CI)
 | FR-0.7 | Secret gate. gitleaks 8.30.1, fetched by `scripts/install-gitleaks.sh` and checked against its sha256, scans the commits in `BASE..HEAD`. Any finding fails the gate. | MUST |
 | FR-0.8 | Spec coverage gate. Each done row in `PROGRESS.md` cites at least one spec ID. Each cited ID has at least one test named `test_fr<a>_<b>_...` or `test_nfr<n>_...`. Each ID that a test name carries exists in `SPECIFICATION.md` or `specs/`. | MUST |
 | FR-0.9 | Verification gate. Each done row has a `### <row>` section in `VERIFICATION.md` with a fenced command block, a line that starts with `Expect:` and a line that starts with `Artifact:`. Each artifact the line names in backticks must be a file or folder in the repo, or an `https` URL. | MUST |
-| FR-0.10 | Inputs gate. On a branch whose name does not start with `input/`, the range may not change an input path: `specs/`, `SPECIFICATION.md`, `PROMPT.md`, `CLAUDE.md`, `loop.sh`, `gates/`, `.github/`, `.githooks/`, `deploy/systemd/`, `.readability-allow`, `scripts/gate.sh`, `scripts/test.sh`, `scripts/secretscan.sh`, `scripts/wait-ci.sh`, `scripts/ship-pr.sh`, `scripts/notify.sh`, `scripts/install-gitleaks.sh`, `scripts/check-reply.sh`, `scripts/install-hooks.sh`. The branch name comes from `GITHUB_HEAD_REF` when set. | MUST |
+| FR-0.10 | Inputs gate. On a branch whose name does not start with `input/`, the range may not change an input path: `specs/`, `SPECIFICATION.md`, `PROMPT.md`, `CLAUDE.md`, `loop.sh`, `gates/`, `.github/`, `.githooks/`, `deploy/systemd/`, `.readability-allow`, `scripts/gate.sh`, `scripts/test.sh`, `scripts/secretscan.sh`, `scripts/wait-ci.sh`, `scripts/ship-pr.sh`, `scripts/notify.sh`, `scripts/install-gitleaks.sh`, `scripts/check-reply.sh`, `scripts/install-hooks.sh`, `scripts/lib/`. The branch name comes from `GITHUB_HEAD_REF` when set. | MUST |
 | FR-0.11 | Coverage of `src/` and `gates/` is at least 80% of lines. | MUST |
 | FR-0.12 | `ruff check` and `ruff format --check` pass. | MUST |
 | FR-0.13 | `loop.sh` runs one agent turn per pass, bounded by `RALPH_TURN_SECS` (default 7200). It exits on a `STOP` file and waits while a `HOLD` file exists. It gives the agent the row that `python -m gates.ledger pick` chose. It keeps a log per turn under `.ralph/` and appends to `ralph.log`. When the agent output names a usage limit, it sleeps until the stated reset (or `RALPH_BACKOFF_SECS`) and does not count the turn. When `loop.sh` changes on disk, it starts the new copy for the turns left. | MUST |
@@ -57,13 +57,13 @@ ralph.log, .ralph/iter-*.log               scripts/gate.sh (same gates as CI)
 | FR-0.22 | The loop uses `RALPH_MODEL` (default `sonnet`). After a turn that adds no commit, the next turn uses `RALPH_ESCALATE_MODEL` (default `opus`). A turn that adds a commit switches back. Measured on 2026-10-06: a cache write costs $4.0 per million tokens on Sonnet and $8.0 on Opus; a cache read costs about $0.20 on both. | MUST |
 | FR-0.23 | `scripts/wait-ci.sh <pr>` waits for a PR's checks and prints one line: merged (exit 0), failed with the failing check names (exit 1), still running at the time limit (exit 3), or every check passed but the PR is not merged and auto-merge is off (exit 4). It keeps waiting while no check has been reported yet, and while auto-merge is on and the merge has not landed. A `gh` failure exits 2. | MUST |
 | FR-0.25 | `scripts/ship-pr.sh <pr>` marks a PR ready and turns on auto-merge with a merge commit. GitHub refuses auto-merge while new checks are still queued, so it retries up to `SHIP_PR_TRIES` times (default 10) until GitHub reports auto-merge on, or the PR merged. It prints one line, and exits 1 if auto-merge never turns on. | MUST |
-| FR-0.24 | `scripts/gate.sh` prints one line per passing step, and the last 60 lines of a failing step. `GATE_VERBOSE=1` prints everything. | MUST |
+| FR-0.24 | `scripts/gate.sh` runs each step through `step` in `scripts/lib/step.sh`. A passing step prints one line. A failing step prints the last 60 lines of its output and stops the gate with that step's exit code. `GATE_VERBOSE=1` prints everything and still stops on a failure. | MUST |
 
 ## 5. Non-functional requirements
 
 | ID | Requirement | Priority |
 |----|-------------|----------|
-| NFR-11 | Gates give the same verdict on any machine: tool versions are pinned and tests clear git settings from the user and from hooks. | MUST |
+| NFR-11 | Gates give the same verdict on any machine: tool versions are pinned, and tests clear git settings from the user and from hooks, and loop, gate and notify settings from the caller. | MUST |
 | NFR-12 | CI runs on fresh GitHub-hosted runners, so every green run is a clean-room run. | MUST |
 | NFR-13 | The full gate takes under 10 minutes on a CI runner. | SHOULD |
 
@@ -93,9 +93,11 @@ Gate tests live in `gates/tests/`. Each builds a throwaway git repo and runs the
 | FR-0.21 | `test_loop.py` | A turn's cost and tokens land in `usage.csv` and `ralph.log` |
 | FR-0.22 | `test_loop.py` | A turn with no commit makes the next turn use the bigger model; a commit keeps the small one |
 | FR-0.23 | `test_wait_ci.py` | Merged, failed, time limit, green but not merged, and `gh` failure each give one line and the right exit code |
+| FR-0.24 | `test_gate_step.py` | A failing step stops the gate with its exit code; a passing step prints one line; verbose mode still stops |
+| NFR-11 | `test_loop.py` | Tests pass even when the caller sets loop settings such as a fallback agent |
 | FR-0.25 | `test_ship_pr.py` | Auto-merge is retried until GitHub reports it on; a merged PR is fine; it gives up after the set tries |
 
-FR-0.1, FR-0.11, FR-0.12 and FR-0.24 are checked by the CI run itself. Its log is the proof.
+FR-0.1, FR-0.11 and FR-0.12 are checked by the CI run itself. Its log is the proof.
 
 ## 7. Validation evidence
 
