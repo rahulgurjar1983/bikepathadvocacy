@@ -50,3 +50,13 @@ uv run pytest tests/test_smoke.py -q
 
 Expect: the script builds the image and prints `bikeplan 0.1.0` from inside the container. It exits 2 with a message when Docker is missing. The two smoke tests pass.
 Artifact: `artifacts/P0.2/smoke.txt`
+
+### P1.1
+
+```bash
+uv run python -c "from bikeplan.config import load_region, config_hash; r = load_region('artifacts/P1.1/region.yaml'); print(r.id, r.boundary.osm_relation); print(config_hash(r, {'id': 'au-nsw'}))"
+uv run pytest tests/test_config.py -q
+```
+
+Expect: the first command prints `au-nsw-bayside 7038238` and a 64 character hash that is the same on every run. The 22 config tests pass.
+Artifact: `artifacts/P1.1/hash.txt`
