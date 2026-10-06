@@ -6,6 +6,7 @@ import re
 import shutil
 import sqlite3
 import struct
+import subprocess
 import tempfile
 import time
 import urllib.error
@@ -600,3 +601,68 @@ def fetch_snapshot(region: Region, out: str | Path, endpoint: str = OVERPASS_END
     }
     (out_path / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     return manifest
+
+
+def verify_snapshot(directory: str | Path) -> tuple[list[str], list[str]]:
+    base = Path(directory)
+    manifest = json.loads((base / "manifest.json").read_text())
+    passed, failed = [], []
+    for entry in manifest["files"]:
+        path = base / entry["path"]
+        if not path.is_file():
+            failed.append(f"{entry['name']} missing")
+            continue
+        content = path.read_bytes()
+        if len(content) != entry["bytes"]:
+            failed.append(f"{entry['name']} size {len(content)} expected {entry['bytes']}")
+        elif hashlib.sha256(content).hexdigest() != entry["sha256"]:
+            failed.append(f"{entry['name']} sha256 mismatch")
+        else:
+            passed.append(f"{entry['name']} ok {entry['sha256']}")
+    return passed, failed
+
+
+def release_tag(manifest: dict) -> str:
+    return f"snapshot-{manifest['region']}-{manifest['snapshot_id']}"
+
+
+def run_gh(*args: str) -> subprocess.CompletedProcess:
+    return subprocess.run(["gh", *args], capture_output=True, text=True)
+
+
+def publish_snapshot(directory: str | Path, repo: str | Path = ".") -> None:
+    base = Path(directory)
+    manifest = json.loads((base / "manifest.json").read_text())
+    tag = release_tag(manifest)
+    if run_gh("release", "view", tag).returncode != 0:
+        created = run_gh(
+            "release",
+            "create",
+            tag,
+            "--title",
+            tag,
+            "--notes",
+            f"Input files of snapshot {manifest['snapshot_id']} for {manifest['region']}",
+        )
+        if created.returncode != 0:
+            raise OSError(f"gh release create failed: {created.stderr.strip()}")
+    files = [str(base / entry["path"]) for entry in manifest["files"]]
+    uploaded = run_gh("release", "upload", tag, *files, "--clobber")
+    if uploaded.returncode != 0:
+        raise OSError(f"gh release upload failed: {uploaded.stderr.strip()}")
+    target = Path(repo) / "snapshots" / manifest["region"] / manifest["snapshot_id"]
+    target.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(base / "manifest.json", target / "manifest.json")
+
+
+def pull_snapshot(manifest_path: str | Path, cache: str | Path = "data/cache") -> Path:
+    manifest = json.loads(Path(manifest_path).read_text())
+    target = Path(cache) / manifest["region"] / manifest["snapshot_id"]
+    target.mkdir(parents=True, exist_ok=True)
+    downloaded = run_gh(
+        "release", "download", release_tag(manifest), "--dir", str(target), "--clobber"
+    )
+    if downloaded.returncode != 0:
+        raise OSError(f"gh release download failed: {downloaded.stderr.strip()}")
+    shutil.copyfile(manifest_path, target / "manifest.json")
+    return target
