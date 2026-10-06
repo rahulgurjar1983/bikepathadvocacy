@@ -226,3 +226,13 @@ uv run python -I -c 'from collections import Counter; from bikeplan.config impor
 
 Expect: The tests pass. The run prints `edges 80074`, `lts_km {1: 1077.6, 2: 2405.5, 3: 753.9, 4: 291.5}` and `aaa_km {'none': 549.2, 'off_road': 381.8, 'protected': 9.8, 'shared': 3.0}`. Paths and protected lanes score 1; AAA needs LTS 1 and a path, a protected lane or a mixed-traffic rule of the profile.
 Artifact: `artifacts/P4.3/aaa.txt`
+
+### P4.4
+
+```bash
+uv run pytest tests/test_stress_crossings.py -q
+uv run python -I -c '' | tee artifacts/P4.4/crossings.txt
+```
+
+Expect: The tests pass. The run prints `signalised 9352`, `refuge 5714` and `raised 3136 {2: 1647, 3: 1371, 4: 118}`. Junction nodes with a signal within 25 m are skipped; every other leg meeting an unsignalised main street is raised to the Mineta crossing score when that is higher.
+Artifact: `artifacts/P4.4/crossings.txt`
