@@ -1,0 +1,59 @@
+# Glossary
+
+Each term below is a project word. The reading gate swaps these words for a plain stand-in before it scores a page. That way hard project words do not skew the score. Add a term only when it is a real project word.
+
+- **AAA** — All Ages and Abilities: a route safe for a child or an older rider.
+- **ABS** — the Australian Bureau of Statistics. It runs the census.
+- **access** — how many needed places a home can reach by bike.
+- **ADT** — Average Daily Traffic: how many cars pass a point on a normal day.
+- **arterial** — a main road that carries a lot of through traffic.
+- **artifact** — a saved output file that proves a task works.
+- **Austroads** — the group that writes road design guides for Australia and New Zealand.
+- **Australia** — the country where the first test region is.
+- **Bayside** — Bayside Council, a council in the south of Sydney. It is the first test region.
+- **bike** — a bicycle, including an electric bicycle.
+- **BNA** — Bicycle Network Analysis: a method from PeopleForBikes that scores how well safe bike routes link homes to places.
+- **cadastre** — the official map of land lots and their edges.
+- **carriageway** — the part of a road between the kerbs where cars drive.
+- **commit** — one saved change in git.
+- **council** — the local government that runs streets in an area.
+- **cycleway** — a bike lane or path kept apart from cars.
+- **data** — facts and numbers that we read from a file or a web service.
+- **Dijkstra** — a standard way to find the shortest path in a network.
+- **disruption** — what a change takes from people who drive or park today.
+- **Furth** — Peter Furth, who wrote the Level of Traffic Stress tables we use.
+- **GeoJSON** — a text file format for map shapes.
+- **GeoPackage** — a one-file database format for map data.
+- **gitleaks** — a tool that scans git for leaked secrets.
+- **km/h** — kilometres per hour.
+- **Kontur** — a company that gives away population counts on a grid for every country.
+- **LGA** — Local Government Area: the land one council runs.
+- **LTS** — Level of Traffic Stress: a score from 1 to 4 of how hard a street feels on a bike.
+- **manifest** — a list of input files with where each came from and its hash.
+- **Mekuria** — Maaza Mekuria, who wrote the first Level of Traffic Stress report with Furth.
+- **Mineta** — the Mineta Transportation Institute, which put out the first Level of Traffic Stress report.
+- **NACTO** — a group of city transport leaders in the United States that writes street design guides.
+- **NSW** — New South Wales, a state of Australia.
+- **OpenStreetMap** — the free world map that anyone can edit.
+- **OSM** — short for OpenStreetMap.
+- **Overpass** — a free web service that returns OpenStreetMap data for an area, even as it was on a past date.
+- **PeopleForBikes** — a United States group that runs the Bicycle Network Analysis.
+- **profile** — a file of design numbers for one place, each with its source.
+- **project** — one bike path change we put forward, such as a cycleway on one street.
+- **pytest** — the Python test runner.
+- **Python** — the coding language this tool is written in.
+- **Ralph** — a build loop that runs an AI coding agent once per task until the task list is done.
+- **region** — the area one run covers, such as one council.
+- **reserve** — the strip of public land a road sits in, from fence to fence.
+- **ruff** — a Python lint and format tool.
+- **separator** — the kerb, island or gap that keeps a bike lane apart from cars.
+- **signal** — a traffic light.
+- **snapshot** — a fixed copy of input data taken on one date.
+- **spec** — a file that says what a part of the system must do.
+- **Sydney** — the largest city in New South Wales.
+- **systemd** — the Linux service manager that keeps the loop running.
+- **textstat** — the Python library that scores how easy text is to read.
+- **TfNSW** — Transport for NSW, the state transport agency.
+- **traffic** — the cars, trucks and buses that use a road.
+- **quietway** — a local street made calm for bikes with a low speed limit and few cars.
+- **width** — how wide a road or lane is, in metres.
