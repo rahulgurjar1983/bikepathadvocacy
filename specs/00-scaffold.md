@@ -42,7 +42,7 @@ ralph.log, .ralph/iter-*.log               scripts/gate.sh (same gates as CI)
 | FR-0.7 | Secret gate. gitleaks 8.30.1, fetched by `scripts/install-gitleaks.sh` and checked against its sha256, scans the commits in `BASE..HEAD`. Any finding fails the gate. | MUST |
 | FR-0.8 | Spec coverage gate. Each done row in `PROGRESS.md` cites at least one spec ID. Each cited ID has at least one test named `test_fr<a>_<b>_...` or `test_nfr<n>_...`. Each ID that a test name carries exists in `SPECIFICATION.md` or `specs/`. | MUST |
 | FR-0.9 | Verification gate. Each done row has a `### <row>` section in `VERIFICATION.md` with a fenced command block, a line that starts with `Expect:` and a line that starts with `Artifact:`. Each artifact the line names in backticks must be a file or folder in the repo, or an `https` URL. | MUST |
-| FR-0.10 | Inputs gate. On a branch whose name does not start with `input/`, the range may not change an input path: `specs/`, `SPECIFICATION.md`, `PROMPT.md`, `CLAUDE.md`, `loop.sh`, `gates/`, `.github/`, `.githooks/`, `deploy/systemd/`, `.readability-allow`, `scripts/gate.sh`, `scripts/test.sh`, `scripts/secretscan.sh`, `scripts/wait-ci.sh`, `scripts/notify.sh`, `scripts/install-gitleaks.sh`, `scripts/check-reply.sh`, `scripts/install-hooks.sh`. The branch name comes from `GITHUB_HEAD_REF` when set. | MUST |
+| FR-0.10 | Inputs gate. On a branch whose name does not start with `input/`, the range may not change an input path: `specs/`, `SPECIFICATION.md`, `PROMPT.md`, `CLAUDE.md`, `loop.sh`, `gates/`, `.github/`, `.githooks/`, `deploy/systemd/`, `.readability-allow`, `scripts/gate.sh`, `scripts/test.sh`, `scripts/secretscan.sh`, `scripts/wait-ci.sh`, `scripts/ship-pr.sh`, `scripts/notify.sh`, `scripts/install-gitleaks.sh`, `scripts/check-reply.sh`, `scripts/install-hooks.sh`. The branch name comes from `GITHUB_HEAD_REF` when set. | MUST |
 | FR-0.11 | Coverage of `src/` and `gates/` is at least 80% of lines. | MUST |
 | FR-0.12 | `ruff check` and `ruff format --check` pass. | MUST |
 | FR-0.13 | `loop.sh` runs one agent turn per pass, bounded by `RALPH_TURN_SECS` (default 7200). It exits on a `STOP` file and waits while a `HOLD` file exists. It gives the agent the row that `python -m gates.ledger pick` chose. It keeps a log per turn under `.ralph/` and appends to `ralph.log`. When the agent output names a usage limit, it sleeps until the stated reset (or `RALPH_BACKOFF_SECS`) and does not count the turn. When `loop.sh` changes on disk, it starts the new copy for the turns left. | MUST |
@@ -55,7 +55,8 @@ ralph.log, .ralph/iter-*.log               scripts/gate.sh (same gates as CI)
 | FR-0.20 | The loop runs the agent lean: skills off (`--disable-slash-commands`), no MCP servers (`--strict-mcp-config`), only the tools in `RALPH_TOOLS` (default `Bash,Read,Edit,Write,Glob,Grep,WebSearch,WebFetch`, so no subagents), and JSON output. Measured on 2026-10-06: 11,717 tokens of context per API call, against 24,802 with the defaults. | MUST |
 | FR-0.21 | After each turn the loop reads the agent's JSON result and appends cost, tokens and API calls to `.ralph/usage.csv`, with one summary line in `ralph.log`. | MUST |
 | FR-0.22 | The loop uses `RALPH_MODEL` (default `sonnet`). After a turn that adds no commit, the next turn uses `RALPH_ESCALATE_MODEL` (default `opus`). A turn that adds a commit switches back. Measured on 2026-10-06: a cache write costs $4.0 per million tokens on Sonnet and $8.0 on Opus; a cache read costs about $0.20 on both. | MUST |
-| FR-0.23 | `scripts/wait-ci.sh <pr>` waits for a PR's checks and prints one line: merged (exit 0), failed with the failing check names (exit 1), or still running at the time limit (exit 3). A `gh` failure exits 2. | MUST |
+| FR-0.23 | `scripts/wait-ci.sh <pr>` waits for a PR's checks and prints one line: merged (exit 0), failed with the failing check names (exit 1), still running at the time limit (exit 3), or every check passed but the PR is not merged (exit 4). It keeps waiting while no check has been reported yet. A `gh` failure exits 2. | MUST |
+| FR-0.25 | `scripts/ship-pr.sh <pr>` marks a PR ready and turns on auto-merge with a merge commit. GitHub refuses auto-merge while new checks are still queued, so it retries up to `SHIP_PR_TRIES` times (default 10) until GitHub reports auto-merge on, or the PR merged. It prints one line, and exits 1 if auto-merge never turns on. | MUST |
 | FR-0.24 | `scripts/gate.sh` prints one line per passing step, and the last 60 lines of a failing step. `GATE_VERBOSE=1` prints everything. | MUST |
 
 ## 5. Non-functional requirements
@@ -91,7 +92,8 @@ Gate tests live in `gates/tests/`. Each builds a throwaway git repo and runs the
 | FR-0.20 | `test_loop.py` | The agent gets the lean flags and a tool list with no subagent tool |
 | FR-0.21 | `test_loop.py` | A turn's cost and tokens land in `usage.csv` and `ralph.log` |
 | FR-0.22 | `test_loop.py` | A turn with no commit makes the next turn use the bigger model; a commit keeps the small one |
-| FR-0.23 | `test_wait_ci.py` | Merged, failed, time limit and `gh` failure each give one line and the right exit code |
+| FR-0.23 | `test_wait_ci.py` | Merged, failed, time limit, green but not merged, and `gh` failure each give one line and the right exit code |
+| FR-0.25 | `test_ship_pr.py` | Auto-merge is retried until GitHub reports it on; a merged PR is fine; it gives up after the set tries |
 
 FR-0.1, FR-0.11, FR-0.12 and FR-0.24 are checked by the CI run itself. Its log is the proof.
 

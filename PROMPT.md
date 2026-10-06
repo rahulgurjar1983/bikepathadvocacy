@@ -13,18 +13,17 @@ You are one turn of a build loop that runs on its own. Do one task well, save it
 ## Steps
 
 1. **Sync.** Run `git fetch origin`. If you are on `main`, run `git merge --ff-only origin/main`.
-2. **Finish open work first.** Run `gh pr list --state open --json number,headRefName,isDraft,mergeStateStatus`. A `loop/*` PR that is not on its way to merge is your unfinished work. Take the oldest one: check out its branch, merge `origin/main`, read the failed job with `gh run view <id> --log-failed`, fix the real cause, and push. One PR per turn. Start new work only when no loop PR is stuck.
+2. **Finish open work first.** Run `gh pr list --state open --json number,headRefName,isDraft`. A `loop/*` PR is your unfinished work. Run `scripts/wait-ci.sh <pr>` on the oldest one and act on its one line, as in step 11. One PR per turn. Start new work only when no loop PR is open.
 3. **Pick.** Work on the row named in the turn note. The loop picks it with `python -m gates.ledger pick`. Never work on a row marked 🔒 or 👤.
 4. **Branch.** Run `git checkout -b loop/<row-id>-<short-name> origin/main`.
-5. **Tests first.** Write tests from the spec IDs the row cites. Name each test `test_fr<a>_<b>_<what>` for `FR-a.b`, or `test_nfr<n>_<what>` for `NFR-n`. Run them and watch them fail. Commit the tests alone, as `test(<row>): <what>`. Put new cases in new test functions. Do not add cases to a test that already passes.
-6. **Code.** Write the least code that makes the tests pass and meets the spec. Match the code around you. No comments. Commit the code alone, as `feat(<row>): <what>`.
-7. **Full gate.** Run `scripts/gate.sh`. It runs lint, format, the no-comment and no-source-reading checks, the reading gate, the inputs gate, red-green, test retention, spec coverage, the verification check, the secret scan, and the whole test suite with coverage. Fix the code until it is green. Never weaken a test. Never use `--no-verify`.
-8. **Real run.** Run the feature for real, the way the row says. Save a small output under `artifacts/<row-id>/`. Big files go to a GitHub release, with their sha256 in a committed manifest. No file over 5 MB goes in git.
-9. **Write it down.** Add a `### <row-id>` section to `VERIFICATION.md` with the command, an `Expect:` line and an `Artifact:` line. Mark the row `[x]` in `PROGRESS.md`. Add lasting tips to `AGENT_NOTES.md`. Commit these docs as `docs(<row>): <what>`.
-10. **Review.** Push with `git push -u origin <branch>` and open a draft PR with `gh pr create --draft`. Use the title `<row-id>: <title>` and a body under 100 words. Then run the `code-review` skill on the branch. Fix each real finding the same way: tests in one commit, code in the next. Push and review again until it is clean.
-11. **Ship.** When `scripts/gate.sh` is green and the review is clean, run `gh pr ready`, then `gh pr merge --auto --merge`. CI runs once when the PR is ready, and the PR merges itself on green.
-12. **Watch.** Run `gh pr checks --watch` for up to 30 minutes. If a check fails, fix the cause on the same branch and push. If time runs out, stop. The next turn picks the PR up in step 2.
-13. **Stop.** Do not start a second row.
+5. **Tests first.** Write tests from the spec IDs the row cites. Name each test `test_fr<a>_<b>_<what>` for `FR-a.b`, or `test_nfr<n>_<what>` for `NFR-n`. Run just those tests and watch them fail. Commit the tests alone, as `test(<row>): <what>`. Put new cases in new test functions. Do not add cases to a test that already passes.
+6. **Code.** Write the least code that makes the tests pass and meets the spec. Match the code around you. No comments. Run just the tests you touched until they pass. Commit the code alone, as `feat(<row>): <what>`.
+7. **Real run.** Run the feature for real, the way the row's spec says. Save a small output under `artifacts/<row-id>/`. Big files go to a GitHub release, with their sha256 in a committed manifest. No file over 5 MB goes in git.
+8. **Write it down.** Add a `### <row-id>` section to `VERIFICATION.md` with the command, an `Expect:` line and an `Artifact:` line that names the file in backticks. Mark the row `[x]` in `PROGRESS.md`. Add lasting tips to `AGENT_NOTES.md`. Commit these docs as `docs(<row>): <what>`.
+9. **Push.** Run `git push -u origin <branch>`. The pre-push hook runs the full gate once: lint, format, no comments, no source reads, reading level, inputs, red-green, test retention, spec coverage, verification, secret scan, and every test with coverage. If it fails, fix the cause (tests and code in separate commits) and push again. Never weaken a test. Never use `--no-verify`.
+10. **Ship.** Open a draft PR with `gh pr create --draft`, a title of `<row-id>: <title>` and a body under 100 words. Then run `scripts/ship-pr.sh <pr>`. It marks the PR ready and turns on auto-merge. The gate in the hook and the CI run on a clean GitHub runner are the independent review.
+11. **Watch.** Run `scripts/wait-ci.sh <pr>`. It prints one line. Exit 0: merged, so you are done. Exit 1: a check failed; read it with `gh run view <run-id> --log-failed | tail -n 80`, fix the cause on the same branch, push, and watch again. Exit 3: CI is still running, so stop; the next turn picks the PR up. Exit 4: run `scripts/ship-pr.sh <pr>` again, then watch again.
+12. **Stop.** Do not start a second row.
 
 ## Rules
 
@@ -37,3 +36,12 @@ You are one turn of a build loop that runs on its own. Do one task well, save it
 - **Red main stops all work.** If CI on `main` is red, making it green is the only task.
 - **Readable docs.** Each Markdown file you change must pass `uv run python -m gates.readability <file>`. Put real project words in `GLOSSARY.md`. Reword hard plain words.
 - **No secrets in git.** Keys live in files under `~/.config/`, never in the repo.
+
+## Token budget
+
+Each turn's cost lands in `.ralph/usage.csv`, so waste shows up in numbers.
+
+- Read only what the row needs: the spec it cites and the files you change. For a big file, use `grep -n` and `sed -n '<a>,<b>p'` instead of reading it whole.
+- While you work, run only the tests you touch. The pre-push hook runs everything once.
+- Never print a big output. Pipe logs through `tail -n 80`.
+- Run each long command once and keep its result. Do not run the same check twice to look again.

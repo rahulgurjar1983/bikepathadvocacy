@@ -47,13 +47,13 @@ def wait_ci(tmp_path: Path, states: list[str], **extra: str):
 
 
 def test_fr0_23_merged_pr_gives_one_line_and_exit_zero(tmp_path):
-    result = wait_ci(tmp_path, ["OPEN\t2", "OPEN\t1", "MERGED\t0"])
+    result = wait_ci(tmp_path, ["OPEN|2||2", "OPEN|1||2", "MERGED|0||2"])
     assert result.returncode == 0, result.stdout + result.stderr
     assert result.stdout.splitlines() == ["wait-ci: PR 7 merged"]
 
 
 def test_fr0_23_failed_check_names_it_and_exits_one(tmp_path):
-    result = wait_ci(tmp_path, ["OPEN\t1\tgates"])
+    result = wait_ci(tmp_path, ["OPEN|1|gates|2"])
     assert result.returncode == 1, result.stdout + result.stderr
     lines = result.stdout.splitlines()
     assert lines[0] == "wait-ci: PR 7 has failed checks: gates"
@@ -70,3 +70,17 @@ def test_fr0_23_gh_failure_exits_two(tmp_path):
     result = wait_ci(tmp_path, ["OPEN\t2"], FAKE_GH_FAIL="1")
     assert result.returncode == 2
     assert "gh" in result.stderr
+
+
+def test_fr0_23_green_checks_without_a_merge_exit_four(tmp_path):
+    result = wait_ci(tmp_path, ["OPEN|0||2"])
+    assert result.returncode == 4, result.stdout + result.stderr
+    assert result.stdout.splitlines() == [
+        "wait-ci: PR 7 passed every check but is not merged; run scripts/ship-pr.sh 7"
+    ]
+
+
+def test_fr0_23_no_reported_checks_yet_keeps_waiting(tmp_path):
+    result = wait_ci(tmp_path, ["OPEN|0||0", "MERGED|0||2"])
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert result.stdout.splitlines() == ["wait-ci: PR 7 merged"]
