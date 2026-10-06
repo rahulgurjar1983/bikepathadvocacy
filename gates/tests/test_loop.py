@@ -403,3 +403,11 @@ def test_fr0_22_a_new_row_after_a_turn_with_no_commit_keeps_the_small_model(loop
     run_loop(repo, env, "2")
     assert "P0.3" in (state / "agent.args.2").read_text()
     assert flag_value(args_of(state, 2), "--model") == "sonnet"
+
+
+def test_fr0_20_agent_shell_may_wait_an_hour_for_the_push(loop_repo):
+    repo, env, state = loop_repo
+    env["FAKE_RUN"] = 'printf "%s" "$BASH_MAX_TIMEOUT_MS" > "$FAKE_STATE/bash_max"'
+    result = run_loop(repo, env, "1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert (state / "bash_max").read_text() == "3600000"
