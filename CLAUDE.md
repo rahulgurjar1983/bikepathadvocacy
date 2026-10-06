@@ -4,5 +4,13 @@ This repo is built by a Ralph loop (`loop.sh`, `PROMPT.md`). The loop writes the
 
 - Change inputs on a branch named `input/<topic>`. The inputs gate rejects input changes on any other branch.
 - To fix code, add a row to `PROGRESS.md` or fix the spec. Do not hand-edit code under `src/` or `tests/`.
-- Run `scripts/gate.sh` before every push. It is the same gate CI runs.
+- The pre-push hook runs `scripts/gate.sh`, the same gate CI runs. Do not run it again by hand before a push.
 - Score any reply to the owner with `scripts/check-reply.sh`.
+
+## Token budget
+
+Every step that spends model tokens must show its value in numbers, or it goes.
+
+- No LLM code review agents. Two review runs on 2026-10-06 made 600 API calls and used 52.8 million cache-read, 4.2 million cache-write and 0.66 million output tokens. Both ended at the usage limit with zero findings. The independent review is the gate in the pre-push hook plus the CI run on a clean GitHub runner.
+- Loop turns run with skills, MCP servers and subagents off. That cuts the context sent with each API call from 24,802 to 11,717 tokens (measured on 2026-10-06).
+- `.ralph/usage.csv` logs the cost and tokens of each loop turn. Use it to judge any change to the loop.
