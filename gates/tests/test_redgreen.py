@@ -223,3 +223,33 @@ def test_fr0_2_worktree_is_removed_after_the_check(mini):
     listed = mini.git("worktree", "list", "--porcelain")
     assert listed.count("worktree ") == 1
     assert Path(mini.path).exists()
+
+
+def test_fr0_2_collection_error_in_one_file_does_not_hide_a_fake(mini, capsys):
+    base = mini.head()
+    mini.write(
+        "tests/test_newmod.py",
+        """
+        from minipkg.newmod import three
+
+
+        def test_three():
+            assert three() == 3
+        """,
+    )
+    mini.append(
+        "tests/test_core.py",
+        """
+
+
+def test_one_again():
+    assert one() == 1
+""",
+    )
+    mini.commit("test: new module and a fake")
+    mini.write("src/minipkg/newmod.py", "def three():\n    return 3\n")
+    mini.commit("feat: three")
+    assert redgreen.main(["red", base]) == 1
+    out = capsys.readouterr()
+    assert "FAKE: tests/test_core.py::test_one_again" in out.out
+    assert "red: tests/test_newmod.py::test_three" in out.out
