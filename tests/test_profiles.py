@@ -136,3 +136,21 @@ def test_fr1_2_assumption_source_is_kept_and_flagged():
 def test_fr1_2_profile_changes_the_config_hash():
     assert config_hash({"a": 1}, real("au-nsw")) != config_hash({"a": 1}, real("generic"))
     assert config_hash({"a": 1}, real("au-nsw")) == config_hash({"a": 1}, real("au-nsw"))
+
+
+@pytest.mark.parametrize("name", ["au-nsw", "generic"])
+def test_fr4_9_parking_default_by_road_class_is_an_assumption(name):
+    classes = real(name).road_classes
+    for cls in ("residential", "unclassified", "tertiary", "secondary"):
+        assert classes[cls].parking.value is True, cls
+    for cls in ("primary", "trunk"):
+        assert classes[cls].parking.value is False, cls
+    assert all(item.parking.assumption for item in classes.values())
+
+
+def test_fr4_9_parking_default_must_be_true_or_false(tmp_path):
+    data = yaml.safe_load(yaml.safe_dump(GOOD))
+    data["road_classes"]["trunk"]["parking"]["value"] = "yes"
+    with pytest.raises(ConfigError) as info:
+        load_profile("tiny", write_profile(tmp_path, data))
+    assert "road_classes.trunk.parking" in str(info.value)
