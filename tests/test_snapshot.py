@@ -435,3 +435,26 @@ def test_fr2_1_snapshot_fetch_fails_on_an_adapter_it_cannot_run(routed_overpass_
 
     assert code != 0
     assert not (out / "manifest.json").exists()
+
+
+def test_fr2_9_manifest_paths_stay_inside_the_snapshot_folder(
+    routed_overpass_server, tmp_path, monkeypatch
+):
+    import json
+
+    from bikeplan import main
+
+    endpoint, _ = routed_overpass_server
+    region = bayside_without_adapters(tmp_path)
+    monkeypatch.chdir(tmp_path)
+
+    code = main(["snapshot", "fetch", str(region), "--out", "cache/snap", "--endpoint", endpoint])
+
+    assert code == 0
+    manifest = json.loads((tmp_path / "cache/snap/manifest.json").read_text())
+    assert [entry["path"] for entry in manifest["files"]] == [
+        "boundary.geojson",
+        "network.osm.gz",
+        "places.json",
+    ]
+    assert main(["snapshot", "verify", "cache/snap"]) == 0

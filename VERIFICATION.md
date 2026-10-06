@@ -143,3 +143,16 @@ uv run bikeplan snapshot verify "$SNAPSHOT_DIR"
 
 Expect: All 10 tests pass. The first verify prints `<name> ok <sha256>` per file and exits 0. After one byte is added, verify names `package_search_AU.json` with its wrong size and exits 1. Publish and pull run through a stand-in `gh`; the real release round trip is P2.6.
 Artifact: `artifacts/P2.5/verify.log`
+
+### P2.6
+
+```bash
+uv run pytest tests/test_snapshot.py -q -k fr2_9
+git clone --branch main "$(git remote get-url origin)" "$TMP/fresh"
+cd "$TMP/fresh"
+uv run bikeplan snapshot pull snapshots/au-nsw-bayside/2026-10-01/manifest.json
+uv run bikeplan snapshot verify data/cache/au-nsw-bayside/2026-10-01
+```
+
+Expect: The test passes. Pull downloads the four files from the release `snapshot-au-nsw-bayside-2026-10-01` and verify prints `ok` with the sha256 of `boundary.geojson`, `network.osm.gz`, `places.json` and `population.gpkg`, then exits 0.
+Artifact: `artifacts/P2.6/verify.log`

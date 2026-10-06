@@ -164,7 +164,7 @@ class OverpassClient:
         output_path.write_bytes(content)
         return ManifestEntry(
             name=output_path.name,
-            path=output_path.as_posix(),
+            path=output_path.name,
             sha256=hashlib.sha256(content).hexdigest(),
             bytes=len(content),
             source="OpenStreetMap via Overpass",
@@ -307,7 +307,7 @@ def fetch_boundary(
     return replace(
         entry,
         name=output_path.name,
-        path=output_path.as_posix(),
+        path=output_path.name,
         sha256=hashlib.sha256(content).hexdigest(),
         bytes=len(content),
     )
