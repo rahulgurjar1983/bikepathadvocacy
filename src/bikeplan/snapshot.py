@@ -3,7 +3,7 @@ import time
 import urllib.error
 import urllib.request
 from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from importlib.metadata import version
 from pathlib import Path
 from urllib.parse import urlencode
@@ -86,9 +86,7 @@ class OverpassClient:
             url=self.endpoint,
             licence=licence,
             attribution=attribution,
-            retrieved_at=datetime.now(timezone.utc)
-            .isoformat(timespec="seconds")
-            .replace("+00:00", "Z"),
+            retrieved_at=datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
         )
 
     @staticmethod
