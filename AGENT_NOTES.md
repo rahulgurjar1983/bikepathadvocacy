@@ -23,3 +23,4 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 ## BLOCKED
 
 None yet.
+- `boundary_geojson` joins relation ways into rings in plain Python, because shapely is not in the offline lock. `fetch_boundary` stores the raw reply only while it checks it, so an open relation leaves no file. The network query asks for XML; gzip is the job of the fetch command row.
