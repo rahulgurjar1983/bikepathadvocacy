@@ -33,8 +33,11 @@ def missing_parts(lines: list[str]) -> list[str]:
         missing.append("a fenced command block")
     if not any(re.match(r"^Expect:\s*\S", line) for line in lines):
         missing.append("an Expect: line")
-    if not any(re.match(r"^Artifact:\s*\S", line) for line in lines):
+    artifact_lines = [line for line in lines if re.match(r"^Artifact:\s*\S", line)]
+    if not artifact_lines:
         missing.append("an Artifact: line")
+    elif not any("`" in line for line in artifact_lines):
+        missing.append("an Artifact: line that names a file or URL in backticks; it names no file")
     return missing
 
 
