@@ -39,6 +39,49 @@ run_agent() {
   timeout --kill-after=60 "$RALPH_TURN_SECS" "$@"
 }
 
+usage_fields() {
+  python3 - "$1" <<'PY'
+import json
+import sys
+
+found = None
+with open(sys.argv[1], encoding="utf-8", errors="replace") as handle:
+    for line in handle:
+        line = line.strip()
+        if not line.startswith("{"):
+            continue
+        try:
+            record = json.loads(line)
+        except ValueError:
+            continue
+        if isinstance(record, dict) and "usage" in record:
+            found = record
+if found is None:
+    print(",,,,,")
+    sys.exit(0)
+usage = found.get("usage") or {}
+cost = f"{float(found.get('total_cost_usd') or 0):.4f}".rstrip("0").rstrip(".")
+keys = ("input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens", "output_tokens")
+counts = [str(int(usage.get(key) or 0)) for key in keys]
+print(",".join([cost, *counts, str(int(found.get("num_turns") or 0))]))
+PY
+}
+
+record_turn() {
+  local turn="$1" row_id="$2" used_model="$3" status="$4" progress="$5" log_file="$6" fields
+  fields="$(usage_fields "$log_file")"
+  if [ ! -f .ralph/usage.csv ]; then
+    echo "utc,turn,row,model,exit,progress,cost_usd,input,cache_write,cache_read,output,api_calls" >.ralph/usage.csv
+  fi
+  echo "$(date -u +%FT%TZ),$turn,$row_id,$used_model,$status,$progress,$fields" >>.ralph/usage.csv
+  IFS=, read -r cost _input cache_write cache_read output calls <<<"$fields"
+  log "turn $turn $row_id: $used_model \$${cost:-?}, ${calls:-?} calls, ${cache_read:-?} cache-read, ${cache_write:-?} cache-write, ${output:-?} output tokens, progress $progress"
+}
+
+commit_count() {
+  git rev-list --all --count 2>/dev/null || echo 0
+}
+
 main() {
   cd "$(dirname "$0")" || exit 1
   local self="$PWD/loop.sh"
@@ -58,7 +101,9 @@ main() {
   local fallback_bin="${RALPH_FALLBACK_BIN:-}"
   local prompt_file="${RALPH_PROMPT_FILE:-PROMPT.md}"
   local pick_cmd="${RALPH_PICK_CMD:-uv run --frozen python -m gates.ledger pick}"
-  local model="${RALPH_MODEL:-opus}"
+  local base_model="${RALPH_MODEL:-sonnet}"
+  local escalate_model="${RALPH_ESCALATE_MODEL:-opus}"
+  local tools="${RALPH_TOOLS:-Bash,Read,Edit,Write,Glob,Grep,WebSearch,WebFetch}"
   local pause="${RALPH_PAUSE_SECS:-5}"
   local hold_poll="${RALPH_HOLD_POLL_SECS:-30}"
   local idle_secs="${RALPH_IDLE_SECS:-1800}"
@@ -81,6 +126,7 @@ main() {
   fingerprint="$(cksum <"$self")"
 
   local i=0 idle=0 row status stamp turn_log note prompt agent_status secs fallback_log
+  local model row_id before progress
   while [ "$i" -lt "$max" ]; do
     if [ -f STOP ]; then
       log "STOP file present; ending after $i turn(s)"
@@ -129,9 +175,16 @@ main() {
     stamp="$(date -u +%Y%m%dT%H%M%SZ)"
     turn_log=".ralph/iter-${stamp}-$((i + 1)).log"
     note="You are one turn of the Ralph loop. Work on this row only: ${row}. Follow PROMPT.md."
-    log "turn $((i + 1))/$max: $row"
+    row_id="${row%% *}"
+    model="$base_model"
+    if [ -f .ralph/escalate ]; then
+      model="$escalate_model"
+    fi
+    before="$(commit_count)"
+    log "turn $((i + 1))/$max: $row ($model)"
     run_agent "$claude_bin" -p "$prompt" --model "$model" "${perm[@]}" \
-      --append-system-prompt "$note" >"$turn_log" 2>&1 </dev/null
+      --append-system-prompt "$note" --output-format json --disable-slash-commands \
+      --strict-mcp-config --tools "$tools" >"$turn_log" 2>&1 </dev/null
     agent_status=$?
     cat "$turn_log" >>ralph.log
 
@@ -146,7 +199,11 @@ main() {
         cat "$fallback_log" >>ralph.log
         if ! { [ "$agent_status" -ne 0 ] && is_limited "$fallback_log"; }; then
           i=$((i + 1))
-          log "turn $i done by the fallback agent (exit $agent_status)"
+          progress=no
+          if [ "$(commit_count)" -gt "$before" ]; then
+            progress=yes
+          fi
+          record_turn "$i" "$row_id" fallback "$agent_status" "$progress" "$fallback_log"
           sleep "$pause"
           continue
         fi
@@ -166,6 +223,14 @@ main() {
       log "turn $((i + 1)) ended with exit $agent_status"
     fi
     i=$((i + 1))
+    progress=no
+    if [ "$(commit_count)" -gt "$before" ]; then
+      progress=yes
+      rm -f .ralph/escalate
+    else
+      touch .ralph/escalate
+    fi
+    record_turn "$i" "$row_id" "$model" "$agent_status" "$progress" "$turn_log"
     sleep "$pause"
   done
   log "loop finished after $i turn(s)"

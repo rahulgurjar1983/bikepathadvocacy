@@ -16,6 +16,7 @@ INPUT_PATHS = [
     "scripts/gate.sh",
     "scripts/test.sh",
     "scripts/secretscan.sh",
+    "scripts/wait-ci.sh",
     "scripts/notify.sh",
     "scripts/install-gitleaks.sh",
     "scripts/check-reply.sh",

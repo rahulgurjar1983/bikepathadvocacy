@@ -1,3 +1,4 @@
+import json
 import os
 import shutil
 import subprocess
@@ -24,8 +25,27 @@ fi
 if [ -n "${FAKE_EDIT_LOOP:-}" ] && [ "$n" = "1" ]; then
   printf '\\n' >> loop.sh
 fi
+if [ -n "${FAKE_COMMIT:-}" ]; then
+  git commit -q --allow-empty -m "fake turn $n"
+fi
 echo "$FAKE_NAME turn $n done"
 """
+
+RESULT = {
+    "type": "result",
+    "is_error": False,
+    "total_cost_usd": 0.25,
+    "num_turns": 7,
+    "usage": {
+        "input_tokens": 5,
+        "cache_creation_input_tokens": 1000,
+        "cache_read_input_tokens": 20000,
+        "output_tokens": 300,
+    },
+    "result": "done",
+}
+
+FAKE_AGENT += f"printf '%s\\n' '{json.dumps(RESULT)}'\n"
 
 PROGRESS = "# Progress\n\n- [x] **P0.1** Done (FR-11.1)\n- [ ] **P0.2** Next thing (FR-11.2)\n"
 
@@ -192,3 +212,53 @@ def test_fr0_13_broken_ledger_stops_the_loop(loop_repo):
     result = run_loop(repo, env, "1")
     assert result.returncode != 0
     assert count(state) == 0
+
+
+def args_of(state: Path, n: int, name: str = "agent") -> list[str]:
+    return (state / f"{name}.args.{n}").read_text().split("\n")
+
+
+def flag_value(args: list[str], flag: str) -> str:
+    return args[args.index(flag) + 1]
+
+
+def test_fr0_20_agent_runs_without_skills_mcp_or_subagents(loop_repo):
+    repo, env, state = loop_repo
+    run_loop(repo, env, "1")
+    args = args_of(state, 1)
+    assert "--disable-slash-commands" in args
+    assert "--strict-mcp-config" in args
+    assert flag_value(args, "--output-format") == "json"
+    tools = flag_value(args, "--tools").split(",")
+    assert "Bash" in tools
+    assert "Agent" not in tools
+    assert "Task" not in tools
+
+
+def test_fr0_21_turn_cost_and_tokens_are_logged(loop_repo):
+    repo, env, _state = loop_repo
+    run_loop(repo, env, "1")
+    rows = (repo.path / ".ralph" / "usage.csv").read_text().splitlines()
+    assert rows[0] == (
+        "utc,turn,row,model,exit,progress,cost_usd,input,cache_write,cache_read,output,api_calls"
+    )
+    fields = rows[1].split(",")
+    assert fields[1:7] == ["1", "P0.2", "sonnet", "0", "no", "0.25"]
+    assert fields[7:12] == ["5", "1000", "20000", "300", "7"]
+    assert "turn 1 P0.2: sonnet $0.25" in (repo.path / "ralph.log").read_text()
+
+
+def test_fr0_22_a_turn_with_no_commit_escalates_the_next_turn(loop_repo):
+    repo, env, state = loop_repo
+    run_loop(repo, env, "2")
+    assert flag_value(args_of(state, 1), "--model") == "sonnet"
+    assert flag_value(args_of(state, 2), "--model") == "opus"
+
+
+def test_fr0_22_a_turn_with_a_commit_keeps_the_small_model(loop_repo):
+    repo, env, state = loop_repo
+    env["FAKE_COMMIT"] = "1"
+    run_loop(repo, env, "2")
+    assert flag_value(args_of(state, 2), "--model") == "sonnet"
+    rows = (repo.path / ".ralph" / "usage.csv").read_text().splitlines()
+    assert rows[1].split(",")[5] == "yes"

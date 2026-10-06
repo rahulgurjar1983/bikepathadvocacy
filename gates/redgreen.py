@@ -112,13 +112,25 @@ def function_bodies(text: str) -> dict[str, str]:
     return bodies
 
 
-def changed_test_files(base: str) -> list[str]:
-    files: list[str] = []
-    for line in git("diff", "--name-status", "--no-renames", base, "HEAD").splitlines():
-        status, path = line.split("\t", 1)
-        if status != "D" and is_test_file(path):
-            files.append(path)
-    return sorted(files)
+def changed_test_files(base: str) -> dict[str, str]:
+    files: dict[str, str] = {}
+    for line in git("diff", "--name-status", "-M", base, "HEAD").splitlines():
+        parts = line.split("\t")
+        if parts[0].startswith("D"):
+            continue
+        new = parts[-1]
+        if is_test_file(new):
+            files[new] = parts[1] if parts[0].startswith("R") else new
+    return dict(sorted(files.items()))
+
+
+def renamed_ids(ids: set[str], files: dict[str, str]) -> set[str]:
+    new_path = {old: new for new, old in files.items()}
+    moved: set[str] = set()
+    for item in ids:
+        path, sep, rest = item.partition("::")
+        moved.add(f"{new_path.get(path, path)}{sep}{rest}")
+    return moved
 
 
 def add_worktree(rev: str, where: Path) -> None:
@@ -248,7 +260,7 @@ def touched_items(
     return touched
 
 
-def red(base: str) -> int:
+def red(base: str, verbose: bool = False) -> int:
     python = python_bin()
     if not preflight(python):
         return fail_hard("redgreen", f"pytest is required; '{python} -m pytest --version' failed")
@@ -257,18 +269,19 @@ def red(base: str) -> int:
         print("redgreen: nothing to check (no test file changed)")
         return 0
     head_bodies = {name: function_bodies(file_at("HEAD", name) or "") for name in files}
-    base_bodies = {name: function_bodies(file_at(base, name) or "") for name in files}
+    base_bodies = {name: function_bodies(file_at(base, old) or "") for name, old in files.items()}
     work = Path(tempfile.mkdtemp(prefix="redgreen-"))
     head_tree = work / "head"
     base_tree = work / "base"
     try:
         add_worktree("HEAD", head_tree)
         add_worktree(base, base_tree)
-        head_ids, head_ok, head_out = collect(head_tree, files, python)
+        head_ids, head_ok, head_out = collect(head_tree, list(files), python)
         if not head_ok:
             print(head_out)
             return fail_hard("redgreen", "the branch's own tests do not collect")
-        base_ids, _, _ = collect(base_tree, files, python)
+        base_raw, _, _ = collect(base_tree, sorted(set(files.values())), python)
+        base_ids = renamed_ids(base_raw, files)
         touched = touched_items(head_ids, base_ids, head_bodies, base_bodies)
         if not touched:
             print("redgreen: nothing to check (no new or changed test item)")
@@ -283,8 +296,9 @@ def red(base: str) -> int:
         remove_worktree(base_tree)
         shutil.rmtree(work, ignore_errors=True)
     red_items, fake, unknown = judge(touched, results)
-    for item in red_items:
-        print(f"red: {item} fails without the code (good)")
+    if verbose:
+        for item in red_items:
+            print(f"red: {item} fails without the code (good)")
     for item in fake:
         print(f"FAKE: {item} passes or skips without the code")
     for item in unknown:
@@ -321,10 +335,11 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="gates.redgreen")
     parser.add_argument("mode", choices=["mixed", "red"])
     parser.add_argument("base", nargs="?")
+    parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args(argv)
     try:
         base = args.base or default_base()
-        return mixed(base) if args.mode == "mixed" else red(base)
+        return mixed(base) if args.mode == "mixed" else red(base, args.verbose)
     except ToolMissing as exc:
         return fail_hard("redgreen", str(exc))
 

@@ -34,15 +34,15 @@ ralph.log, .ralph/iter-*.log               scripts/gate.sh (same gates as CI)
 | ID | Requirement | Priority |
 |----|-------------|----------|
 | FR-0.1 | CI runs on every ready PR to `main`, on every push to `main`, nightly, and on demand. Draft PRs skip CI. The jobs `gates` and `test` are required checks on `main`. PRs merge with a merge commit so each test commit and code commit stays in history. | MUST |
-| FR-0.2 | Red-green gate. `mixed BASE`: no commit in `BASE..HEAD` (merges left out) changes both a test path (`tests/`, `gates/tests/`) and a code path (`src/`, `gates/` outside its tests, `scripts/`). `red BASE`: build the `BASE` tree, lay the HEAD test folders and `pyproject.toml` and `uv.lock` over it, and run each touched test item. A touched item is a test item that is new or whose function body changed. Each one must fail or error. A pass or a skip is reported as `FAKE` and the gate fails. The base code must shadow any installed copy of the package. | MUST |
+| FR-0.2 | Red-green gate. `mixed BASE`: no commit in `BASE..HEAD` (merges left out) changes both a test path (`tests/`, `gates/tests/`) and a code path (`src/`, `gates/` outside its tests, `scripts/`). `red BASE`: build the `BASE` tree, lay the HEAD test folders and `pyproject.toml` and `uv.lock` over it, and run each touched test item. A touched item is a test item that is new or whose function body changed. Each one must fail or error. A pass or a skip is reported as `FAKE` and the gate fails. The base code must shadow any installed copy of the package. It prints one count line; `--verbose` also lists each red item. | MUST |
 | FR-0.3 | Test retention gate. A branch may not drop a test function that `BASE` holds, unless a commit in the range carries a `Retires: <row>` trailer. Renamed files are followed. | MUST |
 | FR-0.4 | No-comment gate. Python files under `src/`, `tests/`, `gates/` and `scripts/` hold no comment tokens, except a shebang on line 1 and `noqa`, `type:` or `pragma:` markers. Shell files (`loop.sh`, `scripts/*.sh`, `.githooks/*`) hold no full-line comments except the shebang. A `--staged` mode reads the staged copy. | MUST |
 | FR-0.5 | No-source-reading gate. Test files may not name a file under `src/` that ends in `.py`, call `inspect.getsource`, `getsourcelines` or `getsourcefile`, or read `__file__` of a module imported from the product package. | MUST |
 | FR-0.6 | Reading gate. Each changed Markdown file, except those listed in `.readability-allow`, reads at grade 11 or lower on Flesch-Kincaid, Gunning-Fog, Dale-Chall and `text_standard` (textstat 0.7.13). Code, tables, links and HTML are left out. Glossary terms are swapped for a plain word first. Dale-Chall counts a regular form of an easy word (such as a plural or `-ed` form) as easy, as the original method does. Pages under 30 words are skipped. The glossary is valid only when each one-word term is an acronym or not an easy word, and the joined explanations pass. `scripts/check-reply.sh` scores reply text the same way. | MUST |
 | FR-0.7 | Secret gate. gitleaks 8.30.1, fetched by `scripts/install-gitleaks.sh` and checked against its sha256, scans the commits in `BASE..HEAD`. Any finding fails the gate. | MUST |
 | FR-0.8 | Spec coverage gate. Each done row in `PROGRESS.md` cites at least one spec ID. Each cited ID has at least one test named `test_fr<a>_<b>_...` or `test_nfr<n>_...`. Each ID that a test name carries exists in `SPECIFICATION.md` or `specs/`. | MUST |
-| FR-0.9 | Verification gate. Each done row has a `### <row>` section in `VERIFICATION.md` with a fenced command block, a line that starts with `Expect:` and a line that starts with `Artifact:`. | MUST |
-| FR-0.10 | Inputs gate. On a branch whose name does not start with `input/`, the range may not change an input path: `specs/`, `SPECIFICATION.md`, `PROMPT.md`, `CLAUDE.md`, `loop.sh`, `gates/`, `.github/`, `.githooks/`, `deploy/systemd/`, `.readability-allow`, `scripts/gate.sh`, `scripts/test.sh`, `scripts/secretscan.sh`, `scripts/notify.sh`, `scripts/install-gitleaks.sh`, `scripts/check-reply.sh`, `scripts/install-hooks.sh`. The branch name comes from `GITHUB_HEAD_REF` when set. | MUST |
+| FR-0.9 | Verification gate. Each done row has a `### <row>` section in `VERIFICATION.md` with a fenced command block, a line that starts with `Expect:` and a line that starts with `Artifact:`. Each artifact the line names in backticks must be a file or folder in the repo, or an `https` URL. | MUST |
+| FR-0.10 | Inputs gate. On a branch whose name does not start with `input/`, the range may not change an input path: `specs/`, `SPECIFICATION.md`, `PROMPT.md`, `CLAUDE.md`, `loop.sh`, `gates/`, `.github/`, `.githooks/`, `deploy/systemd/`, `.readability-allow`, `scripts/gate.sh`, `scripts/test.sh`, `scripts/secretscan.sh`, `scripts/wait-ci.sh`, `scripts/notify.sh`, `scripts/install-gitleaks.sh`, `scripts/check-reply.sh`, `scripts/install-hooks.sh`. The branch name comes from `GITHUB_HEAD_REF` when set. | MUST |
 | FR-0.11 | Coverage of `src/` and `gates/` is at least 80% of lines. | MUST |
 | FR-0.12 | `ruff check` and `ruff format --check` pass. | MUST |
 | FR-0.13 | `loop.sh` runs one agent turn per pass, bounded by `RALPH_TURN_SECS` (default 7200). It exits on a `STOP` file and waits while a `HOLD` file exists. It gives the agent the row that `python -m gates.ledger pick` chose. It keeps a log per turn under `.ralph/` and appends to `ralph.log`. When the agent output names a usage limit, it sleeps until the stated reset (or `RALPH_BACKOFF_SECS`) and does not count the turn. When `loop.sh` changes on disk, it starts the new copy for the turns left. | MUST |
@@ -52,6 +52,11 @@ ralph.log, .ralph/iter-*.log               scripts/gate.sh (same gates as CI)
 | FR-0.17 | Generic-code gate. Python under `src/bikeplan/`, outside `src/bikeplan/adapters/`, names no word from `gates/generic-denylist.txt` (region and country names). | MUST |
 | FR-0.18 | Ledger gate. Each line of `PROGRESS.md` that starts with `- [` is a task row. It must match `- [ ] **<ID>** <title> (<spec IDs>)`, with mark ` `, `x` or `~`, and an ID such as `P4.2` or `S0.1`. Row IDs are unique. A row that is open or in progress (`~`) and not locked is a candidate for the picker. | MUST |
 | FR-0.19 | `scripts/notify.sh` sends a Telegram note. The token and chat ID come from `~/.config/bikepathadvocacy/telegram.json`, never from the repo. `NOTIFY_DRY_RUN=1` prints the note instead. A missing config exits non-zero. | MUST |
+| FR-0.20 | The loop runs the agent lean: skills off (`--disable-slash-commands`), no MCP servers (`--strict-mcp-config`), only the tools in `RALPH_TOOLS` (default `Bash,Read,Edit,Write,Glob,Grep,WebSearch,WebFetch`, so no subagents), and JSON output. Measured on 2026-10-06: 11,717 tokens of context per API call, against 24,802 with the defaults. | MUST |
+| FR-0.21 | After each turn the loop reads the agent's JSON result and appends cost, tokens and API calls to `.ralph/usage.csv`, with one summary line in `ralph.log`. | MUST |
+| FR-0.22 | The loop uses `RALPH_MODEL` (default `sonnet`). After a turn that adds no commit, the next turn uses `RALPH_ESCALATE_MODEL` (default `opus`). A turn that adds a commit switches back. Measured on 2026-10-06: a cache write costs $4.0 per million tokens on Sonnet and $8.0 on Opus; a cache read costs about $0.20 on both. | MUST |
+| FR-0.23 | `scripts/wait-ci.sh <pr>` waits for a PR's checks and prints one line: merged (exit 0), failed with the failing check names (exit 1), or still running at the time limit (exit 3). A `gh` failure exits 2. | MUST |
+| FR-0.24 | `scripts/gate.sh` prints one line per passing step, and the last 60 lines of a failing step. `GATE_VERBOSE=1` prints everything. | MUST |
 
 ## 5. Non-functional requirements
 
@@ -74,7 +79,7 @@ Gate tests live in `gates/tests/`. Each builds a throwaway git repo and runs the
 | FR-0.6 | `test_readability.py` | Plain text passes; hard text fails; glossary terms help; bad glossary terms fail; short and exempt files are skipped; `--changed` scores only changed files; plural forms of easy words count as easy |
 | FR-0.7 | `test_secretscan.py` | A planted key fails the scan; a clean range passes |
 | FR-0.8 | `test_speccov.py` | Done rows need tests for each ID; unknown IDs fail; done rows need IDs; open rows are ignored |
-| FR-0.9 | `test_verifydoc.py` | Done rows need a full section; open rows do not |
+| FR-0.9 | `test_verifydoc.py` | Done rows need a full section; open rows do not; a named artifact must exist, or be a URL |
 | FR-0.10 | `test_inputs.py` | Loop branches may not touch inputs; input branches may; `GITHUB_HEAD_REF` wins |
 | FR-0.13 | `test_loop.py` | STOP exits; turns are capped; a usage limit sleeps and does not count; each turn logs; the picked row reaches the agent |
 | FR-0.14 | `test_ledger.py` | The top open row wins; locked and person rows are skipped; none left exits 3 |
@@ -83,8 +88,12 @@ Gate tests live in `gates/tests/`. Each builds a throwaway git repo and runs the
 | FR-0.17 | `test_generic.py` | A region name in core code fails; adapters may name regions |
 | FR-0.18 | `test_ledger.py` | Bad rows and repeated IDs fail |
 | FR-0.19 | `test_notify.py` | Dry run prints the note; a missing config fails |
+| FR-0.20 | `test_loop.py` | The agent gets the lean flags and a tool list with no subagent tool |
+| FR-0.21 | `test_loop.py` | A turn's cost and tokens land in `usage.csv` and `ralph.log` |
+| FR-0.22 | `test_loop.py` | A turn with no commit makes the next turn use the bigger model; a commit keeps the small one |
+| FR-0.23 | `test_wait_ci.py` | Merged, failed, time limit and `gh` failure each give one line and the right exit code |
 
-FR-0.1, FR-0.11 and FR-0.12 are checked by the CI run itself. Its log is the proof.
+FR-0.1, FR-0.11, FR-0.12 and FR-0.24 are checked by the CI run itself. Its log is the proof.
 
 ## 7. Validation evidence
 

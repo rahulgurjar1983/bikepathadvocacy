@@ -11,8 +11,24 @@ for tool in git uv; do
 done
 
 step() {
-  echo "== gate: $*"
-  "$@"
+  local name="$*" out start status
+  if [ "${GATE_VERBOSE:-0}" = 1 ]; then
+    echo "== gate: $name"
+    "$@"
+    return
+  fi
+  out="$(mktemp)"
+  start=$SECONDS
+  if "$@" >"$out" 2>&1; then
+    echo "ok   $name ($((SECONDS - start))s)"
+    rm -f "$out"
+    return
+  fi
+  status=$?
+  echo "FAIL $name (exit $status); last 60 lines:"
+  tail -n 60 "$out"
+  rm -f "$out"
+  exit "$status"
 }
 
 py=(uv run --frozen python)
@@ -49,4 +65,4 @@ esac
 if [ "${GATE_SKIP_TESTS:-0}" != 1 ]; then
   step scripts/test.sh
 fi
-echo "== gate: all green ($mode)"
+echo "gate: all green ($mode)"

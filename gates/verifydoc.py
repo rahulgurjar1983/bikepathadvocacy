@@ -33,9 +33,24 @@ def missing_parts(lines: list[str]) -> list[str]:
         missing.append("a fenced command block")
     if not any(re.match(r"^Expect:\s*\S", line) for line in lines):
         missing.append("an Expect: line")
-    if not any(re.match(r"^Artifact:\s*\S", line) for line in lines):
+    artifact_lines = [line for line in lines if re.match(r"^Artifact:\s*\S", line)]
+    if not artifact_lines:
         missing.append("an Artifact: line")
+    elif not any("`" in line for line in artifact_lines):
+        missing.append("an Artifact: line that names a file or URL in backticks; it names no file")
     return missing
+
+
+def artifacts(lines: list[str]) -> list[str]:
+    named: list[str] = []
+    for line in lines:
+        if line.startswith("Artifact:"):
+            named.extend(re.findall(r"`([^`]+)`", line))
+    return named
+
+
+def artifact_exists(name: str) -> bool:
+    return name.startswith("https://") or Path(name).exists()
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -47,6 +62,7 @@ def main(argv: list[str] | None = None) -> int:
     rows, _ = ledger.load()
     found = sections(DOC.read_text(encoding="utf-8"))
     problems: list[str] = []
+    checked = 0
     for row in rows:
         if not row.done:
             continue
@@ -55,11 +71,16 @@ def main(argv: list[str] | None = None) -> int:
             continue
         for part in missing_parts(found[row.ident]):
             problems.append(f"{row.ident}: section needs {part}")
+        for name in artifacts(found[row.ident]):
+            checked += 1
+            if not artifact_exists(name):
+                problems.append(f"{row.ident}: artifact {name} does not exist")
     for problem in problems:
         print(problem)
     if problems:
         return 1
-    print("verifydoc: ok")
+    noun = "artifact" if checked == 1 else "artifacts"
+    print(f"verifydoc: ok ({checked} {noun} checked)")
     return 0
 
 

@@ -9,16 +9,16 @@ git fetch origin
 scripts/gate.sh
 ```
 
-Expect: each gate prints its OK line, the red-green check lists every new gate test as red on the base tree, and the run ends with `== gate: all green (branch)`.
+Expect: one `ok` line per step and a last line of `gate: all green (branch)`. Set `GATE_VERBOSE=1` to see each step's full output, such as each test the red-green check found red on the base tree.
 Artifact: `artifacts/S0.1/gate-run.txt`
 
 ### S0.2
 
 ```bash
-uv run pytest gates/tests/test_loop.py gates/tests/test_ledger.py -q
+uv run pytest gates/tests/test_loop.py gates/tests/test_ledger.py gates/tests/test_wait_ci.py -q
 ```
 
-Expect: every loop and picker test passes.
+Expect: every loop, picker and CI wait test passes.
 Artifact: `artifacts/S0.2/loop-tests.txt`
 
 ### S0.3
