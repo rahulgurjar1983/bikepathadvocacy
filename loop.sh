@@ -15,6 +15,11 @@ is_limited() {
   grep -qiE 'hit your[[:alnum:][:space:]-]{0,16}limit|usage limit|limit (reached|exceeded)|reached your[[:alnum:][:space:]-]{0,16}limit' "$1"
 }
 
+fallback_limited() {
+  grep -E '^\{ *"type" *: *"(error|turn\.failed)"' "$1" |
+    grep -qiE 'hit your[[:alnum:][:space:]-]{0,16}limit|usage limit|limit (reached|exceeded)|reached your[[:alnum:][:space:]-]{0,16}limit|at capacity|rate limit'
+}
+
 reset_secs() {
   local line clock zone target now secs
   line="$(grep -ioE '(resets|try again at|available at)[^.]*' "$1" | tail -1)"
@@ -45,6 +50,7 @@ import json
 import sys
 
 found = None
+codex = []
 with open(sys.argv[1], encoding="utf-8", errors="replace") as handle:
     for line in handle:
         line = line.strip()
@@ -54,8 +60,19 @@ with open(sys.argv[1], encoding="utf-8", errors="replace") as handle:
             record = json.loads(line)
         except ValueError:
             continue
-        if isinstance(record, dict) and "usage" in record:
+        if not isinstance(record, dict) or "usage" not in record:
+            continue
+        if record.get("type") == "turn.completed":
+            codex.append(record["usage"] or {})
+        else:
             found = record
+if codex:
+    def total(key):
+        return sum(int(usage.get(key) or 0) for usage in codex)
+    cached = total("cached_input_tokens")
+    counts = [total("input_tokens") - cached, total("cache_write_input_tokens"), cached, total("output_tokens")]
+    print(",".join(["", *map(str, counts), str(len(codex))]))
+    sys.exit(0)
 if found is None:
     print(",,,,,")
     sys.exit(0)
@@ -198,11 +215,11 @@ main() {
         log "usage limit on $claude_bin; running the fallback agent"
         fallback_log="${turn_log%.log}-fallback.log"
         printf '%s\n\n%s\n' "$prompt" "$note" |
-          run_agent "$fallback_bin" --dangerously-bypass-approvals-and-sandbox exec --cd "$PWD" - \
+          run_agent "$fallback_bin" --dangerously-bypass-approvals-and-sandbox exec --json --cd "$PWD" - \
             >"$fallback_log" 2>&1
         agent_status=$?
         cat "$fallback_log" >>ralph.log
-        if ! { [ "$agent_status" -ne 0 ] && is_limited "$fallback_log"; }; then
+        if ! { [ "$agent_status" -ne 0 ] && fallback_limited "$fallback_log"; }; then
           i=$((i + 1))
           progress=no
           if [ "$(commit_count)" -gt "$before" ]; then
