@@ -1,0 +1,12 @@
+{
+  "attribution": "\u00a9 OpenStreetMap contributors",
+  "bytes": 15,
+  "licence": "ODbL 1.0",
+  "name": "overpass.json",
+  "path": "artifacts/P2.1/overpass.json",
+  "request": "[out:json][date:\"2026-10-01T00:00:00Z\"];node(1);out;",
+  "retrieved_at": "2026-10-06T14:12:32Z",
+  "sha256": "a91d7cc1eff74cb5a904d6073dd7724daedc69c4d432de62a1630a2e51bf94a6",
+  "source": "OpenStreetMap via Overpass",
+  "url": "http://127.0.0.1:38033/api/interpreter"
+}

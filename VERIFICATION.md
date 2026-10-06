@@ -89,3 +89,13 @@ uv run pytest tests/test_regions.py -q
 
 Expect: the output names the region, lists every profile value with its source (assumptions marked) and ends with a `config_hash:` line of 64 characters. The five region tests pass.
 Artifact: `artifacts/P1.3/config.txt`
+
+### P2.1
+
+```bash
+uv run python scripts/replay-overpass-client.py
+uv run pytest tests/test_snapshot.py -q --basetemp=/tmp/bikeplan-p21-pytest
+```
+
+Expect: The replay fetch pins the requested date and stores the exact query. The manifest entry records the URL, licence, retrieval time and file hash. The client tests pass.
+Artifact: `artifacts/P2.1/manifest-entry.json`, `artifacts/P2.1/overpass.json`
