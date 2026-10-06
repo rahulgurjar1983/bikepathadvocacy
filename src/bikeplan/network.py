@@ -10,6 +10,8 @@ from pathlib import Path
 import networkx as nx
 import osmnx as ox
 from pyproj import CRS, Transformer
+from shapely.geometry import LineString, shape
+from shapely.ops import transform
 
 from bikeplan.config import Profile, Region
 
@@ -298,6 +300,32 @@ def signal_points(xml: Path, crs: CRS) -> list[dict]:
     return points
 
 
+def boundary_polygon(path: Path, crs: CRS):
+    feature = json.loads(path.read_text())
+    geometry = feature["geometry"] if feature["type"] == "Feature" else feature
+    to_metres = Transformer.from_crs(4326, crs, always_xy=True)
+    return transform(to_metres.transform, shape(geometry))
+
+
+def inside_length(graph: nx.MultiDiGraph, u, v, data: dict) -> float:
+    geometry = data.get("geometry")
+    if geometry is None:
+        geometry = LineString([(graph.nodes[n]["x"], graph.nodes[n]["y"]) for n in (u, v)])
+    return graph.graph["boundary"].intersection(geometry).length
+
+
+def bike_segments(graph: nx.MultiDiGraph) -> dict:
+    segments = {}
+    for u, v, k, data in graph.edges(keys=True, data=True):
+        if not data["bike_ok"]:
+            continue
+        segment = segments.setdefault(
+            data["segment_id"], {"inside_m": inside_length(graph, u, v, data), "edges": []}
+        )
+        segment["edges"].append(((u, v, k), data))
+    return segments
+
+
 def build(snapshot: str | Path, region: Region, profile: Profile) -> nx.MultiDiGraph:
     folder = Path(snapshot)
     crs = utm_crs(*boundary_centre(folder / "boundary.geojson"))
@@ -312,6 +340,7 @@ def build(snapshot: str | Path, region: Region, profile: Profile) -> nx.MultiDiG
     graph = ox.project_graph(graph, to_crs=crs)
     set_lengths(graph)
     graph.graph["points"] = points
+    graph.graph["boundary"] = boundary_polygon(folder / "boundary.geojson", crs)
     return graph
 
 
@@ -322,13 +351,10 @@ def tag_share(graph: nx.MultiDiGraph, is_tag) -> float:
 
 
 def summarise(graph: nx.MultiDiGraph) -> dict:
-    segments = {}
-    for _, _, data in graph.edges(data=True):
-        if data["bike_ok"]:
-            segments[data["segment_id"]] = data["length_m"]
+    bike_m = sum(segment["inside_m"] for segment in bike_segments(graph).values())
     return {
         "edges": graph.number_of_edges(),
-        "bike_km": sum(segments.values()) / 1000,
+        "bike_km": bike_m / 1000,
         "speed_tag_share": tag_share(graph, lambda d: d["speed_source"] != "default"),
         "lanes_tag_share": tag_share(graph, lambda d: d["lanes_source"] == "tag"),
         "parking_tag_share": tag_share(graph, lambda d: d["parking"] != "unknown"),
