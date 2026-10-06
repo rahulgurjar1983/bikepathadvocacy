@@ -3,7 +3,7 @@ set -uo pipefail
 pr="${1:?usage: wait-ci.sh PR}"
 limit="${WAIT_CI_SECS:-570}"
 poll="${WAIT_CI_POLL_SECS:-20}"
-query='(.statusCheckRollup // [] | map(select(.conclusion != "SKIPPED" and .conclusion != "NEUTRAL")) | group_by(.name) | map(max_by(.startedAt // ""))) as $checks | [.state, ($checks | map(select(.status != "COMPLETED")) | length), ($checks | map(select(.conclusion == "FAILURE" or .conclusion == "CANCELLED" or .conclusion == "TIMED_OUT" or .conclusion == "ACTION_REQUIRED" or .conclusion == "STARTUP_FAILURE") | .name) | join(" ")), ($checks | length), (.autoMergeRequest != null), ($checks | map(.name) | join(" "))] | map(tostring) | join("|")'
+query='(.statusCheckRollup // [] | map(select(.conclusion != "SKIPPED" and .conclusion != "NEUTRAL")) | group_by(.name) | map(max_by(.startedAt // ""))) as $checks | [.state, ($checks | map(select(.status != "COMPLETED" or .conclusion == "CANCELLED")) | length), ($checks | map(select(.conclusion == "FAILURE" or .conclusion == "TIMED_OUT" or .conclusion == "ACTION_REQUIRED" or .conclusion == "STARTUP_FAILURE") | .name) | join(" ")), ($checks | length), (.autoMergeRequest != null), ($checks | map(.name) | join(" "))] | map(tostring) | join("|")'
 base="${WAIT_CI_BASE:-main}"
 if ! required="$(gh api "repos/{owner}/{repo}/branches/$base/protection/required_status_checks" --jq '.contexts | join(" ")' 2>&1)"; then
   echo "wait-ci: gh failed: $required" >&2
