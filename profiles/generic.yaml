@@ -1,0 +1,202 @@
+id: generic
+name: Generic (NACTO and FHWA)
+aaa:
+  mixed_traffic:
+  - max_speed_kmh:
+      value: 30
+      source: 'NACTO Designing for All Ages and Abilities (2017): 20 mph or less'
+    max_adt:
+      value: 2000
+      source: NACTO Designing for All Ages and Abilities (2017)
+  - max_speed_kmh:
+      value: 40
+      source: 'NACTO Designing for All Ages and Abilities (2017): 25 mph or less'
+    max_adt:
+      value: 1500
+      source: NACTO Designing for All Ages and Abilities (2017)
+  painted_lanes_count:
+    value: false
+    source: NACTO Designing for All Ages and Abilities (2017)
+widths_m:
+  one_way_cycleway:
+    min:
+      value: 1.5
+      source: NACTO Urban Bikeway Design Guide
+    desirable:
+      value: 2.0
+      source: NACTO Urban Bikeway Design Guide
+  two_way_cycleway:
+    min:
+      value: 2.4
+      source: NACTO Urban Bikeway Design Guide (8 ft)
+    desirable:
+      value: 3.6
+      source: NACTO Urban Bikeway Design Guide (12 ft)
+  separator_traffic:
+    min:
+      value: 0.9
+      source: NACTO Urban Bikeway Design Guide (3 ft buffer)
+  separator_parking:
+    min:
+      value: 0.9
+      source: NACTO Urban Bikeway Design Guide (3 ft buffer)
+  shared_path:
+    min:
+      value: 3.0
+      source: NACTO Urban Bikeway Design Guide (10 ft)
+  traffic_lane:
+    min:
+      value: 3.0
+      source: NACTO Urban Street Design Guide (10 ft)
+  parking_lane:
+    value: 2.1
+    source: NACTO Urban Street Design Guide (7 ft)
+  verge_default:
+    value: 3.0
+    source: 'assumption: footway plus planting strip'
+parking:
+  bay_length_m:
+    value: 6.0
+    source: assumption
+  driveway_share:
+    value: 0.3
+    source: assumption
+road_diet:
+  max_adt:
+    value: 20000
+    source: FHWA Road Diet Informational Guide (2014)
+quietway:
+  target_speed_kmh:
+    value: 30
+    source: NACTO Designing for All Ages and Abilities (2017)
+crossing:
+  refuge_min_m:
+    value: 1.8
+    source: Mekuria, Furth and Nixon (2012), Table 8
+road_classes:
+  living_street:
+    speed_kmh:
+      value: 10
+      source: 'assumption: typical posted limit for the class'
+    adt:
+      value: 200
+      source: 'assumption: typical daily traffic for the class'
+    lanes:
+      value: 1
+      source: 'assumption: typical lane count for the class when untagged'
+    parking:
+      value: true
+      source: 'assumption: kerb parking is usual on this class when parking is untagged'
+  service:
+    speed_kmh:
+      value: 20
+      source: 'assumption: typical posted limit for the class'
+    adt:
+      value: 200
+      source: 'assumption: typical daily traffic for the class'
+    lanes:
+      value: 1
+      source: 'assumption: typical lane count for the class when untagged'
+    parking:
+      value: false
+      source: 'assumption: kerb parking is not usual on this class when parking is untagged'
+  residential:
+    speed_kmh:
+      value: 50
+      source: 'assumption: typical posted limit for the class'
+    adt:
+      value: 750
+      source: 'assumption: typical daily traffic for the class'
+    lanes:
+      value: 2
+      source: 'assumption: typical lane count for the class when untagged'
+    parking:
+      value: true
+      source: 'assumption: kerb parking is usual on this class when parking is untagged'
+  unclassified:
+    speed_kmh:
+      value: 50
+      source: 'assumption: typical posted limit for the class'
+    adt:
+      value: 1500
+      source: 'assumption: typical daily traffic for the class'
+    lanes:
+      value: 2
+      source: 'assumption: typical lane count for the class when untagged'
+    parking:
+      value: true
+      source: 'assumption: kerb parking is usual on this class when parking is untagged'
+  tertiary:
+    speed_kmh:
+      value: 50
+      source: 'assumption: typical posted limit for the class'
+    adt:
+      value: 5000
+      source: 'assumption: typical daily traffic for the class'
+    lanes:
+      value: 2
+      source: 'assumption: typical lane count for the class when untagged'
+    parking:
+      value: true
+      source: 'assumption: kerb parking is usual on this class when parking is untagged'
+  secondary:
+    speed_kmh:
+      value: 60
+      source: 'assumption: typical posted limit for the class'
+    adt:
+      value: 12000
+      source: 'assumption: typical daily traffic for the class'
+    lanes:
+      value: 2
+      source: 'assumption: typical lane count for the class when untagged'
+    parking:
+      value: true
+      source: 'assumption: kerb parking is usual on this class when parking is untagged'
+  primary:
+    speed_kmh:
+      value: 60
+      source: 'assumption: typical posted limit for the class'
+    adt:
+      value: 25000
+      source: 'assumption: typical daily traffic for the class'
+    lanes:
+      value: 4
+      source: 'assumption: typical lane count for the class when untagged'
+    parking:
+      value: false
+      source: 'assumption: kerb parking is not usual on this class when parking is untagged'
+  trunk:
+    speed_kmh:
+      value: 70
+      source: 'assumption: typical posted limit for the class'
+    adt:
+      value: 35000
+      source: 'assumption: typical daily traffic for the class'
+    lanes:
+      value: 4
+      source: 'assumption: typical lane count for the class when untagged'
+    parking:
+      value: false
+      source: 'assumption: kerb parking is not usual on this class when parking is untagged'
+implicit_speeds:
+  AU:urban:
+    value: 50
+    source: 'OpenStreetMap Wiki, Default speed limits: AU:urban'
+  AU:rural:
+    value: 100
+    source: 'OpenStreetMap Wiki, Default speed limits: AU:rural'
+  AU:motorway:
+    value: 110
+    source: 'OpenStreetMap Wiki, Default speed limits: AU:motorway'
+  GB:nsl_restricted:
+    value: 48.28
+    source: 'OpenStreetMap Wiki, Default speed limits: GB:nsl_restricted'
+  GB:nsl_single:
+    value: 96.56
+    source: 'OpenStreetMap Wiki, Default speed limits: GB:nsl_single'
+  GB:nsl_dual:
+    value: 112.65
+    source: 'OpenStreetMap Wiki, Default speed limits: GB:nsl_dual'
+  GB:motorway:
+    value: 112.65
+    source: 'OpenStreetMap Wiki, Default speed limits: GB:motorway'

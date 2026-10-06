@@ -69,3 +69,13 @@ uv run pytest tests/test_config.py -q
 
 Expect: the first command prints `au-nsw-bayside 7038238` and a 64 character hash that is the same on every run. The 22 config tests pass.
 Artifact: `artifacts/P1.1/hash.txt`
+
+### P1.2
+
+```bash
+uv run python -c "from bikeplan.config import load_profile; [print(n, p.widths_m.one_way_cycleway.min.value, p.road_classes['residential'].adt.value, p.implicit_speeds['AU:urban'].value, p.widths_m.verge_default.assumption) for n in ('au-nsw', 'generic') for p in [load_profile(n)]]"
+uv run pytest tests/test_profiles.py -q
+```
+
+Expect: the first command prints `au-nsw 1.5 750 50 True` and `generic 1.5 750 50 True`. The profile tests pass, and they compare every value in spec 01 sections 6 and 7 to the loaded files.
+Artifact: `artifacts/P1.2/profiles.txt`
