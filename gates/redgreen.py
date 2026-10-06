@@ -260,7 +260,7 @@ def touched_items(
     return touched
 
 
-def red(base: str) -> int:
+def red(base: str, verbose: bool = False) -> int:
     python = python_bin()
     if not preflight(python):
         return fail_hard("redgreen", f"pytest is required; '{python} -m pytest --version' failed")
@@ -296,8 +296,9 @@ def red(base: str) -> int:
         remove_worktree(base_tree)
         shutil.rmtree(work, ignore_errors=True)
     red_items, fake, unknown = judge(touched, results)
-    for item in red_items:
-        print(f"red: {item} fails without the code (good)")
+    if verbose:
+        for item in red_items:
+            print(f"red: {item} fails without the code (good)")
     for item in fake:
         print(f"FAKE: {item} passes or skips without the code")
     for item in unknown:
@@ -334,10 +335,11 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="gates.redgreen")
     parser.add_argument("mode", choices=["mixed", "red"])
     parser.add_argument("base", nargs="?")
+    parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args(argv)
     try:
         base = args.base or default_base()
-        return mixed(base) if args.mode == "mixed" else red(base)
+        return mixed(base) if args.mode == "mixed" else red(base, args.verbose)
     except ToolMissing as exc:
         return fail_hard("redgreen", str(exc))
 
