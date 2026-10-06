@@ -39,7 +39,7 @@ def edge(kind, speed, adt):
 def test_fr4_1_every_cell_of_table_1():
     for kind, rows in TABLE.items():
         for adt, scores in rows:
-            for speed, score in zip(MIDDLE_KMH, scores):
+            for speed, score in zip(MIDDLE_KMH, scores, strict=True):
                 assert mixed_traffic_lts(edge(kind, speed, adt)) == score, (kind, adt, speed)
 
 
