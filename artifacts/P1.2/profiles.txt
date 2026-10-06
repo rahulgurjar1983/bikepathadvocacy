@@ -1,0 +1,2 @@
+au-nsw 1.5 750 50 True
+generic 1.5 750 50 True
