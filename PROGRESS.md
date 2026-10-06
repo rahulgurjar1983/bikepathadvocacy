@@ -45,6 +45,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 - [x] **P4.3** Paths, protected lanes and the AAA rule (FR-4.3, FR-4.6)
 - [x] **P4.4** Signals, refuges and Mineta crossing stress (FR-4.4, FR-4.5)
 - [x] **P4.5** Reasons and `bikeplan stress`; Bayside stress summary as the artifact (FR-4.7, FR-4.8, NFR-5)
+- [ ] **P4.6** Summaries count each segment once inside the boundary; rerun the Bayside network and stress summaries. The P3.4 summary shows 2621 bike km and the P4.5 summary 4875 km for the same snapshot (FR-3.13)
 
 ## Phase 5: Width
 

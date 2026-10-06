@@ -45,6 +45,7 @@ Build a directed graph with OSMnx from the snapshot's OSM XML, in metres. Read t
 | FR-3.10 | Edges get an ADT from the profile's class table with `adt_source=default`. Adapters may set a better value later (spec 10). | MUST |
 | FR-3.11 | Signal and crossing nodes from the snapshot are kept as a point layer, even where graph simplification drops them, so spec 04 can find signals and refuges near each junction. | MUST |
 | FR-3.12 | `bikeplan network summary <region file> --snapshot <dir>` prints the edge count, the km a bike may use, and for speed, lanes and parking the share of length set by a tag rather than a default. | MUST |
+| FR-3.13 | Every km total in a summary counts each `segment_id` once, and only the length inside the region boundary. A segment takes the higher LTS of its two directions, and it is AAA only when every bike-legal direction is AAA. The edges in the buffer stay in the graph for routing. | MUST |
 
 ## 5. Test plan
 
@@ -64,6 +65,7 @@ Tests build graphs from small OSM XML files under `tests/fixtures/` that hold th
 | FR-3.10 | Untagged edges carry the class ADT and `default` as the source |
 | FR-3.11 | A signal node removed by simplification is still in the point layer at its place |
 | FR-3.12 | The summary on a fixture prints the expected counts and shares |
+| FR-3.13 | A fixture with a two-way street half inside the boundary and a one-way street outside it gives the hand-worked km once, clipped at the boundary |
 
 ## 6. Validation evidence
 
