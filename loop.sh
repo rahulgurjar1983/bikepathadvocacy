@@ -133,6 +133,7 @@ main() {
   export GIT_AUTHOR_EMAIL="${GIT_AUTHOR_EMAIL:-ralph@bikeplan.invalid}"
   export GIT_COMMITTER_NAME="${GIT_COMMITTER_NAME:-$GIT_AUTHOR_NAME}"
   export GIT_COMMITTER_EMAIL="${GIT_COMMITTER_EMAIL:-$GIT_AUTHOR_EMAIL}"
+  export BASH_MAX_TIMEOUT_MS="${RALPH_BASH_MAX_MS:-3600000}"
 
   mkdir -p .ralph
   if ! command -v "$claude_bin" >/dev/null 2>&1; then
