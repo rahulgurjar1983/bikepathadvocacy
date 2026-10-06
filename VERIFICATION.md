@@ -40,3 +40,13 @@ uv run pytest tests/test_cli.py -q
 
 Expect: the version line `bikeplan 0.1.0`, a help line for each of the nine subcommands, and the CLI tests pass.
 Artifact: `artifacts/P0.1/cli.txt`
+
+### P0.2
+
+```bash
+scripts/smoke.sh
+uv run pytest tests/test_smoke.py -q
+```
+
+Expect: the script builds the image and prints `bikeplan 0.1.0` from inside the container. It exits 2 with a message when Docker is missing. The two smoke tests pass.
+Artifact: `artifacts/P0.2/smoke.txt`
