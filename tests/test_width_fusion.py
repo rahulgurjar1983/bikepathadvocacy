@@ -29,7 +29,7 @@ BOUNDARY = {
         ],
     },
 }
-STREET = {"highway": "residential", "lanes_total": 2, "lanes_dir": 1, "parking": "no"}
+STREET = {"highway": "residential", "lanes_total": 2, "lanes_dir": 1, "parking:both": "no"}
 
 
 def test_fr5_5_adapter_beats_every_other_source():
@@ -105,8 +105,7 @@ def graph_of(streets):
                 [(334000.0, 6246000.0 + index * 50), (334000.0 + length, 6246000.0 + index * 50)]
             ),
             segment_id=f"s{index}",
-            bike_ok=True,
-            **{**STREET, **extra},
+            **{"bike_ok": True, **STREET, **extra},
         )
     return graph
 
