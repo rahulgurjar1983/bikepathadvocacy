@@ -324,3 +324,23 @@ uv run bikeplan width summary regions/au-nsw-bayside.yaml --snapshot data/cache/
 
 Expect: The tests pass. The summary prints one line per source and confidence with the km of street that uses it: `lanes low 518.119`, `none none 70.424` and `osm_tag medium 2.556`. No adapter or parcel layer is in the snapshot yet, so no street uses those sources.
 Artifact: `artifacts/P5.3/width.txt`
+
+### P6.1
+
+```bash
+uv run pytest tests/test_fit_options.py -q
+mkdir -p artifacts/P6.1
+uv run python -c "
+import json, sys
+sys.path[:0] = ['src', 'tests']
+from bikeplan.config import load_profile
+from bikeplan.fit import options
+from test_fit_options import CASES
+p = load_profile('au-nsw', 'profiles')
+out = {str(n): {o['fix']: o['reason'] + (' [fits]' if o['fits'] else '') for o in options(c, p)} for n, c in CASES.items()}
+print(json.dumps(out, indent=1))
+" > artifacts/P6.1/options.json
+```
+
+Expect: The tests pass. For the six worked cases of spec 06, each of the six fixes shows its reason, and the fixes marked `[fits]` match the spec: case 1 fits only `quietway`, case 2 fits `cycleway_in_spare` at 3.5 m, case 6 fits `verge_path`.
+Artifact: `artifacts/P6.1/options.json`
