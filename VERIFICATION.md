@@ -236,3 +236,15 @@ uv run python -I -c '' | tee artifacts/P4.4/crossings.txt
 
 Expect: The tests pass. The run prints `signalised 9352`, `refuge 5714` and `raised 3136 {2: 1647, 3: 1371, 4: 118}`. Junction nodes with a signal within 25 m are skipped; every other leg meeting an unsignalised main street is raised to the Mineta crossing score when that is higher.
 Artifact: `artifacts/P4.4/crossings.txt`
+
+### P4.5
+
+```bash
+uv run pytest tests/test_stress_report.py -q
+OUT=$(mktemp -d)
+uv run bikeplan stress regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out "$OUT"
+cp "$OUT/stress_summary.json" artifacts/P4.5/
+```
+
+Expect: The tests pass. The run prints `lts1_km 1404.402`, `lts2_km 2405.365`, `lts3_km 771.708`, `lts4_km 293.496` and `aaa_km 930.506`, and writes `stress.geojson` with 189386 edges, each with a reason. The summary counts the km of directed edges a bike may use.
+Artifact: `artifacts/P4.5/stress_summary.json`
