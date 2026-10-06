@@ -33,6 +33,7 @@ WAY_TAGS = [
     "lanes",
     "lanes:forward",
     "lanes:backward",
+    "lane_markings",
     "cycleway:left:separation",
     "cycleway:right:separation",
     "cycleway:both:separation",
