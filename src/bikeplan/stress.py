@@ -84,7 +84,7 @@ def parking_beside(data: dict, class_parking: bool) -> bool:
 def lanes_each_way(data: dict) -> int:
     if data.get("contraflow"):
         return 1
-    return data["lanes_total"] if data["oneway"] else data["lanes_dir"]
+    return max(data["lanes_total"] if data["oneway"] else data["lanes_dir"], 1)
 
 
 def table_2_lts(data: dict, lanes: int) -> int:
