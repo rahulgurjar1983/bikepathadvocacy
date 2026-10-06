@@ -14,7 +14,7 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 - Profiles live in `profiles/<id>.yaml`; `load_profile(id, directory)` reads them. `Num` keeps `value`, `source` and an `assumption` flag. Tests build bad files from a copy of the real `au-nsw` file.
 - Region files live in `regions/<id>.yaml`. `test-grid` points at `tests/fixtures/test-grid/snapshot/boundary.geojson`, which the P11 fixture row must create. `bikeplan config show` prints one `key value (source)` line per profile value.
-- The offline lock cannot add packages missing from its cache. Python's built-in request tools work with the local replay server used by snapshot tests.
+- `uv add <package>` works on this host and may use the network. Python's built-in request tools work with the local replay server used by snapshot tests.
 
 ## Spec issues
 
