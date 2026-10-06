@@ -3,7 +3,9 @@ name = "bikeplan"
 version = "0.1.0"
 description = "Data-driven proposals for safe, connected, all-ages bike paths for any region"
 requires-python = ">=3.12,<3.13"
-dependencies = []
+dependencies = [
+    "pyyaml>=6",
+]
 
 [project.scripts]
 bikeplan = "bikeplan:main"

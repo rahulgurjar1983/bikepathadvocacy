@@ -1,0 +1,228 @@
+import dataclasses
+import hashlib
+import json
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+import yaml
+
+
+class ConfigError(Exception):
+    pass
+
+
+@dataclass(frozen=True)
+class Boundary:
+    osm_relation: int | None
+    geojson: str | None
+
+
+@dataclass(frozen=True)
+class Snapshot:
+    osm_date: str
+    adapters: list[str]
+
+
+@dataclass(frozen=True)
+class Population:
+    source: str
+
+
+@dataclass(frozen=True)
+class Destination:
+    weight: float
+
+
+@dataclass(frozen=True)
+class Access:
+    reach_m: float
+    detour_max: float
+
+
+@dataclass(frozen=True)
+class DisruptionWeights:
+    parking_space: float
+    lane_km: float
+    speed_km: float
+    signal: float
+    refuge: float
+    path_km: float
+
+
+@dataclass(frozen=True)
+class Proposals:
+    max_projects: int
+    budget_km: float
+    candidate_pool: int
+    min_gain: float
+    metres_per_point: float
+    disruption_weights: DisruptionWeights
+
+
+@dataclass(frozen=True)
+class Region:
+    id: str
+    name: str
+    country: str
+    subdivision: str
+    boundary: Boundary
+    analysis_buffer_m: float
+    profile: str
+    snapshot: Snapshot
+    population: Population
+    destinations: dict[str, Destination]
+    access: Access
+    proposals: Proposals
+
+
+class Reader:
+    def __init__(self, path: Path):
+        self.path = path
+
+    def fail(self, key: str, problem: str) -> ConfigError:
+        return ConfigError(f"{self.path}: {key}: {problem}")
+
+    def mapping(self, value: Any, key: str, allowed: set[str], required: set[str]) -> dict:
+        if not isinstance(value, dict):
+            raise self.fail(key, "must be a mapping")
+        prefix = f"{key}." if key else ""
+        for name in value:
+            if name not in allowed:
+                raise self.fail(f"{prefix}{name}", "unknown key")
+        for name in sorted(required):
+            if name not in value:
+                raise self.fail(f"{prefix}{name}", "missing key")
+        return value
+
+    def text(self, value: Any, key: str) -> str:
+        if not isinstance(value, str):
+            raise self.fail(key, "must be text")
+        return value
+
+    def whole(self, value: Any, key: str) -> int:
+        if isinstance(value, bool) or not isinstance(value, int):
+            raise self.fail(key, "must be a whole number")
+        return value
+
+    def number(self, value: Any, key: str) -> float:
+        if isinstance(value, bool) or not isinstance(value, int | float):
+            raise self.fail(key, "must be a number")
+        return value
+
+    def boundary(self, raw: Any) -> Boundary:
+        data = self.mapping(raw, "boundary", {"osm_relation", "geojson"}, set())
+        if len(data) != 1:
+            raise self.fail("boundary", "give exactly one of osm_relation or geojson")
+        if "geojson" in data:
+            return Boundary(None, self.text(data["geojson"], "boundary.geojson"))
+        return Boundary(self.whole(data["osm_relation"], "boundary.osm_relation"), None)
+
+    def snapshot(self, raw: Any) -> Snapshot:
+        data = self.mapping(raw, "snapshot", {"osm_date", "adapters"}, {"osm_date", "adapters"})
+        adapters = data["adapters"]
+        if not isinstance(adapters, list):
+            raise self.fail("snapshot.adapters", "must be a list")
+        return Snapshot(
+            self.text(data["osm_date"], "snapshot.osm_date"),
+            [self.text(item, "snapshot.adapters") for item in adapters],
+        )
+
+    def destinations(self, raw: Any) -> dict[str, Destination]:
+        if not isinstance(raw, dict):
+            raise self.fail("destinations", "must be a mapping")
+        found = {}
+        for name, item in raw.items():
+            key = f"destinations.{name}"
+            data = self.mapping(item, key, {"weight"}, {"weight"})
+            weight = self.number(data["weight"], f"{key}.weight")
+            if weight < 0:
+                raise self.fail(f"{key}.weight", "must be zero or more")
+            found[name] = Destination(weight)
+        if not any(item.weight > 0 for item in found.values()):
+            raise self.fail("destinations", "weights must not all be zero")
+        return found
+
+    def access(self, raw: Any) -> Access:
+        data = self.mapping(raw, "access", {"reach_m", "detour_max"}, {"reach_m", "detour_max"})
+        reach = self.number(data["reach_m"], "access.reach_m")
+        detour = self.number(data["detour_max"], "access.detour_max")
+        if reach <= 0:
+            raise self.fail("access.reach_m", "must be above zero")
+        if detour < 1.0:
+            raise self.fail("access.detour_max", "must be at least 1.0")
+        return Access(reach, detour)
+
+    def proposals(self, raw: Any) -> Proposals:
+        names = {f.name for f in dataclasses.fields(Proposals)}
+        data = self.mapping(raw, "proposals", names, names)
+        weight_names = {f.name for f in dataclasses.fields(DisruptionWeights)}
+        weights = self.mapping(
+            data["disruption_weights"],
+            "proposals.disruption_weights",
+            weight_names,
+            weight_names,
+        )
+        return Proposals(
+            self.whole(data["max_projects"], "proposals.max_projects"),
+            self.number(data["budget_km"], "proposals.budget_km"),
+            self.whole(data["candidate_pool"], "proposals.candidate_pool"),
+            self.number(data["min_gain"], "proposals.min_gain"),
+            self.number(data["metres_per_point"], "proposals.metres_per_point"),
+            DisruptionWeights(
+                *(
+                    self.number(weights[name], f"proposals.disruption_weights.{name}")
+                    for name in (f.name for f in dataclasses.fields(DisruptionWeights))
+                )
+            ),
+        )
+
+
+def load_region(path: str | Path) -> Region:
+    path = Path(path)
+    reader = Reader(path)
+    try:
+        raw = yaml.safe_load(path.read_text())
+    except (OSError, yaml.YAMLError) as error:
+        raise ConfigError(f"{path}: cannot read: {error}") from error
+    names = {f.name for f in dataclasses.fields(Region)}
+    data = reader.mapping(raw, "", names, names)
+    return Region(
+        reader.text(data["id"], "id"),
+        reader.text(data["name"], "name"),
+        reader.text(data["country"], "country"),
+        reader.text(data["subdivision"], "subdivision"),
+        reader.boundary(data["boundary"]),
+        reader.number(data["analysis_buffer_m"], "analysis_buffer_m"),
+        reader.text(data["profile"], "profile"),
+        reader.snapshot(data["snapshot"]),
+        Population(
+            reader.text(
+                reader.mapping(data["population"], "population", {"source"}, {"source"})["source"],
+                "population.source",
+            )
+        ),
+        reader.destinations(data["destinations"]),
+        reader.access(data["access"]),
+        reader.proposals(data["proposals"]),
+    )
+
+
+def plain(value: Any) -> Any:
+    if dataclasses.is_dataclass(value) and not isinstance(value, type):
+        return {f.name: plain(getattr(value, f.name)) for f in dataclasses.fields(value)}
+    if isinstance(value, dict):
+        return {str(key): plain(item) for key, item in value.items()}
+    if isinstance(value, list | tuple):
+        return [plain(item) for item in value]
+    return value
+
+
+def config_hash(region: Any, profile: Any) -> str:
+    text = json.dumps(
+        {"region": plain(region), "profile": plain(profile)},
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=True,
+    )
+    return hashlib.sha256(text.encode()).hexdigest()
