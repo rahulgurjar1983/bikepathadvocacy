@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -uo pipefail
+root="$(git rev-parse --show-toplevel)"
+cd "$root" || exit 1
+unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_PREFIX GIT_COMMON_DIR
+gate="${BIKEPLAN_GATE:-scripts/gate.sh}"
+"$gate"
+status=$?
+if [ "$status" -ne 0 ]; then
+  echo "pre-push: rejected; the gate failed with exit $status" >&2
+fi
+exit "$status"

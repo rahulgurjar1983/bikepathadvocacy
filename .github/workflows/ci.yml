@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main]
+  schedule:
+    - cron: "37 17 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  gates:
+    name: gates
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7
+        with:
+          version: "0.11.3"
+          enable-cache: true
+      - run: uv sync --frozen
+      - name: Gate the pull request range
+        if: github.event_name == 'pull_request'
+        env:
+          GATE_SKIP_TESTS: "1"
+        run: scripts/gate.sh branch
+      - name: Gate the whole tree on main
+        if: github.event_name != 'pull_request'
+        env:
+          GATE_SKIP_TESTS: "1"
+        run: scripts/gate.sh main
+
+  test:
+    name: test
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7
+        with:
+          version: "0.11.3"
+          enable-cache: true
+      - run: uv sync --frozen
+      - run: scripts/test.sh
