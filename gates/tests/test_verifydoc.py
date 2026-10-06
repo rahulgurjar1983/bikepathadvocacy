@@ -105,3 +105,13 @@ def test_fr0_9_a_section_ends_at_the_next_heading(repo):
 def test_fr0_16_missing_verification_file_fails_hard(repo):
     repo.write("PROGRESS.md", "- [x] **P1.1** Thing (FR-1.1)\n")
     assert verifydoc.main([]) == 2
+
+
+def test_fr0_9_artifact_line_must_name_a_file_or_url(repo, capsys):
+    repo.write("PROGRESS.md", "- [x] **P1.1** Thing (FR-1.1)\n")
+    repo.write(
+        "VERIFICATION.md",
+        COMPLETE.replace("Artifact: `artifacts/P1.1/version.txt`", "Artifact: see the CI log"),
+    )
+    assert verifydoc.main([]) == 1
+    assert "names no file" in capsys.readouterr().out
