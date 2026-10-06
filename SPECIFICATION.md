@@ -71,7 +71,7 @@ Each estimate keeps its source, a confidence label and a low-to-high range.
 
 ### 5.3 Fitting a bike path
 
-For each street that is not AAA, we try fixes in a fixed order, from least to most disruptive:
+For each street that is not AAA, we try each fix below, roughly from least to most disruptive:
 
 1. Make it a quietway: 30 km/h and traffic calming, where traffic is light.
 2. Fit protected lanes in spare width, with no loss of lanes or parking.
@@ -81,7 +81,7 @@ For each street that is not AAA, we try fixes in a fixed order, from least to mo
 6. Build an off-road path in the verge where the reserve is wide enough.
 7. Add signals or a refuge at a hard crossing.
 
-The first fix that fits and reaches AAA is kept. We count what it costs road users: parking spaces, lane-km, km of lower speed limit, and signals added.
+Of the fixes that fit and reach AAA, we keep the one with the least disruption. We count what each fix costs road users: parking spaces, lane-km, km of lower speed limit, and signals added. The region file sets how much each of these counts. Fixes 1 to 6 work on the street; fix 7 works on a junction.
 
 ### 5.4 Access
 

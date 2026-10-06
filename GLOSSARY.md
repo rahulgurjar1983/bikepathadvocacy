@@ -7,6 +7,7 @@ Each term below is a project word. The reading gate swaps these words for a plai
 - **access** — how many needed places a home can reach by bike.
 - **ADT** — Average Daily Traffic: how many cars pass a point on a normal day.
 - **arterial** — a main road that carries a lot of through traffic.
+- **adapter** — a part of the tool that fetches official data for one country or state.
 - **artifact** — a saved output file that proves a task works.
 - **Austroads** — the group that writes road design guides for Australia and New Zealand.
 - **Australia** — the country where the first test region is.
@@ -38,6 +39,7 @@ Each term below is a project word. The reading gate swaps these words for a plai
 - **OSM** — short for OpenStreetMap.
 - **Overpass** — a free web service that returns OpenStreetMap data for an area, even as it was on a past date.
 - **PeopleForBikes** — a United States group that runs the Bicycle Network Analysis.
+- **pipeline** — the chain of steps from input data to the report.
 - **profile** — a file of design numbers for one place, each with its source.
 - **project** — one bike path change we put forward, such as a cycleway on one street.
 - **pytest** — the Python test runner.
