@@ -313,3 +313,14 @@ print(json.dumps({'reserve_m': r.width_m, 'spread_m': r.spread_m, 'lines': r.lin
 
 Expect: The tests pass. A street between parcel rows 20 m apart gives a reserve of 20 m from 10 lines, and a width of 13 m with range 11.5 m to 14.5 m at low confidence. Real NSW parcels arrive with the cadastre adapter row.
 Artifact: `artifacts/P5.2/reserve.json`
+
+### P5.3
+
+```bash
+uv run pytest tests/test_width_fusion.py -q
+mkdir -p artifacts/P5.3
+uv run bikeplan width summary regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 | tee artifacts/P5.3/width.txt
+```
+
+Expect: The tests pass. The summary prints one line per source and confidence with the km of street that uses it: `lanes low 518.119`, `none none 70.424` and `osm_tag medium 2.556`. No adapter or parcel layer is in the snapshot yet, so no street uses those sources.
+Artifact: `artifacts/P5.3/width.txt`
