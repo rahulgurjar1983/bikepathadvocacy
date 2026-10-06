@@ -11,14 +11,14 @@ def street(**extra):
 
 
 def test_fr5_1_lanes_only_use_lane_width_plus_margin():
-    found = lane_estimate(street(), PROFILE)
+    found = lane_estimate(street(**{"parking:both": "no"}), PROFILE)
     assert found.source == "lanes"
     assert found.confidence == "low"
     assert (found.width_m, found.low_m, found.high_m) == pytest.approx((6.6, 5.6, 8.1))
 
 
 def test_fr5_1_each_tagged_parking_side_adds_a_parking_lane():
-    one = lane_estimate(street(**{"parking:left": "lane"}), PROFILE)
+    one = lane_estimate(street(highway="primary", **{"parking:left": "lane"}), PROFILE)
     both = lane_estimate(street(**{"parking:both": "lane"}), PROFILE)
     assert one.width_m == pytest.approx(8.7)
     assert both.width_m == pytest.approx(10.8)
