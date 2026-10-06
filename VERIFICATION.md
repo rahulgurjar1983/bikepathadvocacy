@@ -29,3 +29,14 @@ uv run pytest gates/tests/test_hooks.py gates/tests/test_notify.py -q
 
 Expect: every hook and notify test passes.
 Artifact: `artifacts/S0.3/hook-tests.txt`
+
+### P0.1
+
+```bash
+uv run bikeplan --version
+uv run bikeplan --help
+uv run pytest tests/test_cli.py -q
+```
+
+Expect: the version line `bikeplan 0.1.0`, a help line for each of the nine subcommands, and the CLI tests pass.
+Artifact: `artifacts/P0.1/cli.txt`

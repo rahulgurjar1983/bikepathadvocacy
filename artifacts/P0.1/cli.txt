@@ -1,0 +1,18 @@
+bikeplan 0.1.0
+usage: bikeplan [-h] [--version] COMMAND ...
+
+positional arguments:
+  COMMAND
+    stress    Score the stress level of each road edge
+    access    Score access to destinations
+    propose   Propose bike path projects
+    run       Run the full pipeline for a region
+    verify    Verify the outputs of a run
+    config    Config commands
+    network   Network commands
+    width     Width commands
+    fit       Fit commands
+
+options:
+  -h, --help  show this help message and exit
+  --version   show program's version number and exit

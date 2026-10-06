@@ -13,7 +13,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 
 ## Phase 0: Foundation
 
-- [ ] **P0.1** CLI: `bikeplan --version`, `--help` and the subcommand frame (FR-11.1, FR-11.9)
+- [x] **P0.1** CLI: `bikeplan --version`, `--help` and the subcommand frame (FR-11.1, FR-11.9)
 - [ ] **P0.2** Docker image pinned by digest and `scripts/smoke.sh`; the operator then adds the CI `smoke` job (FR-11.2, NFR-8)
 
 ## Phase 1: Config and profiles
