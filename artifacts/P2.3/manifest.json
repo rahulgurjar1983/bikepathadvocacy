@@ -1,0 +1,46 @@
+{
+  "region": "au-nsw-bayside",
+  "snapshot_id": "2026-10-01",
+  "osm_date": "2026-10-01T00:00:00Z",
+  "created_at": "2026-10-06T15:36:28Z",
+  "tool_version": "0.1.0",
+  "config_hash": "3b9d894e9ec5cc55e66142b6f350ddf20c1ca7b5f023211b7c50706a6f6ef31f",
+  "files": [
+    {
+      "name": "boundary.geojson",
+      "path": "/tmp/snapout/boundary.geojson",
+      "sha256": "ac3759ea1b3cfbefc117487220db2b242e7add55c0a7a2afe448697410037ce2",
+      "bytes": 23148,
+      "source": "OpenStreetMap via Overpass",
+      "request": "[out:json][timeout:900][date:\"2026-10-01T00:00:00Z\"];relation(7038238);out geom;",
+      "url": "https://overpass-api.de/api/interpreter",
+      "licence": "ODbL 1.0",
+      "attribution": "\u00a9 OpenStreetMap contributors",
+      "retrieved_at": "2026-10-06T15:33:59Z"
+    },
+    {
+      "name": "network.osm.gz",
+      "path": "network.osm.gz",
+      "sha256": "d2d2bc5d959e24f0ea4bae8b96577f8b70dceefe87e7f51fe1a7117c4b9e03b8",
+      "bytes": 5773328,
+      "source": "OpenStreetMap via Overpass",
+      "request": "[out:xml][timeout:900][date:\"2026-10-01T00:00:00Z\"];(way[\"highway\"~\"^(primary|primary_link|secondary|secondary_link|tertiary|tertiary_link|unclassified|residential|living_street|service|cycleway|path|footway|pedestrian|track|bridleway|steps|trunk|trunk_link)$\"](-34.034191,151.071754,-33.895188,151.26065);>;node[\"highway\"=\"traffic_signals\"](-34.034191,151.071754,-33.895188,151.26065);node[\"highway\"=\"crossing\"](-34.034191,151.071754,-33.895188,151.26065);node[\"crossing\"](-34.034191,151.071754,-33.895188,151.26065););out meta;",
+      "url": "https://overpass-api.de/api/interpreter",
+      "licence": "ODbL 1.0",
+      "attribution": "\u00a9 OpenStreetMap contributors",
+      "retrieved_at": "2026-10-06T15:35:51Z"
+    },
+    {
+      "name": "places.json",
+      "path": "places.json",
+      "sha256": "98fdc97f2acb79c5a911d63d30e98ece936624f1ccb4eb9dab1616c878bd2d2b",
+      "bytes": 843471,
+      "source": "OpenStreetMap via Overpass",
+      "request": "[out:json][timeout:900][date:\"2026-10-01T00:00:00Z\"];(nwr[\"amenity\"=\"school\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"amenity\"=\"college\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"amenity\"=\"university\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"amenity\"=\"nursing_home\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"amenity\"=\"social_facility\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"amenity\"=\"library\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"railway\"=\"station\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"railway\"=\"halt\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"public_transport\"=\"station\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"amenity\"=\"ferry_terminal\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"railway\"=\"tram_stop\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"shop\"](-34.034191,151.071754,-33.895188,151.26065););out center tags;",
+      "url": "https://overpass-api.de/api/interpreter",
+      "licence": "ODbL 1.0",
+      "attribution": "\u00a9 OpenStreetMap contributors",
+      "retrieved_at": "2026-10-06T15:36:28Z"
+    }
+  ]
+}
