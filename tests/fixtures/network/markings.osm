@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osm version="0.6" generator="bikeplan-test">
+<node id="7011" lat="-33.9100" lon="151.1200"/>
+<node id="7012" lat="-33.9100" lon="151.1211"/>
+<node id="7021" lat="-33.9106" lon="151.1200"/>
+<node id="7022" lat="-33.9106" lon="151.1211"/>
+<way id="701"><nd ref="7011"/><nd ref="7012"/><tag k="highway" v="tertiary"/><tag k="lane_markings" v="no"/></way>
+<way id="702"><nd ref="7021"/><nd ref="7022"/><tag k="highway" v="tertiary"/></way>
+</osm>
