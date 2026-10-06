@@ -1,0 +1,4 @@
+bike_facility {'none': 177389, 'off_road': 8230, 'painted_lane': 1066, 'protected': 292, 'shared': 2409}
+parking {'no': 341, 'unknown': 187540, 'yes': 1505}
+width_drop_reason {'out_of_range': 673, 'unreadable': 14, None: 188699}
+width_tag_m set 2736
