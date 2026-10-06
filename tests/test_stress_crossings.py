@@ -111,13 +111,13 @@ def test_fr4_5_signalised_junction_keeps_the_side_street_lts(graph, raised):
 
 
 def test_fr4_5_signal_at_30_m_does_not_stop_the_crossing_stress(graph, raised):
-    own, final = raised
+    _, final = raised
     for key in way_edges(graph, 8320):
         assert final[key] == 3
 
 
 def test_fr4_5_refuge_lowers_the_crossing_of_a_6_lane_road(graph, raised):
-    own, final = raised
+    _, final = raised
     assert {final[key] for key in way_edges(graph, 8420)} == {3}
     assert {final[key] for key in way_edges(graph, 8520)} == {4}
 
