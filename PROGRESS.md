@@ -40,7 +40,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 
 ## Phase 4: Stress
 
-- [ ] **P4.1** Furth mixed traffic table with km/h speed bands (FR-4.1)
+- [x] **P4.1** Furth mixed traffic table with km/h speed bands (FR-4.1)
 - [ ] **P4.2** Furth painted lane tables (FR-4.2)
 - [ ] **P4.3** Paths, protected lanes and the AAA rule (FR-4.3, FR-4.6)
 - [ ] **P4.4** Signals, refuges and Mineta crossing stress (FR-4.4, FR-4.5)

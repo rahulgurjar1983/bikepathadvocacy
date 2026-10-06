@@ -196,3 +196,13 @@ uv run bikeplan network summary regions/au-nsw-bayside.yaml --snapshot data/cach
 
 Expect: The tests pass. The run prints `edges 189386`, `bike_km 2620.742`, `speed_tag_share 0.192`, `lanes_tag_share 0.112` and `parking_tag_share 0.011`. Each share is the length of edges set by a tag over the length of all edges; `bike_km` counts each street segment once.
 Artifact: `artifacts/P3.4/network.txt`
+
+### P4.1
+
+```bash
+uv run pytest tests/test_stress_mixed.py tests/test_network_markings.py -q
+uv run python -I -c 'from collections import Counter; from bikeplan.config import load_profile, load_region; from bikeplan.network import build; from bikeplan.stress import mixed_traffic_lts; r = load_region("regions/au-nsw-bayside.yaml"); g = build("data/cache/au-nsw-bayside/2026-10-01", r, load_profile(r.profile)); e = [d for _, _, d in g.edges(data=True) if d["bike_ok"] and d.get("speed_kmh") and d["lanes_total"] > 0]; km = Counter(); [km.update({mixed_traffic_lts(d): d["length_m"]}) for d in e]; print("edges", g.number_of_edges()); print("scored", len(e)); print("mixed_traffic_lts_km", {k: round(v / 1000, 1) for k, v in sorted(km.items())})' | tee artifacts/P4.1/mixed.txt
+```
+
+Expect: The tests pass. The run prints `edges 189386`, `scored 71882` and `mixed_traffic_lts_km {1: 686.7, 2: 2380.0, 3: 775.8, 4: 304.3}`. Every scored edge is bike-legal with a speed and at least one lane, scored as mixed traffic whatever its facility.
+Artifact: `artifacts/P4.1/mixed.txt`
