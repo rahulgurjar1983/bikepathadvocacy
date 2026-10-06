@@ -121,7 +121,7 @@ def test_fr4_8_geojson_has_one_feature_per_edge_with_lts_aaa_and_reason(output):
 
 
 def test_fr4_8_summary_km_match_the_features(output):
-    features = json.loads(output / "stress.geojson".read_text())["features"]
+    features = json.loads((output / "stress.geojson").read_text())["features"]
     summary = json.loads((output / "stress_summary.json").read_text())
     segments = {}
     for feature in features:
