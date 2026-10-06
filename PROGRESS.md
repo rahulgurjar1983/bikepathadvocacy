@@ -20,7 +20,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 
 - [x] **P1.1** Region file loader with checks and the config hash (FR-1.1, FR-1.6, FR-1.8, FR-11.4)
 - [x] **P1.2** Standards profiles `au-nsw` and `generic` with sources and road class defaults (FR-1.2, FR-1.3, FR-1.4, FR-1.5, FR-4.9)
-- [ ] **P1.3** Region files for Bayside, Cambridge and the test grid, and `bikeplan config show` (FR-1.7, FR-1.9)
+- [x] **P1.3** Region files for Bayside, Cambridge and the test grid, and `bikeplan config show` (FR-1.7, FR-1.9)
 
 ## Phase 2: Snapshot
 
