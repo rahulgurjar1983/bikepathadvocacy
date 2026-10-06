@@ -24,3 +24,5 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 None yet.
 - `boundary_geojson` joins relation ways into rings in plain Python, because shapely is not in the offline lock. `fetch_boundary` stores the raw reply only while it checks it, so an open relation leaves no file. The network query asks for XML; gzip is the job of the fetch command row.
+- `fetch_snapshot` in `src/bikeplan/snapshot.py` runs each adapter from the `ADAPTERS` dict as `adapter(region, box, out_dir)` and expects a list of `ManifestEntry` with `path` relative to the out dir. P2.4 adds `kontur_population` there. Until then a region that lists it fails the fetch, so real runs use a copy with `adapters: []`.
+- The Bayside network fetch takes about 3 minutes and gives a 5.5 MB gzip. Run it in the background.

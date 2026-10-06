@@ -1,5 +1,7 @@
+import gzip
 import hashlib
 import json
+import math
 import time
 import urllib.error
 import urllib.request
@@ -10,12 +12,16 @@ from itertools import pairwise
 from pathlib import Path
 from urllib.parse import urlencode
 
+from bikeplan.config import Region, config_hash, load_profile
+
 OVERPASS_ENDPOINT = "https://overpass-api.de/api/interpreter"
 PROJECT_CONTACT = "https://github.com/rahulgurjar1983/bikepathadvocacy/issues"
 MAX_RETRIES = 3
 RETRY_BASE_SECONDS = 0.1
 REQUEST_TIMEOUT_SECONDS = 180
 QUERY_TIMEOUT_SECONDS = 900
+METRES_PER_DEGREE = 111320
+ADAPTERS: dict = {}
 NETWORK_HIGHWAYS = (
     "primary",
     "primary_link",
@@ -263,3 +269,93 @@ def fetch_boundary(
         sha256=hashlib.sha256(content).hexdigest(),
         bytes=len(content),
     )
+
+
+def timestamp() -> str:
+    return datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z")
+
+
+def geometry_points(coordinates) -> list[tuple[float, float]]:
+    if isinstance(coordinates[0], int | float):
+        return [(coordinates[0], coordinates[1])]
+    return [point for part in coordinates for point in geometry_points(part)]
+
+
+def buffered_box(boundary: dict, buffer_m: float) -> tuple[float, float, float, float]:
+    geometry = boundary["geometry"] if boundary["type"] == "Feature" else boundary
+    points = geometry_points(geometry["coordinates"])
+    west, east = min(x for x, _ in points), max(x for x, _ in points)
+    south, north = min(y for _, y in points), max(y for _, y in points)
+    dlat = buffer_m / METRES_PER_DEGREE
+    dlon = buffer_m / (METRES_PER_DEGREE * math.cos(math.radians((south + north) / 2)))
+    return (
+        round(south - dlat, 6),
+        round(west - dlon, 6),
+        round(north + dlat, 6),
+        round(east + dlon, 6),
+    )
+
+
+def finish_entry(entry: ManifestEntry, out: Path, content: bytes) -> ManifestEntry:
+    (out / entry.name).write_bytes(content)
+    return replace(
+        entry,
+        path=entry.name,
+        sha256=hashlib.sha256(content).hexdigest(),
+        bytes=len(content),
+    )
+
+
+def fetch_snapshot(region: Region, out: str | Path, endpoint: str = OVERPASS_ENDPOINT) -> dict:
+    unknown = [name for name in region.snapshot.adapters if name not in ADAPTERS]
+    if unknown:
+        raise OverpassError(f"no adapter named {', '.join(unknown)}")
+    out_path = Path(out)
+    out_path.mkdir(parents=True, exist_ok=True)
+    osm_date = region.snapshot.osm_date
+    client = OverpassClient(endpoint)
+    if region.boundary.osm_relation is not None:
+        boundary_entry = fetch_boundary(
+            client, region.boundary.osm_relation, osm_date, out_path / "boundary.geojson"
+        )
+    else:
+        content = Path(region.boundary.geojson).read_bytes()
+        (out_path / "boundary.geojson").write_bytes(content)
+        boundary_entry = ManifestEntry(
+            name="boundary.geojson",
+            path="boundary.geojson",
+            sha256=hashlib.sha256(content).hexdigest(),
+            bytes=len(content),
+            source="region file",
+            request=str(region.boundary.geojson),
+            url="",
+            licence="see region file",
+            attribution=region.name,
+            retrieved_at=timestamp(),
+        )
+    boundary = json.loads((out_path / "boundary.geojson").read_text())
+    box = buffered_box(boundary, region.analysis_buffer_m)
+    licence = {"licence": "ODbL 1.0", "attribution": "© OpenStreetMap contributors"}
+    network = client.fetch(network_query(box), osm_date, out_path / "network.osm.gz", **licence)
+    network = finish_entry(
+        network, out_path, gzip.compress((out_path / "network.osm.gz").read_bytes(), mtime=0)
+    )
+    places = client.fetch(places_query(box), osm_date, out_path / "places.json", **licence)
+    entries = [
+        boundary_entry,
+        replace(network, path=network.name),
+        replace(places, path=places.name),
+    ]
+    for name in region.snapshot.adapters:
+        entries.extend(ADAPTERS[name](region, box, out_path))
+    manifest = {
+        "region": region.id,
+        "snapshot_id": osm_date[:10],
+        "osm_date": osm_date,
+        "created_at": timestamp(),
+        "tool_version": version("bikeplan"),
+        "config_hash": config_hash(region, load_profile(region.profile)),
+        "files": [entry.as_dict() for entry in entries],
+    }
+    (out_path / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+    return manifest

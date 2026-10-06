@@ -1,5 +1,6 @@
 import hashlib
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
 from threading import Thread
 from urllib.parse import parse_qs
 
@@ -313,3 +314,124 @@ def test_fr7_10_places_query_keeps_the_date_line_when_fetched(overpass_replay_se
     assert sent.startswith("[out:json][timeout:")
     assert '[date:"2026-10-01T00:00:00Z"]' in sent
     assert "out center tags" in sent
+
+
+NETWORK_XML = b'<?xml version="1.0"?><osm version="0.6"><node id="1" lat="0" lon="0"/></osm>'
+PLACES_JSON = b'{"elements":[{"type":"node","id":7,"lat":1,"lon":1,"tags":{"amenity":"school"}}]}'
+
+
+@pytest.fixture
+def routed_overpass_server():
+    import json
+    from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+    from threading import Thread
+    from urllib.parse import parse_qs
+
+    requests = []
+
+    class Handler(BaseHTTPRequestHandler):
+        def do_POST(self):
+            body = self.rfile.read(int(self.headers["Content-Length"]))
+            query = parse_qs(body.decode())["data"][0]
+            requests.append(query)
+            if "relation(" in query:
+                content = json.dumps(relation_response(SQUARE_HALVES)).encode()
+            elif "[out:xml]" in query:
+                content = NETWORK_XML
+            else:
+                content = PLACES_JSON
+            self.send_response(200)
+            self.send_header("Content-Length", str(len(content)))
+            self.end_headers()
+            self.wfile.write(content)
+
+        def log_message(self, format, *args):
+            pass
+
+    server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+    server.daemon_threads = True
+    thread = Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        yield f"http://127.0.0.1:{server.server_port}/api/interpreter", requests
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join()
+
+
+def bayside_without_adapters(tmp_path, adapters="[]"):
+    text = Path("regions/au-nsw-bayside.yaml").read_text()
+    text = text.replace("adapters: [kontur_population]", f"adapters: {adapters}")
+    path = tmp_path / "region.yaml"
+    path.write_text(text)
+    return path
+
+
+def test_fr2_1_snapshot_fetch_writes_every_file_and_the_manifest(routed_overpass_server, tmp_path):
+    import gzip
+    import json
+
+    from bikeplan import main
+
+    endpoint, _ = routed_overpass_server
+    out = tmp_path / "snap"
+    region = bayside_without_adapters(tmp_path)
+
+    code = main(["snapshot", "fetch", str(region), "--out", str(out), "--endpoint", endpoint])
+
+    assert code == 0
+    manifest = json.loads((out / "manifest.json").read_text())
+    assert manifest["region"] == "au-nsw-bayside"
+    assert manifest["snapshot_id"] == "2026-10-01"
+    assert manifest["osm_date"] == "2026-10-01T00:00:00Z"
+    assert manifest["config_hash"]
+    assert manifest["created_at"].endswith("Z")
+    names = [entry["name"] for entry in manifest["files"]]
+    assert names == ["boundary.geojson", "network.osm.gz", "places.json"]
+    assert gzip.decompress((out / "network.osm.gz").read_bytes()) == NETWORK_XML
+    assert (out / "places.json").read_bytes() == PLACES_JSON
+    assert json.loads((out / "boundary.geojson").read_text())["geometry"]["type"] == "Polygon"
+    for entry in manifest["files"]:
+        content = (out / entry["path"]).read_bytes()
+        assert entry["sha256"] == hashlib.sha256(content).hexdigest()
+        assert entry["bytes"] == len(content)
+        assert entry["request"].startswith("[out:")
+        assert entry["licence"]
+        assert entry["attribution"]
+        assert entry["retrieved_at"].endswith("Z")
+
+
+def test_fr2_1_snapshot_fetch_queries_the_box_grown_by_the_buffer(routed_overpass_server, tmp_path):
+    from bikeplan import main
+
+    endpoint, requests = routed_overpass_server
+    region = bayside_without_adapters(tmp_path)
+
+    main(
+        ["snapshot", "fetch", str(region), "--out", str(tmp_path / "snap"), "--endpoint", endpoint]
+    )
+
+    network = next(query for query in requests if "[out:xml]" in query)
+    places = next(query for query in requests if "out center" in query)
+    for query in (network, places):
+        south, west, north, east = (
+            float(value) for value in query.rsplit("(", 1)[1].split(")")[0].split(",")
+        )
+        assert south == pytest.approx(-2680 / 111320, abs=1e-5)
+        assert north == pytest.approx(4 + 2680 / 111320, abs=1e-5)
+        assert west == pytest.approx(-2680 / 111320, abs=1e-3)
+        assert east == pytest.approx(4 + 2680 / 111320, abs=1e-3)
+
+
+def test_fr2_1_snapshot_fetch_fails_on_an_adapter_it_cannot_run(routed_overpass_server, tmp_path):
+    from bikeplan import main
+
+    endpoint, _ = routed_overpass_server
+    out = tmp_path / "snap"
+    region = bayside_without_adapters(tmp_path, "[no_such_adapter]")
+
+    code = main(["snapshot", "fetch", str(region), "--out", str(out), "--endpoint", endpoint])
+
+    assert code != 0
+    assert not (out / "manifest.json").exists()

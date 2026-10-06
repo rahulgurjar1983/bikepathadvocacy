@@ -109,3 +109,13 @@ uv run pytest tests/test_snapshot.py -q --basetemp=/tmp/bikeplan-p22-pytest
 
 Expect: The replay fetch turns a closed relation into one polygon, and an open relation fails with no file written. The network query lists every highway value and the crossing nodes. The places query holds every place tag, `shop` and `out center tags`. The tests pass.
 Artifact: `artifacts/P2.2/boundary.geojson`, `artifacts/P2.2/network.query`, `artifacts/P2.2/places.query`
+
+### P2.3
+
+```bash
+sed 's/adapters: \[kontur_population\]/adapters: []/' regions/au-nsw-bayside.yaml > "$TMP/region.yaml"
+uv run bikeplan snapshot fetch "$TMP/region.yaml" --out "$OUT"
+```
+
+Expect: The command exits 0. The output folder holds `boundary.geojson`, `network.osm.gz`, `places.json` and `manifest.json`. The manifest lists each file with its sha256 and size.
+Artifact: `artifacts/P2.3/manifest.json`, `artifacts/P2.3/fetch.log`

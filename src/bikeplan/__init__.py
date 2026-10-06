@@ -4,6 +4,7 @@ import sys
 from importlib.metadata import version
 
 from bikeplan.config import ConfigError, Num, config_hash, load_profile, load_region
+from bikeplan.snapshot import OVERPASS_ENDPOINT, OverpassError, fetch_snapshot
 
 LEAVES = {
     "stress": "Score the stress level of each road edge",
@@ -18,6 +19,7 @@ GROUPS = {
     "network": {"summary": "Summarise the road network"},
     "width": {"summary": "Summarise road widths"},
     "fit": {"summary": "Summarise cycleway fit"},
+    "snapshot": {"fetch": "Fetch the input data of a region"},
 }
 
 GROUP_HELP = {
@@ -25,6 +27,7 @@ GROUP_HELP = {
     "network": "Network commands",
     "width": "Width commands",
     "fit": "Fit commands",
+    "snapshot": "Snapshot commands",
 }
 
 
@@ -45,6 +48,10 @@ def build_parser() -> argparse.ArgumentParser:
             )
             if (name, sub) == ("config", "show"):
                 leaf.add_argument("region", help="Region file")
+            if (name, sub) == ("snapshot", "fetch"):
+                leaf.add_argument("region", help="Region file")
+                leaf.add_argument("--out", required=True, help="Output directory")
+                leaf.add_argument("--endpoint", default=OVERPASS_ENDPOINT, help="Overpass endpoint")
     return parser
 
 
@@ -81,8 +88,21 @@ def config_show(path: str) -> int:
     return 0
 
 
+def snapshot_fetch(path: str, out: str, endpoint: str) -> int:
+    try:
+        manifest = fetch_snapshot(load_region(path), out, endpoint)
+    except (ConfigError, OverpassError, OSError) as error:
+        print(error, file=sys.stderr)
+        return 1
+    for entry in manifest["files"]:
+        print(f"{entry['name']} {entry['sha256']} {entry['bytes']}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if (args.command, getattr(args, "subcommand", None)) == ("config", "show"):
         return config_show(args.region)
+    if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "fetch"):
+        return snapshot_fetch(args.region, args.out, args.endpoint)
     return 0
