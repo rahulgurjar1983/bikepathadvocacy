@@ -3,7 +3,7 @@ set -uo pipefail
 pr="${1:?usage: wait-ci.sh PR}"
 limit="${WAIT_CI_SECS:-570}"
 poll="${WAIT_CI_POLL_SECS:-20}"
-query='[.state, ([.statusCheckRollup[]? | select(.status != "COMPLETED")] | length), ([.statusCheckRollup[]? | select(.conclusion == "FAILURE" or .conclusion == "CANCELLED" or .conclusion == "TIMED_OUT" or .conclusion == "ACTION_REQUIRED") | .name] | join(" ")), ([.statusCheckRollup[]?] | length)] | map(tostring) | join("|")'
+query='(.statusCheckRollup // [] | map(select(.conclusion != "SKIPPED" and .conclusion != "NEUTRAL")) | group_by(.name) | map(max_by(.startedAt // ""))) as $checks | [.state, ($checks | map(select(.status != "COMPLETED")) | length), ($checks | map(select(.conclusion == "FAILURE" or .conclusion == "CANCELLED" or .conclusion == "TIMED_OUT" or .conclusion == "ACTION_REQUIRED" or .conclusion == "STARTUP_FAILURE") | .name) | join(" ")), ($checks | length)] | map(tostring) | join("|")'
 deadline=$((SECONDS + limit))
 while :; do
   if ! line="$(gh pr view "$pr" --json state,statusCheckRollup --jq "$query" 2>&1)"; then

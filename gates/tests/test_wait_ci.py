@@ -1,3 +1,4 @@
+import json
 import os
 import subprocess
 from pathlib import Path
@@ -19,15 +20,37 @@ printf '%s\\n' "$line"
 """
 
 
-def wait_ci(tmp_path: Path, states: list[str], **extra: str):
+FAKE_GH_JQ = """#!/usr/bin/env bash
+n=$(( $(cat "$FAKE_GH_STATE/count" 2>/dev/null || echo 0) + 1 ))
+echo "$n" > "$FAKE_GH_STATE/count"
+query=""
+while [ $# -gt 0 ]; do
+  if [ "$1" = "--jq" ]; then
+    query="$2"
+    shift
+  fi
+  shift
+done
+file="$FAKE_GH_STATE/rollup.$n.json"
+if [ ! -f "$file" ]; then
+  file="$(ls "$FAKE_GH_STATE"/rollup.*.json | sort -V | tail -n 1)"
+fi
+jq -r "$query" "$file"
+"""
+
+
+def wait_ci(tmp_path: Path, states: list[str], fake: str = FAKE_GH, **extra: str):
     bin_dir = tmp_path / "bin"
     bin_dir.mkdir(exist_ok=True)
     gh = bin_dir / "gh"
-    gh.write_text(FAKE_GH)
+    gh.write_text(fake)
     gh.chmod(0o755)
     state = tmp_path / "state"
     state.mkdir(exist_ok=True)
     (state / "states").write_text("\n".join(states) + "\n")
+    for number, rollup in enumerate(states, start=1):
+        if rollup.startswith("{"):
+            (state / f"rollup.{number}.json").write_text(rollup)
     env = dict(os.environ)
     env.update(
         {
@@ -84,3 +107,25 @@ def test_fr0_23_no_reported_checks_yet_keeps_waiting(tmp_path):
     result = wait_ci(tmp_path, ["OPEN|0||0", "MERGED|0||2"])
     assert result.returncode == 0, result.stdout + result.stderr
     assert result.stdout.splitlines() == ["wait-ci: PR 7 merged"]
+
+
+def check(name: str, status: str, conclusion: str | None, started: str = "") -> dict:
+    return {"name": name, "status": status, "conclusion": conclusion, "startedAt": started}
+
+
+def test_fr0_23_skipped_draft_checks_and_stale_runs_do_not_decide(tmp_path):
+    draft = [check("gates", "COMPLETED", "SKIPPED"), check("test", "COMPLETED", "SKIPPED")]
+    running = [*draft, check("gates", "IN_PROGRESS", None, "2026-10-06T10:00:00Z")]
+    green = [
+        *draft,
+        check("gates", "COMPLETED", "FAILURE", "2026-10-06T10:00:00Z"),
+        check("gates", "COMPLETED", "SUCCESS", "2026-10-06T10:05:00Z"),
+        check("test", "COMPLETED", "SUCCESS", "2026-10-06T10:00:00Z"),
+    ]
+    rollups = [
+        json.dumps({"state": "OPEN", "statusCheckRollup": rollup})
+        for rollup in (draft, running, green)
+    ]
+    result = wait_ci(tmp_path, rollups, fake=FAKE_GH_JQ)
+    assert result.returncode == 4, result.stdout + result.stderr
+    assert (tmp_path / "state" / "count").read_text().strip() == "3"
