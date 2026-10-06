@@ -3,14 +3,14 @@ set -uo pipefail
 pr="${1:?usage: wait-ci.sh PR}"
 limit="${WAIT_CI_SECS:-570}"
 poll="${WAIT_CI_POLL_SECS:-20}"
-query='[.state, ([.statusCheckRollup[]? | select(.status != "COMPLETED")] | length), ([.statusCheckRollup[]? | select(.conclusion == "FAILURE" or .conclusion == "CANCELLED" or .conclusion == "TIMED_OUT" or .conclusion == "ACTION_REQUIRED") | .name] | join(" "))] | @tsv'
+query='[.state, ([.statusCheckRollup[]? | select(.status != "COMPLETED")] | length), ([.statusCheckRollup[]? | select(.conclusion == "FAILURE" or .conclusion == "CANCELLED" or .conclusion == "TIMED_OUT" or .conclusion == "ACTION_REQUIRED") | .name] | join(" ")), ([.statusCheckRollup[]?] | length)] | map(tostring) | join("|")'
 deadline=$((SECONDS + limit))
 while :; do
   if ! line="$(gh pr view "$pr" --json state,statusCheckRollup --jq "$query" 2>&1)"; then
     echo "wait-ci: gh failed: $line" >&2
     exit 2
   fi
-  IFS=$'\t' read -r state _pending failed <<<"$line"
+  IFS='|' read -r state pending failed total <<<"$line"
   if [ "$state" = MERGED ]; then
     echo "wait-ci: PR $pr merged"
     exit 0
@@ -22,6 +22,10 @@ while :; do
   if [ "$state" = CLOSED ]; then
     echo "wait-ci: PR $pr is closed without a merge"
     exit 1
+  fi
+  if [ "${total:-0}" -gt 0 ] && [ "${pending:-1}" -eq 0 ]; then
+    echo "wait-ci: PR $pr passed every check but is not merged; run scripts/ship-pr.sh $pr"
+    exit 4
   fi
   if [ "$SECONDS" -ge "$deadline" ]; then
     echo "wait-ci: PR $pr is still running after ${limit}s"
