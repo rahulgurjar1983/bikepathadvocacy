@@ -131,3 +131,15 @@ python3 -I -c "import sqlite3,sys; cut=dict(sqlite3.connect(sys.argv[1]).execute
 
 Expect: All 9 tests pass. The fetch exits 0 and the manifest lists `population.gpkg` from `kontur_population_AU_20231101.gpkg.gz` under CC BY 4.0. The cut holds 282 hexagons with 873592 people, the same sum as those rows in the source file.
 Artifact: `artifacts/P2.4/manifest.json`, `artifacts/P2.4/fetch.log`, `artifacts/P2.4/population-check.txt`
+
+### P2.5
+
+```bash
+uv run pytest tests/test_snapshot_share.py -q
+uv run bikeplan snapshot verify "$SNAPSHOT_DIR"
+printf x >> "$SNAPSHOT_DIR/package_search_AU.json"
+uv run bikeplan snapshot verify "$SNAPSHOT_DIR"
+```
+
+Expect: All 10 tests pass. The first verify prints `<name> ok <sha256>` per file and exits 0. After one byte is added, verify names `package_search_AU.json` with its wrong size and exits 1. Publish and pull run through a stand-in `gh`; the real release round trip is P2.6.
+Artifact: `artifacts/P2.5/verify.log`

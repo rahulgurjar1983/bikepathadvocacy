@@ -1,0 +1,6 @@
+kontur_population_AU_20231101.gpkg.gz ok ef4f6f9b9d1f1db1d68c950569b87ca0b85b3fc1c6c57ac52ecb6c7925d3fd2c
+package_search_AU.json ok 3a3542216f60717fd2dab9c5b7d9f516108ea64e546344bb22689135b024c824
+exit 0
+package_search_AU.json size 9749 expected 9748
+kontur_population_AU_20231101.gpkg.gz ok ef4f6f9b9d1f1db1d68c950569b87ca0b85b3fc1c6c57ac52ecb6c7925d3fd2c
+exit 1
