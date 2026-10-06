@@ -1,0 +1,3 @@
+signalised 9352
+refuge 5714
+raised 3136 {2: 1647, 3: 1371, 4: 118}

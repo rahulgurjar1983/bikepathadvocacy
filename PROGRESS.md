@@ -43,7 +43,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 - [x] **P4.1** Furth mixed traffic table with km/h speed bands (FR-4.1)
 - [x] **P4.2** Furth painted lane tables (FR-4.2)
 - [x] **P4.3** Paths, protected lanes and the AAA rule (FR-4.3, FR-4.6)
-- [ ] **P4.4** Signals, refuges and Mineta crossing stress (FR-4.4, FR-4.5)
+- [x] **P4.4** Signals, refuges and Mineta crossing stress (FR-4.4, FR-4.5)
 - [ ] **P4.5** Reasons and `bikeplan stress`; Bayside stress summary as the artifact (FR-4.7, FR-4.8, NFR-5)
 
 ## Phase 5: Width

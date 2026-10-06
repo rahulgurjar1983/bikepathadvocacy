@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osm version="0.6" generator="bikeplan-test">
+<node id="8101" lat="-33.91" lon="151.1190"/>
+<node id="8100" lat="-33.91" lon="151.1200"/>
+<node id="8103" lat="-33.91" lon="151.1210"/>
+<node id="8104" lat="-33.9110" lon="151.1200"/>
+<node id="8201" lat="-33.92" lon="151.1190"/>
+<node id="8200" lat="-33.92" lon="151.1200"/>
+<node id="8203" lat="-33.92" lon="151.1210"/>
+<node id="8204" lat="-33.9210" lon="151.1200"/>
+<node id="8202" lat="-33.92" lon="151.12022">
+<tag k="highway" v="traffic_signals"/>
+</node>
+<node id="8301" lat="-33.93" lon="151.1190"/>
+<node id="8300" lat="-33.93" lon="151.1200"/>
+<node id="8303" lat="-33.93" lon="151.1210"/>
+<node id="8304" lat="-33.9310" lon="151.1200"/>
+<node id="8302" lat="-33.93" lon="151.12034">
+<tag k="highway" v="traffic_signals"/>
+</node>
+<node id="8401" lat="-33.94" lon="151.1190"/>
+<node id="8400" lat="-33.94" lon="151.1200"/>
+<node id="8403" lat="-33.94" lon="151.1210"/>
+<node id="8404" lat="-33.9410" lon="151.1200"/>
+<node id="8402" lat="-33.94" lon="151.12022">
+<tag k="crossing:island" v="yes"/>
+</node>
+<node id="8501" lat="-33.95" lon="151.1190"/>
+<node id="8500" lat="-33.95" lon="151.1200"/>
+<node id="8503" lat="-33.95" lon="151.1210"/>
+<node id="8504" lat="-33.9510" lon="151.1200"/>
+<node id="8502" lat="-33.95" lon="151.12034">
+<tag k="crossing:island" v="yes"/>
+</node>
+<way id="8110"><nd ref="8101"/><nd ref="8100"/><nd ref="8103"/><tag k="highway" v="primary"/><tag k="maxspeed" v="60"/><tag k="lanes" v="4"/><tag k="parking:both" v="no"/></way>
+<way id="8120"><nd ref="8100"/><nd ref="8104"/><tag k="highway" v="residential"/><tag k="maxspeed" v="50"/><tag k="lanes" v="2"/><tag k="parking:both" v="no"/></way>
+<way id="8210"><nd ref="8201"/><nd ref="8200"/><nd ref="8202"/><nd ref="8203"/><tag k="highway" v="primary"/><tag k="maxspeed" v="60"/><tag k="lanes" v="4"/><tag k="parking:both" v="no"/></way>
+<way id="8220"><nd ref="8200"/><nd ref="8204"/><tag k="highway" v="residential"/><tag k="maxspeed" v="50"/><tag k="lanes" v="2"/><tag k="parking:both" v="no"/></way>
+<way id="8310"><nd ref="8301"/><nd ref="8300"/><nd ref="8302"/><nd ref="8303"/><tag k="highway" v="primary"/><tag k="maxspeed" v="60"/><tag k="lanes" v="4"/><tag k="parking:both" v="no"/></way>
+<way id="8320"><nd ref="8300"/><nd ref="8304"/><tag k="highway" v="residential"/><tag k="maxspeed" v="50"/><tag k="lanes" v="2"/><tag k="parking:both" v="no"/></way>
+<way id="8410"><nd ref="8401"/><nd ref="8400"/><nd ref="8402"/><nd ref="8403"/><tag k="highway" v="primary"/><tag k="maxspeed" v="50"/><tag k="lanes" v="6"/><tag k="parking:both" v="no"/></way>
+<way id="8420"><nd ref="8400"/><nd ref="8404"/><tag k="highway" v="residential"/><tag k="maxspeed" v="50"/><tag k="lanes" v="2"/><tag k="parking:both" v="no"/></way>
+<way id="8510"><nd ref="8501"/><nd ref="8500"/><nd ref="8502"/><nd ref="8503"/><tag k="highway" v="primary"/><tag k="maxspeed" v="50"/><tag k="lanes" v="6"/><tag k="parking:both" v="no"/></way>
+<way id="8520"><nd ref="8500"/><nd ref="8504"/><tag k="highway" v="residential"/><tag k="maxspeed" v="50"/><tag k="lanes" v="2"/><tag k="parking:both" v="no"/></way>
+</osm>
