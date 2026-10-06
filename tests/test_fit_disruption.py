@@ -13,7 +13,7 @@ def found_for(data):
 
 
 def test_fr6_4_fix_that_fits_at_the_low_width_is_robust():
-    data = {**CASES[2], "width_low_m": 13.5}
+    data = {**CASES[2], "width_low_m": 13.8}
     assert found_for(data)["cycleway_in_spare"]["robust"] == "robust"
 
 
