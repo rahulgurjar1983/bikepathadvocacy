@@ -43,19 +43,9 @@ def lookup(profile, dotted):
     return node
 
 
-GOOD = {
-    "id": "tiny",
-    "name": "Tiny",
-    "aaa": {
-        "mixed_traffic": [
-            {
-                "max_speed_kmh": {"value": 30, "source": "S"},
-                "max_adt": {"value": 2000, "source": "S"},
-            }
-        ],
-        "painted_lanes_count": {"value": False, "source": "S"},
-    },
-}
+GOOD = yaml.safe_load(
+    (Path(__file__).resolve().parents[1] / "profiles" / "au-nsw.yaml").read_text()
+)
 
 
 def write_profile(tmp_path, data):
