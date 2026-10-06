@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osm version="0.6" generator="bikeplan-test">
+<node id="8011" lat="-33.9100" lon="151.1200"/>
+<node id="8012" lat="-33.9100" lon="151.1220"/>
+<node id="8021" lat="-33.9200" lon="151.1220"/>
+<node id="8022" lat="-33.9200" lon="151.1230"/>
+<node id="8031" lat="-33.9000" lon="151.1200"/>
+<node id="8032" lat="-33.9000" lon="151.1205"/>
+<way id="801">
+<nd ref="8011"/>
+<nd ref="8012"/>
+<tag k="highway" v="residential"/>
+<tag k="maxspeed" v="50"/>
+<tag k="lanes" v="2"/>
+<tag k="parking:both" v="no"/>
+</way>
+<way id="802">
+<nd ref="8021"/>
+<nd ref="8022"/>
+<tag k="highway" v="residential"/>
+<tag k="oneway" v="yes"/>
+<tag k="maxspeed" v="50"/>
+<tag k="parking:both" v="no"/>
+</way>
+<way id="803">
+<nd ref="8031"/>
+<nd ref="8032"/>
+<tag k="highway" v="residential"/>
+<tag k="maxspeed" v="50"/>
+<tag k="lanes" v="2"/>
+<tag k="parking:both" v="no"/>
+</way>
+</osm>
