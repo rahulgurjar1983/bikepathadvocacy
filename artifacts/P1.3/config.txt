@@ -1,0 +1,64 @@
+region: au-nsw-bayside (Bayside Council, New South Wales)
+country: AU AU-NSW
+profile: au-nsw (NSW (TfNSW Cycleway Design Toolbox and Austroads))
+values:
+  aaa.mixed_traffic[0].max_speed_kmh 30 (TfNSW Cycleway Design Toolbox (2020))
+  aaa.mixed_traffic[0].max_adt 2000 (TfNSW Cycleway Design Toolbox (2020))
+  aaa.painted_lanes_count False (TfNSW Cycleway Design Toolbox (2020): painted lanes are not separation)
+  widths_m.one_way_cycleway.min 1.5 (Austroads Guide to Road Design Part 6A)
+  widths_m.one_way_cycleway.desirable 2.0 (TfNSW Cycleway Design Toolbox (2020))
+  widths_m.two_way_cycleway.min 2.5 (Austroads Guide to Road Design Part 6A)
+  widths_m.two_way_cycleway.desirable 3.0 (TfNSW Cycleway Design Toolbox (2020))
+  widths_m.separator_traffic.min 0.5 (TfNSW Cycleway Design Toolbox (2020))
+  widths_m.separator_traffic.desirable 1.0 (TfNSW Cycleway Design Toolbox (2020))
+  widths_m.separator_parking.min 1.0 (TfNSW Cycleway Design Toolbox (2020))
+  widths_m.shared_path.min 3.0 (Austroads Guide to Road Design Part 6A)
+  widths_m.shared_path.desirable 4.0 (TfNSW Cycleway Design Toolbox (2020))
+  widths_m.traffic_lane.min 3.0 (Austroads Guide to Road Design Part 3 (60 km/h or less))
+  widths_m.parking_lane 2.1 (AS 2890.5)
+  widths_m.verge_default 3.5 (assumption: typical Sydney footpath plus nature strip) [assumption]
+  parking.bay_length_m 6.0 (assumption: AS 2890.5 parallel bay plus gaps) [assumption]
+  parking.driveway_share 0.3 (assumption: share of kerb lost to driveways on a local street) [assumption]
+  road_diet.max_adt 20000 (FHWA Road Diet Informational Guide (2014))
+  quietway.target_speed_kmh 30 (TfNSW Cycleway Design Toolbox (2020))
+  crossing.refuge_min_m 1.8 (Mekuria, Furth and Nixon (2012), Table 8 (six feet))
+  road_classes.living_street.speed_kmh 10 (assumption: typical posted limit for the class) [assumption]
+  road_classes.living_street.adt 200 (assumption: typical daily traffic for the class) [assumption]
+  road_classes.living_street.lanes 1 (assumption: typical lane count for the class when untagged) [assumption]
+  road_classes.living_street.parking True (assumption: kerb parking is usual on this class when parking is untagged) [assumption]
+  road_classes.primary.speed_kmh 60 (assumption: typical posted limit for the class) [assumption]
+  road_classes.primary.adt 25000 (assumption: typical daily traffic for the class) [assumption]
+  road_classes.primary.lanes 4 (assumption: typical lane count for the class when untagged) [assumption]
+  road_classes.primary.parking False (assumption: kerb parking is not usual on this class when parking is untagged) [assumption]
+  road_classes.residential.speed_kmh 50 (assumption: NSW Road Rules default urban limit of 50 km/h) [assumption]
+  road_classes.residential.adt 750 (assumption: typical daily traffic for the class) [assumption]
+  road_classes.residential.lanes 2 (assumption: typical lane count for the class when untagged) [assumption]
+  road_classes.residential.parking True (assumption: kerb parking is usual on this class when parking is untagged) [assumption]
+  road_classes.secondary.speed_kmh 60 (assumption: typical posted limit for the class) [assumption]
+  road_classes.secondary.adt 12000 (assumption: typical daily traffic for the class) [assumption]
+  road_classes.secondary.lanes 2 (assumption: typical lane count for the class when untagged) [assumption]
+  road_classes.secondary.parking True (assumption: kerb parking is usual on this class when parking is untagged) [assumption]
+  road_classes.service.speed_kmh 20 (assumption: typical posted limit for the class) [assumption]
+  road_classes.service.adt 200 (assumption: typical daily traffic for the class) [assumption]
+  road_classes.service.lanes 1 (assumption: typical lane count for the class when untagged) [assumption]
+  road_classes.service.parking False (assumption: kerb parking is not usual on this class when parking is untagged) [assumption]
+  road_classes.tertiary.speed_kmh 50 (assumption: NSW Road Rules default urban limit of 50 km/h) [assumption]
+  road_classes.tertiary.adt 5000 (assumption: typical daily traffic for the class) [assumption]
+  road_classes.tertiary.lanes 2 (assumption: typical lane count for the class when untagged) [assumption]
+  road_classes.tertiary.parking True (assumption: kerb parking is usual on this class when parking is untagged) [assumption]
+  road_classes.trunk.speed_kmh 70 (assumption: typical posted limit for the class) [assumption]
+  road_classes.trunk.adt 35000 (assumption: typical daily traffic for the class) [assumption]
+  road_classes.trunk.lanes 4 (assumption: typical lane count for the class when untagged) [assumption]
+  road_classes.trunk.parking False (assumption: kerb parking is not usual on this class when parking is untagged) [assumption]
+  road_classes.unclassified.speed_kmh 50 (assumption: NSW Road Rules default urban limit of 50 km/h) [assumption]
+  road_classes.unclassified.adt 1500 (assumption: typical daily traffic for the class) [assumption]
+  road_classes.unclassified.lanes 2 (assumption: typical lane count for the class when untagged) [assumption]
+  road_classes.unclassified.parking True (assumption: kerb parking is usual on this class when parking is untagged) [assumption]
+  implicit_speeds.AU:urban 50 (OpenStreetMap Wiki, Default speed limits: AU:urban)
+  implicit_speeds.AU:rural 100 (OpenStreetMap Wiki, Default speed limits: AU:rural)
+  implicit_speeds.AU:motorway 110 (OpenStreetMap Wiki, Default speed limits: AU:motorway)
+  implicit_speeds.GB:nsl_restricted 48.28 (OpenStreetMap Wiki, Default speed limits: GB:nsl_restricted)
+  implicit_speeds.GB:nsl_single 96.56 (OpenStreetMap Wiki, Default speed limits: GB:nsl_single)
+  implicit_speeds.GB:nsl_dual 112.65 (OpenStreetMap Wiki, Default speed limits: GB:nsl_dual)
+  implicit_speeds.GB:motorway 112.65 (OpenStreetMap Wiki, Default speed limits: GB:motorway)
+config_hash: c5b43a1a0c731a9f830bd10f36732bcddc464e80ee286f562a889eacdf1b180a

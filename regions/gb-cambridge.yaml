@@ -1,0 +1,37 @@
+id: gb-cambridge
+name: Cambridge, England
+country: GB
+subdivision: GB-CAM
+boundary:
+  osm_relation: 295355
+analysis_buffer_m: 2680
+profile: generic
+snapshot:
+  osm_date: "2026-10-01T00:00:00Z"
+  adapters: [kontur_population]
+population:
+  source: kontur_population
+destinations:
+  school: {weight: 3}
+  college: {weight: 1}
+  university: {weight: 1}
+  aged_care: {weight: 1}
+  library: {weight: 1}
+  town_centre: {weight: 2}
+  station: {weight: 2}
+access:
+  reach_m: 2680
+  detour_max: 1.25
+proposals:
+  max_projects: 25
+  budget_km: 40
+  candidate_pool: 20
+  min_gain: 0.05
+  metres_per_point: 10
+  disruption_weights:
+    parking_space: 1.0
+    lane_km: 40.0
+    speed_km: 2.0
+    signal: 15.0
+    refuge: 3.0
+    path_km: 5.0

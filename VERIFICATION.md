@@ -79,3 +79,13 @@ uv run pytest tests/test_profiles.py -q
 
 Expect: the first command prints `au-nsw 1.5 750 50 True` and `generic 1.5 750 50 True`. The profile tests pass, and they compare every value in spec 01 sections 6 and 7 to the loaded files.
 Artifact: `artifacts/P1.2/profiles.txt`
+
+### P1.3
+
+```bash
+uv run bikeplan config show regions/au-nsw-bayside.yaml > artifacts/P1.3/config.txt
+uv run pytest tests/test_regions.py -q
+```
+
+Expect: the output names the region, lists every profile value with its source (assumptions marked) and ends with a `config_hash:` line of 64 characters. The five region tests pass.
+Artifact: `artifacts/P1.3/config.txt`
