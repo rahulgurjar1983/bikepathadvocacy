@@ -31,6 +31,21 @@ WAY_TAGS = [
     "lanes",
     "lanes:forward",
     "lanes:backward",
+    "cycleway:left:separation",
+    "cycleway:right:separation",
+    "cycleway:both:separation",
+    "cycleway:left:width",
+    "cycleway:right:width",
+    "cycleway:both:width",
+    "cycleway:width",
+    "parking:left",
+    "parking:right",
+    "parking:both",
+    "parking:lane:left",
+    "parking:lane:right",
+    "parking:lane:both",
+    "width",
+    "width:carriageway",
 ]
 KEPT_APART = ["osmid", "bike_ok", "contraflow", *WAY_TAGS]
 MILE_KMH = 1.609344
@@ -42,6 +57,14 @@ SERVICE_BLOCKED = {"parking_aisle", "driveway", "drive-through"}
 CONTRAFLOW = {"opposite", "opposite_lane", "opposite_track"}
 CONTRAFLOW_KEYS = ["cycleway", "cycleway:left", "cycleway:right", "cycleway:both"]
 CONTRAFLOW_ONEWAY_KEYS = ["cycleway:left:oneway", "cycleway:right:oneway", "cycleway:both:oneway"]
+FOOT_PATHS = {"path", "footway"}
+PROTECTED_VALUES = {"track", "separate"}
+SHARED_VALUES = {"shared_lane", "share_busway"}
+PROTECTING_SEPARATION = {"kerb", "bollard", "flex_post", "planter"}
+NO_PARKING = {"no", "no_parking", "no_stopping", "separate"}
+OPTIONAL_FIELDS = ["bike_lane_width_m", "width_tag_m", "width_drop_reason"]
+FEET_M = 0.3048
+WIDTH_RANGE_M = (2.0, 40.0)
 
 
 def first(value):
@@ -126,6 +149,82 @@ def set_traffic_fields(data: dict, profile: Profile) -> None:
     data["adt_source"] = "default"
 
 
+def travel_side(data: dict) -> str:
+    return "right" if data["reversed"] else "left"
+
+
+def side_value(data: dict, side: str, prefix: str, suffix: str = ""):
+    for key in (f"{prefix}:{side}{suffix}", f"{prefix}:both{suffix}"):
+        if data.get(key) is not None:
+            return first(data[key])
+    return None
+
+
+def bike_facility(data: dict, side: str) -> str:
+    highway = first(data.get("highway"))
+    if highway == "cycleway" or (
+        highway in FOOT_PATHS and first(data.get("bicycle")) == "designated"
+    ):
+        return "off_road"
+    value = side_value(data, side, "cycleway")
+    if value is None:
+        value = first(data.get("cycleway"))
+    if value in PROTECTED_VALUES:
+        return "protected"
+    if value == "lane":
+        separation = side_value(data, side, "cycleway", ":separation")
+        return "protected" if separation in PROTECTING_SEPARATION else "painted_lane"
+    return "shared" if value in SHARED_VALUES else "none"
+
+
+def parking_on_side(data: dict, side: str) -> str:
+    value = side_value(data, side, "parking")
+    if value is None:
+        value = side_value(data, side, "parking:lane")
+    if value is None:
+        return "unknown"
+    return "no" if value in NO_PARKING else "yes"
+
+
+def parse_length(value) -> float | None:
+    match = re.fullmatch(r"(\d+(?:\.\d+)?)\s*(m|ft|')?", str(first(value)).strip())
+    if not match:
+        return None
+    return float(match[1]) * (FEET_M if match[2] in {"ft", "'"} else 1)
+
+
+def parse_width(value) -> tuple[float | None, str | None]:
+    metres = parse_length(value)
+    if metres is None:
+        return None, "unreadable"
+    if not WIDTH_RANGE_M[0] <= metres <= WIDTH_RANGE_M[1]:
+        return None, "out_of_range"
+    return metres, None
+
+
+def set_width_tag(data: dict) -> None:
+    data["width_tag_m"], data["width_drop_reason"] = None, None
+    for key in ("width:carriageway", "width"):
+        if data.get(key) is None:
+            continue
+        metres, reason = parse_width(data[key])
+        if metres is not None:
+            data["width_tag_m"], data["width_drop_reason"] = metres, None
+            return
+        data["width_drop_reason"] = data["width_drop_reason"] or reason
+
+
+def set_side_fields(data: dict) -> None:
+    side = travel_side(data)
+    data["bike_facility"] = bike_facility(data, side)
+    lane_width = side_value(data, side, "cycleway", ":width")
+    if lane_width is None:
+        lane_width = first(data.get("cycleway:width"))
+    data["bike_lane_width_m"] = parse_length(lane_width) if lane_width is not None else None
+    data["parking"] = parking_on_side(data, side)
+    set_width_tag(data)
+
+
 def utm_crs(longitude: float, latitude: float) -> CRS:
     zone = int((longitude + 180) // 6) % 60 + 1
     return CRS.from_epsg((32600 if latitude >= 0 else 32700) + zone)
@@ -153,6 +252,7 @@ def mark_bike_access(graph: nx.MultiDiGraph, profile: Profile) -> None:
             graph.add_edge(v, u, **reverse)
     for _, _, data in graph.edges(data=True):
         set_traffic_fields(data, profile)
+        set_side_fields(data)
 
 
 def set_lengths(graph: nx.MultiDiGraph) -> None:
@@ -167,6 +267,10 @@ def set_lengths(graph: nx.MultiDiGraph) -> None:
             )
         data["length_m"] = length
         data["osm_way"] = first(data["osmid"])
+        for key in OPTIONAL_FIELDS:
+            value = data.get(key)
+            if value is None or (isinstance(value, float) and math.isnan(value)):
+                data[key] = None
 
 
 def build(snapshot: str | Path, region: Region, profile: Profile) -> nx.MultiDiGraph:
