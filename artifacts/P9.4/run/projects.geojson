@@ -1,0 +1,25 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          151.154363,
+          -33.948264
+        ],
+        "type": "Point"
+      },
+      "id": "junction:1010",
+      "properties": {
+        "fix": "signals",
+        "id": "junction:1010",
+        "project": "8f21dad1cfe48684",
+        "rank": 1,
+        "robust": "robust",
+        "street": "unnamed residential",
+        "width_source": null
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

@@ -617,5 +617,16 @@ uv run pytest tests/test_run_report.py -q
 uv run bikeplan run regions/test-grid.yaml --snapshot tests/fixtures/test-grid/snapshot --out "$OUT"
 ```
 
-Expect: 16 tests pass. `report.html` is one file of about 200 KB with the summary, map, ranked table, a sheet per project, method, profile table, credits and rebuild commands. It holds the pinned Leaflet build and no link to another host, and `summary.json` credits "© OpenStreetMap contributors, ODbL 1.0".
+Expect: All report tests pass. `report.html` is one file of about 200 KB with the summary, map, ranked table, a sheet per project, method, profile table, credits and rebuild commands. It holds the pinned Leaflet build and no link to another host, and `summary.json` credits "© OpenStreetMap contributors, ODbL 1.0".
 Artifact: `artifacts/P9.3/report.html`
+
+### P9.4
+
+```bash
+uv run pytest tests/test_run_report.py -q -k fr9_4
+uv run bikeplan run regions/test-grid.yaml --snapshot tests/fixtures/test-grid/snapshot --out artifacts/P9.4/run
+(cd artifacts/P9.4/run && sha256sum -c outputs.sha256)
+```
+
+Expect: Both FR-9.4 tests pass. The run prints `score_before 25.0`, `score_after 100.0` and `projects 1`. Every output hash check says `OK`.
+Artifact: `artifacts/P9.4/run/report.html`

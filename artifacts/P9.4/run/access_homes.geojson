@@ -1,0 +1,157 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          151.149998,
+          -33.950002
+        ],
+        "type": "Point"
+      },
+      "id": "1000",
+      "properties": {
+        "node": 1000,
+        "people": 125.0,
+        "score": 0.0,
+        "types": {
+          "school": 0.0
+        }
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          151.150037,
+          -33.948199
+        ],
+        "type": "Point"
+      },
+      "id": "1001",
+      "properties": {
+        "node": 1001,
+        "people": 125.0,
+        "score": 0.0,
+        "types": {
+          "school": 0.0
+        }
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          151.150076,
+          -33.946396
+        ],
+        "type": "Point"
+      },
+      "id": "1002",
+      "properties": {
+        "node": 1002,
+        "people": 125.0,
+        "score": 0.0,
+        "types": {
+          "school": 0.0
+        }
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          151.150115,
+          -33.944594
+        ],
+        "type": "Point"
+      },
+      "id": "1003",
+      "properties": {
+        "node": 1003,
+        "people": 125.0,
+        "score": 1.0,
+        "types": {
+          "school": 1.0
+        }
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          151.152161,
+          -33.950035
+        ],
+        "type": "Point"
+      },
+      "id": "1004",
+      "properties": {
+        "node": 1004,
+        "people": 125.0,
+        "score": 0.0,
+        "types": {
+          "school": 0.0
+        }
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          151.1522,
+          -33.948232
+        ],
+        "type": "Point"
+      },
+      "id": "1005",
+      "properties": {
+        "node": 1005,
+        "people": 125.0,
+        "score": 0.0,
+        "types": {
+          "school": 0.0
+        }
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          151.152239,
+          -33.946429
+        ],
+        "type": "Point"
+      },
+      "id": "1006",
+      "properties": {
+        "node": 1006,
+        "people": 125.0,
+        "score": 0.0,
+        "types": {
+          "school": 0.0
+        }
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          151.152278,
+          -33.944626
+        ],
+        "type": "Point"
+      },
+      "id": "1007",
+      "properties": {
+        "node": 1007,
+        "people": 125.0,
+        "score": 1.0,
+        "types": {
+          "school": 1.0
+        }
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

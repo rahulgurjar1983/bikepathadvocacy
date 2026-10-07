@@ -1,0 +1,1825 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1499977,
+            -33.9500021
+          ],
+          [
+            151.1500367,
+            -33.9481992
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1000-1001-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2000,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "ed9ea1b5dc44873b",
+        "u": 1000,
+        "v": 1001,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1499977,
+            -33.9500021
+          ],
+          [
+            151.152161,
+            -33.9500346
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1000-1004-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2003,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "3c1093ba7f24142c",
+        "u": 1000,
+        "v": 1004,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1500367,
+            -33.9481992
+          ],
+          [
+            151.1499977,
+            -33.9500021
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1001-1000-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2000,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "ed9ea1b5dc44873b",
+        "u": 1001,
+        "v": 1000,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1500367,
+            -33.9481992
+          ],
+          [
+            151.1500757,
+            -33.9463964
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1001-1002-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2000,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "c4a83f6bb28e0e7b",
+        "u": 1001,
+        "v": 1002,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1500367,
+            -33.9481992
+          ],
+          [
+            151.1522,
+            -33.9482317
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1001-1005-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2004,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "1988dbdb8efafb05",
+        "u": 1001,
+        "v": 1005,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1500757,
+            -33.9463964
+          ],
+          [
+            151.1500367,
+            -33.9481992
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1002-1001-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2000,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "c4a83f6bb28e0e7b",
+        "u": 1002,
+        "v": 1001,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1500757,
+            -33.9463964
+          ],
+          [
+            151.1501147,
+            -33.9445935
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1002-1003-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2000,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "b7cd1f5a5306ca70",
+        "u": 1002,
+        "v": 1003,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1500757,
+            -33.9463964
+          ],
+          [
+            151.152239,
+            -33.9464289
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1002-1006-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2005,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "c8835835391dd91a",
+        "u": 1002,
+        "v": 1006,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1501147,
+            -33.9445935
+          ],
+          [
+            151.1500757,
+            -33.9463964
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1003-1002-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2000,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "b7cd1f5a5306ca70",
+        "u": 1003,
+        "v": 1002,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1501147,
+            -33.9445935
+          ],
+          [
+            151.1522779,
+            -33.944626
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1003-1007-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2006,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "c4e9de0603f654df",
+        "u": 1003,
+        "v": 1007,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.152161,
+            -33.9500346
+          ],
+          [
+            151.1499977,
+            -33.9500021
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1004-1000-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2003,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "3c1093ba7f24142c",
+        "u": 1004,
+        "v": 1000,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.152161,
+            -33.9500346
+          ],
+          [
+            151.1522,
+            -33.9482317
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1004-1005-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2001,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "32037372637c855b",
+        "u": 1004,
+        "v": 1005,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.152161,
+            -33.9500346
+          ],
+          [
+            151.1543243,
+            -33.9500671
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1004-1009-0",
+      "properties": {
+        "aaa": false,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 3,
+        "name": null,
+        "osm_way": 2003,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; raised to LTS 3 by crossing at junction 1009 (main street 60 km/h, 4 lanes, no refuge); not AAA: LTS is 3",
+        "segment_id": "854168dee3c9c2e3",
+        "u": 1004,
+        "v": 1009,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1522,
+            -33.9482317
+          ],
+          [
+            151.1500367,
+            -33.9481992
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1005-1001-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2004,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "1988dbdb8efafb05",
+        "u": 1005,
+        "v": 1001,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1522,
+            -33.9482317
+          ],
+          [
+            151.152161,
+            -33.9500346
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1005-1004-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2001,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "32037372637c855b",
+        "u": 1005,
+        "v": 1004,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1522,
+            -33.9482317
+          ],
+          [
+            151.152239,
+            -33.9464289
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1005-1006-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2001,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "ebf652442979745f",
+        "u": 1005,
+        "v": 1006,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1522,
+            -33.9482317
+          ],
+          [
+            151.1543633,
+            -33.9482642
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1005-1010-0",
+      "properties": {
+        "aaa": false,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 3,
+        "name": null,
+        "osm_way": 2004,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; raised to LTS 3 by crossing at junction 1010 (main street 60 km/h, 4 lanes, no refuge); not AAA: LTS is 3",
+        "segment_id": "a123e86a8930fa23",
+        "u": 1005,
+        "v": 1010,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.152239,
+            -33.9464289
+          ],
+          [
+            151.1500757,
+            -33.9463964
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1006-1002-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2005,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "c8835835391dd91a",
+        "u": 1006,
+        "v": 1002,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.152239,
+            -33.9464289
+          ],
+          [
+            151.1522,
+            -33.9482317
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1006-1005-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2001,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "ebf652442979745f",
+        "u": 1006,
+        "v": 1005,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.152239,
+            -33.9464289
+          ],
+          [
+            151.1522779,
+            -33.944626
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1006-1007-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2001,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "2119504f9104ab57",
+        "u": 1006,
+        "v": 1007,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.152239,
+            -33.9464289
+          ],
+          [
+            151.1544022,
+            -33.9464613
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1006-1011-0",
+      "properties": {
+        "aaa": false,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 3,
+        "name": null,
+        "osm_way": 2005,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; raised to LTS 3 by crossing at junction 1011 (main street 60 km/h, 4 lanes, no refuge); not AAA: LTS is 3",
+        "segment_id": "62986d5c28ed6815",
+        "u": 1006,
+        "v": 1011,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1522779,
+            -33.944626
+          ],
+          [
+            151.1501147,
+            -33.9445935
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1007-1003-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2006,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "c4e9de0603f654df",
+        "u": 1007,
+        "v": 1003,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1522779,
+            -33.944626
+          ],
+          [
+            151.152239,
+            -33.9464289
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1007-1006-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2001,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "2119504f9104ab57",
+        "u": 1007,
+        "v": 1006,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1522779,
+            -33.944626
+          ],
+          [
+            151.1544411,
+            -33.9446585
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1007-1012-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2006,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "f7386ebc1ee70549",
+        "u": 1007,
+        "v": 1012,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1542854,
+            -33.9518699
+          ],
+          [
+            151.1543243,
+            -33.9500671
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1008-1009-0",
+      "properties": {
+        "aaa": false,
+        "bike_ok": true,
+        "fit": "no_fit",
+        "fix": null,
+        "highway": "primary",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 4,
+        "name": "Main Road",
+        "osm_way": 2007,
+        "reason": "mixed traffic, type D, 60 km/h (tag), ADT 25000 (default) -> LTS 4; not AAA: 60 km/h is above 30",
+        "segment_id": "501dd88664d1f091",
+        "u": 1008,
+        "v": 1009,
+        "width_m": 13.2,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1543243,
+            -33.9500671
+          ],
+          [
+            151.152161,
+            -33.9500346
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1009-1004-0",
+      "properties": {
+        "aaa": false,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 3,
+        "name": null,
+        "osm_way": 2003,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; raised to LTS 3 by crossing at junction 1009 (main street 60 km/h, 4 lanes, no refuge); not AAA: LTS is 3",
+        "segment_id": "854168dee3c9c2e3",
+        "u": 1009,
+        "v": 1004,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1543243,
+            -33.9500671
+          ],
+          [
+            151.1542854,
+            -33.9518699
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1009-1008-0",
+      "properties": {
+        "aaa": false,
+        "bike_ok": true,
+        "fit": "no_fit",
+        "fix": null,
+        "highway": "primary",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 4,
+        "name": "Main Road",
+        "osm_way": 2007,
+        "reason": "mixed traffic, type D, 60 km/h (tag), ADT 25000 (default) -> LTS 4; not AAA: 60 km/h is above 30",
+        "segment_id": "501dd88664d1f091",
+        "u": 1009,
+        "v": 1008,
+        "width_m": 13.2,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1543243,
+            -33.9500671
+          ],
+          [
+            151.1543633,
+            -33.9482642
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1009-1010-0",
+      "properties": {
+        "aaa": false,
+        "bike_ok": true,
+        "fit": "no_fit",
+        "fix": null,
+        "highway": "primary",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 4,
+        "name": "Main Road",
+        "osm_way": 2007,
+        "reason": "mixed traffic, type D, 60 km/h (tag), ADT 25000 (default) -> LTS 4; not AAA: 60 km/h is above 30",
+        "segment_id": "8110eb49b0fc193a",
+        "u": 1009,
+        "v": 1010,
+        "width_m": 13.2,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1543243,
+            -33.9500671
+          ],
+          [
+            151.1564877,
+            -33.9500995
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1009-1014-0",
+      "properties": {
+        "aaa": false,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 3,
+        "name": null,
+        "osm_way": 2003,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; raised to LTS 3 by crossing at junction 1009 (main street 60 km/h, 4 lanes, no refuge); not AAA: LTS is 3",
+        "segment_id": "2476c2a332c95dec",
+        "u": 1009,
+        "v": 1014,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1543633,
+            -33.9482642
+          ],
+          [
+            151.1522,
+            -33.9482317
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1010-1005-0",
+      "properties": {
+        "aaa": false,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 3,
+        "name": null,
+        "osm_way": 2004,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; raised to LTS 3 by crossing at junction 1010 (main street 60 km/h, 4 lanes, no refuge); not AAA: LTS is 3",
+        "segment_id": "a123e86a8930fa23",
+        "u": 1010,
+        "v": 1005,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1543633,
+            -33.9482642
+          ],
+          [
+            151.1543243,
+            -33.9500671
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1010-1009-0",
+      "properties": {
+        "aaa": false,
+        "bike_ok": true,
+        "fit": "no_fit",
+        "fix": null,
+        "highway": "primary",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 4,
+        "name": "Main Road",
+        "osm_way": 2007,
+        "reason": "mixed traffic, type D, 60 km/h (tag), ADT 25000 (default) -> LTS 4; not AAA: 60 km/h is above 30",
+        "segment_id": "8110eb49b0fc193a",
+        "u": 1010,
+        "v": 1009,
+        "width_m": 13.2,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1543633,
+            -33.9482642
+          ],
+          [
+            151.1544022,
+            -33.9464613
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1010-1011-0",
+      "properties": {
+        "aaa": false,
+        "bike_ok": true,
+        "fit": "no_fit",
+        "fix": null,
+        "highway": "primary",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 4,
+        "name": "Main Road",
+        "osm_way": 2007,
+        "reason": "mixed traffic, type D, 60 km/h (tag), ADT 25000 (default) -> LTS 4; not AAA: 60 km/h is above 30",
+        "segment_id": "eb729025cd70149b",
+        "u": 1010,
+        "v": 1011,
+        "width_m": 13.2,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1543633,
+            -33.9482642
+          ],
+          [
+            151.1565266,
+            -33.9482966
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1010-1015-0",
+      "properties": {
+        "aaa": false,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 3,
+        "name": null,
+        "osm_way": 2004,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; raised to LTS 3 by crossing at junction 1010 (main street 60 km/h, 4 lanes, no refuge); not AAA: LTS is 3",
+        "segment_id": "3d23aff1f792abe8",
+        "u": 1010,
+        "v": 1015,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1544022,
+            -33.9464613
+          ],
+          [
+            151.152239,
+            -33.9464289
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1011-1006-0",
+      "properties": {
+        "aaa": false,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 3,
+        "name": null,
+        "osm_way": 2005,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; raised to LTS 3 by crossing at junction 1011 (main street 60 km/h, 4 lanes, no refuge); not AAA: LTS is 3",
+        "segment_id": "62986d5c28ed6815",
+        "u": 1011,
+        "v": 1006,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1544022,
+            -33.9464613
+          ],
+          [
+            151.1543633,
+            -33.9482642
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1011-1010-0",
+      "properties": {
+        "aaa": false,
+        "bike_ok": true,
+        "fit": "no_fit",
+        "fix": null,
+        "highway": "primary",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 4,
+        "name": "Main Road",
+        "osm_way": 2007,
+        "reason": "mixed traffic, type D, 60 km/h (tag), ADT 25000 (default) -> LTS 4; not AAA: 60 km/h is above 30",
+        "segment_id": "eb729025cd70149b",
+        "u": 1011,
+        "v": 1010,
+        "width_m": 13.2,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1544022,
+            -33.9464613
+          ],
+          [
+            151.1544411,
+            -33.9446585
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1011-1012-0",
+      "properties": {
+        "aaa": false,
+        "bike_ok": true,
+        "fit": "no_fit",
+        "fix": null,
+        "highway": "primary",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 4,
+        "name": "Main Road",
+        "osm_way": 2007,
+        "reason": "mixed traffic, type D, 60 km/h (tag), ADT 25000 (default) -> LTS 4; not AAA: 60 km/h is above 30",
+        "segment_id": "c8a45b74ad07696f",
+        "u": 1011,
+        "v": 1012,
+        "width_m": 13.2,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1544022,
+            -33.9464613
+          ],
+          [
+            151.1565654,
+            -33.9464938
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1011-1016-0",
+      "properties": {
+        "aaa": false,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 3,
+        "name": null,
+        "osm_way": 2005,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; raised to LTS 3 by crossing at junction 1011 (main street 60 km/h, 4 lanes, no refuge); not AAA: LTS is 3",
+        "segment_id": "0e388fe1a1fae8e6",
+        "u": 1011,
+        "v": 1016,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1544411,
+            -33.9446585
+          ],
+          [
+            151.1522779,
+            -33.944626
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1012-1007-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2006,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "f7386ebc1ee70549",
+        "u": 1012,
+        "v": 1007,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1544411,
+            -33.9446585
+          ],
+          [
+            151.1544022,
+            -33.9464613
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1012-1011-0",
+      "properties": {
+        "aaa": false,
+        "bike_ok": true,
+        "fit": "no_fit",
+        "fix": null,
+        "highway": "primary",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 4,
+        "name": "Main Road",
+        "osm_way": 2007,
+        "reason": "mixed traffic, type D, 60 km/h (tag), ADT 25000 (default) -> LTS 4; not AAA: 60 km/h is above 30",
+        "segment_id": "c8a45b74ad07696f",
+        "u": 1012,
+        "v": 1011,
+        "width_m": 13.2,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1544411,
+            -33.9446585
+          ],
+          [
+            151.15448,
+            -33.9428556
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1012-1013-0",
+      "properties": {
+        "aaa": false,
+        "bike_ok": true,
+        "fit": "no_fit",
+        "fix": null,
+        "highway": "primary",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 4,
+        "name": "Main Road",
+        "osm_way": 2007,
+        "reason": "mixed traffic, type D, 60 km/h (tag), ADT 25000 (default) -> LTS 4; not AAA: 60 km/h is above 30",
+        "segment_id": "36e5372114ed6dd9",
+        "u": 1012,
+        "v": 1013,
+        "width_m": 13.2,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1544411,
+            -33.9446585
+          ],
+          [
+            151.1566043,
+            -33.9446909
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1012-1017-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2006,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "7ec126d90d927937",
+        "u": 1012,
+        "v": 1017,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.15448,
+            -33.9428556
+          ],
+          [
+            151.1544411,
+            -33.9446585
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1013-1012-0",
+      "properties": {
+        "aaa": false,
+        "bike_ok": true,
+        "fit": "no_fit",
+        "fix": null,
+        "highway": "primary",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 4,
+        "name": "Main Road",
+        "osm_way": 2007,
+        "reason": "mixed traffic, type D, 60 km/h (tag), ADT 25000 (default) -> LTS 4; not AAA: 60 km/h is above 30",
+        "segment_id": "36e5372114ed6dd9",
+        "u": 1013,
+        "v": 1012,
+        "width_m": 13.2,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1564877,
+            -33.9500995
+          ],
+          [
+            151.1543243,
+            -33.9500671
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1014-1009-0",
+      "properties": {
+        "aaa": false,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 3,
+        "name": null,
+        "osm_way": 2003,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; raised to LTS 3 by crossing at junction 1009 (main street 60 km/h, 4 lanes, no refuge); not AAA: LTS is 3",
+        "segment_id": "2476c2a332c95dec",
+        "u": 1014,
+        "v": 1009,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1564877,
+            -33.9500995
+          ],
+          [
+            151.1565266,
+            -33.9482966
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1014-1015-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2002,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "e174108043f72c4a",
+        "u": 1014,
+        "v": 1015,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1565266,
+            -33.9482966
+          ],
+          [
+            151.1543633,
+            -33.9482642
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1015-1010-0",
+      "properties": {
+        "aaa": false,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 3,
+        "name": null,
+        "osm_way": 2004,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; raised to LTS 3 by crossing at junction 1010 (main street 60 km/h, 4 lanes, no refuge); not AAA: LTS is 3",
+        "segment_id": "3d23aff1f792abe8",
+        "u": 1015,
+        "v": 1010,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1565266,
+            -33.9482966
+          ],
+          [
+            151.1564877,
+            -33.9500995
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1015-1014-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2002,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "e174108043f72c4a",
+        "u": 1015,
+        "v": 1014,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1565266,
+            -33.9482966
+          ],
+          [
+            151.1565654,
+            -33.9464938
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1015-1016-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2002,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "dd944c4189c84d33",
+        "u": 1015,
+        "v": 1016,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1565654,
+            -33.9464938
+          ],
+          [
+            151.1544022,
+            -33.9464613
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1016-1011-0",
+      "properties": {
+        "aaa": false,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 3,
+        "name": null,
+        "osm_way": 2005,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; raised to LTS 3 by crossing at junction 1011 (main street 60 km/h, 4 lanes, no refuge); not AAA: LTS is 3",
+        "segment_id": "0e388fe1a1fae8e6",
+        "u": 1016,
+        "v": 1011,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1565654,
+            -33.9464938
+          ],
+          [
+            151.1565266,
+            -33.9482966
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1016-1015-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2002,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "dd944c4189c84d33",
+        "u": 1016,
+        "v": 1015,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1565654,
+            -33.9464938
+          ],
+          [
+            151.1566043,
+            -33.9446909
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1016-1017-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2002,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "999648d9ff11012a",
+        "u": 1016,
+        "v": 1017,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1566043,
+            -33.9446909
+          ],
+          [
+            151.1544411,
+            -33.9446585
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1017-1012-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2006,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "7ec126d90d927937",
+        "u": 1017,
+        "v": 1012,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            151.1566043,
+            -33.9446909
+          ],
+          [
+            151.1565654,
+            -33.9464938
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "1017-1016-0",
+      "properties": {
+        "aaa": true,
+        "bike_ok": true,
+        "fit": "aaa",
+        "fix": null,
+        "highway": "residential",
+        "k": 0,
+        "length_m": 200.0,
+        "lts": 1,
+        "name": null,
+        "osm_way": 2002,
+        "reason": "mixed traffic, type A, 30 km/h (tag), ADT 750 (default) -> LTS 1; AAA: 30 km/h is within 30 and ADT 750 is within 2000",
+        "segment_id": "999648d9ff11012a",
+        "u": 1017,
+        "v": 1016,
+        "width_m": 10.8,
+        "width_source": "lanes"
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}
