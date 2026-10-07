@@ -301,23 +301,37 @@ def point_feature(x: float, y: float, properties: dict) -> dict:
     return {"type": "Feature", "geometry": geometry, "properties": properties}
 
 
-def write_access(graph, region, profile, snapshot: str | Path, out: str | Path) -> dict:
-    out = Path(out)
+class Scene(NamedTuple):
+    kept: list
+    nodes: list
+    missed: list
+    placed: list
+    resident: Homes
+    weights: dict
+
+
+def scene(graph, region, snapshot: str | Path) -> Scene:
     to_metres = Transformer.from_crs(4326, graph.graph["crs"], always_xy=True)
-    to_degrees = Transformer.from_crs(graph.graph["crs"], 4326, always_xy=True)
     found = places(snapshot)
     for place in found:
         place["x"], place["y"] = to_metres.transform(place["lon"], place["lat"])
     boundary = graph.graph["boundary"]
     kept = in_scope_places(found, boundary, region.analysis_buffer_m)
     nodes, missed = snap_points([(p["x"], p["y"]) for p in kept], graph)
-    aaa = {key for key, item in score_edges(graph, profile).items() if item["aaa"]}
     placed = [(p["type"], node) for p, node in zip(kept, nodes, strict=True) if node is not None]
+    resident = homes(population_units(snapshot, graph.graph["crs"]), graph, boundary)
+    weights = {name: item.weight for name, item in region.destinations.items()}
+    return Scene(kept, nodes, missed, placed, resident, weights)
+
+
+def write_access(graph, region, profile, snapshot: str | Path, out: str | Path) -> dict:
+    out = Path(out)
+    to_degrees = Transformer.from_crs(graph.graph["crs"], 4326, always_xy=True)
+    kept, nodes, missed, placed, resident, weights = scene(graph, region, snapshot)
+    aaa = {key for key, item in score_edges(graph, profile).items() if item["aaa"]}
     results = reach(
         graph, [node for _, node in placed], region.access.reach_m, region.access.detour_max, aaa
     )
-    resident = homes(population_units(snapshot, graph.graph["crs"]), graph, boundary)
-    weights = {name: item.weight for name, item in region.destinations.items()}
     scored = score_access(resident.people, placed, results, weights)
     out.mkdir(parents=True, exist_ok=True)
     place_features = [

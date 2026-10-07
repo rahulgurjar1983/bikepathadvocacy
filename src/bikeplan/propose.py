@@ -1,12 +1,18 @@
+import csv
 import hashlib
 import heapq
+import json
 from collections import defaultdict
+from pathlib import Path
 from typing import NamedTuple
 
-from shapely.geometry import Point
+import shapely
+from pyproj import Transformer
+from shapely.geometry import LineString, MultiLineString, Point, mapping
+from shapely.ops import transform
 
-from bikeplan.access import Reach, reach, score_access
-from bikeplan.fit import junction_fixes, segment_fit
+from bikeplan.access import Reach, reach, scene, score_access
+from bikeplan.fit import FIXES, junction_fixes, segment_fit
 from bikeplan.network import bike_segments
 from bikeplan.stress import edge_aaa, own_lts, raise_for_crossings
 
@@ -14,6 +20,10 @@ from bikeplan.stress import edge_aaa, own_lts, raise_for_crossings
 class Planning(NamedTuple):
     edges: dict
     elements: dict
+
+
+def street_name(data: dict) -> str:
+    return str(data.get("name") or f"unnamed {data.get('highway', 'street')}")
 
 
 def segment_elements(graph, profile, weights) -> tuple[dict, set]:
@@ -32,11 +42,22 @@ def segment_elements(graph, profile, weights) -> tuple[dict, set]:
                 "robust": result["robust"],
                 "km": result["km"],
                 "length_m": max(data["length_m"] for _, data in segment["edges"]),
+                "street": street_name(segment["edges"][0][1]),
+                "width_source": result["width_source"],
+                "counts": next(
+                    item["disruption"]
+                    for item in result["candidates"]
+                    if item["fix"] == result["fix"]
+                ),
             }
     return elements, missing
 
 
 def junction_elements(graph, profile, weights) -> dict:
+    streets = {
+        segment_id: street_name(segment["edges"][0][1])
+        for segment_id, segment in bike_segments(graph).items()
+    }
     return {
         f"junction:{item['junction']}": {
             "kind": "junction",
@@ -45,6 +66,7 @@ def junction_elements(graph, profile, weights) -> dict:
             "score": item["disruption"]["refuges"] * weights.refuge
             + item["disruption"]["signals"] * weights.signal,
             "legs": tuple(item["legs"]),
+            "street": ", ".join(sorted({streets[leg] for leg in item["legs"]})),
         }
         for item in junction_fixes(graph, profile)
     }
@@ -207,6 +229,35 @@ def exact_score(people: dict, placed: list, results: list[Reach], weights: dict)
     return 100 * sum(item["people"] * item["score"] for item in homes.values()) / total
 
 
+def update_reach(
+    graph,
+    sources: list,
+    results: list[Reach],
+    reach_m: float,
+    detour_max: float,
+    old: set,
+    new: set,
+) -> tuple[list[Reach], list[int]]:
+    heads = {key[1] for key in old ^ new}
+    redone = [
+        index for index, found in enumerate(results) if any(node in found.within for node in heads)
+    ]
+    if not redone:
+        return results, redone
+    fresh = reach(graph, [sources[index] for index in redone], reach_m, detour_max, new)
+    updated = list(results)
+    for index, found in zip(redone, fresh, strict=True):
+        updated[index] = found
+    return updated, redone
+
+
+def newly_safe(people: dict, before: list[Reach], after: list[Reach]) -> list[float]:
+    return [
+        sum(people.get(node, 0) for node in now.safe - was.safe)
+        for was, now in zip(before, after, strict=True)
+    ]
+
+
 def greedy_picks(
     graph,
     planning: Planning,
@@ -216,8 +267,10 @@ def greedy_picks(
     proposals,
     reach_m: float,
     detour_max: float,
+    names: list | None = None,
 ) -> list[dict]:
     sources = [node for _, node in placed]
+    labels = names if names is not None else [str(node) for node in sources]
     fixed: set = set()
     aaa = {key for key, item in planning.edges.items() if not item["needs"]}
 
@@ -225,7 +278,8 @@ def greedy_picks(
         done = fixed | extra
         return aaa | {key for key, item in planning.edges.items() if set(item["needs"]) <= done}
 
-    results = reach(graph, sources, reach_m, detour_max, aaa_after(set()))
+    now = aaa_after(set())
+    results = reach(graph, sources, reach_m, detour_max, now)
     score = exact_score(people, placed, results, weights)
     current = fixed_planning(graph, planning, fixed, proposals.metres_per_point)
     picked: list[dict] = []
@@ -234,7 +288,7 @@ def greedy_picks(
         values = trip_values(people, placed, results, weights)
         found = route_fixes(graph, current, placed, results, values, reach_m, detour_max)
         costs = {
-            elements: sum(planning.elements[name]["score"] for name in elements - fixed)
+            elements: sum(planning.elements[name]["score"] for name in sorted(elements - fixed))
             for elements in found
         }
         ranked = sorted(
@@ -243,15 +297,10 @@ def greedy_picks(
         )[: proposals.candidate_pool]
         best = None
         for elements in ranked:
-            gain = (
-                exact_score(
-                    people,
-                    placed,
-                    reach(graph, sources, reach_m, detour_max, aaa_after(set(elements))),
-                    weights,
-                )
-                - score
+            trial, _ = update_reach(
+                graph, sources, results, reach_m, detour_max, now, aaa_after(set(elements))
             )
+            gain = exact_score(people, placed, trial, weights) - score
             key = (round(-gain / (costs[elements] + 1), 9), project_id(elements))
             if best is None or key < best[0]:
                 best = (key, elements, gain)
@@ -260,7 +309,16 @@ def greedy_picks(
         _, elements, gain = best
         fixed |= elements
         score += gain
-        km += sum(planning.elements[name].get("km", 0.0) for name in elements)
+        km += sum(planning.elements[name].get("km", 0.0) for name in sorted(elements))
+        before = results
+        results, _ = update_reach(
+            graph, sources, results, reach_m, detour_max, now, aaa_after(set())
+        )
+        now = aaa_after(set())
+        gained = newly_safe(people, before, results)
+        main = max(range(len(gained)), key=lambda index: (gained[index], -index))
+        safe_before = score_access(people, placed, before, weights)["safe_people"]
+        safe_after = score_access(people, placed, results, weights)["safe_people"]
         picked.append(
             {
                 "id": project_id(elements),
@@ -268,8 +326,174 @@ def greedy_picks(
                 "gain": round(gain, 6),
                 "cost": costs[elements],
                 "score_after": round(score, 6),
+                "place": labels[main],
+                "people": {kind: safe_after[kind] - safe_before[kind] for kind in weights},
             }
         )
-        results = reach(graph, sources, reach_m, detour_max, aaa_after(set()))
         current = fixed_planning(graph, planning, fixed, proposals.metres_per_point)
     return picked
+
+
+def element_record(name: str, element: dict) -> dict:
+    junction = element["kind"] == "junction"
+    counts = {} if junction else element["counts"]
+    return {
+        "id": name,
+        "street": element["street"],
+        "length_m": 0.0 if junction else element["length_m"],
+        "fix": element["fix"],
+        "robust": "robust" if junction else element["robust"],
+        "width_source": None if junction else element["width_source"],
+        "km": 0.0 if junction else element["km"],
+        "parking_spaces": counts.get("parking_spaces", 0),
+        "lane_km": counts.get("lane_km", 0.0),
+        "speed_km": counts.get("speed_km", 0.0),
+        "signals": int(junction and element["fix"] == "signals"),
+        "refuges": int(junction and element["fix"] == "refuge"),
+    }
+
+
+def project_totals(elements: list[dict]) -> dict:
+    by_fix: dict = defaultdict(float)
+    for item in elements:
+        if item["km"]:
+            by_fix[item["fix"]] += item["km"]
+    return {
+        "km_by_fix": {fix: round(by_fix[fix], 6) for fix in FIXES if fix in by_fix},
+        "parking_spaces": sum(item["parking_spaces"] for item in elements),
+        "lane_km": round(sum(item["lane_km"] for item in elements), 6),
+        "speed_km": round(sum(item["speed_km"] for item in elements), 6),
+        "signals": sum(item["signals"] for item in elements),
+        "refuges": sum(item["refuges"] for item in elements),
+    }
+
+
+def project_records(picked: list[dict], planning: Planning) -> list[dict]:
+    records = []
+    for rank, pick in enumerate(picked, start=1):
+        elements = [element_record(name, planning.elements[name]) for name in pick["elements"]]
+        streets = sorted({item["street"] for item in elements})
+        records.append(
+            {
+                "rank": rank,
+                "id": pick["id"],
+                "name": f"{pick['place']}: {', '.join(streets)}",
+                "elements": elements,
+                "totals": project_totals(elements),
+                "gain": pick["gain"],
+                "score_after": pick["score_after"],
+                "people": pick["people"],
+            }
+        )
+    return records
+
+
+def csv_fields(kinds: list) -> list[str]:
+    return [
+        "rank",
+        "id",
+        "name",
+        "elements",
+        "gain",
+        "score_after",
+        "parking_spaces",
+        "lane_km",
+        "speed_km",
+        "signals",
+        "refuges",
+        *(f"km_{fix}" for fix in FIXES),
+        *(f"people_{kind}" for kind in kinds),
+    ]
+
+
+def csv_row(record: dict, kinds: list) -> dict:
+    totals = record["totals"]
+    row = {
+        "rank": record["rank"],
+        "id": record["id"],
+        "name": record["name"],
+        "elements": len(record["elements"]),
+        "gain": record["gain"],
+        "score_after": record["score_after"],
+        "parking_spaces": totals["parking_spaces"],
+        "lane_km": totals["lane_km"],
+        "speed_km": totals["speed_km"],
+        "signals": totals["signals"],
+        "refuges": totals["refuges"],
+    }
+    for fix in FIXES:
+        row[f"km_{fix}"] = totals["km_by_fix"].get(fix, 0.0)
+    for kind in kinds:
+        row[f"people_{kind}"] = record["people"][kind]
+    return row
+
+
+def element_geometry(graph, name: str, element: dict, to_degrees):
+    if element["kind"] == "junction":
+        node = graph.nodes[element["junction"]]
+        shape = Point(node["x"], node["y"])
+    else:
+        lines = {}
+        for (u, v, _), data in bike_segments(graph)[element["segment"]]["edges"]:
+            line = data.get("geometry") or LineString(
+                [
+                    (graph.nodes[u]["x"], graph.nodes[u]["y"]),
+                    (graph.nodes[v]["x"], graph.nodes[v]["y"]),
+                ]
+            )
+            lines.setdefault(frozenset((u, v)), line)
+        shape = MultiLineString([lines[key] for key in sorted(lines, key=sorted)])
+    return mapping(shapely.set_precision(transform(to_degrees.transform, shape), 1e-6))
+
+
+def project_features(graph, planning: Planning, records: list[dict]) -> list[dict]:
+    to_degrees = Transformer.from_crs(graph.graph["crs"], 4326, always_xy=True)
+    features = []
+    for record in records:
+        for item in record["elements"]:
+            properties = {
+                "project": record["id"],
+                "rank": record["rank"],
+                **{key: item[key] for key in ("id", "street", "fix", "robust", "width_source")},
+            }
+            geometry = element_geometry(
+                graph, item["id"], planning.elements[item["id"]], to_degrees
+            )
+            features.append({"type": "Feature", "geometry": geometry, "properties": properties})
+    return features
+
+
+def write_propose(graph, region, profile, snapshot: str | Path, out: str | Path) -> list[dict]:
+    out = Path(out)
+    kept, nodes, _, placed, resident, weights = scene(graph, region, snapshot)
+    planning = planning_network(graph, profile, region)
+    names = [
+        place["name"] or place["type"]
+        for place, node in zip(kept, nodes, strict=True)
+        if node is not None
+    ]
+    picked = greedy_picks(
+        graph,
+        planning,
+        placed,
+        resident.people,
+        weights,
+        region.proposals,
+        region.access.reach_m,
+        region.access.detour_max,
+        names,
+    )
+    records = project_records(picked, planning)
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "projects.json").write_text(json.dumps(records, indent=2) + "\n")
+    kinds = list(weights)
+    with (out / "projects.csv").open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=csv_fields(kinds), lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(csv_row(record, kinds) for record in records)
+    collection = {
+        "type": "FeatureCollection",
+        "features": project_features(graph, planning, records),
+    }
+    (out / "projects.geojson").write_text(json.dumps(collection))
+    return records
