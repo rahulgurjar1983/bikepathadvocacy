@@ -61,6 +61,11 @@ class Proposals:
 
 
 @dataclass(frozen=True)
+class Report:
+    author: str | None = None
+
+
+@dataclass(frozen=True)
 class Region:
     id: str
     name: str
@@ -74,6 +79,7 @@ class Region:
     destinations: dict[str, Destination]
     access: Access
     proposals: Proposals
+    report: Report = Report()
 
 
 @dataclass(frozen=True)
@@ -193,6 +199,12 @@ class Reader:
         if not isinstance(value, str):
             raise self.fail(key, "must be text")
         return value
+
+    def report(self, raw: Any) -> Report:
+        data = self.mapping(raw, "report", {"author"}, set())
+        if data.get("author") is None:
+            return Report()
+        return Report(self.text(data["author"], "report.author"))
 
     def whole(self, value: Any, key: str) -> int:
         if isinstance(value, bool) or not isinstance(value, int):
@@ -378,7 +390,7 @@ def load_region(path: str | Path) -> Region:
     except (OSError, yaml.YAMLError) as error:
         raise ConfigError(f"{path}: cannot read: {error}") from error
     names = {f.name for f in dataclasses.fields(Region)}
-    data = reader.mapping(raw, "", names, names)
+    data = reader.mapping(raw, "", names, names - {"report"})
     return Region(
         reader.text(data["id"], "id"),
         reader.text(data["name"], "name"),
@@ -397,6 +409,7 @@ def load_region(path: str | Path) -> Region:
         reader.destinations(data["destinations"]),
         reader.access(data["access"]),
         reader.proposals(data["proposals"]),
+        reader.report(data.get("report", {})),
     )
 
 

@@ -22,6 +22,8 @@ destinations:
 access:
   reach_m: 2680
   detour_max: 1.25
+report:
+  author: Rahul Gurjar, Kogarah
 proposals:
   max_projects: 25
   budget_km: 40
