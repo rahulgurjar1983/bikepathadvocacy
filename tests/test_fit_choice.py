@@ -110,7 +110,15 @@ def test_fr6_9_after_strips_put_the_pair_at_the_kerbs():
 def test_fr6_9_after_strips_put_the_two_way_cycleway_on_the_unparked_side():
     result = pick({**CASES[3], "length_m": 100.0})
     after = result["after"]
-    assert kinds(after) == ["cycleway", "separator", "through", "through", "parking"]
+    assert kinds(after) == [
+        "cycleway",
+        "separator",
+        "through",
+        "through",
+        "parking",
+        "spare",
+    ]
+    assert after[-1]["width_m"] == pytest.approx(0.9)
     assert after[0]["width_m"] == pytest.approx(2.5)
     assert sum(s["width_m"] for s in after) == pytest.approx(12.0)
 
