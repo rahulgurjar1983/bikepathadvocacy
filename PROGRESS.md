@@ -95,6 +95,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 - [ ] **P10.1** Two runs match byte for byte, for the test grid and for Bayside (FR-11.5, NFR-1)
 - [ ] **P10.2** `scripts/e2e.sh` runs Bayside end to end within the time and memory limits; the operator then adds the CI `e2e` job (FR-11.7, NFR-3)
 - [ ] **P10.3** Cambridge snapshots, runs and verifies with no code change (FR-11.8, NFR-6)
+- [ ] **P10.4** `bikeplan region new` and legal default speeds by country, so any council or city can start from one command (FR-1.11, FR-1.12)
 
 ## Phase 11: Australian adapters
 
