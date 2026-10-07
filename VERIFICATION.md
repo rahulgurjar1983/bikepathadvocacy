@@ -586,3 +586,15 @@ jq '.[0:10] | map({rank, name, gain, score_after})' "$OUT/projects.json"
 
 Expect: The tests pass. The run prints `projects 25` and `score_after 0.529687`, and takes about 5 minutes 20 seconds with 1.4 GB of memory, inside NFR-3. The three files `projects.json`, `projects.csv` and `projects.geojson` are written. With the shipped `min_gain` of 0.05 the run gives `projects 0`, because the best Bayside gain is 0.035 (see Spec issues in `AGENT_NOTES.md`).
 Artifact: `artifacts/P8.4/projects.json`
+
+### P9.1
+
+```bash
+uv run pytest tests/test_test_grid.py -q
+uv run python scripts/make_test_grid.py "$OUT/snapshot"
+uv run bikeplan access regions/test-grid.yaml --snapshot tests/fixtures/test-grid/snapshot --out "$OUT/access"
+uv run bikeplan propose regions/test-grid.yaml --snapshot tests/fixtures/test-grid/snapshot --out "$OUT/propose"
+```
+
+Expect: 12 tests pass, one for each fact in the section 3 table of `specs/11-generic.md`. The generator rebuilds the committed files. The access score is `25.0`, and `projects.json` holds one project, signals at the Main Road junction at y = 200, with gain `75.0` and score after `100.0`.
+Artifact: `artifacts/P9.1/projects.json`

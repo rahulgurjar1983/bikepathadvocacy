@@ -1,0 +1,58 @@
+{
+  "region": "test-grid",
+  "snapshot_id": "2026-10-01",
+  "osm_date": "2026-10-01T00:00:00Z",
+  "created_at": "2026-10-01T00:00:00Z",
+  "tool_version": "made-up",
+  "config_hash": "e60851b580972875f7015d51a11f418ade69048faef9ebeb467cd903d423dc60",
+  "files": [
+    {
+      "name": "boundary.geojson",
+      "path": "boundary.geojson",
+      "sha256": "08b7873ae49fc1d566360a01f8bcf4303405c84ca2e3835e50e8242639fa758a",
+      "bytes": 483,
+      "source": "Made-up test data from scripts/make_test_grid.py",
+      "request": "scripts/make_test_grid.py",
+      "url": "file:scripts/make_test_grid.py",
+      "licence": "CC0 1.0",
+      "attribution": "None needed",
+      "retrieved_at": "2026-10-01T00:00:00Z"
+    },
+    {
+      "name": "network.osm.gz",
+      "path": "network.osm.gz",
+      "sha256": "95cd3035376cbe60788ea10f81b9dc662f90aa99b53558c01daddd09f3b6b8b2",
+      "bytes": 539,
+      "source": "Made-up test data from scripts/make_test_grid.py",
+      "request": "scripts/make_test_grid.py",
+      "url": "file:scripts/make_test_grid.py",
+      "licence": "CC0 1.0",
+      "attribution": "None needed",
+      "retrieved_at": "2026-10-01T00:00:00Z"
+    },
+    {
+      "name": "places.json",
+      "path": "places.json",
+      "sha256": "e46ed0c61353273050ebc32647aeaabbc53a12e37a111315e14b4dcc8cf17363",
+      "bytes": 211,
+      "source": "Made-up test data from scripts/make_test_grid.py",
+      "request": "scripts/make_test_grid.py",
+      "url": "file:scripts/make_test_grid.py",
+      "licence": "CC0 1.0",
+      "attribution": "None needed",
+      "retrieved_at": "2026-10-01T00:00:00Z"
+    },
+    {
+      "name": "population.gpkg",
+      "path": "population.gpkg",
+      "sha256": "70b69f165430e6702a0032508996844b6143302111786b9b681b35b92c5ffc32",
+      "bytes": 36864,
+      "source": "Made-up test data from scripts/make_test_grid.py",
+      "request": "scripts/make_test_grid.py",
+      "url": "file:scripts/make_test_grid.py",
+      "licence": "CC0 1.0",
+      "attribution": "None needed",
+      "retrieved_at": "2026-10-01T00:00:00Z"
+    }
+  ]
+}
