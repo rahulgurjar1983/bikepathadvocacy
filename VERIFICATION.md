@@ -408,3 +408,25 @@ python3 -I -c "$(python3 -c "import json;print(json.load(open('artifacts/R1.2/fi
 
 Expect: The tests pass. In the report text each number sits inside a link such as `591.099 km (F1)`, and no other number shows outside the appendix. Each appendix entry lists value, method, files with sha256, sources with licence and the recipe. `sha256sum -c` says `OK` for all three files. Run inside `artifacts/R1.2`, the F1 recipe prints `591.099`.
 Artifact: `artifacts/R1.2/report.html`
+
+### P4.7
+
+```bash
+uv run pytest tests/test_stress_shared_path.py -q
+S=data/cache/au-nsw-bayside/2026-10-01
+OUT=$(mktemp -d)
+uv run bikeplan stress regions/au-nsw-bayside.yaml --snapshot $S --out "$OUT" > artifacts/P4.7/stress_lines.txt
+python3 -c "
+import json,sys
+from collections import Counter
+c=Counter()
+for x in json.load(open(sys.argv[1]))['features']:
+    p=x['properties']
+    if p['highway'] in ('path','footway') and 'no motor traffic data' in p['reason']:
+        c[p['bike_ok']]+=1
+print('no-data path edges by bike_ok:',dict(c))
+" "$OUT/stress.geojson" > artifacts/P4.7/path_reasons.txt
+```
+
+Expect: The tests pass. The stress run prints `aaa_km 135.891`, up from 114.676. Every path or footway edge that bikes may use and is not raised by a crossing has a `shared path` reason. The 10 left with `no motor traffic data` and `bike_ok` true are off-road paths raised to LTS 2 by a crossing.
+Artifact: `artifacts/P4.7/path_reasons.txt`

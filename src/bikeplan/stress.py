@@ -8,7 +8,7 @@ from pathlib import Path
 from pyproj import Transformer
 
 from bikeplan.config import Profile
-from bikeplan.network import bike_segments, first, parking_on_side, road_class
+from bikeplan.network import FOOT_PATHS, bike_segments, first, parking_on_side, road_class
 
 SPEED_TOPS_KMH = [37.82, 45.87, 53.91, 61.96, 70.01, 78.05]
 MINOR_CLASSES = {"residential", "living_street", "service", "unclassified"}
@@ -154,7 +154,7 @@ def painted_lane_lts(data: dict, parking_lane_m: float, class_parking: bool) -> 
 
 
 def edge_lts(data: dict, profile: Profile) -> int:
-    if data["bike_facility"] in OFF_ROAD_FACILITIES:
+    if data["bike_facility"] in OFF_ROAD_FACILITIES or is_shared_path(data):
         return 1
     if data["bike_facility"] == "painted_lane":
         parking = road_class(first(data.get("highway")), profile).parking.value
@@ -162,10 +162,43 @@ def edge_lts(data: dict, profile: Profile) -> int:
     return mixed_traffic_lts(data)
 
 
+def is_shared_path(data: dict) -> bool:
+    return (
+        data["bike_ok"]
+        and data["bike_facility"] not in OFF_ROAD_FACILITIES
+        and first(data.get("highway")) in FOOT_PATHS
+    )
+
+
+def path_min_width(profile: Profile) -> float:
+    return profile.widths_m.two_way_cycleway.min.value
+
+
+def path_wide_enough(data: dict, profile: Profile) -> bool:
+    width = data.get("width_tag_m")
+    return width is None or width >= path_min_width(profile)
+
+
+def path_text(data: dict) -> str:
+    width = data.get("width_tag_m")
+    return "width unknown" if width is None else f"{width:g} m wide"
+
+
+def path_verdict(data: dict, final: int, profile: Profile) -> str:
+    if final != 1:
+        return f"not AAA: LTS is {final}"
+    if not path_wide_enough(data, profile):
+        return f"not AAA: path is narrower than {path_min_width(profile):g} m"
+    flag = " (width unknown)" if data.get("width_tag_m") is None else ""
+    return f"AAA: path is wide enough{flag}"
+
+
 def is_aaa(data: dict, lts: int, profile: Profile) -> bool:
     if not data["bike_ok"] or lts != 1:
         return False
     facility = data["bike_facility"]
+    if is_shared_path(data):
+        return path_wide_enough(data, profile)
     if facility in OFF_ROAD_FACILITIES:
         return True
     if facility == "painted_lane":
@@ -293,13 +326,19 @@ def has_traffic(data: dict) -> bool:
 
 
 def own_lts(data: dict, profile: Profile) -> int:
-    if data["bike_facility"] in OFF_ROAD_FACILITIES or not has_traffic(data):
+    if data["bike_facility"] in OFF_ROAD_FACILITIES or is_shared_path(data):
+        return 1
+    if not has_traffic(data):
         return 1
     return edge_lts(data, profile)
 
 
 def edge_aaa(data: dict, final: int, profile: Profile) -> bool:
-    if data["bike_facility"] not in OFF_ROAD_FACILITIES and not has_traffic(data):
+    if (
+        data["bike_facility"] not in OFF_ROAD_FACILITIES
+        and not is_shared_path(data)
+        and not has_traffic(data)
+    ):
         return False
     return is_aaa(data, final, profile)
 
@@ -348,6 +387,8 @@ def own_text(data: dict, own: int, profile: Profile) -> str:
     facility = data["bike_facility"]
     if facility in OFF_ROAD_FACILITIES:
         return f"off-road path -> LTS {own}"
+    if is_shared_path(data):
+        return f"shared path, {path_text(data)} -> LTS {own}"
     if not has_traffic(data):
         return f"no motor traffic -> LTS {own}"
     if facility == "painted_lane":
@@ -373,7 +414,9 @@ def edge_reason(data: dict, profile: Profile, own: int, final: int, crossing) ->
             f"(main street {crossing['speed_kmh']:g} km/h, {crossing['lanes']} lanes, {refuge})"
         )
     aaa = edge_aaa(data, final, profile)
-    if aaa or has_traffic(data):
+    if is_shared_path(data):
+        parts.append(path_verdict(data, final, profile))
+    elif aaa or has_traffic(data):
         parts.append(aaa_verdict(data, final, aaa, profile))
     else:
         parts.append("not AAA: no motor traffic data")

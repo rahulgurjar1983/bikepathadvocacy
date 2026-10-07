@@ -54,3 +54,5 @@ None yet.
 - `snapshot pull` puts the files in `data/cache/<region>/<snapshot id>`, which is git-ignored. Run reports from there.
 - `Region.report.author` is `None` when the region file leaves `report` out. `bikeplan report` fails with `report.author` in the message when it is `None`; `test-grid` has no author on purpose.
 - In `report.py`, `link(item)` wraps the value, unit and ID in one anchor, and `entry(item)` writes the appendix article for a figure. Any new number in the report text must go through `link`, because a test fails on a digit outside a link and the appendix. The report tests build the full test grid report and take about 4 minutes.
+
+- P4.7: `is_shared_path` in `stress.py` marks a bike-ok `path` or `footway` that is not off-road. It scores LTS 1 and is AAA by width (FR-4.10). Unknown width is AAA and says so in the reason. Off-road paths raised by a crossing still say `not AAA: no motor traffic data`; the reason is misleading but the AAA flag is right.
