@@ -384,3 +384,15 @@ print(json.dumps({n: (lambda r: {'status': r['status'], 'fix': r['fix'], 'score'
 
 Expect: The tests pass. The six worked cases choose `quietway`, `cycleway_in_spare`, `cycleway_parking_one_side`, `cycleway_in_spare`, `road_diet` and `verge_path`.  Case 6 uses its 27 m reserve.
 Artifact: `artifacts/P6.3/choice.json`
+
+### R1.1
+
+```bash
+uv run pytest tests/test_report.py tests/test_config.py -q -k 'fr13 or fr1_10'
+uv run bikeplan snapshot pull snapshots/au-nsw-bayside/2026-10-01/manifest.json
+uv run bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out artifacts/R1.1
+(cd artifacts/R1.1 && sha256sum -c SHA256SUMS)
+```
+
+Expect: The tests pass. The report prints `F1 591.099 km`, `F2 114.676 km` and `F3 70.424 km`, and `sha256sum -c` says `ok` for `figures.json`, `report.html` and `segments.csv`. The page names `Rahul Gurjar, Kogarah` and gives one "not built yet" line each for the fit, access and propose stages.
+Artifact: `artifacts/R1.1/report.html`
