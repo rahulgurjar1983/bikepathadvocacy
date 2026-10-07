@@ -3,7 +3,7 @@ set -uo pipefail
 pr="${1:?usage: wait-ci.sh PR}"
 limit="${WAIT_CI_SECS:-570}"
 poll="${WAIT_CI_POLL_SECS:-20}"
-query='(.statusCheckRollup // [] | map(select(.conclusion != "SKIPPED" and .conclusion != "NEUTRAL")) | group_by(.name) | map(max_by(.startedAt // ""))) as $checks | [.state, ($checks | map(select(.status != "COMPLETED" or .conclusion == "CANCELLED")) | length), ($checks | map(select(.conclusion == "FAILURE" or .conclusion == "TIMED_OUT" or .conclusion == "ACTION_REQUIRED" or .conclusion == "STARTUP_FAILURE") | .name) | join(" ")), ($checks | length), (.autoMergeRequest != null), ($checks | map(.name) | join(" "))] | map(tostring) | join("|")'
+query='(.statusCheckRollup // [] | map(select(.conclusion != "SKIPPED" and .conclusion != "NEUTRAL")) | group_by(.name) | map(max_by(.startedAt // ""))) as $checks | [.state, ($checks | map(select(.status != "COMPLETED" or .conclusion == "CANCELLED")) | length), ($checks | map(select(.conclusion == "FAILURE" or .conclusion == "TIMED_OUT" or .conclusion == "ACTION_REQUIRED" or .conclusion == "STARTUP_FAILURE") | .name) | join(" ")), ($checks | length), (.autoMergeRequest != null), ($checks | map(.name) | join(" ")), (.mergeable // "")] | map(tostring) | join("|")'
 base="${WAIT_CI_BASE:-main}"
 if ! required="$(gh api "repos/{owner}/{repo}/branches/$base/protection/required_status_checks" --jq '.contexts | join(" ")' 2>&1)"; then
   echo "wait-ci: gh failed: $required" >&2
@@ -11,11 +11,11 @@ if ! required="$(gh api "repos/{owner}/{repo}/branches/$base/protection/required
 fi
 deadline=$((SECONDS + limit))
 while :; do
-  if ! line="$(gh pr view "$pr" --json state,statusCheckRollup,autoMergeRequest --jq "$query" 2>&1)"; then
+  if ! line="$(gh pr view "$pr" --json state,statusCheckRollup,autoMergeRequest,mergeable --jq "$query" 2>&1)"; then
     echo "wait-ci: gh failed: $line" >&2
     exit 2
   fi
-  IFS='|' read -r state pending failed total auto names <<<"$line"
+  IFS='|' read -r state pending failed total auto names mergeable <<<"$line"
   if [ "$state" = MERGED ]; then
     echo "wait-ci: PR $pr merged"
     exit 0
@@ -23,6 +23,10 @@ while :; do
   if [ -n "${failed:-}" ]; then
     echo "wait-ci: PR $pr has failed checks: $failed"
     exit 1
+  fi
+  if [ "${mergeable:-}" = CONFLICTING ]; then
+    echo "wait-ci: PR $pr conflicts with main; run git merge origin/main, fix the conflict and push"
+    exit 6
   fi
   if [ "$state" = CLOSED ]; then
     echo "wait-ci: PR $pr is closed without a merge"
