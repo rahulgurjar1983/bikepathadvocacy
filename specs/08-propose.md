@@ -32,6 +32,8 @@ Look at every trip from a home to a place that has no safe route today. Find the
 | FR-8.8 | `bikeplan propose <region file> --snapshot <dir> --out <dir>` writes `projects.json`, `projects.csv` and `projects.geojson` (one feature per element, with its project ID and rank). | MUST |
 | FR-8.9 | After a pick, distances are worked out again only for places within `reach_m` of a changed edge. The full Bayside run stays within NFR-3. | MUST |
 | FR-8.10 | The same inputs give the same projects in the same order, byte for byte. | MUST |
+| FR-8.11 | Besides route fixes, the candidate pool holds two larger kinds of project. A neighbourhood project takes one cell of streets bounded by level 3 or 4 roads and the region boundary: every local street in it gets its least disruptive fix, and each place where its routes meet the edge gets the junction fix of spec 06. A corridor project is a separated cycleway, road diet or verge path along one unbroken run of a main road between two cells, where the fix fits. Each is scored with exact gains like any other candidate, and the report says how many of each kind were picked. | MUST |
+| FR-8.12 | With the region file as shipped, the Bayside run gives at least one project, and the score after the last project is above the score before. A proof never edits the region file, a profile or a threshold to get a result. If the shipped settings give no project, the row stays open and the problem goes to the spec issues. | MUST |
 
 ## 5. Test plan
 
@@ -49,6 +51,8 @@ Tests use hand-made graphs where the best pick can be worked out by hand.
 | FR-8.8 | The command writes the three files for a fixture |
 | FR-8.9 | Results match a full recompute on a fixture, and the Bayside run time is logged |
 | FR-8.10 | Two runs give byte-identical files |
+| FR-8.11 | On the test grid, a neighbourhood project whose single route fixes each gain less than `min_gain` is picked, with a gain above `min_gain`; a corridor project is made only where its fix fits |
+| FR-8.12 | The Bayside validation run with the shipped region file writes at least one project and a higher score after; `bikeplan verify` fails a run with candidates but no project |
 
 ## 6. Validation evidence
 
