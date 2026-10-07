@@ -12,9 +12,10 @@ from shapely.geometry import LineString, MultiLineString, Point, mapping
 from shapely.ops import transform
 
 from bikeplan.access import EdgeTable, Reach, edge_table, reach, safe_reach, scene, score_access
-from bikeplan.fit import FIXES, junction_fixes, segment_fit
+from bikeplan.fit import FIXES, cross_section as fit_cross_section, junction_fixes, segment_fit
 from bikeplan.network import bike_segments
 from bikeplan.stress import edge_aaa, own_lts, raise_for_crossings
+from bikeplan.width import check_links, fuse
 
 
 class Planning(NamedTuple):
@@ -29,11 +30,18 @@ def street_name(data: dict) -> str:
 def segment_elements(graph, profile, weights) -> tuple[dict, set]:
     elements = {}
     missing = set()
+    to_degrees = Transformer.from_crs(graph.graph["crs"], 4326, always_xy=True)
     for segment_id, segment in bike_segments(graph).items():
         result = segment_fit(segment, profile, weights)
         if result is None or result["status"] == "no_fit":
             missing.add(segment_id)
         elif result["status"] == "fix":
+            (u, v, _), first_edge = segment["edges"][0]
+            line = first_edge.get("geometry") or LineString(
+                [(graph.nodes[node]["x"], graph.nodes[node]["y"]) for node in (u, v)]
+            )
+            point = line.interpolate(0.5, normalized=True)
+            lon, lat = to_degrees.transform(point.x, point.y)
             elements[f"segment:{segment_id}"] = {
                 "kind": "segment",
                 "segment": segment_id,
@@ -44,6 +52,10 @@ def segment_elements(graph, profile, weights) -> tuple[dict, set]:
                 "length_m": max(data["length_m"] for _, data in segment["edges"]),
                 "street": street_name(segment["edges"][0][1]),
                 "width_source": result["width_source"],
+                "width_confidence": result["width_confidence"],
+                "before": result["before"],
+                "after": result["after"],
+                "check_links": check_links(lat, lon),
                 "counts": next(
                     item["disruption"]
                     for item in result["candidates"]
@@ -54,22 +66,54 @@ def segment_elements(graph, profile, weights) -> tuple[dict, set]:
 
 
 def junction_elements(graph, profile, weights) -> dict:
+    to_degrees = Transformer.from_crs(graph.graph["crs"], 4326, always_xy=True)
+    segments = bike_segments(graph)
     streets = {
         segment_id: street_name(segment["edges"][0][1])
         for segment_id, segment in bike_segments(graph).items()
     }
-    return {
-        f"junction:{item['junction']}": {
+    result = {}
+    for item in junction_fixes(graph, profile):
+        node = graph.nodes[item["junction"]]
+        lon, lat = to_degrees.transform(node["x"], node["y"])
+        sections = []
+        for leg in sorted(item["legs"]):
+            segment = segments[leg]
+            fit = segment_fit(segment, profile, weights)
+            if fit is None:
+                first_edge = segment["edges"][0][1]
+                fused = fuse(first_edge, profile)
+                before = fit_cross_section({**first_edge, **fused}, profile)
+                after = before
+                width_source = fused["width_source"]
+                width_confidence = fused["width_confidence"]
+            else:
+                before = fit["before"]
+                after = fit["after"]
+                width_source = fit["width_source"]
+                width_confidence = fit["width_confidence"]
+            sections.append(
+                {
+                    "id": f"segment:{leg}",
+                    "street": streets[leg],
+                    "before": before,
+                    "after": after,
+                    "width_source": width_source,
+                    "width_confidence": width_confidence,
+                }
+            )
+        result[f"junction:{item['junction']}"] = {
             "kind": "junction",
             "junction": item["junction"],
             "fix": item["fix"],
             "score": item["disruption"]["refuges"] * weights.refuge
             + item["disruption"]["signals"] * weights.signal,
             "legs": tuple(item["legs"]),
+            "sections": sections,
             "street": ", ".join(sorted({streets[leg] for leg in item["legs"]})),
+            "check_links": check_links(lat, lon),
         }
-        for item in junction_fixes(graph, profile)
-    }
+    return result
 
 
 def crossing_needs(key: tuple, data: dict, junctions: dict) -> tuple:
@@ -390,13 +434,15 @@ def greedy_picks(
 def element_record(name: str, element: dict) -> dict:
     junction = element["kind"] == "junction"
     counts = {} if junction else element["counts"]
-    return {
+    result = {
         "id": name,
         "street": element["street"],
         "length_m": 0.0 if junction else round(element["length_m"], 1),
         "fix": element["fix"],
         "robust": "robust" if junction else element["robust"],
         "width_source": None if junction else element["width_source"],
+        "width_confidence": None if junction else element["width_confidence"],
+        "check_links": element["check_links"],
         "km": 0.0 if junction else round(element["km"], 6),
         "parking_spaces": counts.get("parking_spaces", 0),
         "lane_km": counts.get("lane_km", 0.0),
@@ -404,6 +450,12 @@ def element_record(name: str, element: dict) -> dict:
         "signals": int(junction and element["fix"] == "signals"),
         "refuges": int(junction and element["fix"] == "refuge"),
     }
+    if not junction:
+        result["before"] = element["before"]
+        result["after"] = element["after"]
+    else:
+        result["sections"] = element["sections"]
+    return result
 
 
 def project_totals(elements: list[dict]) -> dict:

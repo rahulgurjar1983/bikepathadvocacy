@@ -19,6 +19,15 @@ DISRUPTION_LABELS = [
     ("signals", "Signals added"),
     ("refuges", "Refuges added"),
 ]
+STRIP_COLORS = {
+    "parking": "#c9a66b",
+    "painted_lane": "#84b6d9",
+    "through": "#8b9299",
+    "median": "#d8c967",
+    "spare": "#e9ecef",
+    "cycleway": "#45a66a",
+    "separator": "#2e555a",
+}
 METHOD = [
     "The tool reads one snapshot of OpenStreetMap and the other open data named under credits. "
     "It makes no network call.",
@@ -127,7 +136,102 @@ def projects_section(records: list[dict]) -> str:
     return f'<section id="projects"><h2>Projects, ranked</h2>{table(head, rows)}</section>'
 
 
-def sheet(record: dict) -> str:
+def project_map(record: dict, features: list[dict]) -> str:
+    selected = [item for item in features if item["properties"]["project"] == record["id"]]
+    points = []
+    lines = []
+    for feature in selected:
+        geometry = feature["geometry"]
+        if geometry["type"] == "Point":
+            points.append(geometry["coordinates"])
+        elif geometry["type"] == "LineString":
+            lines.append(geometry["coordinates"])
+        elif geometry["type"] == "MultiLineString":
+            lines.extend(geometry["coordinates"])
+    points.extend(point for line in lines for point in line)
+    if not points:
+        return ""
+    min_x = min(point[0] for point in points)
+    max_x = max(point[0] for point in points)
+    min_y = min(point[1] for point in points)
+    max_y = max(point[1] for point in points)
+    span_x = max(max_x - min_x, 1e-9)
+    span_y = max(max_y - min_y, 1e-9)
+
+    def project(point):
+        x = 12 + (point[0] - min_x) / span_x * 576
+        y = 128 - (point[1] - min_y) / span_y * 116
+        return x, y
+
+    paths = "".join(
+        f'<polyline points="{
+            html.escape(
+                " ".join(f"{project(point)[0]:.2f},{project(point)[1]:.2f}" for point in line),
+                quote=True,
+            )
+        }" '
+        'fill="none" stroke="#176b42" stroke-width="5" stroke-linecap="round" '
+        'stroke-linejoin="round"/>'
+        for line in lines
+    )
+    dots = "".join(
+        f'<circle cx="{project(point)[0]:.2f}" cy="{project(point)[1]:.2f}" r="5" fill="#a33"/>'
+        for feature in selected
+        if feature["geometry"]["type"] == "Point"
+        for point in [feature["geometry"]["coordinates"]]
+    )
+    return (
+        f'<svg class="project-map" id="project-map-{html.escape(record["id"])}" '
+        f'data-project-id="{html.escape(record["id"])}" width="600" height="140" '
+        'viewBox="0 0 600 140" '
+        f'role="img" aria-label="Map of {html.escape(record["name"])}">'
+        f"<title>Map of {html.escape(record['name'])}</title>{paths}{dots}</svg>"
+    )
+
+
+def cross_section(project_id: str, element_id: str, item: dict, phase: str) -> str:
+    strips = item[phase]
+    total = sum(strip["width_m"] for strip in strips)
+    cursor = 0.0
+    shapes = []
+    labels = []
+    for strip in strips:
+        width = strip["width_m"]
+        scaled = width * 40
+        shapes.append(
+            f'<rect x="{cursor:.3f}" y="2" width="{scaled:.3f}" height="28" '
+            f'fill="{STRIP_COLORS.get(strip["kind"], "#bbb")}" '
+            f'data-width-m="{width:.1f}"><title>{html.escape(strip["kind"])}: '
+            f"{width:.1f} m</title></rect>"
+        )
+        cursor += scaled
+        labels.append(f"{strip['kind']}: {width:.1f} m")
+    view_width = max(cursor, 1.0)
+    label_list = "".join(f"<li>{html.escape(label)}</li>" for label in labels)
+    return (
+        f'<figure class="cross-section-figure"><figcaption>{phase.title()} cross-section</figcaption>'
+        f'<svg class="cross-section" data-project-id="{html.escape(project_id)}" '
+        f'data-element-id="{html.escape(element_id)}" '
+        f'data-section-id="{html.escape(item["id"])}" data-phase="{phase}" '
+        f'data-total-width-m="{total:.1f}" width="{view_width:.3f}" height="32" '
+        f'viewBox="0 0 {view_width:.3f} 32" '
+        'role="img" aria-label="Cross-section drawn to scale">'
+        f'{"".join(shapes)}</svg><ul class="strip-labels">{label_list}</ul></figure>'
+    )
+
+
+def check_links(element: dict) -> str:
+    links = element["check_links"]
+    return (
+        '<p class="check-links">Check location: '
+        f'<a href="#" data-check-link="{html.escape(links["street_view"], quote=True)}">'
+        "Street View</a> · "
+        f'<a href="#" data-check-link="{html.escape(links["mapillary"], quote=True)}">'
+        "Mapillary</a></p>"
+    )
+
+
+def sheet(record: dict, features: list[dict]) -> str:
     elements = [
         [
             item["id"],
@@ -135,23 +239,55 @@ def sheet(record: dict) -> str:
             item["fix"],
             item["robust"],
             item["width_source"] or "none",
+            item["width_confidence"] or "none",
             item["length_m"],
         ]
         for item in record["elements"]
     ]
-    head = ["Element", "Street", "Fix", "Robustness", "Width source", "Length m"]
+    head = [
+        "Element",
+        "Street",
+        "Fix",
+        "Robustness",
+        "Width source",
+        "Width confidence",
+        "Length m",
+    ]
     people = [[kind, count] for kind, count in sorted(record["people"].items())]
+    disruption = [[label, record["totals"][key]] for key, label in DISRUPTION_LABELS]
+    fixes = [[fix, km] for fix, km in sorted(record["totals"]["km_by_fix"].items())]
+    drawings = []
+    for element in record["elements"]:
+        sections = [element] if "before" in element else element["sections"]
+        for section in sections:
+            source = section["width_source"] or "none"
+            confidence = section["width_confidence"] or "none"
+            drawings.append(
+                f"<h5>{html.escape(section['street'])}; width source {html.escape(source)}, "
+                f"confidence {html.escape(confidence)}</h5>"
+                + "".join(
+                    cross_section(record["id"], element["id"], section, phase)
+                    for phase in ("before", "after")
+                )
+            )
+    sections = "".join(drawings)
+    links = "".join(check_links(item) for item in record["elements"])
     return (
         f'<article id="project-{html.escape(record["id"])}">'
         f"<h3>{html.escape(record['name'])}</h3>"
         f"<p>Gain {record['gain']}. Score after {record['score_after']}.</p>"
+        f"{project_map(record, features)}"
         f"{table(head, elements)}"
+        f"<h4>Disruption totals</h4>{table(['Item', 'Total'], disruption)}"
+        f"<h4>Kilometres by fix</h4>{table(['Fix', 'km'], fixes or [['none', 0.0]])}"
+        f"<h4>Street cross-sections</h4>{sections}{links}"
         f"{table(['Place type', 'People'], people)}</article>"
     )
 
 
-def sheets_section(records: list[dict]) -> str:
-    body = "".join(sheet(record) for record in records)
+def sheets_section(records: list[dict], payload: dict) -> str:
+    features = payload["project_shapes"]["features"]
+    body = "".join(sheet(record, features) for record in records)
     return f'<section id="sheets"><h2>Project sheets</h2>{body}</section>'
 
 
@@ -209,7 +345,7 @@ def render(summary: dict, records: list[dict], profile, payload: dict) -> str:
         summary_section(summary),
         map_section(),
         projects_section(records),
-        sheets_section(records),
+        sheets_section(records, payload),
         method_section(),
         assumptions_section(profile),
         credits_section(summary["credits"]),
@@ -223,6 +359,8 @@ def render(summary: dict, records: list[dict], profile, payload: dict) -> str:
     scripts = (
         f"<script>{(ASSETS / 'leaflet.js').read_text()}</script>"
         f"{data_block(payload)}"
+        "<script>document.querySelectorAll('[data-check-link]').forEach(link => {"
+        "link.href = link.dataset.checkLink;});</script>"
         f"<script>{(ASSETS / 'page_map.js').read_text()}</script>"
     )
     return (

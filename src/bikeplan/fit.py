@@ -466,6 +466,7 @@ def segment_fit(segment: dict, profile: Profile, weights) -> dict | None:
         "km": segment["inside_m"] / 1000,
         "robust": robust,
         "width_source": fused["width_source"],
+        "width_confidence": fused["width_confidence"],
     }
 
 
