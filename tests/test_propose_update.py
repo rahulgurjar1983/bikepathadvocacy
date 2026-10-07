@@ -35,7 +35,7 @@ def test_fr8_9_updated_reach_equals_a_full_recompute():
     old = aaa_for(graph, planning, set())
     new = aaa_for(graph, planning, {"segment:s1"})
     before = reach(graph, sources, REACH_M, DETOUR, old)
-    updated, redone = update_reach(graph, sources, before, REACH_M, DETOUR, old, new)
+    updated, _ = update_reach(graph, sources, before, REACH_M, DETOUR, old, new)
     assert updated == reach(graph, sources, REACH_M, DETOUR, new)
     assert updated != before
 
