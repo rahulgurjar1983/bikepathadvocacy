@@ -1,0 +1,10 @@
+c7764bbb72ef1ea27d5d041cd7ad776f2a0e9390cc7118ddb14c26ca0be2d0c6  artifacts.tar.gz
+bb9673c1c23b6ac097b6c5d5a71be14e6b1b9f7d36e333297e222c1765afd2f9  au-nsw-bayside-report.html
+6277bf4f4aaaea3c4df75fdf7209d72e7e8bd3df5247413bc89f278797550026  au-nsw-bayside.tar.gz
+0763fa0329dff799cef2a541554f04e324cea37ed3bf6dc23f1442aa403c4ed9  index.html
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Bike path reports</title></head><body><h1>Bike path reports</h1><table><tr><th>Kind</th><th>Report</th><th>Region</th><th>Snapshot</th><th>Commit</th><th>Source</th></tr>
+<tr><td>report</td><td><a href="au-nsw-bayside-report.html">au-nsw-bayside</a></td><td>au-nsw-bayside</td><td>2026-10-01</td><td>108a8930fa1fa7962cd38f7af8f8f913978caa68</td><td>built</td></tr>
+</table><p><a href="artifacts.tar.gz">artifacts.tar.gz</a></p></body></html>
+
+gh release create v2026.10.07-check --title v2026.10.07-check --notes Bike path reports built from main
+gh release upload v2026.10.07-check /tmp/r17/out/artifacts.tar.gz /tmp/r17/out/au-nsw-bayside-report.html /tmp/r17/out/au-nsw-bayside.tar.gz /tmp/r17/out/index.html /tmp/r17/out/SHA256SUMS --clobber

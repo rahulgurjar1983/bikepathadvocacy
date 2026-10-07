@@ -62,7 +62,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 - [x] **R1.5** The report map: stress layers, the all-ages switch, stations and schools, and the proposed changes switch, checked in headless Chromium (FR-13.9)
 - [x] **R1.4** `scripts/release-report.sh <tag>` uploads the Bayside report to a release; the operator then adds the CI `release` workflow (FR-13.7)
 - [x] **R1.6** Reports are deterministic: two builds with a different time zone, locale, hash seed, folder and clock give equal sums; fonts are inlined; the date is the snapshot date (FR-13.10)
-- [ ] **R1.7** `scripts/release.sh <tag>` builds every public report, the artifacts archive and the index, and uploads them to a release, copying unchanged reports forward; it replaces `scripts/release-report.sh`; the operator then adds the CI `release` workflow that runs on every merge (FR-13.7)
+- [x] **R1.7** `scripts/release.sh <tag>` builds every public report, the artifacts archive and the index, and uploads them to a release, copying unchanged reports forward; it replaces `scripts/release-report.sh`; the operator then adds the CI `release` workflow that runs on every merge (FR-13.7)
 
 ## Phase 6: Fit
 

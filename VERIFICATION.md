@@ -459,7 +459,7 @@ Artifact: `artifacts/R1.5/map.png`
 
 ```bash
 uv run pytest tests/test_release_report.py -q
-scripts/release-report.sh v2026.10.07
+scripts/release.sh v2026.10.07
 gh release view v2026.10.07 --json tagName,assets --jq '[.tagName, (.assets|map(.name)|join(","))]|join(" ")'
 ```
 
@@ -474,3 +474,13 @@ uv run pytest tests/test_report_deterministic.py -v
 
 Expect: 5 passed. Two builds with a different `TZ`, `LANG`, `PYTHONHASHSEED`, folder and clock give equal `SHA256SUMS`; the report date is the snapshot date; no time stamp, absolute path or fetched font or script is in the HTML.
 Artifact: `artifacts/R1.6/determinism.txt`
+
+### R1.7
+
+```bash
+uv run pytest tests/test_release.py -q
+scripts/release.sh v2026.10.07
+```
+
+Expect: 11 passed. The script pulls each published snapshot, builds each public report, then uploads the reports, `artifacts.tar.gz`, `index.html` and one `SHA256SUMS`. A merge that leaves out the report inputs copies the last release's reports and the index names it.
+Artifact: `artifacts/R1.7/release.txt`
