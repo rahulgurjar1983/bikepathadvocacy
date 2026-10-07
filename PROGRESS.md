@@ -61,6 +61,8 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 - [x] **R1.3** Reading level, `VOICE.md` and layout checks on the report; the Bayside report as the artifact (FR-13.4, FR-13.5, FR-13.6)
 - [x] **R1.5** The report map: stress layers, the all-ages switch, stations and schools, and the proposed changes switch, checked in headless Chromium (FR-13.9)
 - [x] **R1.4** `scripts/release-report.sh <tag>` uploads the Bayside report to a release; the operator then adds the CI `release` workflow (FR-13.7)
+- [ ] **R1.6** Reports are deterministic: two builds with a different time zone, locale, hash seed, folder and clock give equal sums; fonts are inlined; the date is the snapshot date (FR-13.10)
+- [ ] **R1.7** `scripts/release.sh <tag>` builds every public report, the artifacts archive and the index, and uploads them to a release, copying unchanged reports forward; it replaces `scripts/release-report.sh`; the operator then adds the CI `release` workflow that runs on every merge (FR-13.7)
 
 ## Phase 6: Fit
 
@@ -99,7 +101,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 - [ ] **V1.4** Fixes, disruption and access value along a route, and claim verdicts (FR-14.6, FR-14.7)
 - [ ] **V1.5** The review report, with the route layer and right of reply (FR-14.8)
 - [ ] **V1.6** Corridor candidates in `bikeplan propose` (FR-14.11)
-- [ ] **V1.7** Bayside pilot: review CycleSydney Ride 22 from its public RideWithGPS track, with its claims; keep the report private (FR-14.1, FR-14.7, FR-14.8)
+- [ ] **V1.7** Bayside pilot: review CycleSydney Ride 22 from its public RideWithGPS track, as a private review under `data/private/` (FR-14.1, FR-14.7, FR-14.8, FR-14.12)
 - [ ] **V1.8** 👤 Operator: get the Super-Highway route file from Daniel Morrison and permission from CycleSydney to publish; then review the Bayside part of the Super-Highway (FR-14.7, FR-14.8)
 
 ## Phase 10: End to end

@@ -190,3 +190,20 @@ def test_fr0_23_cancelled_check_waits_for_the_run_that_replaced_it(tmp_path):
     result = wait_ci(tmp_path, rollups, fake=FAKE_GH_JQ)
     assert result.returncode == 0, result.stdout + result.stderr
     assert result.stdout.splitlines() == ["wait-ci: PR 7 merged"]
+
+
+def test_fr0_23_conflict_with_main_exits_six(tmp_path):
+    green = [check("gates", "COMPLETED", "SUCCESS"), check("test", "COMPLETED", "SUCCESS")]
+    rollup = json.dumps(
+        {
+            "state": "OPEN",
+            "mergeable": "CONFLICTING",
+            "autoMergeRequest": {"mergeMethod": "MERGE"},
+            "statusCheckRollup": green,
+        }
+    )
+    result = wait_ci(tmp_path, [rollup], fake=FAKE_GH_JQ, WAIT_CI_SECS="5")
+    assert result.returncode == 6, result.stdout + result.stderr
+    assert result.stdout.splitlines() == [
+        "wait-ci: PR 7 conflicts with main; run git merge origin/main, fix the conflict and push"
+    ]
