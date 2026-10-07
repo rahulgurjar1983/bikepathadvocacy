@@ -1,0 +1,3 @@
+places 294 aaa edges 26725
+home-place pairs in reach 687259 safe 3848
+places with a safe route to another node 99
