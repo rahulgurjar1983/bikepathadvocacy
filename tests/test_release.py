@@ -41,7 +41,8 @@ if args[:2] == ["release", "list"]:
     print(os.environ.get("GH_LAST", "").replace(",", "\\n"))
 if args[:2] == ["release", "download"]:
     key = "GH_SOURCE" if args[2].startswith("snapshot-") else "GH_LAST_SOURCE"
-    key = "GH_SOURCE_" + args[2].replace(".", "_") if "GH_SOURCE_" + args[2].replace(".", "_") in os.environ else key
+    per_tag = "GH_SOURCE_" + args[2].replace(".", "_")
+    key = per_tag if per_tag in os.environ else key
     target = Path(args[args.index("--dir") + 1])
     target.mkdir(parents=True, exist_ok=True)
     for source in Path(os.environ[key]).iterdir():
