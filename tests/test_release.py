@@ -341,6 +341,7 @@ def test_fr13_7_a_merge_that_changes_only_specs_copies_the_last_release_reports(
     files = uploaded(bin_dir)
     assert files["au-nsw-bayside-report.html"].read_text() == "old au-nsw-bayside-report.html"
     assert "v2026.10.06" in files["index.html"].read_text()
+    assert [c for c in calls(bin_dir) if c[:2] == ["release", "download"] and "--pattern" in c]
 
 
 def test_fr13_7_a_merge_that_changes_the_voice_file_rebuilds_every_report(repo, tmp_path):
