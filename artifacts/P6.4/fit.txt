@@ -1,0 +1,10 @@
+quietway_km 269.582
+cycleway_in_spare_km 3.930
+cycleway_parking_one_side_km 3.516
+cycleway_parking_both_sides_km 56.044
+road_diet_km 43.695
+verge_path_km 0.000
+no_fit_km 73.186
+robust_share 0.321
+junction_refuge 21
+junction_signals 425
