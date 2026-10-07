@@ -494,3 +494,13 @@ uv run bikeplan fit summary regions/au-nsw-bayside.yaml --snapshot data/cache/au
 
 Expect: The tests pass. The summary prints the km of street for each chosen fix, `no_fit_km`, `robust_share` and the count of junction refuges and signals. On Bayside the run takes about 2 minutes: `quietway_km` 269.582, `no_fit_km` 73.186, `robust_share` 0.321, 21 refuges and 425 signals.
 Artifact: `artifacts/P6.4/fit.txt`
+
+### P7.1
+
+```bash
+uv run pytest tests/test_access_places.py -q
+uv run python -c "import collections,sys; from bikeplan.access import places; c=collections.Counter(p['type'] for p in places(sys.argv[1])); print(dict(sorted(c.items())))" data/cache/au-nsw-bayside/2026-10-01 | tee artifacts/P7.1/places.txt
+```
+
+Expect: 10 tests pass. On the Bayside snapshot the count by type is 31 aged care, 10 college, 31 library, 223 school, 50 station, 42 town centre and 6 university, 393 in all.
+Artifact: `artifacts/P7.1/places.txt`
