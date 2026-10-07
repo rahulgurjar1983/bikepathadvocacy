@@ -150,7 +150,7 @@ def test_fr13_9_hover_names_street_type_level_and_all_ages(browser, data):
         "p.dispatchEvent(new MouseEvent('mouseover', {bubbles: true}));",
         segment["id"],
     )
-    text = browser.find_element(By.CSS_SELECTOR, ".leaflet-tooltip").text
+    text = browser.find_element(By.CSS_SELECTOR, ".leaflet-tooltip").get_attribute("textContent")
     assert (segment["name"] or "Unnamed street") in text
     assert segment["highway"] in text
     assert f"level {segment['lts']}" in text.lower()
