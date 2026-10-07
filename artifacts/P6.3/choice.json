@@ -1,0 +1,196 @@
+{
+ "1": {
+  "status": "fix",
+  "fix": "quietway",
+  "score": 0.2,
+  "after": [
+   {
+    "kind": "parking",
+    "width_m": 2.1
+   },
+   {
+    "kind": "through",
+    "width_m": 3.0
+   },
+   {
+    "kind": "through",
+    "width_m": 3.0
+   },
+   {
+    "kind": "parking",
+    "width_m": 2.1
+   },
+   {
+    "kind": "spare",
+    "width_m": 1.8000000000000007
+   }
+  ]
+ },
+ "2": {
+  "status": "fix",
+  "fix": "cycleway_in_spare",
+  "score": 0.0,
+  "after": [
+   {
+    "kind": "cycleway",
+    "width_m": 2.5
+   },
+   {
+    "kind": "separator",
+    "width_m": 1.0
+   },
+   {
+    "kind": "parking",
+    "width_m": 2.1
+   },
+   {
+    "kind": "through",
+    "width_m": 3.0
+   },
+   {
+    "kind": "through",
+    "width_m": 3.0
+   },
+   {
+    "kind": "parking",
+    "width_m": 2.1
+   },
+   {
+    "kind": "spare",
+    "width_m": 0.3000000000000007
+   }
+  ]
+ },
+ "3": {
+  "status": "fix",
+  "fix": "cycleway_parking_one_side",
+  "score": 12.0,
+  "after": [
+   {
+    "kind": "cycleway",
+    "width_m": 2.5
+   },
+   {
+    "kind": "separator",
+    "width_m": 0.5
+   },
+   {
+    "kind": "through",
+    "width_m": 3.0
+   },
+   {
+    "kind": "through",
+    "width_m": 3.0
+   },
+   {
+    "kind": "parking",
+    "width_m": 2.1
+   },
+   {
+    "kind": "spare",
+    "width_m": 0.9000000000000004
+   }
+  ]
+ },
+ "4": {
+  "status": "fix",
+  "fix": "cycleway_in_spare",
+  "score": 0.0,
+  "after": [
+   {
+    "kind": "cycleway",
+    "width_m": 1.5
+   },
+   {
+    "kind": "separator",
+    "width_m": 0.5
+   },
+   {
+    "kind": "through",
+    "width_m": 3.0
+   },
+   {
+    "kind": "through",
+    "width_m": 3.0
+   },
+   {
+    "kind": "through",
+    "width_m": 3.0
+   },
+   {
+    "kind": "through",
+    "width_m": 3.0
+   },
+   {
+    "kind": "separator",
+    "width_m": 0.5
+   },
+   {
+    "kind": "cycleway",
+    "width_m": 1.5
+   }
+  ]
+ },
+ "5": {
+  "status": "fix",
+  "fix": "road_diet",
+  "score": 4.0,
+  "after": [
+   {
+    "kind": "cycleway",
+    "width_m": 1.5
+   },
+   {
+    "kind": "separator",
+    "width_m": 0.5
+   },
+   {
+    "kind": "through",
+    "width_m": 3.0
+   },
+   {
+    "kind": "through",
+    "width_m": 3.0
+   },
+   {
+    "kind": "through",
+    "width_m": 3.0
+   },
+   {
+    "kind": "separator",
+    "width_m": 0.5
+   },
+   {
+    "kind": "cycleway",
+    "width_m": 1.5
+   }
+  ]
+ },
+ "6": {
+  "status": "fix",
+  "fix": "verge_path",
+  "score": 0.5,
+  "after": [
+   {
+    "kind": "through",
+    "width_m": 3.0
+   },
+   {
+    "kind": "through",
+    "width_m": 3.0
+   },
+   {
+    "kind": "through",
+    "width_m": 3.0
+   },
+   {
+    "kind": "through",
+    "width_m": 3.0
+   },
+   {
+    "kind": "spare",
+    "width_m": 1.0
+   }
+  ]
+ }
+}

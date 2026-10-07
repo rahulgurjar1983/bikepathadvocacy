@@ -57,7 +57,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 
 - [x] **P6.1** Cross-sections and fix options with reasons (FR-6.1, FR-6.2, FR-6.3)
 - [x] **P6.2** Robust flag and disruption counts (FR-6.4, FR-6.5)
-- [ ] **P6.3** Rescoring and choosing the fix; the six worked cases pass (FR-6.6, FR-6.7, FR-6.9)
+- [x] **P6.3** Rescoring and choosing the fix; the six worked cases pass (FR-6.6, FR-6.7, FR-6.9)
 - [ ] **P6.4** Junction fixes and `bikeplan fit summary` (FR-6.8, FR-6.10)
 
 ## Phase 7: Access
