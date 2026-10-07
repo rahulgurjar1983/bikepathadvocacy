@@ -1,0 +1,6 @@
+tests/test_report_deterministic.py::test_fr13_10_two_builds_in_other_places_and_times_give_equal_sums PASSED [ 20%]
+tests/test_report_deterministic.py::test_fr13_10_the_report_date_is_the_snapshot_date PASSED [ 40%]
+tests/test_report_deterministic.py::test_fr13_10_the_report_holds_no_time_stamp_or_absolute_path PASSED [ 60%]
+tests/test_report_deterministic.py::test_fr13_10_the_check_catches_a_planted_time_stamp_and_path PASSED [ 80%]
+tests/test_report_deterministic.py::test_fr13_10_fonts_and_scripts_are_inlined PASSED [100%]
+============================== 5 passed in 1.78s ===============================
