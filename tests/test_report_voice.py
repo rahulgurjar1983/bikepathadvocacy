@@ -73,6 +73,7 @@ def parse(output):
 
 def markup(output):
     html = (output / "report.html").read_text()
+    assert 'id="map-data"' in html
     return re.sub(r"<(script|style)\b.*?</\1>", "", html, flags=re.DOTALL)
 
 
