@@ -454,3 +454,14 @@ grep -E '"id": "F[14]"' -A2 /tmp/bay/figures.json | grep value
 
 Expect: 9 passed. Headless Chromium with every network call blocked paints the Bayside streets in four colours, with the layer switches and the dashed boundary. F1 and F4 both read 591.099.
 Artifact: `artifacts/R1.5/map.png`
+
+### R1.4
+
+```bash
+uv run pytest tests/test_release_report.py -q
+scripts/release-report.sh v2026.10.07
+gh release view v2026.10.07 --json tagName,assets --jq '[.tagName, (.assets|map(.name)|join(","))]|join(" ")'
+```
+
+Expect: 4 passed. The script pulls the snapshot, builds the report, checks `SHA256SUMS` and uploads five files. The last command prints the tag and the file names.
+Artifact: `artifacts/R1.4/release.txt`
