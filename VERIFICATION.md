@@ -514,3 +514,13 @@ uv run python scripts/access_snap_check.py data/cache/au-nsw-bayside/2026-10-01 
 
 Expect: 11 tests pass. On Bayside, 294 of 393 places are in scope and all snap; homes sit on 4871 nodes holding 171068 people, with 8 people not snapped.
 Artifact: `artifacts/P7.2/snap.txt`
+
+### P7.3
+
+```bash
+uv run pytest tests/test_access_reach.py -q
+uv run python scripts/access_reach_check.py data/cache/au-nsw-bayside/2026-10-01 regions/au-nsw-bayside.yaml | tee artifacts/P7.3/reach.txt
+```
+
+Expect: 9 tests pass. On Bayside the 294 places have 687259 node-place pairs in reach and 3848 of them safe, and 99 places have a safe route to some other node.
+Artifact: `artifacts/P7.3/reach.txt`
