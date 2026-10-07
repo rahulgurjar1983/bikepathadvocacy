@@ -535,3 +535,13 @@ jq -c . "$OUT/access_summary.json" | tee artifacts/P7.4/access_summary.json
 
 Expect: 8 tests pass. The Bayside baseline access score is 0.1, with 1455 people safe to a school, 300 to a college, 0 to a university, 92 to aged care, 189 to a library, 109 to a town centre and 251 to a station. No places and 8 people are not snapped.
 Artifact: `artifacts/P7.4/access_summary.json`
+
+### P8.1
+
+```bash
+uv run pytest tests/test_propose_network.py tests/test_propose_values.py -q
+uv run python scripts/propose_network_check.py data/cache/au-nsw-bayside/2026-10-01 regions/au-nsw-bayside.yaml | tee artifacts/P8.1/network.txt
+```
+
+Expect: 10 tests pass. On Bayside the planning network has 81671 of 87850 bike edges, 54946 of them needing a fix, with 29802 fix elements. The 94392 unsafe trips have a total value of 98.89, which is 100 less the 0.1 baseline score and rounding.
+Artifact: `artifacts/P8.1/network.txt`
