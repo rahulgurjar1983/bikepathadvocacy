@@ -23,6 +23,7 @@ INPUT_PATHS = [
     "scripts/check-reply.sh",
     "scripts/install-hooks.sh",
     "scripts/lib/step.sh",
+    "VOICE.md",
 ]
 
 
