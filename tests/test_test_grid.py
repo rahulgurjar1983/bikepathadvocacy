@@ -82,7 +82,14 @@ def is_main(data):
     return data.get("name") == "Main Road"
 
 
-def test_fr11_3_the_generator_rebuilds_the_committed_snapshot(snapshot):
+def test_fr11_3_the_generator_rebuilds_the_committed_snapshot(snapshot, region):
+    passed, failed = verify_snapshot(COMMITTED)
+    assert failed == []
+    assert len(passed) == 4
+    assert region.id == "test-grid"
+    assert (
+        Path(region.boundary.geojson).read_bytes() == (snapshot / "boundary.geojson").read_bytes()
+    )
     for name in ["boundary.geojson", "network.osm.gz", "places.json"]:
         assert (snapshot / name).read_bytes() == (COMMITTED / name).read_bytes()
     made = json.loads((snapshot / "manifest.json").read_text())
@@ -94,16 +101,6 @@ def test_fr11_3_the_generator_rebuilds_the_committed_snapshot(snapshot):
     rows = "select h3, population, geom from population"
     assert rows_of(snapshot / "population.gpkg", rows) == rows_of(
         COMMITTED / "population.gpkg", rows
-    )
-
-
-def test_fr11_3_the_committed_snapshot_verifies_and_the_region_points_at_its_boundary(region):
-    passed, failed = verify_snapshot(COMMITTED)
-    assert failed == []
-    assert len(passed) == 4
-    assert region.id == "test-grid"
-    assert (
-        Path(region.boundary.geojson).read_bytes() == (COMMITTED / "boundary.geojson").read_bytes()
     )
 
 
