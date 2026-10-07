@@ -1,0 +1,1 @@
+{'aged_care': 31, 'college': 10, 'library': 31, 'school': 223, 'station': 50, 'town_centre': 42, 'university': 6}
