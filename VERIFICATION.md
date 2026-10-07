@@ -364,3 +364,23 @@ print(json.dumps({o['fix']: {'fits': o['fits'], 'robust': o['robust'], 'disrupti
 
 Expect: The tests pass. For case 3 on a 120 m street with a low width of 11.5 m, `cycleway_parking_one_side` fits and is `robust`, and removes 14 parking spaces.
 Artifact: `artifacts/P6.2/disruption.json`
+
+### P6.3
+
+```bash
+uv run pytest tests/test_fit_choice.py -q
+mkdir -p artifacts/P6.3
+uv run python -c "
+import json, sys
+sys.path[:0] = ['src', 'tests']
+from bikeplan.config import load_profile, load_region
+from bikeplan.fit import choose
+from test_fit_options import CASES
+p = load_profile('au-nsw', 'profiles')
+w = load_region('regions/test-grid.yaml').proposals.disruption_weights
+print(json.dumps({n: (lambda r: {'status': r['status'], 'fix': r['fix'], 'score': r['score'], 'after': r['after']})(choose({**c, 'length_m': 100.0}, p, w)) for n, c in CASES.items()}, indent=1))
+" > artifacts/P6.3/choice.json
+```
+
+Expect: The tests pass. The six worked cases choose `quietway`, `cycleway_in_spare`, `cycleway_parking_one_side`, `cycleway_in_spare`, `road_diet` and `verge_path`.  Case 6 uses its 27 m reserve.
+Artifact: `artifacts/P6.3/choice.json`
