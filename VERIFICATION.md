@@ -504,3 +504,13 @@ uv run python -c "import collections,sys; from bikeplan.access import places; c=
 
 Expect: 10 tests pass. On the Bayside snapshot the count by type is 31 aged care, 10 college, 31 library, 223 school, 50 station, 42 town centre and 6 university, 393 in all.
 Artifact: `artifacts/P7.1/places.txt`
+
+### P7.2
+
+```bash
+uv run pytest tests/test_access_homes.py tests/test_access_units.py -q
+uv run python scripts/access_snap_check.py data/cache/au-nsw-bayside/2026-10-01 regions/au-nsw-bayside.yaml | tee artifacts/P7.2/snap.txt
+```
+
+Expect: 11 tests pass. On Bayside, 294 of 393 places are in scope and all snap; homes sit on 4871 nodes holding 171068 people, with 8 people not snapped.
+Artifact: `artifacts/P7.2/snap.txt`
