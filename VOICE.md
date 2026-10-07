@@ -12,6 +12,10 @@ The public report speaks for one resident: the author named in the region file's
 - **Fair to drivers.** Name what each change costs, such as parking spaces or a traffic lane, next to what it gains.
 - **Calm.** No hype, no blame, no exclamation marks.
 
+## Safe words
+
+Call a street safe for children only when it is safe for all ages. Level 1 alone is "calm", because a calm street can still fail the all-ages rule.
+
 ## Banned words
 
 The report must not use these words or marks:
