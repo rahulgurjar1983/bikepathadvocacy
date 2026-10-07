@@ -140,7 +140,6 @@ STYLE = (
 GLOSSARY = {
     "AAA": "All Ages and Abilities: a street that is safe for a child or an older rider.",
     "access": "how many needed places a home can reach by bike.",
-    "Bayside": "Bayside Council, a council in the south of Sydney.",
     "bike": "a bicycle, including an electric bicycle.",
     "council": "the local government that runs the streets in an area.",
     "data": "facts and numbers that I read from a file.",
@@ -187,6 +186,8 @@ def page(region: Region, figures: list[dict]) -> str:
         for stage in MISSING_STAGES
     )
     appendix = "".join(entry(item) for item in figures)
+    area = region.name.split(",")[0]
+    terms = {area: "the council area this report covers.", **GLOSSARY}
     return (
         '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width, initial-scale=1">'
@@ -202,7 +203,7 @@ def page(region: Region, figures: list[dict]) -> str:
         "Please read the appendix to check every number.</p></section>"
         f"{chart(figures)}"
         f"{gaps}"
-        f"{glossary_section(GLOSSARY)}"
+        f"{glossary_section(terms)}"
         f'<section id="appendix"><h2>How to check every number</h2>{appendix}</section>'
         "</body></html>\n"
     )
