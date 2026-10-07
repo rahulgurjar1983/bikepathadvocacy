@@ -1,0 +1,4 @@
+unsafe trips 94392 total value 98.89
+route fixes 18635 total value 20.97
+largest route fix 70 elements
+best route fix value 0.04
