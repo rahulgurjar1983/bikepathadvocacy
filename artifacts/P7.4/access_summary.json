@@ -1,0 +1,25 @@
+{
+  "score": 0.1,
+  "types": {
+    "school": 0.1,
+    "college": 0.2,
+    "university": 0.0,
+    "aged_care": 0.0,
+    "library": 0.1,
+    "town_centre": 0.0,
+    "station": 0.1
+  },
+  "safe_people": {
+    "school": 1455.1714053441017,
+    "college": 299.92610198789976,
+    "university": 0,
+    "aged_care": 92.45217391304348,
+    "library": 189.2448959201329,
+    "town_centre": 108.69314293012923,
+    "station": 251.01465433824114
+  },
+  "not_snapped": {
+    "places": 0,
+    "people": 8.0
+  }
+}

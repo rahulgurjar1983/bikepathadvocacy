@@ -3,6 +3,7 @@ import dataclasses
 import sys
 from importlib.metadata import version
 
+from bikeplan.access import write_access
 from bikeplan.config import ConfigError, Num, config_hash, load_profile, load_region
 from bikeplan.fit import fit_summary
 from bikeplan.network import build, summarise
@@ -55,11 +56,17 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--version", action="version", version=f"bikeplan {version('bikeplan')}")
     commands = parser.add_subparsers(dest="command", metavar="COMMAND", required=True)
     for name, text in LEAVES.items():
+        if name == "access":
+            continue
         commands.add_parser(name, help=text, description=text)
     stress = commands.add_parser("stress", help=STRESS_HELP, description=STRESS_HELP)
     stress.add_argument("region", help="Region file")
     stress.add_argument("--snapshot", required=True, help="Snapshot folder")
     stress.add_argument("--out", required=True, help="Output directory")
+    access = commands.add_parser("access", help=LEAVES["access"], description=LEAVES["access"])
+    access.add_argument("region", help="Region file")
+    access.add_argument("--snapshot", required=True, help="Snapshot folder")
+    access.add_argument("--out", required=True, help="Output directory")
     report = commands.add_parser("report", help=REPORT_HELP, description=REPORT_HELP)
     report.add_argument("region", help="Region file")
     report.add_argument("--snapshot", required=True, help="Snapshot folder")
@@ -183,6 +190,20 @@ def stress(path: str, snapshot: str, out: str) -> int:
     return 0
 
 
+def access(path: str, snapshot: str, out: str) -> int:
+    try:
+        region = load_region(path)
+        profile = load_profile(region.profile)
+        summary = write_access(build(snapshot, region, profile), region, profile, snapshot, out)
+    except (ConfigError, OSError) as error:
+        print(error, file=sys.stderr)
+        return 1
+    print(f"access_score {summary['score']}")
+    for kind, people in summary["safe_people"].items():
+        print(f"{kind}_safe_people {people:.0f}")
+    return 0
+
+
 def report(path: str, snapshot: str, out: str) -> int:
     try:
         region = load_region(path)
@@ -245,6 +266,8 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if args.command == "stress":
         return stress(args.region, args.snapshot, args.out)
+    if args.command == "access":
+        return access(args.region, args.snapshot, args.out)
     if args.command == "report":
         return report(args.region, args.snapshot, args.out)
     if (args.command, getattr(args, "subcommand", None)) == ("config", "show"):

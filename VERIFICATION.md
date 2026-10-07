@@ -524,3 +524,14 @@ uv run python scripts/access_reach_check.py data/cache/au-nsw-bayside/2026-10-01
 
 Expect: 9 tests pass. On Bayside the 294 places have 687259 node-place pairs in reach and 3848 of them safe, and 99 places have a safe route to some other node.
 Artifact: `artifacts/P7.3/reach.txt`
+
+### P7.4
+
+```bash
+uv run pytest tests/test_access_scores.py -q
+OUT=$(mktemp -d); uv run bikeplan access regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out "$OUT"
+jq -c . "$OUT/access_summary.json" | tee artifacts/P7.4/access_summary.json
+```
+
+Expect: 8 tests pass. The Bayside baseline access score is 0.1, with 1455 people safe to a school, 300 to a college, 0 to a university, 92 to aged care, 189 to a library, 109 to a town centre and 251 to a station. No places and 8 people are not snapped.
+Artifact: `artifacts/P7.4/access_summary.json`
