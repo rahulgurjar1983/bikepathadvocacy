@@ -192,3 +192,20 @@ def test_fr1_6_hash_changes_when_a_region_value_changes(tmp_path):
 def test_fr1_6_hash_changes_when_a_profile_value_changes(tmp_path):
     region = load_region(write(tmp_path, GOOD))
     assert config_hash(region, {"v": 1}) != config_hash(region, {"v": 2})
+
+
+def test_fr1_10_author_loads_when_set(tmp_path):
+    data = copy.deepcopy(GOOD)
+    data["report"] = {"author": "Rahul Gurjar, Kogarah"}
+    assert load_region(write(tmp_path, data)).report.author == "Rahul Gurjar, Kogarah"
+
+
+def test_fr1_10_author_is_none_when_left_out(tmp_path):
+    assert load_region(write(tmp_path, copy.deepcopy(GOOD))).report.author is None
+
+
+def test_fr1_10_author_that_is_not_text_names_the_key(tmp_path):
+    data = copy.deepcopy(GOOD)
+    data["report"] = {"author": 7}
+    with pytest.raises(ConfigError, match=r"report\.author"):
+        load_region(write(tmp_path, data))
