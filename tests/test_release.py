@@ -147,7 +147,7 @@ def add_review(work, name, public):
 
 def last_release(
     tmp_path,
-    built_at,
+    built_at="",
     names=("au-nsw-bayside-report.html", "au-nsw-bayside.tar.gz"),
     folder="last",
 ):
@@ -345,7 +345,7 @@ def test_fr13_7_a_merge_that_changes_only_specs_copies_the_last_release_reports(
 
 def test_fr13_7_a_merge_that_changes_the_voice_file_rebuilds_every_report(repo, tmp_path):
     work, source, bin_dir = repo
-    last = last_release(tmp_path, parent_of_head(work))
+    last = last_release(tmp_path)
     (work / "VOICE.md").write_text("two\n")
     commit(work, "code change")
 
@@ -374,6 +374,7 @@ def test_fr13_7_fails_hard_when_a_copied_report_no_longer_matches_its_sum(repo, 
     assert result.returncode != 0
     assert "au-nsw-bayside-report.html" in result.stdout + result.stderr
     assert not [c for c in calls(bin_dir) if c[:2] == ["release", "upload"]]
+    assert [c for c in calls(bin_dir) if c[:2] == ["release", "download"] and "--pattern" in c]
 
 
 def test_fr13_7_a_last_release_that_names_another_commit_is_not_copied(repo, tmp_path):
