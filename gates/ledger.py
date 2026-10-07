@@ -7,6 +7,8 @@ from pathlib import Path
 from gates.common import fail_hard
 
 LEDGER = Path("PROGRESS.md")
+NOTES = Path("AGENT_NOTES.md")
+ISSUE = re.compile(r"^- (?P<ident>[A-Z]\d+\.\d+)\b(?P<rest>.*)$")
 ROW = re.compile(r"^- \[(?P<mark>[ x~])\] \*\*(?P<ident>[A-Z]\d+\.\d+)\*\* (?P<title>\S.*)$")
 SPEC_ID = re.compile(r"\b(?:FR-\d+\.\d+|NFR-\d+)\b")
 HELD = ("🔒", "👤")
@@ -58,6 +60,21 @@ def load(path: Path = LEDGER) -> tuple[list[Row], list[str]]:
     return parse(path.read_text(encoding="utf-8"))
 
 
+def open_issues(path: Path = NOTES) -> set[str]:
+    if not path.exists():
+        return set()
+    found: set[str] = set()
+    inside = False
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if line.startswith("## "):
+            inside = line.strip() == "## Spec issues"
+            continue
+        match = ISSUE.match(line) if inside else None
+        if match and "resolved" not in match["rest"].lower():
+            found.add(match["ident"])
+    return found
+
+
 def pick(rows: list[Row]) -> Row | None:
     return next((row for row in rows if row.pickable), None)
 
@@ -70,6 +87,12 @@ def main(argv: list[str] | None = None) -> int:
         return fail_hard("ledger", f"{LEDGER} is required")
     rows, problems = load()
     if args.command == "check":
+        issues = open_issues()
+        problems += [
+            f"{LEDGER}:{row.line}: {row.ident} is done but {NOTES} has an open spec issue for it"
+            for row in rows
+            if row.done and row.ident in issues
+        ]
         for problem in problems:
             print(problem)
         if problems:

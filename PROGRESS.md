@@ -64,6 +64,8 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 - [x] **R1.6** Reports are deterministic: two builds with a different time zone, locale, hash seed, folder and clock give equal sums; fonts are inlined; the date is the snapshot date (FR-13.10)
 - [x] **R1.7** `scripts/release.sh <tag>` builds every public report, the artifacts archive and the index, and uploads them to a release, copying unchanged reports forward; it replaces `scripts/release-report.sh`; the operator then adds the CI `release` workflow that runs on every merge (FR-13.7)
 - [x] **R1.8** `scripts/release.sh` copies reports forward only from the release whose `index.html` names the commit `HEAD^`; when that release is missing it rebuilds, so a queued or skipped run can never copy a stale report (FR-13.7)
+- [ ] **R1.9** One report: `bikeplan run` and `bikeplan report` share one builder, which uses every stage the code has, with projects, sheets and the proposed changes switch (FR-13.12)
+- [ ] **R1.10** `checks.html` in every release: each requirement in plain words, how a councillor checks it, and this release's result (FR-13.11)
 
 ## Phase 6: Fit
 
@@ -84,7 +86,9 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 - [x] **P8.1** Planning network and trip values (FR-8.1, FR-8.2)
 - [x] **P8.2** Route fixes from planned routes (FR-8.3, FR-8.7)
 - [x] **P8.3** Greedy picks with exact gains (FR-8.4, FR-8.5)
-- [x] **P8.4** Project records, `bikeplan propose`, fast updates and stable output (FR-8.6, FR-8.8, FR-8.9, FR-8.10)
+- [ ] **P8.5** Neighbourhood and corridor projects in the candidate pool (FR-8.11)
+- [ ] **P8.6** Bayside with the shipped region file gives projects and a higher score; `bikeplan verify` fails a run with candidates but no project (FR-8.12)
+- [ ] **P8.4** Project records, `bikeplan propose`, fast updates and stable output (FR-8.6, FR-8.8, FR-8.9, FR-8.10); reopened on 2026-10-08 because its proof lowered `min_gain`; done once P8.6 passes with the shipped file
 
 ## Phase 9: Run, report and verify
 
