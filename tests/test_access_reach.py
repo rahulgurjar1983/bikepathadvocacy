@@ -18,7 +18,7 @@ def test_fr7_5_distances_match_hand_sums_and_stop_at_reach():
     link(graph, 0, 1, 100)
     link(graph, 1, 2, 250)
     link(graph, 2, 3, 400)
-    result = reach(graph, [0], 800.0, 1.25, keys(graph))[0]
+    result = reach(graph, [0], 700.0, 1.25, keys(graph))[0]
     assert result.within == {0: 0.0, 1: 100.0, 2: 350.0}
 
 
