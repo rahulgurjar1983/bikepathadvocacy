@@ -1,9 +1,13 @@
+import ast
 import gzip
 import hashlib
 import json
+import re
+import shutil
 import socket
 import subprocess
 import sys
+from html.parser import HTMLParser
 from pathlib import Path
 
 import pytest
@@ -128,3 +132,128 @@ def test_fr1_10_a_missing_author_fails_and_names_the_key(snapshot, tmp_path, cap
     assert code == 1
     assert "report.author" in capsys.readouterr().err
     assert not (tmp_path / "report.html").exists()
+
+
+class Page(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.head = False
+        self.appendix = False
+        self.link = False
+        self.pre = False
+        self.article = None
+        self.outside = []
+        self.links = []
+        self.ids = []
+        self.entries = {}
+        self.recipes = {}
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if tag == "head":
+            self.head = True
+        if attrs.get("id"):
+            self.ids.append(attrs["id"])
+        if attrs.get("id") == "appendix":
+            self.appendix = True
+        if tag == "article":
+            self.article = attrs["id"]
+            self.entries[self.article] = []
+            self.recipes[self.article] = ""
+        if tag == "a" and attrs.get("href", "").startswith("#F"):
+            self.link = True
+            self.links.append(attrs["href"][1:])
+        if tag == "pre":
+            self.pre = True
+
+    def handle_endtag(self, tag):
+        if tag == "head":
+            self.head = False
+        if tag == "a":
+            self.link = False
+        if tag == "pre":
+            self.pre = False
+        if tag == "article":
+            self.article = None
+
+    def handle_data(self, data):
+        if self.head:
+            return
+        if self.article:
+            self.entries[self.article].append(data)
+            if self.pre:
+                self.recipes[self.article] += data
+        elif not self.appendix and not self.link:
+            self.outside.append(data)
+
+
+def parsed(output):
+    page = Page()
+    page.feed((output / "report.html").read_text())
+    return page
+
+
+def test_fr13_2_no_number_outside_a_figure_link_or_the_appendix(output):
+    text = " ".join(parsed(output).outside)
+    assert not re.findall(r"\d", text)
+
+
+def test_fr13_2_the_figure_links_hold_the_numbers_and_resolve_to_one_entry(output):
+    page = parsed(output)
+    assert sorted(set(page.links)) == ["F1", "F2", "F3"]
+    for figure_id in page.links:
+        assert page.ids.count(figure_id) == 1
+        assert figure_id in page.entries
+
+
+def test_fr13_2_each_entry_holds_every_field_of_the_figure(output):
+    page = parsed(output)
+    for item in json.loads((output / "figures.json").read_text()):
+        text = " ".join(page.entries[item["id"]])
+        fields = [
+            item["label"],
+            str(item["value"]),
+            item["unit"],
+            item["spec"],
+            item["method"],
+            item["recipe"],
+        ]
+        for part in item["inputs"]:
+            fields += [part["name"], part["sha256"]]
+        for part in item["sources"]:
+            fields += [part["name"], part["licence"], part["request"]]
+        for field in fields:
+            assert field in text
+
+
+def clean_run(output, recipe, folder):
+    for name in [*FILES, "SHA256SUMS"]:
+        shutil.copy(output / name, folder / name)
+    names = {
+        name.split(".")[0]
+        for node in ast.walk(ast.parse(recipe))
+        for name in (
+            [a.name for a in node.names]
+            if isinstance(node, ast.Import)
+            else [node.module]
+            if isinstance(node, ast.ImportFrom)
+            else []
+        )
+    }
+    assert names <= sys.stdlib_module_names
+    return subprocess.run(
+        [sys.executable, "-I", "-c", recipe],
+        cwd=folder,
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout
+
+
+def test_fr13_3_the_recipe_shown_in_the_report_prints_the_value_in_a_clean_folder(output, tmp_path):
+    page = parsed(output)
+    for item in json.loads((output / "figures.json").read_text()):
+        folder = tmp_path / item["id"]
+        folder.mkdir()
+        shown = clean_run(output, page.recipes[item["id"]], folder)
+        assert float(shown) == item["value"]
