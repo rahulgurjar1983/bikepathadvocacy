@@ -1,12 +1,12 @@
 import argparse
-import dataclasses
 import sys
 from importlib.metadata import version
 
 from bikeplan.access import write_access
-from bikeplan.config import ConfigError, Num, config_hash, load_profile, load_region
+from bikeplan.config import ConfigError, config_hash, load_profile, load_region
 from bikeplan.fit import fit_summary
 from bikeplan.network import build, summarise
+from bikeplan.page import profile_rows
 from bikeplan.propose import write_propose
 from bikeplan.report import write_report
 from bikeplan.run import run_all
@@ -106,20 +106,10 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def profile_lines(item, prefix=""):
-    if isinstance(item, Num):
-        mark = " [assumption]" if item.assumption else ""
-        yield f"  {prefix} {item.value} ({item.source}){mark}"
-    elif isinstance(item, dict):
-        for key, value in item.items():
-            yield from profile_lines(value, f"{prefix}.{key}" if prefix else str(key))
-    elif isinstance(item, list):
-        for index, value in enumerate(item):
-            yield from profile_lines(value, f"{prefix}[{index}]")
-    elif dataclasses.is_dataclass(item):
-        for field in dataclasses.fields(item):
-            name = f"{prefix}.{field.name}" if prefix else field.name
-            yield from profile_lines(getattr(item, field.name), name)
+def profile_lines(item):
+    for name, value, source, assumed in profile_rows(item):
+        mark = " [assumption]" if assumed else ""
+        yield f"  {name} {value} ({source}){mark}"
 
 
 def config_show(path: str) -> int:

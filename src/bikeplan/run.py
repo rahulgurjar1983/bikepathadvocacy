@@ -10,6 +10,7 @@ from bikeplan.access import write_access
 from bikeplan.config import config_hash
 from bikeplan.fit import segment_fit
 from bikeplan.network import bike_segments, build
+from bikeplan.page import credits_for, render
 from bikeplan.propose import csv_fields, csv_row, write_propose
 from bikeplan.snapshot import verify_snapshot
 from bikeplan.stress import score_edges, stress_features, stress_summary
@@ -28,12 +29,6 @@ FILES = [
 SCORE_KEYS = {"gain", "score", "score_after", "before", "after"}
 KM_PARENTS = {"km_by_fix", "km_by_lts"}
 DISRUPTION = ("parking_spaces", "lane_km", "speed_km", "signals", "refuges")
-PAGE = (
-    '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
-    "<title>{region}</title>\n</head>\n<body>\n<h1>{region}</h1>\n"
-    "<p>Snapshot {snapshot}. Score {before} before and {after} after.</p>\n"
-    "</body>\n</html>\n"
-)
 
 
 class SnapshotError(OSError):
@@ -129,16 +124,6 @@ def project_summary(records: list[dict], kinds: list) -> dict:
     }
 
 
-def credits(manifest: dict) -> list[dict]:
-    found = {
-        (entry["source"], entry["licence"], entry["attribution"]) for entry in manifest["files"]
-    }
-    return [
-        {"source": source, "licence": licence, "attribution": attribution}
-        for source, licence, attribution in sorted(found)
-    ]
-
-
 def csv_bytes(records: list[dict], kinds: list) -> bytes:
     buffer = io.StringIO()
     writer = csv.DictWriter(buffer, fieldnames=csv_fields(kinds), lineterminator="\n")
@@ -175,24 +160,32 @@ def run_all(region, profile, snapshot: str | Path, out: str | Path) -> dict:
         "km_aaa": stress["km_aaa"],
         "projects": len(records),
         "not_snapped": access["not_snapped"],
-        "credits": credits(manifest),
+        "credits": credits_for(manifest),
         **project_summary(records, kinds),
     }
+    network = collection(features)
+    place_layer = collection(with_ids(places, lambda p: f"{p['osm_id']}:{p['type']}"))
+    shape_layer = collection(with_ids(shapes, lambda properties: properties["id"]))
     outputs = {
         "access_homes.geojson": dump(
             collection(with_ids(homes, lambda properties: str(properties["node"])))
         ),
-        "network.geojson": dump(collection(features)),
-        "places.geojson": dump(
-            collection(
-                with_ids(places, lambda properties: f"{properties['osm_id']}:{properties['type']}")
-            )
-        ),
+        "network.geojson": dump(network),
+        "places.geojson": dump(place_layer),
         "projects.csv": csv_bytes(records, kinds),
-        "projects.geojson": dump(collection(with_ids(shapes, lambda properties: properties["id"]))),
+        "projects.geojson": dump(shape_layer),
         "projects.json": dump(records),
-        "report.html": PAGE.format(
-            region=region.id, snapshot=manifest["snapshot_id"], before=before, after=after
+        "report.html": render(
+            canon(summary),
+            canon(records),
+            profile,
+            {
+                "summary": canon(summary),
+                "projects": canon(records),
+                "network": canon(network),
+                "places": canon(place_layer),
+                "project_shapes": canon(shape_layer),
+            },
         ).encode(),
         "summary.json": dump(summary),
     }
