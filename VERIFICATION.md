@@ -442,3 +442,15 @@ print('no-data path edges by bike_ok:',dict(c))
 
 Expect: The tests pass. The stress run prints `aaa_km 135.891`, up from 114.676. Every path or footway edge that bikes may use and is not raised by a crossing has a `shared path` reason. The 10 left with `no motor traffic data` and `bike_ok` true are off-road paths raised to LTS 2 by a crossing.
 Artifact: `artifacts/P4.7/path_reasons.txt`
+
+### R1.5
+
+```bash
+uv run pytest tests/test_report_map.py -q
+uv run bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bay
+google-chrome --headless=new --no-sandbox --proxy-server=http://127.0.0.1:9 --window-size=1000,1100 --virtual-time-budget=20000 --screenshot=/tmp/bay/map.png file:///tmp/bay/report.html
+grep -E '"id": "F[14]"' -A2 /tmp/bay/figures.json | grep value
+```
+
+Expect: 9 passed. Headless Chromium with every network call blocked paints the Bayside streets in four colours, with the layer switches and the dashed boundary. F1 and F4 both read 591.099.
+Artifact: `artifacts/R1.5/map.png`
