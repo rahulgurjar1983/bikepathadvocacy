@@ -197,16 +197,26 @@ def cross_section(project_id: str, element_id: str, item: dict, phase: str) -> s
     labels = []
     for strip in strips:
         width = strip["width_m"]
-        scaled = width * 40
-        shapes.append(
-            f'<rect x="{cursor:.3f}" y="2" width="{scaled:.3f}" height="28" '
-            f'fill="{STRIP_COLORS.get(strip["kind"], "#bbb")}" '
-            f'data-width-m="{width:.1f}"><title>{html.escape(strip["kind"])}: '
-            f"{width:.1f} m</title></rect>"
-        )
-        cursor += scaled
-        labels.append(f"{strip['kind']}: {width:.1f} m")
-    view_width = max(cursor, 1.0)
+        label = f"{strip['kind']}: {width:.1f} m"
+        safe_label = html.escape(label, quote=True)
+        if width < 0:
+            boundary = max(total, 0.0) * 40
+            shapes.append(
+                f'<line x1="{boundary:.3f}" y1="0" x2="{boundary:.3f}" y2="32" '
+                f'stroke="#a33" stroke-width="2" data-width-m="{width:.1f}" '
+                f'data-label="{safe_label}"><title>{safe_label}</title></line>'
+            )
+        else:
+            scaled = width * 40
+            shapes.append(
+                f'<rect x="{cursor:.3f}" y="2" width="{scaled:.3f}" height="28" '
+                f'fill="{STRIP_COLORS.get(strip["kind"], "#bbb")}" '
+                f'data-width-m="{width:.1f}" data-label="{safe_label}">'
+                f"<title>{safe_label}</title></rect>"
+            )
+            cursor += scaled
+        labels.append(label)
+    view_width = max(cursor, total * 40, 1.0)
     label_list = "".join(f"<li>{html.escape(label)}</li>" for label in labels)
     return (
         '<figure class="cross-section-figure">'

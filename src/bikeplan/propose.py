@@ -442,8 +442,6 @@ def element_record(name: str, element: dict) -> dict:
         "fix": element["fix"],
         "robust": "robust" if junction else element["robust"],
         "width_source": None if junction else element["width_source"],
-        "width_confidence": None if junction else element["width_confidence"],
-        "check_links": element["check_links"],
         "km": 0.0 if junction else round(element["km"], 6),
         "parking_spaces": counts.get("parking_spaces", 0),
         "lane_km": counts.get("lane_km", 0.0),
@@ -451,11 +449,6 @@ def element_record(name: str, element: dict) -> dict:
         "signals": int(junction and element["fix"] == "signals"),
         "refuges": int(junction and element["fix"] == "refuge"),
     }
-    if not junction:
-        result["before"] = element["before"]
-        result["after"] = element["after"]
-    else:
-        result["sections"] = element["sections"]
     return result
 
 
@@ -492,6 +485,34 @@ def project_records(picked: list[dict], planning: Planning) -> list[dict]:
             }
         )
     return records
+
+
+def project_sheet_records(records: list[dict], planning: Planning) -> list[dict]:
+    sheets = []
+    for record in records:
+        elements = []
+        for item in record["elements"]:
+            planned = planning.elements[item["id"]]
+            enriched = {**item, "check_links": planned["check_links"]}
+            if planned["kind"] == "junction":
+                sections = planned["sections"]
+                enriched["sections"] = sections
+                if sections:
+                    enriched["width_source"] = sections[0]["width_source"]
+                    enriched["width_confidence"] = sections[0]["width_confidence"]
+                else:
+                    enriched["width_confidence"] = None
+            else:
+                enriched.update(
+                    {
+                        "before": planned["before"],
+                        "after": planned["after"],
+                        "width_confidence": planned["width_confidence"],
+                    }
+                )
+            elements.append(enriched)
+        sheets.append({**record, "elements": elements})
+    return sheets
 
 
 def csv_fields(kinds: list) -> list[str]:
@@ -569,7 +590,14 @@ def project_features(graph, planning: Planning, records: list[dict]) -> list[dic
     return features
 
 
-def write_propose(graph, region, profile, snapshot: str | Path, out: str | Path) -> list[dict]:
+def write_propose(
+    graph,
+    region,
+    profile,
+    snapshot: str | Path,
+    out: str | Path,
+    sheets: list | None = None,
+) -> list[dict]:
     out = Path(out)
     kept, nodes, _, placed, resident, weights = scene(graph, region, snapshot)
     planning = planning_network(graph, profile, region)
@@ -590,6 +618,8 @@ def write_propose(graph, region, profile, snapshot: str | Path, out: str | Path)
         names,
     )
     records = project_records(picked, planning)
+    if sheets is not None:
+        sheets.extend(project_sheet_records(records, planning))
     out.mkdir(parents=True, exist_ok=True)
     (out / "projects.json").write_text(json.dumps(records, indent=2) + "\n")
     kinds = list(weights)
