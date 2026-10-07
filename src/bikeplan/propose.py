@@ -12,7 +12,8 @@ from shapely.geometry import LineString, MultiLineString, Point, mapping
 from shapely.ops import transform
 
 from bikeplan.access import EdgeTable, Reach, edge_table, reach, safe_reach, scene, score_access
-from bikeplan.fit import FIXES, cross_section as fit_cross_section, junction_fixes, segment_fit
+from bikeplan.fit import FIXES, junction_fixes, segment_fit
+from bikeplan.fit import cross_section as fit_cross_section
 from bikeplan.network import bike_segments
 from bikeplan.stress import edge_aaa, own_lts, raise_for_crossings
 from bikeplan.width import check_links, fuse

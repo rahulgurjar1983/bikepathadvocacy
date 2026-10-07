@@ -209,7 +209,8 @@ def cross_section(project_id: str, element_id: str, item: dict, phase: str) -> s
     view_width = max(cursor, 1.0)
     label_list = "".join(f"<li>{html.escape(label)}</li>" for label in labels)
     return (
-        f'<figure class="cross-section-figure"><figcaption>{phase.title()} cross-section</figcaption>'
+        '<figure class="cross-section-figure">'
+        f"<figcaption>{phase.title()} cross-section</figcaption>"
         f'<svg class="cross-section" data-project-id="{html.escape(project_id)}" '
         f'data-element-id="{html.escape(element_id)}" '
         f'data-section-id="{html.escape(item["id"])}" data-phase="{phase}" '
