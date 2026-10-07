@@ -37,6 +37,7 @@ The measures a claim may use are the route figures of FR-14.4 to FR-14.6, such a
 | FR-14.9 | Each edge gets its grade from the Copernicus GLO-30 elevation model, fetched by a snapshot adapter and pinned by sha256. The review and the report flag any stretch over the profile's `grade.steep_pct` for at least `grade.min_length_m`, with the values and their sources in the profile. Grade does not change the stress level. | MUST |
 | FR-14.10 | A route stretch on an edge with `opening_hours`, a gate, or access that is not open to the public is flagged with the tag that says so. | MUST |
 | FR-14.11 | `bikeplan propose` may add corridor candidates: a new path along a railway, a motorway, a river, a canal or the edge of a golf course, where OpenStreetMap shows open land beside it. Each one is scored, fitted and ranked like any other project, with the fix "new path". The report says how many corridor candidates were picked and how many were not. | SHOULD |
+| FR-14.12 | The repository is public. A review whose `review.yaml` says `public: false` keeps its route file, claims and outputs under `data/private/`, which git ignores. Nothing from it is committed, uploaded or released; its row's artifact holds only the sums of its outputs and the count of each verdict. A third party's route file goes in git only with their written permission, noted in `review.yaml`. | MUST |
 
 Spec 04 holds the shared-path rule, FR-4.10, that these reviews depend on.
 
@@ -55,6 +56,7 @@ Spec 04 holds the shared-path rule, FR-4.10, that these reviews depend on.
 | FR-14.9 | A replayed elevation tile gives the hand-worked grade for a test edge; a steep stretch is flagged |
 | FR-14.10 | An edge with `opening_hours` and an edge behind a private gate are flagged |
 | FR-14.11 | On the test grid, a rail-side corridor candidate is made, scored and ranked |
+| FR-14.12 | A private review writes only under `data/private/`; `git status` shows nothing new; the release script leaves it out |
 
 ## 6. Validation evidence
 
