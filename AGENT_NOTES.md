@@ -20,6 +20,8 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 - `gates/tests/test_loop.py::test_fr0_13_usage_limit_turn_is_not_counted` times out after 60 seconds on `origin/main` too. Proof: `git checkout origin/main && uv run pytest gates/tests/test_loop.py -q -k usage_limit`. The pre-push hook still let the push through.
 
+- P8.4 Bayside: `min_gain: 0.05` in `regions/au-nsw-bayside.yaml` (spec 01) stops the run at once, so `bikeplan propose` writes no projects. The baseline access score is 0.1, and the best exact gain is 0.035. Proof: run the command on `data/cache/au-nsw-bayside/2026-10-01` (3 minutes 34 seconds, prints `projects 0`). With `min_gain` at 0.001 it picks 25 projects.
+
 ## BLOCKED
 
 None yet.
@@ -77,3 +79,4 @@ None yet.
 
 - P8.3: `greedy_picks(graph, planning, placed, people, weights, proposals, reach_m, detour_max)` in `bikeplan.propose` returns one dict per pick (`id`, `elements`, `gain`, `cost`, `score_after`). The baseline AAA set is every planning edge with no needs. Each candidate runs a full `reach`, so a Bayside round costs about one minute per candidate; FR-8.9 (P8.4) must make that incremental. `score_access` rounds its score to 0.1, so `exact_score` sums the home scores itself. Gain ratios are rounded to 9 places before the ID tie-break, or float noise decides ties. In star test graphs, keep every arm the same distance from the hub, because segment disruption reads the geometry inside the boundary. Bayside gains are under the default `min_gain` 0.05, so the check script sets it to 0.
 - `scripts/release.sh` finds the copy source by downloading only `index.html` of each `v*` release (newest first) and picking the one that contains `HEAD^`. No match means a full rebuild. The fake `gh` in `tests/test_release.py` reads `GH_LAST` as a comma list and `GH_SOURCE_<tag with dots as underscores>` per tag.
+- P8.4: `bikeplan.access.edge_table` builds the edge arrays once; `reach` and `safe_reach` take a mask of allowed edges, so a trial pick costs one sparse matrix, not a graph walk. `update_reach` redoes a place only when it holds the head of a changed edge, and `gain_between` sums the change in home scores from those places alone. `route_fixes` keeps planned routes per place in a `routes` dict that `greedy_picks` clears for the same places. A full Bayside run with 25 picks took 5:20. Sums over element sets go through `sorted`, because set order of strings changes with `PYTHONHASHSEED`. A site-packages package named `tests` shadows ours outside pytest, so debug scripts must run as temporary tests.

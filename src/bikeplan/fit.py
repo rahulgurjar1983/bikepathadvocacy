@@ -461,7 +461,12 @@ def segment_fit(segment: dict, profile: Profile, weights) -> dict | None:
         robust = next(item for item in result["candidates"] if item["fix"] == result["fix"])[
             "robust"
         ]
-    return {**result, "km": segment["inside_m"] / 1000, "robust": robust}
+    return {
+        **result,
+        "km": segment["inside_m"] / 1000,
+        "robust": robust,
+        "width_source": fused["width_source"],
+    }
 
 
 def fit_summary(graph, profile: Profile, weights) -> dict:

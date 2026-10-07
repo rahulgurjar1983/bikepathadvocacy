@@ -229,38 +229,95 @@ class Reach(NamedTuple):
     safe: set
 
 
-def reverse_matrix(graph, index: dict, allowed) -> csr_array:
-    best: dict = {}
-    for u, v, key, data in graph.edges(keys=True, data=True):
-        if not data["bike_ok"] or (allowed is not None and (u, v, key) not in allowed):
-            continue
-        pair = (index[v], index[u])
-        best[pair] = min(best.get(pair, np.inf), data["length_m"])
-    rows = [pair[0] for pair in best]
-    columns = [pair[1] for pair in best]
-    size = len(index)
-    return csr_array((list(best.values()), (rows, columns)), shape=(size, size))
+class EdgeTable(NamedTuple):
+    nodes: list
+    index: dict
+    rows: np.ndarray
+    columns: np.ndarray
+    lengths: np.ndarray
+    pairs: np.ndarray
+    position: dict
 
 
-def reach(graph, sources: list, reach_m: float, detour_max: float, aaa: set) -> list[Reach]:
+def edge_table(graph) -> EdgeTable:
     nodes = list(graph.nodes)
     index = {node: number for number, node in enumerate(nodes)}
-    found = []
-    columns = [index[source] for source in sources]
-    runs = []
-    for allowed in (None, aaa):
-        matrix = reverse_matrix(graph, index, allowed)
-        runs.append(dijkstra(matrix, directed=True, indices=columns, limit=reach_m))
-    for row in range(len(sources)):
-        anywhere, safely = runs[0][row], runs[1][row]
-        within = {nodes[n]: float(anywhere[n]) for n in np.flatnonzero(np.isfinite(anywhere))}
-        safe = {
-            node
-            for node, distance in within.items()
-            if safely[index[node]] <= min(reach_m, detour_max * distance)
-        }
-        found.append(Reach(within, safe))
-    return found
+    items = [
+        ((u, v, key), index[v], index[u], data["length_m"])
+        for u, v, key, data in graph.edges(keys=True, data=True)
+        if data["bike_ok"]
+    ]
+    rows = np.array([item[1] for item in items], dtype=np.int64)
+    columns = np.array([item[2] for item in items], dtype=np.int64)
+    lengths = np.array([item[3] for item in items], dtype=float)
+    pairs = rows * len(nodes) + columns
+    order = np.lexsort((lengths, pairs))
+    position = {items[at][0]: number for number, at in enumerate(order)}
+    return EdgeTable(
+        nodes, index, rows[order], columns[order], lengths[order], pairs[order], position
+    )
+
+
+def allowed_mask(table: EdgeTable, allowed) -> np.ndarray:
+    mask = np.zeros(len(table.rows), dtype=bool)
+    if allowed is None:
+        mask[:] = True
+        return mask
+    mask[[table.position[key] for key in allowed if key in table.position]] = True
+    return mask
+
+
+def masked_matrix(table: EdgeTable, mask: np.ndarray) -> csr_array:
+    pairs = table.pairs[mask]
+    first = np.ones(len(pairs), dtype=bool)
+    first[1:] = pairs[1:] != pairs[:-1]
+    keep = np.flatnonzero(mask)[first]
+    size = len(table.nodes)
+    return csr_array(
+        (table.lengths[keep], (table.rows[keep], table.columns[keep])), shape=(size, size)
+    )
+
+
+def safe_reach(
+    table: EdgeTable,
+    withins: list[dict],
+    sources: list,
+    reach_m: float,
+    detour_max: float,
+    aaa: set,
+) -> list[Reach]:
+    columns = [table.index[source] for source in sources]
+    matrix = masked_matrix(table, allowed_mask(table, aaa))
+    runs = dijkstra(matrix, directed=True, indices=columns, limit=reach_m)
+    return [
+        Reach(
+            within,
+            {
+                node
+                for node, distance in within.items()
+                if safely[table.index[node]] <= min(reach_m, detour_max * distance)
+            },
+        )
+        for within, safely in zip(withins, runs, strict=True)
+    ]
+
+
+def reach(
+    graph,
+    sources: list,
+    reach_m: float,
+    detour_max: float,
+    aaa: set,
+    table: EdgeTable | None = None,
+) -> list[Reach]:
+    table = table or edge_table(graph)
+    columns = [table.index[source] for source in sources]
+    matrix = masked_matrix(table, allowed_mask(table, None))
+    runs = dijkstra(matrix, directed=True, indices=columns, limit=reach_m)
+    withins = [
+        {table.nodes[n]: float(row[n]) for n in np.flatnonzero(np.isfinite(row))} for row in runs
+    ]
+    return safe_reach(table, withins, sources, reach_m, detour_max, aaa)
 
 
 def score_access(people: dict, placed: list, results: list[Reach], weights: dict) -> dict:
@@ -301,23 +358,37 @@ def point_feature(x: float, y: float, properties: dict) -> dict:
     return {"type": "Feature", "geometry": geometry, "properties": properties}
 
 
-def write_access(graph, region, profile, snapshot: str | Path, out: str | Path) -> dict:
-    out = Path(out)
+class Scene(NamedTuple):
+    kept: list
+    nodes: list
+    missed: list
+    placed: list
+    resident: Homes
+    weights: dict
+
+
+def scene(graph, region, snapshot: str | Path) -> Scene:
     to_metres = Transformer.from_crs(4326, graph.graph["crs"], always_xy=True)
-    to_degrees = Transformer.from_crs(graph.graph["crs"], 4326, always_xy=True)
     found = places(snapshot)
     for place in found:
         place["x"], place["y"] = to_metres.transform(place["lon"], place["lat"])
     boundary = graph.graph["boundary"]
     kept = in_scope_places(found, boundary, region.analysis_buffer_m)
     nodes, missed = snap_points([(p["x"], p["y"]) for p in kept], graph)
-    aaa = {key for key, item in score_edges(graph, profile).items() if item["aaa"]}
     placed = [(p["type"], node) for p, node in zip(kept, nodes, strict=True) if node is not None]
+    resident = homes(population_units(snapshot, graph.graph["crs"]), graph, boundary)
+    weights = {name: item.weight for name, item in region.destinations.items()}
+    return Scene(kept, nodes, missed, placed, resident, weights)
+
+
+def write_access(graph, region, profile, snapshot: str | Path, out: str | Path) -> dict:
+    out = Path(out)
+    to_degrees = Transformer.from_crs(graph.graph["crs"], 4326, always_xy=True)
+    kept, nodes, missed, placed, resident, weights = scene(graph, region, snapshot)
+    aaa = {key for key, item in score_edges(graph, profile).items() if item["aaa"]}
     results = reach(
         graph, [node for _, node in placed], region.access.reach_m, region.access.detour_max, aaa
     )
-    resident = homes(population_units(snapshot, graph.graph["crs"]), graph, boundary)
-    weights = {name: item.weight for name, item in region.destinations.items()}
     scored = score_access(resident.people, placed, results, weights)
     out.mkdir(parents=True, exist_ok=True)
     place_features = [

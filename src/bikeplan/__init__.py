@@ -7,6 +7,7 @@ from bikeplan.access import write_access
 from bikeplan.config import ConfigError, Num, config_hash, load_profile, load_region
 from bikeplan.fit import fit_summary
 from bikeplan.network import build, summarise
+from bikeplan.propose import write_propose
 from bikeplan.report import write_report
 from bikeplan.snapshot import (
     OVERPASS_ENDPOINT,
@@ -56,7 +57,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--version", action="version", version=f"bikeplan {version('bikeplan')}")
     commands = parser.add_subparsers(dest="command", metavar="COMMAND", required=True)
     for name, text in LEAVES.items():
-        if name == "access":
+        if name in {"access", "propose"}:
             continue
         commands.add_parser(name, help=text, description=text)
     stress = commands.add_parser("stress", help=STRESS_HELP, description=STRESS_HELP)
@@ -67,6 +68,10 @@ def build_parser() -> argparse.ArgumentParser:
     access.add_argument("region", help="Region file")
     access.add_argument("--snapshot", required=True, help="Snapshot folder")
     access.add_argument("--out", required=True, help="Output directory")
+    propose = commands.add_parser("propose", help=LEAVES["propose"], description=LEAVES["propose"])
+    propose.add_argument("region", help="Region file")
+    propose.add_argument("--snapshot", required=True, help="Snapshot folder")
+    propose.add_argument("--out", required=True, help="Output directory")
     report = commands.add_parser("report", help=REPORT_HELP, description=REPORT_HELP)
     report.add_argument("region", help="Region file")
     report.add_argument("--snapshot", required=True, help="Snapshot folder")
@@ -204,6 +209,20 @@ def access(path: str, snapshot: str, out: str) -> int:
     return 0
 
 
+def propose(path: str, snapshot: str, out: str) -> int:
+    try:
+        region = load_region(path)
+        profile = load_profile(region.profile)
+        records = write_propose(build(snapshot, region, profile), region, profile, snapshot, out)
+    except (ConfigError, OSError) as error:
+        print(error, file=sys.stderr)
+        return 1
+    print(f"projects {len(records)}")
+    if records:
+        print(f"score_after {records[-1]['score_after']}")
+    return 0
+
+
 def report(path: str, snapshot: str, out: str) -> int:
     try:
         region = load_region(path)
@@ -268,6 +287,8 @@ def main(argv: list[str] | None = None) -> int:
         return stress(args.region, args.snapshot, args.out)
     if args.command == "access":
         return access(args.region, args.snapshot, args.out)
+    if args.command == "propose":
+        return propose(args.region, args.snapshot, args.out)
     if args.command == "report":
         return report(args.region, args.snapshot, args.out)
     if (args.command, getattr(args, "subcommand", None)) == ("config", "show"):
