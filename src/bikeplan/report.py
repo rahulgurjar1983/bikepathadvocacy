@@ -108,7 +108,8 @@ def link(item: dict) -> str:
 
 def entry(item: dict) -> str:
     inputs = "".join(
-        f"<li>{html.escape(part['name'])}, sha256 {part['sha256']}</li>" for part in item["inputs"]
+        f"<li>{html.escape(part['name'])}, sha256 <code>{part['sha256']}</code></li>"
+        for part in item["inputs"]
     )
     sources = "".join(
         f"<li>{html.escape(part['name'])}, licence {html.escape(part['licence'])}, "
@@ -126,6 +127,57 @@ def entry(item: dict) -> str:
     )
 
 
+STYLE = (
+    "body{max-width:48rem;margin:0 auto;padding:0 1rem;font-family:sans-serif;line-height:1.5;"
+    "overflow-wrap:anywhere}"
+    "pre{overflow-x:auto;white-space:pre-wrap;background:#f4f4f4;padding:.5rem}"
+    "table{border-collapse:collapse;max-width:100%}"
+    "td,th{border:1px solid #444;padding:.25rem .5rem;text-align:left}"
+    "svg{max-width:100%;height:auto}"
+    "@media print{body{max-width:none;font-size:11pt}a{color:inherit}"
+    "article,table,svg{break-inside:avoid}}"
+)
+GLOSSARY = {
+    "AAA": "All Ages and Abilities: a street that is safe for a child or an older rider.",
+    "access": "how many needed places a home can reach by bike.",
+    "bike": "a bicycle, including an electric bicycle.",
+    "council": "the local government that runs the streets in an area.",
+    "data": "facts and numbers that I read from a file.",
+    "width": "how wide a street or lane is, in metres.",
+}
+BAR_FILLS = ("#1b5e8a", "#2e7d32", "#8a5a00")
+
+
+def glossary_section(terms: dict[str, str]) -> str:
+    items = "".join(
+        f"<dt>{html.escape(term)}</dt><dd>{html.escape(meaning)}</dd>"
+        for term, meaning in terms.items()
+    )
+    return f'<section id="report-glossary"><h2>Words I use</h2><dl>{items}</dl></section>'
+
+
+def chart(figures: list[dict]) -> str:
+    top = max(item["value"] for item in figures) or 1
+    bars = "".join(
+        f'<text x="0" y="{index * 40 + 14}">{html.escape(item["label"])}</text>'
+        f'<rect x="0" y="{index * 40 + 20}" width="{item["value"] / top * 100:.1f}%" '
+        f'height="14" fill="{BAR_FILLS[index % len(BAR_FILLS)]}"/>'
+        for index, item in enumerate(figures)
+    )
+    rows = "".join(
+        f"<tr><td>{html.escape(item['label'])}</td><td>{link(item)}</td></tr>" for item in figures
+    )
+    return (
+        '<section id="chart"><h2>Street length at a glance</h2>'
+        f'<svg id="chart-length" role="img" width="100%" height="{len(figures) * 40}" '
+        'aria-labelledby="chart-length-title">'
+        '<title id="chart-length-title">Bar chart of street length in kilometres for each group'
+        f"</title>{bars}</svg>"
+        '<table data-for="chart-length"><caption>The same lengths as a table</caption>'
+        f"<tr><th>Group</th><th>Length</th></tr>{rows}</table></section>"
+    )
+
+
 def page(region: Region, figures: list[dict]) -> str:
     by_id = {item["id"]: item for item in figures}
     gaps = "".join(
@@ -134,17 +186,24 @@ def page(region: Region, figures: list[dict]) -> str:
         for stage in MISSING_STAGES
     )
     appendix = "".join(entry(item) for item in figures)
+    area = region.name.split(",")[0]
+    terms = {area: "the council area this report covers.", **GLOSSARY}
     return (
         '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width, initial-scale=1">'
-        f"<title>Bike paths in {html.escape(region.name)}</title></head><body>"
+        f"<title>Bike paths in {html.escape(region.name)}</title>"
+        f"<style>{STYLE}</style></head><body>"
         f"<h1>Bike paths in {html.escape(region.name)}</h1>"
         f"<p>By {html.escape(region.report.author)}</p>"
-        f"<section><h2>What the data shows</h2>"
+        f'<section id="opening"><h2>What the data shows</h2>'
         f"<p>I checked {link(by_id['F1'])} of street that a bike may use. "
         f"{link(by_id['F2'])} of it is safe for a child to ride alone. "
-        f"For {link(by_id['F3'])} I have no width.</p></section>"
+        f"For {link(by_id['F3'])} I have no width.</p>"
+        f"<p>I ask council to measure the street where I have no width. "
+        "Please read the appendix to check every number.</p></section>"
+        f"{chart(figures)}"
         f"{gaps}"
+        f"{glossary_section(terms)}"
         f'<section id="appendix"><h2>How to check every number</h2>{appendix}</section>'
         "</body></html>\n"
     )
