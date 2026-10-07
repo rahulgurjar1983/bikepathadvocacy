@@ -104,6 +104,7 @@ The row comes from the posted speed of the street being crossed: up to 40 km/h i
 | FR-4.7 | Every edge keeps a reason: the table, the row, the speed and ADT with their sources, the crossing that raised it if any, and why it is or is not AAA. Example: `mixed traffic, type A, 50 km/h (default), ADT 750 (default) -> LTS 2; not AAA: 50 km/h is above 30`. | MUST |
 | FR-4.8 | `bikeplan stress <region file> --snapshot <dir> --out <dir>` writes `stress.geojson` (one feature per edge: LTS, AAA, reason) and `stress_summary.json` (km by LTS 1 to 4, km AAA, both by road class). | MUST |
 | FR-4.9 | The profile gives a parking default by road class, used when parking is untagged: `au-nsw` and `generic` say yes for `residential`, `unclassified`, `tertiary` and `secondary`, and no for `primary` and `trunk`, each marked as an assumption. | MUST |
+| FR-4.10 | A shared path (a `path` or `footway` that bikes may use) is safe for all ages when its width is at least the profile's `widths_m.two_way_cycleway.min`, or its width is unknown. An unknown width is flagged in the reason and counted in the data quality table. A narrower path is level 1 but not safe for all ages, and the reason says so. | MUST |
 
 ## 9. Test plan
 
@@ -118,6 +119,7 @@ The row comes from the posted speed of the street being crossed: up to 40 km/h i
 | FR-4.7 | Reasons hold the table, the speed and ADT sources and the AAA verdict |
 | FR-4.8 | The command writes both files for a fixture with the expected km |
 | FR-4.9 | Untagged parking follows the class default and is marked as an assumption |
+| FR-4.10 | A wide path, a narrow path and a path with no width give the three outcomes; a path is never judged by the street speed and traffic rule |
 
 ## 10. Validation evidence
 
