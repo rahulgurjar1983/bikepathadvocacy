@@ -83,7 +83,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 
 - [x] **P8.1** Planning network and trip values (FR-8.1, FR-8.2)
 - [x] **P8.2** Route fixes from planned routes (FR-8.3, FR-8.7)
-- [ ] **P8.3** Greedy picks with exact gains (FR-8.4, FR-8.5)
+- [x] **P8.3** Greedy picks with exact gains (FR-8.4, FR-8.5)
 - [ ] **P8.4** Project records, `bikeplan propose`, fast updates and stable output (FR-8.6, FR-8.8, FR-8.9, FR-8.10)
 
 ## Phase 9: Run, report and verify

@@ -1,0 +1,2 @@
+pick 1 id a74107dbbbcae1fb elements 3 gain 0.0276 cost 0.2 score after 0.1325
+pick 2 id ac9e80b67a6492ba elements 1 gain 0.0094 cost 0.2 score after 0.1419

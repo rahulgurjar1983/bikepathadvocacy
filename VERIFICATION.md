@@ -555,3 +555,13 @@ uv run python scripts/propose_routes_check.py data/cache/au-nsw-bayside/2026-10-
 
 Expect: 7 tests pass. On Bayside the 94392 unsafe trips give 18635 route fixes with a total value of 20.97, so only part of the value has a planned route inside the limits and the boundary. The largest route fix has 70 elements.
 Artifact: `artifacts/P8.2/routes.txt`
+
+### P8.3
+
+```bash
+uv run pytest tests/test_propose_picks.py -q
+uv run python scripts/propose_picks_check.py data/cache/au-nsw-bayside/2026-10-01 regions/au-nsw-bayside.yaml 2 3 | tee artifacts/P8.3/picks.txt
+```
+
+Expect: 11 tests pass. On Bayside two rounds with a pool of 3 and `min_gain` 0 give two picks: the first has 3 elements and gain 0.0276, the second has 1 element and gain 0.0094, and the score after them is 0.1419. The run takes about 2.5 minutes.
+Artifact: `artifacts/P8.3/picks.txt`
