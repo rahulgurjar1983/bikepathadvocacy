@@ -41,6 +41,7 @@ A table or chart is one figure. Its recipe prints every value in it, one per lin
 | FR-13.6 | The report reads well for a councillor and a resident on a phone, a laptop and paper. It sets the viewport, keeps the page body from scrolling sideways, prints cleanly, gives every chart an SVG title and a data table, and never uses colour alone to carry meaning. | MUST |
 | FR-13.7 | `scripts/release-report.sh <tag>` pulls the snapshot release named in the region file, runs `bikeplan report` for `regions/au-nsw-bayside.yaml`, checks `SHA256SUMS`, and uploads every output to the GitHub release `<tag>`, replacing older copies. It fails hard when `gh` or the snapshot is missing. | MUST |
 | FR-13.8 | The CI `release` workflow runs `scripts/release-report.sh` for each published release. Each Monday it cuts a release tagged `v<YYYY.MM.DD>` when `main` has changed since the last release. It can also be run by hand. | MUST |
+| FR-13.9 | The report has a map near the top that shows every bike-legal street inside the boundary, drawn once per segment and coloured by stress level: blue for levels 1 and 2, red for 3 and 4, with busier streets drawn thicker. Layer switches turn each level on or off, show only the streets safe for all ages, and show stations and schools. Hover or tap names the street, its type, its level and whether it is safe for all ages. Once the code ranks projects, a "proposed changes" layer draws each project in its own style, labelled with its fix and rank; until then the switch is shown off with one line that says why. Leaflet is inlined, so the map opens with no network. The dashed council boundary is the only backdrop. The map is a figure, and its appendix entry gives the km it adds up to next to F1. | MUST |
 
 ## 5. Test plan
 
@@ -54,6 +55,7 @@ A table or chart is one figure. Its recipe prints every value in it, one per lin
 | FR-13.6 | The HTML has the viewport tag and print CSS; each SVG has a title and a matching data table; each colour key also has a text label |
 | FR-13.7 | With a fake `gh` that records its calls, the script uploads every file named in `SHA256SUMS`; with no `gh` it fails hard |
 | FR-13.8 | The workflow run log on GitHub is the proof |
+| FR-13.9 | Headless Chromium opens the report with network calls blocked, logs no script error, and paints street lines in each level colour on the map; the layer data adds up to the summary km; with no Chromium the test fails hard |
 
 ## 6. Validation evidence
 
