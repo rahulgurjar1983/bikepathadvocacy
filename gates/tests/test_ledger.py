@@ -60,3 +60,21 @@ def test_fr0_14_no_open_row_exits_three(repo, capsys):
 def test_fr0_16_missing_ledger_fails_hard(repo):
     assert ledger.main(["pick"]) == 2
     assert ledger.main(["check"]) == 2
+
+
+ISSUES = """# Agent notes
+
+## Spec issues
+
+- P0.1 Bayside: the shipped config gives no result. Proof: run it.
+- P0.5 resolved: fixed in the spec.
+
+## BLOCKED
+"""
+
+
+def test_fr0_18_done_row_with_an_open_spec_issue_fails(repo, capsys):
+    repo.write("PROGRESS.md", GOOD)
+    repo.write("AGENT_NOTES.md", ISSUES)
+    assert ledger.main(["check"]) == 1
+    assert "P0.1" in capsys.readouterr().out
