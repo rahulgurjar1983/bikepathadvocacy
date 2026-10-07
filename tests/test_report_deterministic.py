@@ -8,6 +8,8 @@ from pathlib import Path
 
 import pytest
 
+from bikeplan.report import leaks
+
 FIXTURE = Path("tests/fixtures/network/junctions.osm").resolve()
 REGION = Path("regions/au-nsw-bayside.yaml").resolve()
 ROOT = Path.cwd().resolve()
@@ -33,7 +35,6 @@ RUN = (
     "from bikeplan import main\n"
     "sys.exit(main(['report', sys.argv[2], '--snapshot', sys.argv[3], '--out', sys.argv[4]]))\n"
 )
-TIMESTAMP = re.compile(r"\b\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}")
 VARIANTS = [
     {"TZ": "UTC", "LANG": "C", "PYTHONHASHSEED": "1", "clock": "86400"},
     {
@@ -69,12 +70,6 @@ def build(tmp_path, snapshot, index):
     return out
 
 
-def leaks(html, folders):
-    found = [str(folder) for folder in folders if str(folder) in html]
-    found += TIMESTAMP.findall(html)
-    return found
-
-
 @pytest.fixture(scope="module")
 def builds(tmp_path_factory):
     tmp_path = tmp_path_factory.mktemp("determinism")
@@ -83,6 +78,8 @@ def builds(tmp_path_factory):
     (snapshot / "network.osm.gz").write_bytes(gzip.compress(FIXTURE.read_bytes(), mtime=0))
     (snapshot / "boundary.geojson").write_text(json.dumps(BOUNDARY))
     outs = [build(tmp_path, snapshot, index) for index in range(2)]
+    for out in outs:
+        assert "<time>1 October 2026</time>" in (out / "report.html").read_text()
     return outs, [tmp_path, snapshot, ROOT]
 
 
@@ -108,6 +105,7 @@ def test_fr13_10_the_report_holds_no_time_stamp_or_absolute_path(builds):
 def test_fr13_10_the_check_catches_a_planted_time_stamp_and_path(tmp_path):
     html = f"<p>built 2026-10-07T12:30:00Z in {tmp_path}</p>"
     assert leaks(html, [tmp_path]) == [str(tmp_path), "2026-10-07T12:30"]
+    assert leaks("<p>1 October 2026</p>", [tmp_path]) == []
 
 
 def test_fr13_10_fonts_and_scripts_are_inlined(builds):
