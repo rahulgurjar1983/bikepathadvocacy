@@ -1,0 +1,22 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          151.156743,
+          -33.9483
+        ],
+        "type": "Point"
+      },
+      "id": "node/3000:school",
+      "properties": {
+        "name": "Grid School",
+        "node": 1015,
+        "osm_id": "node/3000",
+        "type": "school"
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

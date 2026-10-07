@@ -143,7 +143,8 @@ def run_all(region, profile, snapshot: str | Path, out: str | Path) -> dict:
     with tempfile.TemporaryDirectory() as scratch:
         base = Path(scratch)
         access = write_access(graph, region, profile, snapshot, base)
-        records = write_propose(graph, region, profile, snapshot, base)
+        sheets = []
+        records = write_propose(graph, region, profile, snapshot, base, sheets)
         places = read_json(base / "places.geojson")["features"]
         homes = read_json(base / "access_homes.geojson")["features"]
         shapes = read_json(base / "projects.geojson")["features"]
@@ -177,7 +178,7 @@ def run_all(region, profile, snapshot: str | Path, out: str | Path) -> dict:
         "projects.json": dump(records),
         "report.html": render(
             canon(summary),
-            canon(records),
+            canon(sheets),
             profile,
             {
                 "summary": canon(summary),

@@ -13,8 +13,10 @@ from shapely.ops import transform
 
 from bikeplan.access import EdgeTable, Reach, edge_table, reach, safe_reach, scene, score_access
 from bikeplan.fit import FIXES, junction_fixes, segment_fit
+from bikeplan.fit import cross_section as fit_cross_section
 from bikeplan.network import bike_segments
 from bikeplan.stress import edge_aaa, own_lts, raise_for_crossings
+from bikeplan.width import check_links, fuse
 
 
 class Planning(NamedTuple):
@@ -29,11 +31,18 @@ def street_name(data: dict) -> str:
 def segment_elements(graph, profile, weights) -> tuple[dict, set]:
     elements = {}
     missing = set()
+    to_degrees = Transformer.from_crs(graph.graph["crs"], 4326, always_xy=True)
     for segment_id, segment in bike_segments(graph).items():
         result = segment_fit(segment, profile, weights)
         if result is None or result["status"] == "no_fit":
             missing.add(segment_id)
         elif result["status"] == "fix":
+            (u, v, _), first_edge = segment["edges"][0]
+            line = first_edge.get("geometry") or LineString(
+                [(graph.nodes[node]["x"], graph.nodes[node]["y"]) for node in (u, v)]
+            )
+            point = line.interpolate(0.5, normalized=True)
+            lon, lat = to_degrees.transform(point.x, point.y)
             elements[f"segment:{segment_id}"] = {
                 "kind": "segment",
                 "segment": segment_id,
@@ -44,6 +53,10 @@ def segment_elements(graph, profile, weights) -> tuple[dict, set]:
                 "length_m": max(data["length_m"] for _, data in segment["edges"]),
                 "street": street_name(segment["edges"][0][1]),
                 "width_source": result["width_source"],
+                "width_confidence": result["width_confidence"],
+                "before": result["before"],
+                "after": result["after"],
+                "check_links": check_links(lat, lon),
                 "counts": next(
                     item["disruption"]
                     for item in result["candidates"]
@@ -54,22 +67,54 @@ def segment_elements(graph, profile, weights) -> tuple[dict, set]:
 
 
 def junction_elements(graph, profile, weights) -> dict:
+    to_degrees = Transformer.from_crs(graph.graph["crs"], 4326, always_xy=True)
+    segments = bike_segments(graph)
     streets = {
         segment_id: street_name(segment["edges"][0][1])
         for segment_id, segment in bike_segments(graph).items()
     }
-    return {
-        f"junction:{item['junction']}": {
+    result = {}
+    for item in junction_fixes(graph, profile):
+        node = graph.nodes[item["junction"]]
+        lon, lat = to_degrees.transform(node["x"], node["y"])
+        sections = []
+        for leg in sorted(item["legs"]):
+            segment = segments[leg]
+            fit = segment_fit(segment, profile, weights)
+            if fit is None:
+                first_edge = segment["edges"][0][1]
+                fused = fuse(first_edge, profile)
+                before = fit_cross_section({**first_edge, **fused}, profile)
+                after = before
+                width_source = fused["width_source"]
+                width_confidence = fused["width_confidence"]
+            else:
+                before = fit["before"]
+                after = fit["after"]
+                width_source = fit["width_source"]
+                width_confidence = fit["width_confidence"]
+            sections.append(
+                {
+                    "id": f"segment:{leg}",
+                    "street": streets[leg],
+                    "before": before,
+                    "after": after,
+                    "width_source": width_source,
+                    "width_confidence": width_confidence,
+                }
+            )
+        result[f"junction:{item['junction']}"] = {
             "kind": "junction",
             "junction": item["junction"],
             "fix": item["fix"],
             "score": item["disruption"]["refuges"] * weights.refuge
             + item["disruption"]["signals"] * weights.signal,
             "legs": tuple(item["legs"]),
+            "sections": sections,
             "street": ", ".join(sorted({streets[leg] for leg in item["legs"]})),
+            "check_links": check_links(lat, lon),
         }
-        for item in junction_fixes(graph, profile)
-    }
+    return result
 
 
 def crossing_needs(key: tuple, data: dict, junctions: dict) -> tuple:
@@ -390,7 +435,7 @@ def greedy_picks(
 def element_record(name: str, element: dict) -> dict:
     junction = element["kind"] == "junction"
     counts = {} if junction else element["counts"]
-    return {
+    result = {
         "id": name,
         "street": element["street"],
         "length_m": 0.0 if junction else round(element["length_m"], 1),
@@ -404,6 +449,7 @@ def element_record(name: str, element: dict) -> dict:
         "signals": int(junction and element["fix"] == "signals"),
         "refuges": int(junction and element["fix"] == "refuge"),
     }
+    return result
 
 
 def project_totals(elements: list[dict]) -> dict:
@@ -439,6 +485,34 @@ def project_records(picked: list[dict], planning: Planning) -> list[dict]:
             }
         )
     return records
+
+
+def project_sheet_records(records: list[dict], planning: Planning) -> list[dict]:
+    sheets = []
+    for record in records:
+        elements = []
+        for item in record["elements"]:
+            planned = planning.elements[item["id"]]
+            enriched = {**item, "check_links": planned["check_links"]}
+            if planned["kind"] == "junction":
+                sections = planned["sections"]
+                enriched["sections"] = sections
+                if sections:
+                    enriched["width_source"] = sections[0]["width_source"]
+                    enriched["width_confidence"] = sections[0]["width_confidence"]
+                else:
+                    enriched["width_confidence"] = None
+            else:
+                enriched.update(
+                    {
+                        "before": planned["before"],
+                        "after": planned["after"],
+                        "width_confidence": planned["width_confidence"],
+                    }
+                )
+            elements.append(enriched)
+        sheets.append({**record, "elements": elements})
+    return sheets
 
 
 def csv_fields(kinds: list) -> list[str]:
@@ -516,7 +590,14 @@ def project_features(graph, planning: Planning, records: list[dict]) -> list[dic
     return features
 
 
-def write_propose(graph, region, profile, snapshot: str | Path, out: str | Path) -> list[dict]:
+def write_propose(
+    graph,
+    region,
+    profile,
+    snapshot: str | Path,
+    out: str | Path,
+    sheets: list | None = None,
+) -> list[dict]:
     out = Path(out)
     kept, nodes, _, placed, resident, weights = scene(graph, region, snapshot)
     planning = planning_network(graph, profile, region)
@@ -537,6 +618,8 @@ def write_propose(graph, region, profile, snapshot: str | Path, out: str | Path)
         names,
     )
     records = project_records(picked, planning)
+    if sheets is not None:
+        sheets.extend(project_sheet_records(records, planning))
     out.mkdir(parents=True, exist_ok=True)
     (out / "projects.json").write_text(json.dumps(records, indent=2) + "\n")
     kinds = list(weights)

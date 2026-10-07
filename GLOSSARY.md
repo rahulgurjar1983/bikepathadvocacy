@@ -19,6 +19,7 @@ Each term below is a project word. The reading gate swaps these words for a plai
 - **commit** — one saved change in git.
 - **council** — the local government that runs streets in an area.
 - **cycleway** — a bike lane or path kept apart from cars.
+- **cross-section** — a drawing across a road that shows each use and width.
 - **data** — facts and numbers that we read from a file or a web service.
 - **Dijkstra** — a standard way to find the shortest path in a network.
 - **disruption** — what a change takes from people who drive or park today.

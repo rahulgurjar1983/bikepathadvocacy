@@ -33,6 +33,9 @@ class Page(HTMLParser):
         self.texts = {}
         self.stack = []
         self.script = None
+        self.cross_sections = []
+        self.project_maps = []
+        self.current_svg = None
 
     def handle_starttag(self, tag, attrs):
         values = dict(attrs)
@@ -43,6 +46,13 @@ class Page(HTMLParser):
             self.ids[values["id"]] = tag
         if tag == "script":
             self.script = {"attrs": values, "text": ""}
+        classes = values.get("class", "").split()
+        if tag == "svg" and "cross-section" in classes:
+            self.current_svg = {"attrs": values, "strips": []}
+        elif tag == "svg" and "project-map" in classes:
+            self.project_maps.append(values)
+        if tag in {"rect", "line"} and self.current_svg is not None:
+            self.current_svg["strips"].append({"tag": tag, **values})
         if tag == "tr":
             for _, section in reversed(self.stack):
                 if section in SECTIONS:
@@ -53,6 +63,9 @@ class Page(HTMLParser):
         if tag == "script" and self.script is not None:
             self.scripts.append(self.script)
             self.script = None
+        if tag == "svg" and self.current_svg is not None:
+            self.cross_sections.append(self.current_svg)
+            self.current_svg = None
         while self.stack and self.stack[-1][0] != tag:
             self.stack.pop()
         if self.stack:
@@ -148,6 +161,62 @@ def test_fr9_3_each_project_has_a_sheet(page, out):
     for project in projects:
         assert page.ids.get(f"project-{project['id']}") == "article"
         assert project["name"] in page.texts["sheets"]
+
+
+def test_fr9_4_project_sheets_include_maps_and_scaled_cross_sections(page, out):
+    projects = json.loads((out / "projects.json").read_text())
+    maps = {item["data-project-id"]: item for item in page.project_maps}
+    for project in projects:
+        assert maps[project["id"]]["id"] == f"project-map-{project['id']}"
+        for element in project["elements"]:
+            drawings = [
+                item
+                for item in page.cross_sections
+                if item["attrs"]["data-project-id"] == project["id"]
+                and item["attrs"]["data-element-id"] == element["id"]
+            ]
+            phases = {}
+            for drawing in drawings:
+                attrs = drawing["attrs"]
+                phases.setdefault(attrs["data-section-id"], set()).add(attrs["data-phase"])
+            assert phases
+            assert all(found == {"before", "after"} for found in phases.values())
+    assert page.cross_sections
+    assert "Before cross-section" in page.texts["sheets"]
+    assert "After cross-section" in page.texts["sheets"]
+    for drawing in page.cross_sections:
+        total = float(drawing["attrs"]["data-total-width-m"])
+        widths = [float(strip["data-width-m"]) for strip in drawing["strips"]]
+        assert sum(widths) == pytest.approx(total)
+        for strip in drawing["strips"]:
+            width = float(strip["data-width-m"])
+            assert strip["data-label"] in page.texts["sheets"]
+            if strip["tag"] == "rect":
+                assert float(strip["width"]) == pytest.approx(max(0.0, width) * 40)
+
+
+def test_fr9_4_project_sheets_show_check_links_width_confidence_and_totals(page, out):
+    projects = json.loads((out / "projects.json").read_text())
+    links = [
+        value for tag, name, value in page.attributes if tag == "a" and name == "data-check-link"
+    ]
+    assert len(links) == 2 * sum(len(project["elements"]) for project in projects)
+    assert all(
+        value.startswith(("https://www.google.com/maps/", "https://www.mapillary.com/app/"))
+        for value in links
+    )
+    for project in projects:
+        for label in ("Parking spaces removed", "Car lane km taken", "Speed limit km lowered"):
+            assert label in page.texts["sheets"]
+        assert "Width confidence" in page.texts["sheets"]
+        for name, value in project["totals"].items():
+            if name == "km_by_fix":
+                assert "Kilometres by fix" in page.texts["sheets"]
+                for fix, amount in value.items():
+                    assert fix in page.texts["sheets"]
+                    assert str(amount) in page.texts["sheets"]
+            else:
+                assert str(value) in page.texts["sheets"]
 
 
 def test_fr9_3_the_method_is_in_plain_words(page):

@@ -1,0 +1,53 @@
+{
+  "code_version": "0.1.0",
+  "config_hash": "e60851b580972875f7015d51a11f418ade69048faef9ebeb467cd903d423dc60",
+  "credits": [
+    {
+      "attribution": "None needed",
+      "licence": "CC0 1.0",
+      "line": "None needed, CC0 1.0",
+      "source": "Made-up test data from scripts/make_test_grid.py"
+    },
+    {
+      "attribution": "\u00a9 OpenStreetMap contributors",
+      "licence": "ODbL 1.0",
+      "line": "\u00a9 OpenStreetMap contributors, ODbL 1.0",
+      "source": "OpenStreetMap contributors"
+    }
+  ],
+  "disruption": {
+    "lane_km": 0.0,
+    "parking_spaces": 0,
+    "refuges": 0,
+    "signals": 1,
+    "speed_km": 0.0
+  },
+  "km_aaa": 3.0,
+  "km_by_fix": {},
+  "km_by_lts": {
+    "1": 3.0,
+    "2": 0.0,
+    "3": 1.2,
+    "4": 1.0
+  },
+  "not_snapped": {
+    "people": 0.0,
+    "places": 0
+  },
+  "projects": 1,
+  "region": "test-grid",
+  "safe_people_gain": {
+    "aged_care": 0,
+    "college": 0,
+    "library": 0,
+    "school": 750.0,
+    "station": 0,
+    "town_centre": 0,
+    "university": 0
+  },
+  "score": {
+    "after": 100.0,
+    "before": 25.0
+  },
+  "snapshot": "2026-10-01"
+}
