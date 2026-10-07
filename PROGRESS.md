@@ -101,7 +101,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 - [ ] **V1.4** Fixes, disruption and access value along a route, and claim verdicts (FR-14.6, FR-14.7)
 - [ ] **V1.5** The review report, with the route layer and right of reply (FR-14.8)
 - [ ] **V1.6** Corridor candidates in `bikeplan propose` (FR-14.11)
-- [ ] **V1.7** Bayside pilot: review CycleSydney Ride 22 from its public RideWithGPS track, with its claims; keep the report private (FR-14.1, FR-14.7, FR-14.8)
+- [ ] **V1.7** Bayside pilot: review CycleSydney Ride 22 from its public RideWithGPS track, as a private review under `data/private/` (FR-14.1, FR-14.7, FR-14.8, FR-14.12)
 - [ ] **V1.8** 👤 Operator: get the Super-Highway route file from Daniel Morrison and permission from CycleSydney to publish; then review the Bayside part of the Super-Highway (FR-14.7, FR-14.8)
 
 ## Phase 10: End to end
