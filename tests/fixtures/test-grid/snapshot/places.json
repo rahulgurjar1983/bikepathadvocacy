@@ -1,0 +1,14 @@
+{
+  "elements": [
+    {
+      "type": "node",
+      "id": 3000,
+      "lat": -33.9482999,
+      "lon": 151.1567429,
+      "tags": {
+        "amenity": "school",
+        "name": "Grid School"
+      }
+    }
+  ]
+}
