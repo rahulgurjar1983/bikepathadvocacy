@@ -1,0 +1,1 @@
+v2026.10.07 figures.json,map.json,report.html,segments.csv,SHA256SUMS
