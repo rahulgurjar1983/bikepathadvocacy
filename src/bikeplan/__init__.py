@@ -4,6 +4,7 @@ import sys
 from importlib.metadata import version
 
 from bikeplan.config import ConfigError, Num, config_hash, load_profile, load_region
+from bikeplan.fit import fit_summary
 from bikeplan.network import build, summarise
 from bikeplan.report import write_report
 from bikeplan.snapshot import (
@@ -74,7 +75,7 @@ def build_parser() -> argparse.ArgumentParser:
             )
             if (name, sub) == ("config", "show"):
                 leaf.add_argument("region", help="Region file")
-            if (name, sub) in {("network", "summary"), ("width", "summary")}:
+            if (name, sub) in {("network", "summary"), ("width", "summary"), ("fit", "summary")}:
                 leaf.add_argument("region", help="Region file")
                 leaf.add_argument("--snapshot", required=True, help="Snapshot folder")
             if (name, sub) == ("snapshot", "fetch"):
@@ -146,6 +147,25 @@ def width_summary_command(path: str, snapshot: str) -> int:
         return 1
     for (source, confidence), value in sorted(km.items()):
         print(f"{source} {confidence} {value:.3f}")
+    return 0
+
+
+def fit_summary_command(path: str, snapshot: str) -> int:
+    try:
+        region = load_region(path)
+        profile = load_profile(region.profile)
+        found = fit_summary(
+            build(snapshot, region, profile), profile, region.proposals.disruption_weights
+        )
+    except (ConfigError, OSError) as error:
+        print(error, file=sys.stderr)
+        return 1
+    for fix, km in found["km_by_fix"].items():
+        print(f"{fix}_km {km:.3f}")
+    print(f"no_fit_km {found['no_fit_km']:.3f}")
+    print(f"robust_share {found['robust_share']:.3f}")
+    for kind, count in found["junctions"].items():
+        print(f"junction_{kind} {count}")
     return 0
 
 
@@ -231,6 +251,8 @@ def main(argv: list[str] | None = None) -> int:
         return config_show(args.region)
     if (args.command, getattr(args, "subcommand", None)) == ("width", "summary"):
         return width_summary_command(args.region, args.snapshot)
+    if (args.command, getattr(args, "subcommand", None)) == ("fit", "summary"):
+        return fit_summary_command(args.region, args.snapshot)
     if (args.command, getattr(args, "subcommand", None)) == ("network", "summary"):
         return network_summary(args.region, args.snapshot)
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "fetch"):

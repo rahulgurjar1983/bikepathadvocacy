@@ -484,3 +484,13 @@ scripts/release.sh v2026.10.07
 
 Expect: 11 passed. The script pulls each published snapshot, builds each public report, then uploads the reports, `artifacts.tar.gz`, `index.html` and one `SHA256SUMS`. A merge that leaves out the report inputs copies the last release's reports and the index names it.
 Artifact: `artifacts/R1.7/release.txt`
+
+### P6.4
+
+```bash
+uv run pytest tests/test_fit_junction.py tests/test_fit_summary.py -q
+uv run bikeplan fit summary regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 | tee artifacts/P6.4/fit.txt
+```
+
+Expect: The tests pass. The summary prints the km of street for each chosen fix, `no_fit_km`, `robust_share` and the count of junction refuges and signals. On Bayside the run takes about 2 minutes: `quietway_km` 269.582, `no_fit_km` 73.186, `robust_share` 0.321, 21 refuges and 425 signals.
+Artifact: `artifacts/P6.4/fit.txt`
