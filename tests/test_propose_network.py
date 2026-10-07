@@ -32,7 +32,7 @@ def line(streets):
 
 
 QUIET = street("residential", 2, 30, 750, 12.0)
-BUSY = street("tertiary", 2, 50, 5000, 14.0)
+BUSY = street("tertiary", 2, 50, 5000, 10.0)
 HEAVY = street("primary", 4, 60, 25000, 13.0)
 
 
@@ -45,7 +45,7 @@ def test_fr8_1_an_aaa_edge_costs_its_length():
 def test_fr8_1_a_fixed_edge_adds_metres_per_point_times_its_segment_score():
     found = planning_network(line([(400, BUSY)]), PROFILE, REGION)
     element = found.elements["segment:s0"]
-    assert element["fix"] == "cycleway_in_spare"
+    assert element["fix"] == "cycleway_parking_both_sides"
     assert element["score"] > 0
     assert found.edges[(0, 1, 0)]["cost"] == pytest.approx(400 + 10 * element["score"])
     assert found.edges[(0, 1, 0)]["needs"] == ("segment:s0",)
