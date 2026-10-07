@@ -102,22 +102,38 @@ def figure_list(text: str) -> list[dict]:
     return figures
 
 
-def link(figure_id: str) -> str:
-    return f'<a href="#{figure_id}">{figure_id}</a>'
+def link(item: dict) -> str:
+    return f'<a href="#{item["id"]}">{item["value"]} {item["unit"]} ({item["id"]})</a>'
+
+
+def entry(item: dict) -> str:
+    inputs = "".join(
+        f"<li>{html.escape(part['name'])}, sha256 {part['sha256']}</li>" for part in item["inputs"]
+    )
+    sources = "".join(
+        f"<li>{html.escape(part['name'])}, licence {html.escape(part['licence'])}, "
+        f"request: {html.escape(part['request'])}</li>"
+        for part in item["sources"]
+    )
+    return (
+        f'<article id="{item["id"]}"><h3>{item["id"]}: {html.escape(item["label"])}</h3>'
+        f"<dl><dt>Value</dt><dd>{item['value']} {item['unit']}</dd>"
+        f"<dt>Method</dt><dd>{html.escape(item['spec'])}. {html.escape(item['method'])}</dd>"
+        f"<dt>Files</dt><dd><ul>{inputs}</ul></dd>"
+        f"<dt>Sources</dt><dd><ul>{sources}</ul></dd>"
+        "<dt>Recipe: run it with python3 -c in a folder that holds the release files</dt>"
+        f"<dd><pre>{html.escape(item['recipe'])}</pre></dd></dl></article>"
+    )
 
 
 def page(region: Region, figures: list[dict]) -> str:
-    km = {item["id"]: item["value"] for item in figures}
+    by_id = {item["id"]: item for item in figures}
     gaps = "".join(
         f"<section><h2>{stage.capitalize()}</h2>"
         f"<p>The {stage} stage is not built yet.</p></section>"
         for stage in MISSING_STAGES
     )
-    appendix = "".join(
-        f'<h3 id="{item["id"]}">{item["id"]}: {html.escape(item["label"])}</h3>'
-        f"<p>{item['value']} {item['unit']}. {html.escape(item['method'])}</p>"
-        for item in figures
-    )
+    appendix = "".join(entry(item) for item in figures)
     return (
         '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width, initial-scale=1">'
@@ -125,9 +141,9 @@ def page(region: Region, figures: list[dict]) -> str:
         f"<h1>Bike paths in {html.escape(region.name)}</h1>"
         f"<p>By {html.escape(region.report.author)}</p>"
         f"<section><h2>What the data shows</h2>"
-        f"<p>I checked {km['F1']} km of street that a bike may use {link('F1')}. "
-        f"{km['F2']} km of it is safe for a child to ride alone {link('F2')}. "
-        f"For {km['F3']} km I have no width {link('F3')}.</p></section>"
+        f"<p>I checked {link(by_id['F1'])} of street that a bike may use. "
+        f"{link(by_id['F2'])} of it is safe for a child to ride alone. "
+        f"For {link(by_id['F3'])} I have no width.</p></section>"
         f"{gaps}"
         f'<section id="appendix"><h2>How to check every number</h2>{appendix}</section>'
         "</body></html>\n"
