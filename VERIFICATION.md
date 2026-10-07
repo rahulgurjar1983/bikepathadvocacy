@@ -396,3 +396,15 @@ uv run bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-
 
 Expect: The tests pass. The report prints `F1 591.099 km`, `F2 114.676 km` and `F3 70.424 km`, and `sha256sum -c` says `ok` for `figures.json`, `report.html` and `segments.csv`. The page names `Rahul Gurjar, Kogarah` and gives one "not built yet" line each for the fit, access and propose stages.
 Artifact: `artifacts/R1.1/report.html`
+
+### R1.2
+
+```bash
+uv run pytest tests/test_report.py -q -k 'fr13_2 or fr13_3'
+uv run bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out artifacts/R1.2
+(cd artifacts/R1.2 && sha256sum -c SHA256SUMS)
+python3 -I -c "$(python3 -c "import json;print(json.load(open('artifacts/R1.2/figures.json'))[0]['recipe'])")"
+```
+
+Expect: The tests pass. In the report text each number sits inside a link such as `591.099 km (F1)`, and no other number shows outside the appendix. Each appendix entry lists value, method, files with sha256, sources with licence and the recipe. `sha256sum -c` says `OK` for all three files. Run inside `artifacts/R1.2`, the F1 recipe prints `591.099`.
+Artifact: `artifacts/R1.2/report.html`
