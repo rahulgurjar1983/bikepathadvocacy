@@ -53,6 +53,13 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 - [x] **P5.2** Road reserve measured from parcels (FR-5.3, FR-5.4)
 - [x] **P5.3** Width fusion, check links and `bikeplan width summary` (FR-5.5, FR-5.6, FR-5.8)
 
+## Phase R: Public report (ships with every release)
+
+- [ ] **R1.1** `bikeplan report` builds `report.html`, `figures.json`, the recipe data files and `SHA256SUMS` from the stages that exist, with `report.author` set for Bayside (FR-13.1, FR-1.10)
+- [ ] **R1.2** Figure links, the "How to check every number" appendix, and recipes that recompute each figure with plain Python (FR-13.2, FR-13.3)
+- [ ] **R1.3** Reading level, `VOICE.md` and layout checks on the report; the Bayside report as the artifact (FR-13.4, FR-13.5, FR-13.6)
+- [ ] **R1.4** `scripts/release-report.sh <tag>` uploads the Bayside report to a release; the operator then adds the CI `release` workflow (FR-13.7)
+
 ## Phase 6: Fit
 
 - [x] **P6.1** Cross-sections and fix options with reasons (FR-6.1, FR-6.2, FR-6.3)
