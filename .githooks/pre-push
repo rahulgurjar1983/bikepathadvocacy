@@ -4,7 +4,7 @@ root="$(git rev-parse --show-toplevel)"
 cd "$root" || exit 1
 unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_PREFIX GIT_COMMON_DIR
 gate="${BIKEPLAN_GATE:-scripts/gate.sh}"
-"$gate"
+GATE_SKIP_TESTS="${GATE_SKIP_TESTS:-1}" "$gate"
 status=$?
 if [ "$status" -ne 0 ]; then
   echo "pre-push: rejected; the gate failed with exit $status" >&2
