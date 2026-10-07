@@ -135,5 +135,7 @@ def test_fr7_2_order_is_stable_whatever_the_input_order(tmp_path):
     forward = places(snapshot_of(tmp_path, left + right))
     backward = places(snapshot_of(tmp_path, list(reversed(left + right))))
     assert forward == backward
-    assert [place["osm_id"] for place in centres(forward)][0] in {f"node/{i}" for i in range(1, 11)}
+    assert next(place["osm_id"] for place in centres(forward)) in {
+        f"node/{i}" for i in range(1, 11)
+    }
     assert [place["name"] for place in centres(forward)] == ["Town centre 1", "Town centre 2"]
