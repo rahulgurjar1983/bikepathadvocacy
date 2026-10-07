@@ -1,13 +1,19 @@
 import json
+import sqlite3
+from collections import defaultdict
 from pathlib import Path
+from typing import NamedTuple
 
 import numpy as np
+import shapely
 from pyproj import Transformer
 from scipy.sparse import coo_array
 from scipy.sparse.csgraph import connected_components
 from scipy.spatial import cKDTree
+from shapely.geometry import Point, Polygon
 
 from bikeplan.network import boundary_centre, utm_crs
+from bikeplan.snapshot import gpkg_rings
 
 DUPLICATE_RADIUS_M = 50.0
 SHOP_JOIN_M = 150.0
@@ -26,6 +32,8 @@ AMENITY_TYPES = {
     "nursing_home": "aged_care",
     "library": "library",
 }
+SNAP_M = 300.0
+HOME_HIGHWAYS = {"residential", "living_street", "unclassified"}
 AGED_CARE_KINDS = {"nursing_home", "assisted_living"}
 
 
@@ -125,3 +133,91 @@ def places(snapshot: str | Path) -> list[dict]:
     transformer = Transformer.from_crs(4326, utm_crs(longitude, latitude), always_xy=True)
     found, shops = read_places(elements)
     return drop_near_duplicates(found, transformer) + town_centres(shops, transformer)
+
+
+class Homes(NamedTuple):
+    people: dict
+    unsnapped: float
+
+
+def highways(data: dict) -> set:
+    value = data["highway"]
+    return set(value) if isinstance(value, list) else {value}
+
+
+def bike_nodes(graph) -> tuple[list, list]:
+    legal, residential = set(), set()
+    for u, v, data in graph.edges(data=True):
+        if data["bike_ok"]:
+            legal.update((u, v))
+            if highways(data) & HOME_HIGHWAYS:
+                residential.update((u, v))
+    return sorted(legal), residential
+
+
+def node_tree(graph) -> tuple[list, cKDTree]:
+    legal, _ = bike_nodes(graph)
+    points = [(graph.nodes[node]["x"], graph.nodes[node]["y"]) for node in legal]
+    return legal, cKDTree(points)
+
+
+def snap_points(points: list, graph) -> tuple[list, list]:
+    legal, tree = node_tree(graph)
+    if not legal or not points:
+        return [None] * len(points), list(range(len(points)))
+    distances, indices = tree.query(points, distance_upper_bound=SNAP_M)
+    nodes = [
+        legal[index] if np.isfinite(d) else None
+        for d, index in zip(distances, indices, strict=True)
+    ]
+    return nodes, [number for number, node in enumerate(nodes) if node is None]
+
+
+def homes(units: list[dict], graph, boundary) -> Homes:
+    legal, residential = bike_nodes(graph)
+    xs = np.array([graph.nodes[node]["x"] for node in legal])
+    ys = np.array([graph.nodes[node]["y"] for node in legal])
+    people: dict = defaultdict(float)
+    unsnapped = 0.0
+    for unit in units:
+        centre = unit["polygon"].centroid
+        if not boundary.contains(centre):
+            continue
+        inside = [
+            node
+            for node, hit in zip(legal, shapely.contains_xy(unit["polygon"], xs, ys), strict=True)
+            if hit
+        ]
+        targets = [node for node in inside if node in residential] or inside
+        if not targets:
+            nodes, _ = snap_points([(centre.x, centre.y)], graph)
+            targets = [node for node in nodes if node is not None]
+        if not targets:
+            unsnapped += unit["people"]
+            continue
+        for node in targets:
+            people[node] += unit["people"] / len(targets)
+    return Homes(dict(people), unsnapped)
+
+
+def in_scope_places(found: list[dict], boundary, buffer_m: float) -> list[dict]:
+    return [
+        place for place in found if boundary.distance(Point(place["x"], place["y"])) <= buffer_m
+    ]
+
+
+def population_units(snapshot: str | Path, crs) -> list[dict]:
+    transformer = Transformer.from_crs(3857, crs, always_xy=True)
+    database = sqlite3.connect(f"file:{Path(snapshot) / 'population.gpkg'}?mode=ro", uri=True)
+    try:
+        rows = database.execute("select geom, population from population order by h3").fetchall()
+    finally:
+        database.close()
+    units = []
+    for blob, count in rows:
+        rings = [
+            list(zip(*transformer.transform(*zip(*ring, strict=True)), strict=True))
+            for ring in gpkg_rings(blob)
+        ]
+        units.append({"polygon": Polygon(rings[0], rings[1:]), "people": count})
+    return units
