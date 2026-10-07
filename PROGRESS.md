@@ -89,7 +89,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 ## Phase 9: Run, report and verify
 
 - [x] **P9.1** The test grid region and snapshot, with every hand-worked fact as a test (FR-11.3)
-- [ ] **P9.2** `bikeplan run` offline, with stable bytes (FR-9.1, FR-9.2, FR-11.6, NFR-2)
+- [x] **P9.2** `bikeplan run` offline, with stable bytes (FR-9.1, FR-9.2, FR-11.6, NFR-2)
 - [ ] **P9.3** HTML report with map, method, assumptions, credits and rebuild commands (FR-9.3, FR-9.6, FR-9.7, NFR-7)
 - [ ] **P9.4** Project sheets with cross-section drawings (FR-9.4)
 - [ ] **P9.5** `bikeplan verify` (FR-9.5)
