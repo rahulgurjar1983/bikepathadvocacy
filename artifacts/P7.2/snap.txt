@@ -1,0 +1,2 @@
+places 393 in scope 294 not snapped 0
+home nodes 4871 people 171068 not snapped 8

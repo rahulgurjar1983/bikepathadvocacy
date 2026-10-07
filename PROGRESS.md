@@ -74,7 +74,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 ## Phase 7: Access
 
 - [x] **P7.1** Places from OSM, with town centres (FR-7.1, FR-7.2)
-- [ ] **P7.2** Snapping, and homes from population units (FR-7.3, FR-7.4, FR-7.9)
+- [x] **P7.2** Snapping, and homes from population units (FR-7.3, FR-7.4, FR-7.9)
 - [ ] **P7.3** Any-route reach and safe reach (FR-7.5, FR-7.6)
 - [ ] **P7.4** Scores and `bikeplan access`; the Bayside baseline as the artifact (FR-7.7, FR-7.8)
 
