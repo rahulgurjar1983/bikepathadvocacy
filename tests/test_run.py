@@ -43,17 +43,14 @@ def run_child(out, seed):
 @pytest.fixture(scope="module")
 def blocked_out(tmp_path_factory):
     out = tmp_path_factory.mktemp("blocked") / "out"
-    real = socket.socket
 
     def refuse(*args, **kwargs):
         raise AssertionError("network access")
 
-    socket.socket = refuse
-    socket.create_connection = refuse
-    try:
+    with pytest.MonkeyPatch.context() as patch:
+        patch.setattr(socket, "socket", refuse)
+        patch.setattr(socket, "create_connection", refuse)
         assert run_command(COMMITTED, out) == 0
-    finally:
-        socket.socket = real
     return out
 
 
