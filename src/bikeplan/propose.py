@@ -340,11 +340,11 @@ def element_record(name: str, element: dict) -> dict:
     return {
         "id": name,
         "street": element["street"],
-        "length_m": 0.0 if junction else element["length_m"],
+        "length_m": 0.0 if junction else round(element["length_m"], 1),
         "fix": element["fix"],
         "robust": "robust" if junction else element["robust"],
         "width_source": None if junction else element["width_source"],
-        "km": 0.0 if junction else element["km"],
+        "km": 0.0 if junction else round(element["km"], 6),
         "parking_spaces": counts.get("parking_spaces", 0),
         "lane_km": counts.get("lane_km", 0.0),
         "speed_km": counts.get("speed_km", 0.0),
