@@ -5,6 +5,7 @@ from importlib.metadata import version
 
 from bikeplan.config import ConfigError, Num, config_hash, load_profile, load_region
 from bikeplan.network import build, summarise
+from bikeplan.report import write_report
 from bikeplan.snapshot import (
     OVERPASS_ENDPOINT,
     OverpassError,
@@ -24,6 +25,7 @@ LEAVES = {
 }
 
 STRESS_HELP = "Score the stress level of each road edge"
+REPORT_HELP = "Build the public report and its data files"
 
 GROUPS = {
     "config": {"show": "Show the resolved config"},
@@ -57,6 +59,10 @@ def build_parser() -> argparse.ArgumentParser:
     stress.add_argument("region", help="Region file")
     stress.add_argument("--snapshot", required=True, help="Snapshot folder")
     stress.add_argument("--out", required=True, help="Output directory")
+    report = commands.add_parser("report", help=REPORT_HELP, description=REPORT_HELP)
+    report.add_argument("region", help="Region file")
+    report.add_argument("--snapshot", required=True, help="Snapshot folder")
+    report.add_argument("--out", required=True, help="Output directory")
     for name, subs in GROUPS.items():
         group = commands.add_parser(name, help=GROUP_HELP[name], description=GROUP_HELP[name])
         group_commands = group.add_subparsers(
@@ -157,6 +163,19 @@ def stress(path: str, snapshot: str, out: str) -> int:
     return 0
 
 
+def report(path: str, snapshot: str, out: str) -> int:
+    try:
+        region = load_region(path)
+        profile = load_profile(region.profile)
+        figures = write_report(build(snapshot, region, profile), region, profile, out)
+    except (ConfigError, OSError) as error:
+        print(error, file=sys.stderr)
+        return 1
+    for item in figures:
+        print(f"{item['id']} {item['value']} {item['unit']}")
+    return 0
+
+
 def snapshot_fetch(path: str, out: str, endpoint: str) -> int:
     try:
         manifest = fetch_snapshot(load_region(path), out, endpoint)
@@ -206,6 +225,8 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if args.command == "stress":
         return stress(args.region, args.snapshot, args.out)
+    if args.command == "report":
+        return report(args.region, args.snapshot, args.out)
     if (args.command, getattr(args, "subcommand", None)) == ("config", "show"):
         return config_show(args.region)
     if (args.command, getattr(args, "subcommand", None)) == ("width", "summary"):
