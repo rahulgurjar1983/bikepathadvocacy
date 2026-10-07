@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osm version="0.6" generator="bikeplan-test">
+<node id="9001" lat="-33.9124" lon="151.1200"/>
+<node id="9002" lat="-33.9124" lon="151.1220"/>
+<node id="9003" lat="-33.9124" lon="151.1240"/>
+<node id="9004" lat="-33.9124" lon="151.1260"/>
+<node id="9005" lat="-33.9124" lon="151.1280"/>
+<node id="9006" lat="-33.9124" lon="151.1300"/>
+<way id="901"><nd ref="9001"/><nd ref="9002"/><tag k="highway" v="tertiary"/><tag k="name" v="High Street"/><tag k="maxspeed" v="50"/><tag k="lanes" v="2"/><tag k="parking:both" v="yes"/><tag k="width" v="12"/></way>
+<way id="902"><nd ref="9002"/><nd ref="9003"/><tag k="highway" v="tertiary"/><tag k="name" v="High Street"/><tag k="maxspeed" v="50"/><tag k="lanes" v="2"/><tag k="parking:both" v="yes"/><tag k="width" v="12"/></way>
+<way id="903"><nd ref="9003"/><nd ref="9004"/><tag k="highway" v="tertiary"/><tag k="name" v="Park Road"/><tag k="maxspeed" v="50"/><tag k="lanes" v="2"/><tag k="parking:both" v="yes"/><tag k="width" v="12"/></way>
+<way id="904"><nd ref="9004"/><nd ref="9005"/><tag k="highway" v="tertiary"/><tag k="name" v="Park Road"/><tag k="maxspeed" v="50"/><tag k="lanes" v="2"/><tag k="parking:both" v="yes"/><tag k="width" v="12"/></way>
+<way id="905"><nd ref="9005"/><nd ref="9006"/><tag k="highway" v="tertiary"/><tag k="name" v="Station Road"/><tag k="maxspeed" v="50"/><tag k="lanes" v="2"/><tag k="parking:both" v="yes"/><tag k="width" v="12"/></way>
+</osm>

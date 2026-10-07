@@ -1,4 +1,5 @@
 import csv
+import gzip
 import json
 import os
 import subprocess
@@ -6,10 +7,20 @@ import sys
 from pathlib import Path
 
 from bikeplan import main
-from tests.test_access_scores import snapshot
+from tests.test_access_scores import snapshot as base_snapshot
 
 REGION = "regions/au-nsw-bayside.yaml"
 RUN = "import sys\nfrom bikeplan import main\nsys.exit(main(sys.argv[1:]))\n"
+
+
+def snapshot(path):
+    folder = base_snapshot(path)
+    xml = Path("tests/fixtures/propose/network.osm").read_bytes()
+    (folder / "network.osm.gz").write_bytes(gzip.compress(xml, mtime=0))
+    school = {"type": "node", "id": 9, "lat": -33.9124, "lon": 151.1300}
+    school["tags"] = {"amenity": "school", "name": "Park School"}
+    (folder / "places.json").write_text(json.dumps({"elements": [school]}))
+    return folder
 
 
 def run(folder, out):
