@@ -51,6 +51,8 @@ proposals:
     signal: 15.0
     refuge: 3.0
     path_km: 5.0
+report:
+  author: Rahul Gurjar, Kogarah
 ```
 
 ## 4. Profile file
@@ -84,6 +86,7 @@ widths_m:
 | FR-1.7 | Three region files ship: `au-nsw-bayside` (relation 7038238, profile `au-nsw`), `gb-cambridge` (Cambridge, England, relation 295355, profile `generic`) and `test-grid` (the made-up test region of spec 11). | MUST |
 | FR-1.8 | Destination weights must be zero or more and not all zero; `detour_max` must be at least 1.0; `reach_m` must be above zero. A bad value is an error that names the key. | MUST |
 | FR-1.9 | `bikeplan config show <region file>` prints the region, each profile value with its source (assumptions marked), and the config hash. | MUST |
+| FR-1.10 | `report.author` is optional text: the name and suburb of the person the report speaks for. The report of spec 13 needs it, and says so by name when it is missing. | MUST |
 
 ## 6. Values for the `au-nsw` profile
 
@@ -163,6 +166,7 @@ Both profiles give these defaults. Each is an assumption unless an adapter or a 
 | FR-1.7 | The three region files load and point at the right relation and profile |
 | FR-1.8 | Each bad value fails with the key named |
 | FR-1.9 | The command prints every profile value with its source and the hash |
+| FR-1.10 | `report.author` loads when set and is `None` when left out; a non-text value is an error that names the key |
 
 ## 10. Validation evidence
 

@@ -17,3 +17,4 @@ Each spec has one number. Take the next free number when you add a spec, and add
 | 10 | `specs/10-adapters-au.md` | Australian and NSW data adapters |
 | 11 | `specs/11-generic.md` | Command line, Docker, test regions, end-to-end runs |
 | 12 | `specs/12-validation.md` | Council plan check, data quality, sensitivity |
+| 13 | `specs/13-public-report.md` | The public report in every release |

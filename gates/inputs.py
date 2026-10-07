@@ -8,6 +8,7 @@ INPUT_FILES = frozenset(
     {
         "SPECIFICATION.md",
         "PROMPT.md",
+        "VOICE.md",
         "CLAUDE.md",
         "loop.sh",
         ".readability-allow",
