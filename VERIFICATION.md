@@ -465,3 +465,12 @@ gh release view v2026.10.07 --json tagName,assets --jq '[.tagName, (.assets|map(
 
 Expect: 4 passed. The script pulls the snapshot, builds the report, checks `SHA256SUMS` and uploads five files. The last command prints the tag and the file names.
 Artifact: `artifacts/R1.4/release.txt`
+
+### R1.6
+
+```bash
+uv run pytest tests/test_report_deterministic.py -v
+```
+
+Expect: 5 passed. Two builds with a different `TZ`, `LANG`, `PYTHONHASHSEED`, folder and clock give equal `SHA256SUMS`; the report date is the snapshot date; no time stamp, absolute path or fetched font or script is in the HTML.
+Artifact: `artifacts/R1.6/determinism.txt`
