@@ -598,3 +598,14 @@ uv run bikeplan propose regions/test-grid.yaml --snapshot tests/fixtures/test-gr
 
 Expect: 12 tests pass, one for each fact in the section 3 table of `specs/11-generic.md`. The generator rebuilds the committed files. The access score is `25.0`, and `projects.json` holds one project, signals at the Main Road junction at y = 200, with gain `75.0` and score after `100.0`.
 Artifact: `artifacts/P9.1/projects.json`
+
+### P9.2
+
+```bash
+uv run pytest tests/test_run.py -q
+uv run bikeplan run regions/test-grid.yaml --snapshot tests/fixtures/test-grid/snapshot --out "$OUT"
+sha256sum -c "$OUT/outputs.sha256"
+```
+
+Expect: 12 tests pass, including a run with sockets blocked and two runs under different hash seeds that match byte for byte. The command prints `score_before 25.0`, `score_after 100.0` and `projects 1`, and every line of `sha256sum -c` says `OK`.
+Artifact: `artifacts/P9.2/outputs.sha256`
