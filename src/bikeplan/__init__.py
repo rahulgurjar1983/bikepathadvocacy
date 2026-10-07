@@ -167,7 +167,7 @@ def report(path: str, snapshot: str, out: str) -> int:
     try:
         region = load_region(path)
         profile = load_profile(region.profile)
-        figures = write_report(build(snapshot, region, profile), region, profile, out)
+        figures = write_report(build(snapshot, region, profile), region, profile, out, snapshot)
     except (ConfigError, OSError) as error:
         print(error, file=sys.stderr)
         return 1
