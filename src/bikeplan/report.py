@@ -42,10 +42,10 @@ MAP_RECIPE = (
     "/1000,3))"
 )
 LEVEL_KEYS = (
-    ("1", "Level one: very calm (pale blue)"),
+    ("1", "Level one: the calmest (pale blue)"),
     ("2", "Level two: calm (dark blue)"),
     ("3", "Level three: busy (pale red)"),
-    ("4", "Level four: very busy (dark red)"),
+    ("4", "Level four: the busiest (dark red)"),
 )
 HEADER = ["segment_id", "length_m", "lts", "aaa", "width_source"]
 FIGURES = [
