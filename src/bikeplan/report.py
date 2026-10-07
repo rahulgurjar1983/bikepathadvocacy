@@ -3,6 +3,7 @@ import hashlib
 import html
 import io
 import json
+import re
 from datetime import date
 from pathlib import Path
 
@@ -360,6 +361,14 @@ def chart(figures: list[dict]) -> str:
     )
 
 
+TIMESTAMP = re.compile(r"\b\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}")
+
+
+def leaks(text: str, folders) -> list[str]:
+    found = [str(folder) for folder in folders if str(folder) != "/" and str(folder) in text]
+    return found + TIMESTAMP.findall(text)
+
+
 def snapshot_date(region: Region) -> str:
     day = date.fromisoformat(region.snapshot.osm_date[:10])
     return f"<time>{day.day} {MONTHS[day.month - 1]} {day.year}</time>"
@@ -407,10 +416,14 @@ def write_report(graph, region: Region, profile: Profile, out, snapshot) -> list
     text = segments_text(rows)
     map_text = json.dumps(map_data(graph, rows, Path(snapshot)), sort_keys=True) + "\n"
     figures = figure_list(text, map_text)
+    html_text = page(region, figures, map_text)
+    found = leaks(html_text, [out.resolve(), Path(snapshot).resolve(), Path.cwd().resolve()])
+    if found:
+        raise ConfigError(f"the report holds a time stamp or path: {found}")
     files = {
         "figures.json": json.dumps(figures, indent=2, sort_keys=True) + "\n",
         "map.json": map_text,
-        "report.html": page(region, figures, map_text),
+        "report.html": html_text,
         "segments.csv": text,
     }
     for name, content in files.items():
