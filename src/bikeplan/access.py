@@ -7,8 +7,8 @@ from typing import NamedTuple
 import numpy as np
 import shapely
 from pyproj import Transformer
-from scipy.sparse import coo_array
-from scipy.sparse.csgraph import connected_components
+from scipy.sparse import coo_array, csr_array
+from scipy.sparse.csgraph import connected_components, dijkstra
 from scipy.spatial import cKDTree
 from shapely.geometry import Point, Polygon
 
@@ -221,3 +221,42 @@ def population_units(snapshot: str | Path, crs) -> list[dict]:
         ]
         units.append({"polygon": Polygon(rings[0], rings[1:]), "people": count})
     return units
+
+
+class Reach(NamedTuple):
+    within: dict
+    safe: set
+
+
+def reverse_matrix(graph, index: dict, allowed) -> csr_array:
+    best: dict = {}
+    for u, v, key, data in graph.edges(keys=True, data=True):
+        if not data["bike_ok"] or (allowed is not None and (u, v, key) not in allowed):
+            continue
+        pair = (index[v], index[u])
+        best[pair] = min(best.get(pair, np.inf), data["length_m"])
+    rows = [pair[0] for pair in best]
+    columns = [pair[1] for pair in best]
+    size = len(index)
+    return csr_array((list(best.values()), (rows, columns)), shape=(size, size))
+
+
+def reach(graph, sources: list, reach_m: float, detour_max: float, aaa: set) -> list[Reach]:
+    nodes = list(graph.nodes)
+    index = {node: number for number, node in enumerate(nodes)}
+    found = []
+    columns = [index[source] for source in sources]
+    runs = []
+    for allowed in (None, aaa):
+        matrix = reverse_matrix(graph, index, allowed)
+        runs.append(dijkstra(matrix, directed=True, indices=columns, limit=reach_m))
+    for row in range(len(sources)):
+        anywhere, safely = runs[0][row], runs[1][row]
+        within = {nodes[n]: float(anywhere[n]) for n in np.flatnonzero(np.isfinite(anywhere))}
+        safe = {
+            node
+            for node, distance in within.items()
+            if safely[index[node]] <= min(reach_m, detour_max * distance)
+        }
+        found.append(Reach(within, safe))
+    return found
