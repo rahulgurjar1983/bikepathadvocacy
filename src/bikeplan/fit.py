@@ -1,6 +1,6 @@
 from bikeplan.config import Profile, Width
 from bikeplan.network import parking_on_side, road_class
-from bikeplan.stress import lanes_each_way
+from bikeplan.stress import aaa_verdict, edge_aaa, lanes_each_way, own_lts
 from bikeplan.width import PAINTED_LANE_M, SIDES
 
 QUIET_CLASSES = ("living_street", "service", "residential", "unclassified")
@@ -274,3 +274,116 @@ def options(segment: dict, profile: Profile) -> list[dict]:
             item["robust"] = "check on site"
         item["disruption"] = disruption_counts(item["fix"], segment, profile)
     return found
+
+
+def fixed_edge(edge: dict, fix: str, profile: Profile) -> dict:
+    changed = {**edge}
+    if fix == "quietway":
+        changed["speed_kmh"] = profile.quietway.target_speed_kmh.value
+    elif fix == "verge_path":
+        changed["bike_facility"] = "off_road"
+    else:
+        changed["bike_facility"] = "protected"
+        changed["bike_lane_width_m"] = None
+    if fix == "road_diet":
+        changed["lanes_total"] = edge["lanes_total"] - 1
+        if edge["oneway"]:
+            changed["lanes_dir"] = changed["lanes_total"]
+    return changed
+
+
+def rescore(edges: list[dict], fix: str, profile: Profile) -> str | None:
+    for edge in edges:
+        if not edge.get("bike_ok", True):
+            continue
+        changed = {"bike_ok": True, **fixed_edge(edge, fix, profile)}
+        lts = own_lts(changed, profile)
+        if not edge_aaa(changed, lts, profile):
+            return aaa_verdict(changed, lts, False, profile)
+    return None
+
+
+def already_aaa(edges: list[dict], profile: Profile) -> bool:
+    return all(
+        edge_aaa({"bike_ok": True, **edge}, own_lts({"bike_ok": True, **edge}, profile), profile)
+        for edge in edges
+        if edge.get("bike_ok", True)
+    )
+
+
+def after_strips(segment: dict, item: dict, profile: Profile) -> list[dict]:
+    before = cross_section(segment, profile)
+    fix = item["fix"]
+    if fix in ("quietway", "verge_path"):
+        return before
+    parked = parked_flags(segment, profile)
+    removed = removed_sides(fix, parked)
+    kept = list(parked)
+    for side in [index for index, flag in enumerate(parked) if flag][:removed]:
+        kept[side] = False
+    core = [s for s in before if s["kind"] in ("through", "median")]
+    if fix == "road_diet":
+        core.remove(next(s for s in core if s["kind"] == "through"))
+    desirable = item["widths"] == "desirable"
+    widths = profile.widths_m
+    pair = item["layout"] == "pair"
+    cycle = {
+        "kind": "cycleway",
+        "width_m": width_for(
+            widths.one_way_cycleway if pair else widths.two_way_cycleway, desirable
+        ),
+    }
+    two_way_side = 1 if kept[0] and not kept[1] else 0
+    sides = []
+    for index in range(2):
+        strips = []
+        if pair or index == two_way_side:
+            strips = [
+                cycle,
+                {"kind": "separator", "width_m": separator_m(profile, kept[index], desirable)},
+            ]
+        if kept[index]:
+            strips.append({"kind": "parking", "width_m": profile.widths_m.parking_lane.value})
+        sides.append(strips)
+    strips = sides[0] + core + sides[1][::-1]
+    used = sum(strip["width_m"] for strip in strips)
+    spare = segment["width_m"] - used
+    if spare > EPSILON:
+        strips.append({"kind": "spare", "width_m": spare})
+    return strips
+
+
+def candidate(item: dict, segment: dict, edges: list[dict], profile: Profile, weights) -> dict:
+    rejected = None
+    if item["fits"]:
+        rejected = rescore(edges, item["fix"], profile)
+    return {
+        **item,
+        "score": disruption_score(item["disruption"], weights),
+        "accepted": item["fits"] and rejected is None,
+        "rejected": rejected,
+    }
+
+
+def choose(segment: dict, profile: Profile, weights, edges: list[dict] | None = None) -> dict:
+    edges = edges or [segment]
+    before = cross_section(segment, profile)
+    result = {"status": "aaa", "fix": None, "score": None, "reasons": [], "candidates": []}
+    result |= {"before": before, "after": before}
+    if already_aaa(edges, profile):
+        return result
+    found = [
+        candidate(item, segment, edges, profile, weights) for item in options(segment, profile)
+    ]
+    result["candidates"] = found
+    accepted = [item for item in found if item["accepted"]]
+    if not accepted:
+        reasons = [item["rejected"] or item["reason"] for item in found]
+        return result | {"status": "no_fit", "reasons": reasons}
+    best = min(accepted, key=lambda item: item["score"])
+    return result | {
+        "status": "fix",
+        "fix": best["fix"],
+        "score": best["score"],
+        "after": after_strips(segment, best, profile),
+    }
