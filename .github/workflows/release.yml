@@ -1,0 +1,62 @@
+name: release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  release:
+    name: release
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 2
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7
+        with:
+          version: "0.11.3"
+          enable-cache: true
+      - run: uv sync --frozen
+      - name: Name the release after the merged pull request
+        id: name
+        run: |
+          pr="$(git log -1 --format=%s | sed -n 's/^Merge pull request #\([0-9]*\) .*/\1/p')"
+          if [ -z "$pr" ]; then
+            echo "release: HEAD is not a pull request merge: $(git log -1 --format=%s)" >&2
+            exit 1
+          fi
+          tag="v$(TZ=UTC git log -1 --format=%cd --date=format-local:%Y.%m.%d)-pr$pr"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "release: $tag already exists" >&2
+            exit 1
+          fi
+          echo "pr=$pr" >>"$GITHUB_OUTPUT"
+          echo "tag=$tag" >>"$GITHUB_OUTPUT"
+      - name: Build and upload every report
+        run: scripts/release.sh "${{ steps.name.outputs.tag }}"
+      - name: Title and notes from the pull request
+        run: |
+          title="$(gh pr view "${{ steps.name.outputs.pr }}" --json title --jq .title)"
+          {
+            echo "Pull request #${{ steps.name.outputs.pr }}: $title"
+            echo
+            gh pr view "${{ steps.name.outputs.pr }}" --json commits --jq '.commits[] | "- \(.oid[0:7]) \(.messageHeadline)"'
+            echo
+            echo "Open \`index.html\` for every report. \`SHA256SUMS\` checks every file."
+          } >notes.md
+          gh release edit "${{ steps.name.outputs.tag }}" --title "$title" --notes-file notes.md --latest
+      - name: Remove a half-made release
+        if: failure() && steps.name.outputs.tag != ''
+        run: gh release delete "${{ steps.name.outputs.tag }}" --yes --cleanup-tag || true
