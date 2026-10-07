@@ -127,6 +127,8 @@ def test_fr9_3_the_page_makes_no_network_request(page):
             assert not (value or "").startswith(("http:", "https:", "//")), (tag, name, value)
     assert "link" not in page.tags
     assert "img" not in page.tags
+    assert len(page.scripts) >= 3
+    assert "map" in page.ids
     assert all("src" not in item["attrs"] for item in page.scripts)
 
 
@@ -200,4 +202,6 @@ def test_fr9_3_two_runs_give_the_same_page(out, tmp_path):
     again = tmp_path / "again"
     args = ["run", REGION, "--snapshot", str(COMMITTED), "--out", str(again)]
     assert main(args) == 0
+    text = (again / "report.html").read_text()
+    assert 'id="rebuild"' in text
     assert (again / "report.html").read_bytes() == (out / "report.html").read_bytes()
