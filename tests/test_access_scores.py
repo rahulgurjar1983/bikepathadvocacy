@@ -52,6 +52,7 @@ def test_fr7_7_a_zero_weight_type_does_not_move_the_score():
 
 
 def snapshot(tmp_path):
+    tmp_path.mkdir()
     (tmp_path / "network.osm.gz").write_bytes(
         gzip.compress(Path("tests/fixtures/network/cases.osm").read_bytes(), mtime=0)
     )
