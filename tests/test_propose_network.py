@@ -3,7 +3,6 @@ import pytest
 from shapely.geometry import box
 
 from bikeplan.config import load_profile, load_region
-from bikeplan.fit import disruption_score
 from bikeplan.propose import planning_network
 from tests.test_fit_junction import junction
 from tests.test_fit_summary import street
@@ -82,7 +81,7 @@ def test_fr8_1_an_edge_held_back_by_a_crossing_pays_half_the_junction_score():
     for _, _, data in graph.edges(data=True):
         data["length_m"] = 100.0
     found = planning_network(graph, PROFILE, REGION)
-    score = disruption_score({"refuges": 1, "signals": 0}, WEIGHTS)
+    score = WEIGHTS.refuge
     assert found.elements["junction:0"]["fix"] == "refuge"
     assert found.elements["junction:0"]["score"] == score
     assert found.edges[(3, 0, 0)]["cost"] == pytest.approx(100 + 10 * score / 2)
@@ -96,6 +95,6 @@ def test_fr8_1_a_route_across_a_junction_pays_its_score_once():
     for _, _, data in graph.edges(data=True):
         data["length_m"] = 100.0
     found = planning_network(graph, PROFILE, REGION)
-    score = disruption_score({"refuges": 1, "signals": 0}, WEIGHTS)
+    score = WEIGHTS.refuge
     both = found.edges[(3, 0, 0)]["cost"] + found.edges[(0, 3, 0)]["cost"]
     assert both == pytest.approx(200 + 10 * score)
