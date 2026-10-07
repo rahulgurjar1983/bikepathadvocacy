@@ -1,0 +1,4 @@
+bike edges 87850 in planning network 81671 needing a fix 54946
+elements 29802
+elements by fix cycleway_in_spare 427 cycleway_parking_both_sides 9053 cycleway_parking_one_side 1281 quietway 17466 refuge 21 road_diet 1129 signals 425
+unsafe trips 94392 total value 98.89
