@@ -52,8 +52,12 @@ def test_fr6_8_two_lane_50_needs_no_fix():
 
 
 def test_fr6_8_junction_with_a_refuge_already_goes_to_signals():
-    found = junction_fixes(junction(4, 40, refuge=True), PROFILE)
+    found = junction_fixes(junction(4, 60, refuge=True), PROFILE)
     assert [item["fix"] for item in found] == ["signals"]
+
+
+def test_fr6_8_refuge_that_already_gives_lts_1_needs_no_fix():
+    assert junction_fixes(junction(4, 40, refuge=True), PROFILE) == []
 
 
 def test_fr6_8_signalised_junction_needs_no_fix():
