@@ -1,0 +1,42 @@
+[
+  {
+    "rank": 1,
+    "id": "8f21dad1cfe48684",
+    "name": "Grid School: unnamed residential",
+    "elements": [
+      {
+        "id": "junction:1010",
+        "street": "unnamed residential",
+        "length_m": 0.0,
+        "fix": "signals",
+        "robust": "robust",
+        "width_source": null,
+        "km": 0.0,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.0,
+        "signals": 1,
+        "refuges": 0
+      }
+    ],
+    "totals": {
+      "km_by_fix": {},
+      "parking_spaces": 0,
+      "lane_km": 0.0,
+      "speed_km": 0.0,
+      "signals": 1,
+      "refuges": 0
+    },
+    "gain": 75.0,
+    "score_after": 100.0,
+    "people": {
+      "school": 750.0,
+      "college": 0,
+      "university": 0,
+      "aged_care": 0,
+      "library": 0,
+      "town_centre": 0,
+      "station": 0
+    }
+  }
+]
