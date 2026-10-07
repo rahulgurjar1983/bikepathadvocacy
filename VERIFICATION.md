@@ -409,6 +409,18 @@ python3 -I -c "$(python3 -c "import json;print(json.load(open('artifacts/R1.2/fi
 Expect: The tests pass. In the report text each number sits inside a link such as `591.099 km (F1)`, and no other number shows outside the appendix. Each appendix entry lists value, method, files with sha256, sources with licence and the recipe. `sha256sum -c` says `OK` for all three files. Run inside `artifacts/R1.2`, the F1 recipe prints `591.099`.
 Artifact: `artifacts/R1.2/report.html`
 
+### R1.3
+
+```bash
+uv run pytest tests/test_report_voice.py -q
+uv run bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out artifacts/R1.3
+(cd artifacts/R1.3 && sha256sum -c SHA256SUMS)
+grep -c 'name="viewport"' artifacts/R1.3/report.html
+```
+
+Expect: The tests pass. `sha256sum -c` says `OK` for all three files. The grep prints `1`. The report opens with "I checked" and "I ask council", holds a bar chart with a title and a matching table, a "Words I use" glossary and print CSS, and its text scores grade 11 or lower on `gates.readability`.
+Artifact: `artifacts/R1.3/report.html`
+
 ### P4.7
 
 ```bash

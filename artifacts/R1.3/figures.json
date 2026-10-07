@@ -1,0 +1,68 @@
+[
+  {
+    "id": "F1",
+    "inputs": [
+      {
+        "name": "segments.csv",
+        "sha256": "9b64afe03d7061e1fdf25185f2a20e1f13b3e7845976ad8be91b0d26539c8df8"
+      }
+    ],
+    "label": "Street a bike may use",
+    "method": "I add up the length of every street segment inside the boundary where a bike may ride.",
+    "recipe": "import csv;print(round(sum(float(r['length_m']) for r in csv.DictReader(open('segments.csv')) if True)/1000,3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 03",
+    "unit": "km",
+    "value": 591.099
+  },
+  {
+    "id": "F2",
+    "inputs": [
+      {
+        "name": "segments.csv",
+        "sha256": "9b64afe03d7061e1fdf25185f2a20e1f13b3e7845976ad8be91b0d26539c8df8"
+      }
+    ],
+    "label": "Street that is safe for a child to ride alone (AAA)",
+    "method": "I score each edge for stress and keep the segments where every edge is AAA.",
+    "recipe": "import csv;print(round(sum(float(r['length_m']) for r in csv.DictReader(open('segments.csv')) if r['aaa'] == '1')/1000,3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 04",
+    "unit": "km",
+    "value": 135.891
+  },
+  {
+    "id": "F3",
+    "inputs": [
+      {
+        "name": "segments.csv",
+        "sha256": "9b64afe03d7061e1fdf25185f2a20e1f13b3e7845976ad8be91b0d26539c8df8"
+      }
+    ],
+    "label": "Street with no width estimate",
+    "method": "I try each width source in rank order. I count the segments where none gave a width.",
+    "recipe": "import csv;print(round(sum(float(r['length_m']) for r in csv.DictReader(open('segments.csv')) if r['width_source'] == 'none')/1000,3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 05",
+    "unit": "km",
+    "value": 70.424
+  }
+]
