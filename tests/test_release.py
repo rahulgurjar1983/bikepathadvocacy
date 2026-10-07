@@ -38,9 +38,10 @@ with open(os.environ["GH_LOG"], "a") as log:
 if args[:2] == ["release", "view"]:
     sys.exit(0 if os.environ.get("GH_RELEASE_EXISTS") else 1)
 if args[:2] == ["release", "list"]:
-    print(os.environ.get("GH_LAST", ""))
+    print(os.environ.get("GH_LAST", "").replace(",", "\\n"))
 if args[:2] == ["release", "download"]:
     key = "GH_SOURCE" if args[2].startswith("snapshot-") else "GH_LAST_SOURCE"
+    key = "GH_SOURCE_" + args[2].replace(".", "_") if "GH_SOURCE_" + args[2].replace(".", "_") in os.environ else key
     target = Path(args[args.index("--dir") + 1])
     target.mkdir(parents=True, exist_ok=True)
     for source in Path(os.environ[key]).iterdir():
@@ -143,16 +144,27 @@ def add_review(work, name, public):
     (folder / "claims.yaml").write_text("[]\n")
 
 
-def last_release(tmp_path, names=("au-nsw-bayside-report.html", "au-nsw-bayside.tar.gz")):
-    last = tmp_path / "last"
+def last_release(
+    tmp_path,
+    built_at,
+    names=("au-nsw-bayside-report.html", "au-nsw-bayside.tar.gz"),
+    folder="last",
+):
+    last = tmp_path / folder
     last.mkdir()
+    (last / "index.html").write_text(f"<td>{built_at}</td>")
     for name in names:
         (last / name).write_text(f"old {name}")
     lines = "".join(
         hashlib.sha256((last / n).read_bytes()).hexdigest() + "  " + n + "\n" for n in names
     )
+    lines += hashlib.sha256((last / "index.html").read_bytes()).hexdigest() + "  index.html\n"
     (last / "SHA256SUMS").write_text(lines)
     return last
+
+
+def parent_of_head(work):
+    return git(work, "rev-parse", "HEAD").stdout.strip()
 
 
 def run_script(work, source, bin_dir, tag, path=None, **extra):
@@ -314,7 +326,7 @@ def test_fr13_7_artifacts_archive_holds_the_artifacts_folder(repo):
 
 def test_fr13_7_a_merge_that_changes_only_specs_copies_the_last_release_reports(repo, tmp_path):
     work, source, bin_dir = repo
-    last = last_release(tmp_path)
+    last = last_release(tmp_path, parent_of_head(work))
     (work / "specs").mkdir()
     (work / "specs/00-scaffold.md").write_text("changed\n")
     commit(work, "spec only")
@@ -332,7 +344,7 @@ def test_fr13_7_a_merge_that_changes_only_specs_copies_the_last_release_reports(
 
 def test_fr13_7_a_merge_that_changes_the_voice_file_rebuilds_every_report(repo, tmp_path):
     work, source, bin_dir = repo
-    last = last_release(tmp_path)
+    last = last_release(tmp_path, parent_of_head(work))
     (work / "VOICE.md").write_text("two\n")
     commit(work, "code change")
 
@@ -348,7 +360,7 @@ def test_fr13_7_a_merge_that_changes_the_voice_file_rebuilds_every_report(repo, 
 
 def test_fr13_7_fails_hard_when_a_copied_report_no_longer_matches_its_sum(repo, tmp_path):
     work, source, bin_dir = repo
-    last = last_release(tmp_path)
+    last = last_release(tmp_path, parent_of_head(work))
     (last / "au-nsw-bayside-report.html").write_text("tampered")
     (work / "specs").mkdir()
     (work / "specs/00-scaffold.md").write_text("changed\n")
@@ -361,3 +373,47 @@ def test_fr13_7_fails_hard_when_a_copied_report_no_longer_matches_its_sum(repo, 
     assert result.returncode != 0
     assert "au-nsw-bayside-report.html" in result.stdout + result.stderr
     assert not [c for c in calls(bin_dir) if c[:2] == ["release", "upload"]]
+
+
+def test_fr13_7_a_last_release_that_names_another_commit_is_not_copied(repo, tmp_path):
+    work, source, bin_dir = repo
+    last = last_release(tmp_path, "0" * 40)
+    (work / "specs").mkdir()
+    (work / "specs/00-scaffold.md").write_text("changed\n")
+    commit(work, "spec only")
+
+    result = run_script(
+        work, source, bin_dir, "v2026.10.07", GH_LAST="v2026.10.06", GH_LAST_SOURCE=str(last)
+    )
+
+    assert result.returncode == 0, result.stderr[-2000:]
+    assert [c for c in bp_calls(bin_dir) if c[0] == "report"]
+    assert "old" not in uploaded(bin_dir)["au-nsw-bayside-report.html"].read_text()
+    assert "v2026.10.06" not in uploaded(bin_dir)["index.html"].read_text()
+
+
+def test_fr13_7_copies_from_the_release_that_names_the_parent_commit(repo, tmp_path):
+    work, source, bin_dir = repo
+    stale = last_release(tmp_path, "0" * 40, folder="stale")
+    (stale / "au-nsw-bayside-report.html").write_text("stale report")
+    good = last_release(tmp_path, parent_of_head(work), folder="good")
+    (work / "specs").mkdir()
+    (work / "specs/00-scaffold.md").write_text("changed\n")
+    commit(work, "spec only")
+
+    result = run_script(
+        work,
+        source,
+        bin_dir,
+        "v2026.10.08",
+        GH_LAST="v2026.10.07,v2026.10.06",
+        GH_SOURCE_v2026_10_07=str(stale),
+        GH_SOURCE_v2026_10_06=str(good),
+        GH_LAST_SOURCE=str(stale),
+    )
+
+    assert result.returncode == 0, result.stderr[-2000:]
+    assert not [c for c in bp_calls(bin_dir) if c[0] in ("report", "review")]
+    files = uploaded(bin_dir)
+    assert files["au-nsw-bayside-report.html"].read_text() == "old au-nsw-bayside-report.html"
+    assert "v2026.10.06" in files["index.html"].read_text()
