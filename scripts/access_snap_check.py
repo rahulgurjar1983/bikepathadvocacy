@@ -18,6 +18,5 @@ kept = in_scope_places(found, boundary, region.analysis_buffer_m)
 nodes, missed = snap_points([(p["x"], p["y"]) for p in kept], graph)
 result = homes(population_units(snapshot, graph.graph["crs"]), graph, boundary)
 print(f"places {len(found)} in scope {len(kept)} not snapped {len(missed)}")
-print(
-    f"home nodes {len(result.people)} people {round(sum(result.people.values()))} not snapped {round(result.unsnapped)}"
-)
+people = round(sum(result.people.values()))
+print(f"home nodes {len(result.people)} people {people} not snapped {round(result.unsnapped)}")
