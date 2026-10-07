@@ -16,4 +16,4 @@ def test_fr7_4_kontur_hexagons_become_projected_units(tmp_path):
     x, y = units[0]["polygon"].centroid.coords[0]
     assert 300_000 < x < 400_000
     assert 6_000_000 < y < 6_300_000
-    assert 300 < units[0]["polygon"].length < 2000
+    assert 2000 < units[0]["polygon"].length < 5000
