@@ -57,3 +57,14 @@ def test_fr0_15_pre_push_runs_the_gate_script(repo, gate_env, tmp_path):
     result = run_hook(repo, gate_env, "pre-push")
     assert result.returncode == 7
     assert marker.read_text().strip() == "ran"
+
+
+def test_fr0_15_pre_push_leaves_the_full_test_suite_to_ci(repo, gate_env, tmp_path):
+    marker = tmp_path / "skip-tests"
+    gate = tmp_path / "gate.sh"
+    gate.write_text(f'#!/usr/bin/env bash\nprintf "%s" "${{GATE_SKIP_TESTS:-unset}}" > {marker}\n')
+    gate.chmod(0o755)
+    gate_env["BIKEPLAN_GATE"] = str(gate)
+    result = run_hook(repo, gate_env, "pre-push")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert marker.read_text() == "1"
