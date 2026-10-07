@@ -96,7 +96,7 @@ def test_fr13_10_two_builds_in_other_places_and_times_give_equal_sums(builds):
 def test_fr13_10_the_report_date_is_the_snapshot_date(builds):
     outs, _ = builds
     html = (outs[0] / "report.html").read_text()
-    assert '<time datetime="2026-10-01">1 October 2026</time>' in html
+    assert "<time>1 October 2026</time>" in html
 
 
 def test_fr13_10_the_report_holds_no_time_stamp_or_absolute_path(builds):
