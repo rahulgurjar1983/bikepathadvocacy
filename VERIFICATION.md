@@ -565,3 +565,12 @@ uv run python scripts/propose_picks_check.py data/cache/au-nsw-bayside/2026-10-0
 
 Expect: 11 tests pass. On Bayside two rounds with a pool of 3 and `min_gain` 0 give two picks: the first has 3 elements and gain 0.0276, the second has 1 element and gain 0.0094, and the score after them is 0.1419. The run takes about 2.5 minutes.
 Artifact: `artifacts/P8.3/picks.txt`
+
+### R1.8
+
+```bash
+uv run pytest tests/test_release.py -v -k fr13_7 | tee artifacts/R1.8/tests.txt
+```
+
+Expect: 13 tests pass. A merge that changes only specs copies reports from the release whose `index.html` names `HEAD^`, and rebuilds when no release names it.
+Artifact: `artifacts/R1.8/tests.txt`
