@@ -37,7 +37,15 @@ fi
 
 last=""
 if [ "$changed" = 0 ]; then
-  last="$(gh release list --limit 100 --json tagName --jq '[.[].tagName | select(startswith("v"))][0] // empty')"
+  parent="$(git rev-parse HEAD^)"
+  while read -r tag; do
+    [ -n "$tag" ] || continue
+    gh release download "$tag" --pattern index.html --dir "$work/index-$tag"
+    if grep -q "$parent" "$work/index-$tag/index.html"; then
+      last="$tag"
+      break
+    fi
+  done < <(gh release list --limit 100 --json tagName --jq '.[].tagName | select(startswith("v"))')
   if [ -n "$last" ]; then
     gh release download "$last" --dir "$work/last"
   fi
