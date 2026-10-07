@@ -146,7 +146,7 @@ def test_fr9_3_the_page_makes_no_network_request(page):
 
 
 def test_fr9_3_the_map_has_a_layer_control_for_each_layer(page):
-    for name in ("lts", "aaa", "places", "projects"):
+    for name in ("lts-1", "lts-2", "lts-3", "lts-4", "aaa", "stations", "schools", "proposed"):
         assert page.ids.get(f"layer-{name}") == "input", name
     assert page.ids.get("report-map-canvas") == "div"
 

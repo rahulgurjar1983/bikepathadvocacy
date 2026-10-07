@@ -1,5 +1,3 @@
-import gzip
-import json
 import os
 import re
 import subprocess
@@ -10,25 +8,9 @@ import pytest
 
 from bikeplan.report import leaks
 
-FIXTURE = Path("tests/fixtures/network/junctions.osm").resolve()
-REGION = Path("regions/au-nsw-bayside.yaml").resolve()
+COMMITTED = Path("tests/fixtures/test-grid/snapshot").resolve()
+REGION_FIXTURE = Path("tests/fixtures/test-grid/region.yaml")
 ROOT = Path.cwd().resolve()
-BOUNDARY = {
-    "type": "Feature",
-    "properties": {},
-    "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-            [
-                [151.10, -33.97],
-                [151.14, -33.97],
-                [151.14, -33.88],
-                [151.10, -33.88],
-                [151.10, -33.97],
-            ]
-        ],
-    },
-}
 RUN = (
     "import sys, time, datetime\n"
     "time.time = lambda: float(sys.argv[1])\n"
@@ -46,7 +28,7 @@ VARIANTS = [
 ]
 
 
-def build(tmp_path, snapshot, index):
+def build(tmp_path, region, snapshot, index):
     variant = VARIANTS[index]
     folder = tmp_path / f"run{index}" / ("deep" * index) / "work"
     folder.mkdir(parents=True)
@@ -60,7 +42,7 @@ def build(tmp_path, snapshot, index):
         "PYTHONPATH": str(ROOT / "src"),
     }
     done = subprocess.run(
-        [sys.executable, "-c", RUN, variant["clock"], str(REGION), str(snapshot), str(out)],
+        [sys.executable, "-c", RUN, variant["clock"], str(region), str(snapshot), str(out)],
         cwd=folder,
         env=env,
         capture_output=True,
@@ -73,11 +55,14 @@ def build(tmp_path, snapshot, index):
 @pytest.fixture(scope="module")
 def builds(tmp_path_factory):
     tmp_path = tmp_path_factory.mktemp("determinism")
-    snapshot = tmp_path / "snapshot"
-    snapshot.mkdir()
-    (snapshot / "network.osm.gz").write_bytes(gzip.compress(FIXTURE.read_bytes(), mtime=0))
-    (snapshot / "boundary.geojson").write_text(json.dumps(BOUNDARY))
-    outs = [build(tmp_path, snapshot, index) for index in range(2)]
+    snapshot = COMMITTED
+    region = tmp_path / "region.yaml"
+    region.write_text(
+        REGION_FIXTURE.read_text().replace(
+            "tests/fixtures/test-grid/snapshot/boundary.geojson", str(snapshot / "boundary.geojson")
+        )
+    )
+    outs = [build(tmp_path, region, snapshot, index) for index in range(2)]
     for out in outs:
         assert "<time>1 October 2026</time>" in (out / "report.html").read_text()
     return outs, [tmp_path, snapshot, ROOT]
