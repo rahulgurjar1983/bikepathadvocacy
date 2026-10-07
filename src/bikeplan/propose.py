@@ -1,10 +1,11 @@
+import hashlib
 import heapq
 from collections import defaultdict
 from typing import NamedTuple
 
 from shapely.geometry import Point
 
-from bikeplan.access import Reach
+from bikeplan.access import Reach, reach, score_access
 from bikeplan.fit import junction_fixes, segment_fit
 from bikeplan.network import bike_segments
 from bikeplan.stress import edge_aaa, own_lts, raise_for_crossings
@@ -174,3 +175,101 @@ def route_fixes(
             if elements and length <= detour_max * results[index].within[home]:
                 fixes[elements] += values[(index, home)]
     return dict(fixes)
+
+
+def project_id(names) -> str:
+    return hashlib.sha256("".join(sorted(names)).encode()).hexdigest()[:16]
+
+
+def edge_share(name: str, element: dict, length: float, metres: float) -> float:
+    if element["kind"] == "junction":
+        return metres * element["score"] / 2
+    return metres * element["score"] * length / element["length_m"]
+
+
+def fixed_planning(graph, planning: Planning, fixed: set, metres: float) -> Planning:
+    edges = {}
+    for key, item in planning.edges.items():
+        done = [name for name in item["needs"] if name in fixed]
+        if not done:
+            edges[key] = item
+            continue
+        length = graph[key[0]][key[1]][key[2]]["length_m"]
+        saved = sum(edge_share(name, planning.elements[name], length, metres) for name in done)
+        needs = tuple(name for name in item["needs"] if name not in fixed)
+        edges[key] = {"cost": item["cost"] - saved, "needs": needs}
+    return Planning(edges, planning.elements)
+
+
+def exact_score(people: dict, placed: list, results: list[Reach], weights: dict) -> float:
+    homes = score_access(people, placed, results, weights)["homes"]
+    total = sum(people.values())
+    return 100 * sum(item["people"] * item["score"] for item in homes.values()) / total
+
+
+def greedy_picks(
+    graph,
+    planning: Planning,
+    placed: list,
+    people: dict,
+    weights: dict,
+    proposals,
+    reach_m: float,
+    detour_max: float,
+) -> list[dict]:
+    sources = [node for _, node in placed]
+    fixed: set = set()
+    aaa = {key for key, item in planning.edges.items() if not item["needs"]}
+
+    def aaa_after(extra: set) -> set:
+        done = fixed | extra
+        return aaa | {key for key, item in planning.edges.items() if set(item["needs"]) <= done}
+
+    results = reach(graph, sources, reach_m, detour_max, aaa_after(set()))
+    score = exact_score(people, placed, results, weights)
+    current = fixed_planning(graph, planning, fixed, proposals.metres_per_point)
+    picked: list[dict] = []
+    km = 0.0
+    while len(picked) < proposals.max_projects and km < proposals.budget_km:
+        values = trip_values(people, placed, results, weights)
+        found = route_fixes(graph, current, placed, results, values, reach_m, detour_max)
+        costs = {
+            elements: sum(planning.elements[name]["score"] for name in elements - fixed)
+            for elements in found
+        }
+        ranked = sorted(
+            found,
+            key=lambda elements: (-found[elements] / (costs[elements] + 1), project_id(elements)),
+        )[: proposals.candidate_pool]
+        best = None
+        for elements in ranked:
+            gain = (
+                exact_score(
+                    people,
+                    placed,
+                    reach(graph, sources, reach_m, detour_max, aaa_after(set(elements))),
+                    weights,
+                )
+                - score
+            )
+            key = (round(-gain / (costs[elements] + 1), 9), project_id(elements))
+            if best is None or key < best[0]:
+                best = (key, elements, gain)
+        if best is None or best[2] < proposals.min_gain:
+            break
+        _, elements, gain = best
+        fixed |= elements
+        score += gain
+        km += sum(planning.elements[name].get("km", 0.0) for name in elements)
+        picked.append(
+            {
+                "id": project_id(elements),
+                "elements": tuple(sorted(elements)),
+                "gain": round(gain, 6),
+                "cost": costs[elements],
+                "score_after": round(score, 6),
+            }
+        )
+        results = reach(graph, sources, reach_m, detour_max, aaa_after(set()))
+        current = fixed_planning(graph, planning, fixed, proposals.metres_per_point)
+    return picked
