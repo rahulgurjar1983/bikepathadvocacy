@@ -11,7 +11,7 @@ from pyproj import Transformer
 from shapely.geometry import LineString, MultiLineString, Point, mapping
 from shapely.ops import transform
 
-from bikeplan.access import Reach, reach, scene, score_access
+from bikeplan.access import EdgeTable, Reach, edge_table, reach, safe_reach, scene, score_access
 from bikeplan.fit import FIXES, junction_fixes, segment_fit
 from bikeplan.network import bike_segments
 from bikeplan.stress import edge_aaa, own_lts, raise_for_crossings
@@ -176,8 +176,11 @@ def route_fixes(
     values: dict,
     reach_m: float,
     detour_max: float,
+    allowed: set | None = None,
+    routes: dict | None = None,
 ) -> dict:
-    allowed = pickable(graph, planning)
+    allowed = pickable(graph, planning) if allowed is None else allowed
+    routes = {} if routes is None else routes
     incoming: dict = defaultdict(list)
     for (u, v, k), item in sorted(planning.edges.items(), key=lambda pair: repr(pair[0])):
         if set(item["needs"]) <= allowed:
@@ -189,11 +192,12 @@ def route_fixes(
         wanted[index].append(node)
     for index, homes in sorted(wanted.items()):
         place = placed[index][1]
-        routes = planned_routes(incoming, place, reach_m)
+        if index not in routes:
+            routes[index] = planned_routes(incoming, place, reach_m)
         for home in homes:
-            if home not in routes:
+            if home not in routes[index]:
                 continue
-            _, length, elements = routes[home]
+            _, length, elements = routes[index][home]
             if elements and length <= detour_max * results[index].within[home]:
                 fixes[elements] += values[(index, home)]
     return dict(fixes)
@@ -237,6 +241,7 @@ def update_reach(
     detour_max: float,
     old: set,
     new: set,
+    table: EdgeTable | None = None,
 ) -> tuple[list[Reach], list[int]]:
     heads = {key[1] for key in old ^ new}
     redone = [
@@ -244,7 +249,14 @@ def update_reach(
     ]
     if not redone:
         return results, redone
-    fresh = reach(graph, [sources[index] for index in redone], reach_m, detour_max, new)
+    fresh = safe_reach(
+        table or edge_table(graph),
+        [results[index].within for index in redone],
+        [sources[index] for index in redone],
+        reach_m,
+        detour_max,
+        new,
+    )
     updated = list(results)
     for index, found in zip(redone, fresh, strict=True):
         updated[index] = found
@@ -256,6 +268,37 @@ def newly_safe(people: dict, before: list[Reach], after: list[Reach]) -> list[fl
         sum(people.get(node, 0) for node in now.safe - was.safe)
         for was, now in zip(before, after, strict=True)
     ]
+
+
+def reach_counts(placed: list, results: list[Reach]) -> dict:
+    counts: dict = defaultdict(lambda: defaultdict(int))
+    for (kind, _), found in zip(placed, results, strict=True):
+        for node in found.within:
+            counts[node][kind] += 1
+    return counts
+
+
+def gain_between(
+    people: dict,
+    placed: list,
+    weights: dict,
+    counts: dict,
+    before: list[Reach],
+    after: list[Reach],
+    redone: list[int],
+) -> float:
+    gain = 0.0
+    for index in redone:
+        kind = placed[index][0]
+        for node in sorted(before[index].safe ^ after[index].safe):
+            if node not in people:
+                continue
+            weight = sum(weights[name] for name in counts[node])
+            if not weight:
+                continue
+            sign = 1 if node in after[index].safe else -1
+            gain += sign * people[node] * weights[kind] / (counts[node][kind] * weight)
+    return 100 * gain / sum(people.values())
 
 
 def greedy_picks(
@@ -273,20 +316,26 @@ def greedy_picks(
     labels = names if names is not None else [str(node) for node in sources]
     fixed: set = set()
     aaa = {key for key, item in planning.edges.items() if not item["needs"]}
+    table = edge_table(graph)
+    allowed = pickable(graph, planning)
+    routes: dict = {}
 
     def aaa_after(extra: set) -> set:
         done = fixed | extra
         return aaa | {key for key, item in planning.edges.items() if set(item["needs"]) <= done}
 
     now = aaa_after(set())
-    results = reach(graph, sources, reach_m, detour_max, now)
+    results = reach(graph, sources, reach_m, detour_max, now, table)
+    counts = reach_counts(placed, results)
     score = exact_score(people, placed, results, weights)
     current = fixed_planning(graph, planning, fixed, proposals.metres_per_point)
     picked: list[dict] = []
     km = 0.0
     while len(picked) < proposals.max_projects and km < proposals.budget_km:
         values = trip_values(people, placed, results, weights)
-        found = route_fixes(graph, current, placed, results, values, reach_m, detour_max)
+        found = route_fixes(
+            graph, current, placed, results, values, reach_m, detour_max, allowed, routes
+        )
         costs = {
             elements: sum(planning.elements[name]["score"] for name in sorted(elements - fixed))
             for elements in found
@@ -297,10 +346,10 @@ def greedy_picks(
         )[: proposals.candidate_pool]
         best = None
         for elements in ranked:
-            trial, _ = update_reach(
-                graph, sources, results, reach_m, detour_max, now, aaa_after(set(elements))
+            trial, redone = update_reach(
+                graph, sources, results, reach_m, detour_max, now, aaa_after(set(elements)), table
             )
-            gain = exact_score(people, placed, trial, weights) - score
+            gain = gain_between(people, placed, weights, counts, results, trial, redone)
             key = (round(-gain / (costs[elements] + 1), 9), project_id(elements))
             if best is None or key < best[0]:
                 best = (key, elements, gain)
@@ -311,10 +360,14 @@ def greedy_picks(
         score += gain
         km += sum(planning.elements[name].get("km", 0.0) for name in sorted(elements))
         before = results
-        results, _ = update_reach(
-            graph, sources, results, reach_m, detour_max, now, aaa_after(set())
+        results, redone = update_reach(
+            graph, sources, results, reach_m, detour_max, now, aaa_after(set()), table
         )
         now = aaa_after(set())
+        changed = {key[1] for key, item in planning.edges.items() if elements & set(item["needs"])}
+        for index in list(routes):
+            if any(node in results[index].within for node in changed):
+                del routes[index]
         gained = newly_safe(people, before, results)
         main = max(range(len(gained)), key=lambda index: (gained[index], -index))
         safe_before = score_access(people, placed, before, weights)["safe_people"]
@@ -428,13 +481,13 @@ def csv_row(record: dict, kinds: list) -> dict:
     return row
 
 
-def element_geometry(graph, name: str, element: dict, to_degrees):
+def element_geometry(graph, segments: dict, element: dict, to_degrees):
     if element["kind"] == "junction":
         node = graph.nodes[element["junction"]]
         shape = Point(node["x"], node["y"])
     else:
         lines = {}
-        for (u, v, _), data in bike_segments(graph)[element["segment"]]["edges"]:
+        for (u, v, _), data in segments[element["segment"]]["edges"]:
             line = data.get("geometry") or LineString(
                 [
                     (graph.nodes[u]["x"], graph.nodes[u]["y"]),
@@ -448,6 +501,7 @@ def element_geometry(graph, name: str, element: dict, to_degrees):
 
 def project_features(graph, planning: Planning, records: list[dict]) -> list[dict]:
     to_degrees = Transformer.from_crs(graph.graph["crs"], 4326, always_xy=True)
+    segments = bike_segments(graph)
     features = []
     for record in records:
         for item in record["elements"]:
@@ -456,9 +510,8 @@ def project_features(graph, planning: Planning, records: list[dict]) -> list[dic
                 "rank": record["rank"],
                 **{key: item[key] for key in ("id", "street", "fix", "robust", "width_source")},
             }
-            geometry = element_geometry(
-                graph, item["id"], planning.elements[item["id"]], to_degrees
-            )
+            element = planning.elements[item["id"]]
+            geometry = element_geometry(graph, segments, element, to_degrees)
             features.append({"type": "Feature", "geometry": geometry, "properties": properties})
     return features
 
