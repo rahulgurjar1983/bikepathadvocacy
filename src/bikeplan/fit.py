@@ -1,7 +1,17 @@
 from bikeplan.config import Profile, Width
-from bikeplan.network import parking_on_side, road_class
-from bikeplan.stress import aaa_verdict, edge_aaa, lanes_each_way, own_lts
-from bikeplan.width import PAINTED_LANE_M, SIDES
+from bikeplan.network import bike_segments, parking_on_side, road_class
+from bikeplan.stress import (
+    aaa_verdict,
+    crossing_lts,
+    edge_aaa,
+    has_traffic,
+    junction_legs,
+    junction_points,
+    lanes_each_way,
+    main_street,
+    own_lts,
+)
+from bikeplan.width import PAINTED_LANE_M, SIDES, fuse
 
 QUIET_CLASSES = ("living_street", "service", "residential", "unclassified")
 VERGE_CLEARANCE_M = 0.5
@@ -386,4 +396,94 @@ def choose(segment: dict, profile: Profile, weights, edges: list[dict] | None = 
         "fix": best["fix"],
         "score": best["score"],
         "after": after_strips(segment, best, profile),
+    }
+
+
+def leg_held_back(leg: dict, profile: Profile) -> bool:
+    data = {"bike_ok": True, **leg["data"]}
+    return data["bike_ok"] and edge_aaa(data, own_lts(data, profile), profile)
+
+
+def junction_fix(speed: float, lanes: int, refuge: bool) -> str | None:
+    if crossing_lts(speed, lanes, refuge) == 1:
+        return None
+    if not refuge and crossing_lts(speed, lanes, True) == 1:
+        return "refuge"
+    return "signals"
+
+
+def junction_fixes(graph, profile: Profile) -> list[dict]:
+    flags = junction_points(graph)
+    found = []
+    for node in graph.nodes:
+        if flags[node]["signal"]:
+            continue
+        legs = junction_legs(graph, node)
+        main = main_street(legs)
+        if main is None:
+            continue
+        lanes = max(leg["data"]["lanes_total"] for leg in main)
+        speed = max(leg["data"]["speed_kmh"] for leg in main)
+        fix = junction_fix(speed, lanes, flags[node]["refuge"])
+        held = [
+            leg["data"]["segment_id"]
+            for leg in legs
+            if not any(leg is street for street in main) and leg_held_back(leg, profile)
+        ]
+        if fix is None or not held:
+            continue
+        found.append(
+            {
+                "junction": node,
+                "fix": fix,
+                "legs": held,
+                "speed_kmh": speed,
+                "lanes": lanes,
+                "disruption": {
+                    "refuges": int(fix == "refuge"),
+                    "signals": int(fix == "signals"),
+                },
+            }
+        )
+    return found
+
+
+def segment_fit(segment: dict, profile: Profile, weights) -> dict | None:
+    edges = [data for _, data in segment["edges"]]
+    first_edge = edges[0]
+    if not has_traffic(first_edge):
+        return None
+    fused = fuse(first_edge, profile)
+    data = {**first_edge, **fused, "length_m": segment["inside_m"]}
+    result = choose(data, profile, weights, edges)
+    robust = None
+    if result["status"] == "fix":
+        robust = next(item for item in result["candidates"] if item["fix"] == result["fix"])[
+            "robust"
+        ]
+    return {**result, "km": segment["inside_m"] / 1000, "robust": robust}
+
+
+def fit_summary(graph, profile: Profile, weights) -> dict:
+    km_by_fix = dict.fromkeys(FIXES, 0.0)
+    no_fit_km = 0.0
+    fits = robust = 0
+    for segment in bike_segments(graph).values():
+        result = segment_fit(segment, profile, weights)
+        if result is None or result["status"] == "aaa":
+            continue
+        if result["status"] == "no_fit":
+            no_fit_km += result["km"]
+            continue
+        km_by_fix[result["fix"]] += result["km"]
+        fits += 1
+        robust += result["robust"] == "robust"
+    junctions = {"refuge": 0, "signals": 0}
+    for item in junction_fixes(graph, profile):
+        junctions[item["fix"]] += 1
+    return {
+        "km_by_fix": km_by_fix,
+        "no_fit_km": no_fit_km,
+        "robust_share": robust / fits if fits else 0.0,
+        "junctions": junctions,
     }
