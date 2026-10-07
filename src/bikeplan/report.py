@@ -3,6 +3,7 @@ import hashlib
 import html
 import io
 import json
+from datetime import date
 from pathlib import Path
 
 from pyproj import Transformer
@@ -21,6 +22,20 @@ SOURCES = [
         "licence": "ODbL 1.0",
         "request": "network.osm.gz and boundary.geojson in the snapshot folder",
     }
+]
+MONTHS = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
 ]
 ASSETS = Path(__file__).parent / "assets"
 STATION_TAGS = (
@@ -345,6 +360,11 @@ def chart(figures: list[dict]) -> str:
     )
 
 
+def snapshot_date(region: Region) -> str:
+    day = date.fromisoformat(region.snapshot.osm_date[:10])
+    return f"<time>{day.day} {MONTHS[day.month - 1]} {day.year}</time>"
+
+
 def page(region: Region, figures: list[dict], map_text: str) -> str:
     by_id = {item["id"]: item for item in figures}
     gaps = "".join(
@@ -372,7 +392,8 @@ def page(region: Region, figures: list[dict], map_text: str) -> str:
         f"{chart([item for item in figures if item['id'] != 'F4'])}"
         f"{gaps}"
         f"{glossary_section(terms)}"
-        f'<section id="appendix"><h2>How to check every number</h2>{appendix}</section>'
+        f'<section id="appendix"><h2>How to check every number</h2>'
+        f"<p>This report uses the data snapshot of {snapshot_date(region)}.</p>{appendix}</section>"
         "</body></html>\n"
     )
 
