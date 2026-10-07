@@ -545,3 +545,13 @@ uv run python scripts/propose_network_check.py data/cache/au-nsw-bayside/2026-10
 
 Expect: 10 tests pass. On Bayside the planning network has 81671 of 87850 bike edges, 54946 of them needing a fix, with 29802 fix elements. The 94392 unsafe trips have a total value of 98.89, which is 100 less the 0.1 baseline score and rounding.
 Artifact: `artifacts/P8.1/network.txt`
+
+### P8.2
+
+```bash
+uv run pytest tests/test_propose_routes.py -q
+uv run python scripts/propose_routes_check.py data/cache/au-nsw-bayside/2026-10-01 regions/au-nsw-bayside.yaml | tee artifacts/P8.2/routes.txt
+```
+
+Expect: 7 tests pass. On Bayside the 94392 unsafe trips give 18635 route fixes with a total value of 20.97, so only part of the value has a planned route inside the limits and the boundary. The largest route fix has 70 elements.
+Artifact: `artifacts/P8.2/routes.txt`
