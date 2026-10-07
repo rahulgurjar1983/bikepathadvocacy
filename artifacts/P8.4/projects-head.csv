@@ -1,0 +1,3 @@
+rank,id,name,elements,gain,score_after,parking_spaces,lane_km,speed_km,signals,refuges,km_quietway,km_cycleway_in_spare,km_cycleway_parking_one_side,km_cycleway_parking_both_sides,km_road_diet,km_verg
+1,b941eb43c2038053,"The Scots College Brighton Preparatory School: Carruthers Drive, Primrose Avenue",5,0.035471,0.140285,0,0.0,0.158516,0,0,0.158517,0.0,0.0,0.0,0.0,0.0,404.5345895934131,0.0,0,0.0,0.
+2,cb528c8f2533e48e,Mascot Library: High Street,9,0.032437,0.172723,0,0.0,0.640013,0,0,0.640013,0.0,0.0,0.002881,0.0,0.0,0.0,0.0,0,0.0,443.9185070503297,0.0,0.0

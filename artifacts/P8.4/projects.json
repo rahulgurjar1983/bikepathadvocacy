@@ -1,0 +1,1825 @@
+[
+  {
+    "rank": 1,
+    "id": "b941eb43c2038053",
+    "name": "The Scots College Brighton Preparatory School: Carruthers Drive, Primrose Avenue",
+    "elements": [
+      {
+        "id": "segment:8ad11f341938b9ee",
+        "street": "Carruthers Drive",
+        "length_m": 20.6,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.020567,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.0205666960399266,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:8d684618dc45ad73",
+        "street": "Primrose Avenue",
+        "length_m": 39.8,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.039783,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.03978267127971236,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:95a48eb158bafc6a",
+        "street": "Carruthers Drive",
+        "length_m": 19.6,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.019577,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.019577047122244756,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:dd3fd279576e1679",
+        "street": "Carruthers Drive",
+        "length_m": 47.1,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.047095,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.04709508575369224,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:f22d3508dda20735",
+        "street": "Primrose Avenue",
+        "length_m": 31.5,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.031495,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.031494572043898106,
+        "signals": 0,
+        "refuges": 0
+      }
+    ],
+    "totals": {
+      "km_by_fix": {
+        "quietway": 0.158517
+      },
+      "parking_spaces": 0,
+      "lane_km": 0.0,
+      "speed_km": 0.158516,
+      "signals": 0,
+      "refuges": 0
+    },
+    "gain": 0.035471,
+    "score_after": 0.140285,
+    "people": {
+      "school": 404.5345895934131,
+      "college": 0.0,
+      "university": 0,
+      "aged_care": 0.0,
+      "library": 0.0,
+      "town_centre": 0.0,
+      "station": 0.0
+    }
+  },
+  {
+    "rank": 2,
+    "id": "cb528c8f2533e48e",
+    "name": "Mascot Library: High Street",
+    "elements": [
+      {
+        "id": "segment:288abf8330ef6638",
+        "street": "High Street",
+        "length_m": 2.9,
+        "fix": "cycleway_parking_both_sides",
+        "robust": "robust",
+        "width_source": "lanes",
+        "km": 0.002881,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.0,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:3d5b7690f63ba19a",
+        "street": "High Street",
+        "length_m": 186.6,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.186563,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.18656339816455644,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:5e1eee1bdaf983e4",
+        "street": "High Street",
+        "length_m": 13.4,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.013394,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.01339357301214346,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:74c1b4cc71aadd68",
+        "street": "High Street",
+        "length_m": 131.1,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.131099,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.13109926575686426,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:7d3bc9920e730340",
+        "street": "High Street",
+        "length_m": 80.3,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.080255,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.08025464964550469,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:9e1e29d887ce503e",
+        "street": "High Street",
+        "length_m": 18.0,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.01795,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.017950009092559793,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:a9359d04ccd60016",
+        "street": "High Street",
+        "length_m": 130.5,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.130471,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.1304707450237121,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:b2ab0ab2e481256a",
+        "street": "High Street",
+        "length_m": 75.4,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.075363,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.07536310912984118,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:d7624b89dd08f50a",
+        "street": "High Street",
+        "length_m": 4.9,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.004918,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.004918487712519339,
+        "signals": 0,
+        "refuges": 0
+      }
+    ],
+    "totals": {
+      "km_by_fix": {
+        "quietway": 0.640013,
+        "cycleway_parking_both_sides": 0.002881
+      },
+      "parking_spaces": 0,
+      "lane_km": 0.0,
+      "speed_km": 0.640013,
+      "signals": 0,
+      "refuges": 0
+    },
+    "gain": 0.032437,
+    "score_after": 0.172723,
+    "people": {
+      "school": 0.0,
+      "college": 0.0,
+      "university": 0,
+      "aged_care": 0.0,
+      "library": 443.9185070503297,
+      "town_centre": 0.0,
+      "station": 0.0
+    }
+  },
+  {
+    "rank": 3,
+    "id": "31f391fbfdd49ba0",
+    "name": "Mascot Public School: Hatfield Street",
+    "elements": [
+      {
+        "id": "segment:4fdfd0a0ee407470",
+        "street": "Hatfield Street",
+        "length_m": 69.0,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.068999,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.06899869578463354,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:892759cad440e9d5",
+        "street": "Hatfield Street",
+        "length_m": 46.9,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.04687,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.046869893259708764,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:a2bded41af68347e",
+        "street": "Hatfield Street",
+        "length_m": 36.1,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.036117,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.036116947466440306,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:acae4bc9951d6330",
+        "street": "Hatfield Street",
+        "length_m": 9.1,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.009077,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.009076752059920612,
+        "signals": 0,
+        "refuges": 0
+      }
+    ],
+    "totals": {
+      "km_by_fix": {
+        "quietway": 0.161063
+      },
+      "parking_spaces": 0,
+      "lane_km": 0.0,
+      "speed_km": 0.161062,
+      "signals": 0,
+      "refuges": 0
+    },
+    "gain": 0.027708,
+    "score_after": 0.200431,
+    "people": {
+      "school": 557.3598863606744,
+      "college": 0.0,
+      "university": 0,
+      "aged_care": 0.0,
+      "library": 154.62656449553003,
+      "town_centre": 0.0,
+      "station": 0.0
+    }
+  },
+  {
+    "rank": 4,
+    "id": "90edf50baadc2ce6",
+    "name": "The Scots College Brighton Preparatory School: Dickin Avenue",
+    "elements": [
+      {
+        "id": "segment:5d5e2d0edd033028",
+        "street": "Dickin Avenue",
+        "length_m": 8.2,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.008199,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.008198554238884657,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:95b693430f701628",
+        "street": "Dickin Avenue",
+        "length_m": 9.3,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.009281,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.009280758665236213,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:f0c4b309c24261bc",
+        "street": "Dickin Avenue",
+        "length_m": 121.3,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.121346,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.12134634160514335,
+        "signals": 0,
+        "refuges": 0
+      }
+    ],
+    "totals": {
+      "km_by_fix": {
+        "quietway": 0.138826
+      },
+      "parking_spaces": 0,
+      "lane_km": 0.0,
+      "speed_km": 0.138826,
+      "signals": 0,
+      "refuges": 0
+    },
+    "gain": 0.011733,
+    "score_after": 0.212164,
+    "people": {
+      "school": 133.80952380952385,
+      "college": 0.0,
+      "university": 0,
+      "aged_care": 0.0,
+      "library": 0.0,
+      "town_centre": 0.0,
+      "station": 0.0
+    }
+  },
+  {
+    "rank": 5,
+    "id": "2293eff496255fb6",
+    "name": "UTS Shuttle Bus: Lord Street",
+    "elements": [
+      {
+        "id": "segment:2c51d01e87fd8a29",
+        "street": "Lord Street",
+        "length_m": 59.4,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.05944,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.05944028297755937,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:e079be12e26c6bfe",
+        "street": "Lord Street",
+        "length_m": 19.6,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.019578,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.019577881726226567,
+        "signals": 0,
+        "refuges": 0
+      }
+    ],
+    "totals": {
+      "km_by_fix": {
+        "quietway": 0.079018
+      },
+      "parking_spaces": 0,
+      "lane_km": 0.0,
+      "speed_km": 0.079018,
+      "signals": 0,
+      "refuges": 0
+    },
+    "gain": 0.010573,
+    "score_after": 0.222737,
+    "people": {
+      "school": 0.0,
+      "college": 0.0,
+      "university": 0,
+      "aged_care": 0.0,
+      "library": 0.0,
+      "town_centre": 0.0,
+      "station": 144.70212765957444
+    }
+  },
+  {
+    "rank": 6,
+    "id": "ac9e80b67a6492ba",
+    "name": "UTS Shuttle Bus: Lord Street",
+    "elements": [
+      {
+        "id": "segment:bb2480c8967ea6b7",
+        "street": "Lord Street",
+        "length_m": 104.5,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.104482,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.10448154390790446,
+        "signals": 0,
+        "refuges": 0
+      }
+    ],
+    "totals": {
+      "km_by_fix": {
+        "quietway": 0.104482
+      },
+      "parking_spaces": 0,
+      "lane_km": 0.0,
+      "speed_km": 0.104482,
+      "signals": 0,
+      "refuges": 0
+    },
+    "gain": 0.009399,
+    "score_after": 0.232136,
+    "people": {
+      "school": 0.0,
+      "college": 0.0,
+      "university": 0,
+      "aged_care": 0.0,
+      "library": 0.0,
+      "town_centre": 0.0,
+      "station": 48.2340425531915
+    }
+  },
+  {
+    "rank": 7,
+    "id": "483dd77d0cc346e4",
+    "name": "Rockdale: Geeves Avenue",
+    "elements": [
+      {
+        "id": "segment:7bda6c7552b5d5d8",
+        "street": "Geeves Avenue",
+        "length_m": 14.8,
+        "fix": "cycleway_parking_both_sides",
+        "robust": "robust",
+        "width_source": "lanes",
+        "km": 0.014798,
+        "parking_spaces": 4,
+        "lane_km": 0.0,
+        "speed_km": 0.0,
+        "signals": 0,
+        "refuges": 0
+      }
+    ],
+    "totals": {
+      "km_by_fix": {
+        "cycleway_parking_both_sides": 0.014798
+      },
+      "parking_spaces": 4,
+      "lane_km": 0.0,
+      "speed_km": 0.0,
+      "signals": 0,
+      "refuges": 0
+    },
+    "gain": 0.037472,
+    "score_after": 0.269608,
+    "people": {
+      "school": 0.0,
+      "college": 0.0,
+      "university": 0,
+      "aged_care": 0.0,
+      "library": 0.0,
+      "town_centre": 0.0,
+      "station": 64.1024096385542
+    }
+  },
+  {
+    "rank": 8,
+    "id": "f88cd935aee9c961",
+    "name": "St George School: Civic Avenue, Marshall Street",
+    "elements": [
+      {
+        "id": "segment:b3c0d1953b759d83",
+        "street": "Civic Avenue",
+        "length_m": 6.9,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.006942,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.006941859908242313,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:b72c9a831280b43c",
+        "street": "Civic Avenue",
+        "length_m": 135.1,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.135112,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.1351123441099837,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:ba1e006c1128488d",
+        "street": "Civic Avenue",
+        "length_m": 5.9,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.005947,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.005946720050837748,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:c058c5d3f778ff6a",
+        "street": "Marshall Street",
+        "length_m": 334.9,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.334935,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.33493525279869346,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:e0a3f852aa65ada7",
+        "street": "Civic Avenue",
+        "length_m": 209.0,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.208963,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.2089633932118635,
+        "signals": 0,
+        "refuges": 0
+      }
+    ],
+    "totals": {
+      "km_by_fix": {
+        "quietway": 0.691899
+      },
+      "parking_spaces": 0,
+      "lane_km": 0.0,
+      "speed_km": 0.6919,
+      "signals": 0,
+      "refuges": 0
+    },
+    "gain": 0.017351,
+    "score_after": 0.286958,
+    "people": {
+      "school": 642.1342780026989,
+      "college": 0.0,
+      "university": 0,
+      "aged_care": 0.0,
+      "library": 0.0,
+      "town_centre": 0.0,
+      "station": 0.0
+    }
+  },
+  {
+    "rank": 9,
+    "id": "50aa726ce41fe72b",
+    "name": "St George TAFE: Annette Avenue, Civic Avenue, Oakdale Avenue",
+    "elements": [
+      {
+        "id": "segment:12cdeb1ac28fd888",
+        "street": "Civic Avenue",
+        "length_m": 5.0,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.005009,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.005008554960768457,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:6d688cd4d9a5188e",
+        "street": "Oakdale Avenue",
+        "length_m": 33.1,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.033092,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.0330919528028988,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:a5dfe3a277943762",
+        "street": "Oakdale Avenue",
+        "length_m": 145.1,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.145132,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.1451319949193317,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:e567f9e10c5ff756",
+        "street": "Annette Avenue",
+        "length_m": 76.9,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.076894,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.07689395641253807,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:edb7ffd6d06a4354",
+        "street": "Annette Avenue",
+        "length_m": 78.0,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.078001,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.07800052714869511,
+        "signals": 0,
+        "refuges": 0
+      }
+    ],
+    "totals": {
+      "km_by_fix": {
+        "quietway": 0.338128
+      },
+      "parking_spaces": 0,
+      "lane_km": 0.0,
+      "speed_km": 0.338127,
+      "signals": 0,
+      "refuges": 0
+    },
+    "gain": 0.028781,
+    "score_after": 0.31574,
+    "people": {
+      "school": 465.36923076923085,
+      "college": 588.0496626180836,
+      "university": 0,
+      "aged_care": 0.0,
+      "library": 0.0,
+      "town_centre": 0.0,
+      "station": 0.0
+    }
+  },
+  {
+    "rank": 10,
+    "id": "627cbf89fd8b1235",
+    "name": "Rockdale: Geeves Avenue",
+    "elements": [
+      {
+        "id": "segment:4d83b1aaa3a78767",
+        "street": "Geeves Avenue",
+        "length_m": 11.8,
+        "fix": "cycleway_parking_both_sides",
+        "robust": "robust",
+        "width_source": "lanes",
+        "km": 0.011769,
+        "parking_spaces": 2,
+        "lane_km": 0.0,
+        "speed_km": 0.0,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:cf2e088d3d1794da",
+        "street": "Geeves Avenue",
+        "length_m": 37.0,
+        "fix": "cycleway_parking_both_sides",
+        "robust": "robust",
+        "width_source": "lanes",
+        "km": 0.03696,
+        "parking_spaces": 8,
+        "lane_km": 0.0,
+        "speed_km": 0.0,
+        "signals": 0,
+        "refuges": 0
+      }
+    ],
+    "totals": {
+      "km_by_fix": {
+        "cycleway_parking_both_sides": 0.048729
+      },
+      "parking_spaces": 10,
+      "lane_km": 0.0,
+      "speed_km": 0.0,
+      "signals": 0,
+      "refuges": 0
+    },
+    "gain": 0.074944,
+    "score_after": 0.390683,
+    "people": {
+      "school": 0.0,
+      "college": 0.0,
+      "university": 0,
+      "aged_care": 0.0,
+      "library": 0.0,
+      "town_centre": 0.0,
+      "station": 128.2048192771084
+    }
+  },
+  {
+    "rank": 11,
+    "id": "32e2a6625df52fd9",
+    "name": "The Scots College Brighton Preparatory School: Primrose Avenue",
+    "elements": [
+      {
+        "id": "segment:04ae861b164a09c2",
+        "street": "Primrose Avenue",
+        "length_m": 9.4,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.009375,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.009375454410949422,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:12e8059ff0a347c9",
+        "street": "Primrose Avenue",
+        "length_m": 8.6,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.008561,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.008560778167181602,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:2c87a633727352bb",
+        "street": "Primrose Avenue",
+        "length_m": 149.1,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.149144,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.14914401766484786,
+        "signals": 0,
+        "refuges": 0
+      }
+    ],
+    "totals": {
+      "km_by_fix": {
+        "quietway": 0.16708
+      },
+      "parking_spaces": 0,
+      "lane_km": 0.0,
+      "speed_km": 0.16708,
+      "signals": 0,
+      "refuges": 0
+    },
+    "gain": 0.011733,
+    "score_after": 0.402416,
+    "people": {
+      "school": 133.80952380952385,
+      "college": 0.0,
+      "university": 0,
+      "aged_care": 0.0,
+      "library": 0.0,
+      "town_centre": 0.0,
+      "station": 0.0
+    }
+  },
+  {
+    "rank": 12,
+    "id": "00b529c2e4e6d55a",
+    "name": "The Scots College Brighton Preparatory School: Fraters Avenue, Riverside Drive",
+    "elements": [
+      {
+        "id": "segment:1bfc787e5db7d739",
+        "street": "Fraters Avenue",
+        "length_m": 17.2,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.017202,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.017202097334758203,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:70ef996296bedb43",
+        "street": "Fraters Avenue",
+        "length_m": 4.4,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.004402,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.004402303444053557,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:8e2cbd831610e7f0",
+        "street": "Riverside Drive",
+        "length_m": 37.8,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.037803,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.037803239451354685,
+        "signals": 0,
+        "refuges": 0
+      }
+    ],
+    "totals": {
+      "km_by_fix": {
+        "quietway": 0.059407
+      },
+      "parking_spaces": 0,
+      "lane_km": 0.0,
+      "speed_km": 0.059408,
+      "signals": 0,
+      "refuges": 0
+    },
+    "gain": 0.009717,
+    "score_after": 0.412134,
+    "people": {
+      "school": 110.82352941176487,
+      "college": 0.0,
+      "university": 0,
+      "aged_care": 0.0,
+      "library": 0.0,
+      "town_centre": 0.0,
+      "station": 0.0
+    }
+  },
+  {
+    "rank": 13,
+    "id": "37fe13a874a7b634",
+    "name": "The Scots College Brighton Preparatory School: Ida Street",
+    "elements": [
+      {
+        "id": "segment:40709a1e26902fe2",
+        "street": "Ida Street",
+        "length_m": 94.9,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.094871,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.0948707313005787,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:55c91af3990743d1",
+        "street": "Ida Street",
+        "length_m": 4.4,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.004406,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.0044063096800697425,
+        "signals": 0,
+        "refuges": 0
+      }
+    ],
+    "totals": {
+      "km_by_fix": {
+        "quietway": 0.099277
+      },
+      "parking_spaces": 0,
+      "lane_km": 0.0,
+      "speed_km": 0.099277,
+      "signals": 0,
+      "refuges": 0
+    },
+    "gain": 0.007822,
+    "score_after": 0.419956,
+    "people": {
+      "school": 89.20634920634893,
+      "college": 0.0,
+      "university": 0,
+      "aged_care": 0.0,
+      "library": 0.0,
+      "town_centre": 0.0,
+      "station": 0.0
+    }
+  },
+  {
+    "rank": 14,
+    "id": "fea79deb089aed69",
+    "name": "Mascot Public School: Hatfield Street",
+    "elements": [
+      {
+        "id": "segment:1e2d558dab005e5c",
+        "street": "Hatfield Street",
+        "length_m": 14.3,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.01428,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.014279621218323902,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:5d68e96a2332e4b2",
+        "street": "Hatfield Street",
+        "length_m": 119.9,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.11993,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.11992959078973313,
+        "signals": 0,
+        "refuges": 0
+      }
+    ],
+    "totals": {
+      "km_by_fix": {
+        "quietway": 0.13421
+      },
+      "parking_spaces": 0,
+      "lane_km": 0.0,
+      "speed_km": 0.134209,
+      "signals": 0,
+      "refuges": 0
+    },
+    "gain": 0.007598,
+    "score_after": 0.427554,
+    "people": {
+      "school": 75.62758620689647,
+      "college": 0.0,
+      "university": 0,
+      "aged_care": 0.0,
+      "library": 75.62758620689658,
+      "town_centre": 0.0,
+      "station": 0.0
+    }
+  },
+  {
+    "rank": 15,
+    "id": "4c757c653e0deeae",
+    "name": "The Scots College Brighton Preparatory School: Brantwood Street, Riverside Drive",
+    "elements": [
+      {
+        "id": "segment:06e22bb1bfab8448",
+        "street": "Brantwood Street",
+        "length_m": 76.4,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.076449,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.07644870276270681,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:12af76a364dd739b",
+        "street": "Riverside Drive",
+        "length_m": 121.7,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.121654,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.1216539638937766,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:b76cbdacd3777ac0",
+        "street": "Riverside Drive",
+        "length_m": 13.0,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.012982,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.01298217780239747,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:da7c1609489eba00",
+        "street": "Brantwood Street",
+        "length_m": 21.0,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.021026,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.021025893288025035,
+        "signals": 0,
+        "refuges": 0
+      }
+    ],
+    "totals": {
+      "km_by_fix": {
+        "quietway": 0.232111
+      },
+      "parking_spaces": 0,
+      "lane_km": 0.0,
+      "speed_km": 0.232111,
+      "signals": 0,
+      "refuges": 0
+    },
+    "gain": 0.013766,
+    "score_after": 0.441321,
+    "people": {
+      "school": 147.7647058823527,
+      "college": 0.0,
+      "university": 0,
+      "aged_care": 0.0,
+      "library": 0.0,
+      "town_centre": 0.0,
+      "station": 0.0
+    }
+  },
+  {
+    "rank": 16,
+    "id": "e3fab8fc9e1e610a",
+    "name": "Eastlakes Public School: Florence Avenue",
+    "elements": [
+      {
+        "id": "segment:0abdb6efe558f9ca",
+        "street": "Florence Avenue",
+        "length_m": 220.1,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.220083,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.22008274637115494,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:694dde6316bd7027",
+        "street": "Florence Avenue",
+        "length_m": 115.4,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.115368,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.11536793971702215,
+        "signals": 0,
+        "refuges": 0
+      }
+    ],
+    "totals": {
+      "km_by_fix": {
+        "quietway": 0.335451
+      },
+      "parking_spaces": 0,
+      "lane_km": 0.0,
+      "speed_km": 0.335451,
+      "signals": 0,
+      "refuges": 0
+    },
+    "gain": 0.009971,
+    "score_after": 0.451292,
+    "people": {
+      "school": 571.8226348364287,
+      "college": 0.0,
+      "university": 0,
+      "aged_care": 0.0,
+      "library": 0.0,
+      "town_centre": 0.0,
+      "station": 0.0
+    }
+  },
+  {
+    "rank": 17,
+    "id": "5b7ce66dc2707f6f",
+    "name": "St George School: O'Neill Street",
+    "elements": [
+      {
+        "id": "segment:4493aef8e7f733e3",
+        "street": "O'Neill Street",
+        "length_m": 11.0,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.011012,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.011012261061930867,
+        "signals": 0,
+        "refuges": 0
+      }
+    ],
+    "totals": {
+      "km_by_fix": {
+        "quietway": 0.011012
+      },
+      "parking_spaces": 0,
+      "lane_km": 0.0,
+      "speed_km": 0.011012,
+      "signals": 0,
+      "refuges": 0
+    },
+    "gain": 0.007307,
+    "score_after": 0.458599,
+    "people": {
+      "school": 157.5,
+      "college": 0.0,
+      "university": 0,
+      "aged_care": 0.0,
+      "library": 0.0,
+      "town_centre": 0.0,
+      "station": 0.0
+    }
+  },
+  {
+    "rank": 18,
+    "id": "6696cebab2663756",
+    "name": "Mascot Library: High Street",
+    "elements": [
+      {
+        "id": "segment:88e4010b0b7725bb",
+        "street": "High Street",
+        "length_m": 35.7,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.035666,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.035666489982006166,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:d494cf5edfbc8a8f",
+        "street": "High Street",
+        "length_m": 7.2,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.007219,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.007219211752933754,
+        "signals": 0,
+        "refuges": 0
+      }
+    ],
+    "totals": {
+      "km_by_fix": {
+        "quietway": 0.042885
+      },
+      "parking_spaces": 0,
+      "lane_km": 0.0,
+      "speed_km": 0.042886,
+      "signals": 0,
+      "refuges": 0
+    },
+    "gain": 0.006562,
+    "score_after": 0.465161,
+    "people": {
+      "school": 37.813793103448006,
+      "college": 0.0,
+      "university": 0,
+      "aged_care": 0.0,
+      "library": 75.62758620689647,
+      "town_centre": 0.0,
+      "station": 0.0
+    }
+  },
+  {
+    "rank": 19,
+    "id": "ce3f138956311461",
+    "name": "Rockdale Library: Market Street, York Street, unnamed residential",
+    "elements": [
+      {
+        "id": "segment:593ceb2a5b79a804",
+        "street": "York Street",
+        "length_m": 7.9,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.007927,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.007927489897497276,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:a8d32d7c6b6d8fad",
+        "street": "unnamed residential",
+        "length_m": 4.6,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.004625,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.004624895393618677,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:cfd5680d2d6425f4",
+        "street": "unnamed residential",
+        "length_m": 4.6,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.00461,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.004610304897064296,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:e06a727bfeb0d58d",
+        "street": "Market Street",
+        "length_m": 34.9,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.034898,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.03489819610445335,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:eec82b96188ca801",
+        "street": "York Street",
+        "length_m": 24.1,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.024069,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.02406889071300542,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:eed10901d8d2a72e",
+        "street": "Market Street",
+        "length_m": 121.4,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.121441,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.1214409579511335,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:f8ef95d18803553e",
+        "street": "unnamed residential",
+        "length_m": 11.5,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.011533,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.011532927288909344,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:f94d3426160bcd64",
+        "street": "York Street",
+        "length_m": 30.4,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.03044,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.03044039837807506,
+        "signals": 0,
+        "refuges": 0
+      }
+    ],
+    "totals": {
+      "km_by_fix": {
+        "quietway": 0.239543
+      },
+      "parking_spaces": 0,
+      "lane_km": 0.0,
+      "speed_km": 0.239544,
+      "signals": 0,
+      "refuges": 0
+    },
+    "gain": 0.01026,
+    "score_after": 0.475421,
+    "people": {
+      "school": 0.0,
+      "college": 0.0,
+      "university": 0,
+      "aged_care": 0.0,
+      "library": 534.2846385542168,
+      "town_centre": 0.0,
+      "station": 0.0
+    }
+  },
+  {
+    "rank": 20,
+    "id": "d47116a18e243d9e",
+    "name": "Mascot Public School: Lancastrian Road",
+    "elements": [
+      {
+        "id": "segment:308429945dd79c7b",
+        "street": "Lancastrian Road",
+        "length_m": 28.4,
+        "fix": "road_diet",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.028434,
+        "parking_spaces": 0,
+        "lane_km": 0.028434495903675513,
+        "speed_km": 0.0,
+        "signals": 0,
+        "refuges": 0
+      }
+    ],
+    "totals": {
+      "km_by_fix": {
+        "road_diet": 0.028434
+      },
+      "parking_spaces": 0,
+      "lane_km": 0.028434,
+      "speed_km": 0.0,
+      "signals": 0,
+      "refuges": 0
+    },
+    "gain": 0.012038,
+    "score_after": 0.487459,
+    "people": {
+      "school": 41.18518518518522,
+      "college": 0.0,
+      "university": 0,
+      "aged_care": 0.0,
+      "library": 41.18518518518522,
+      "town_centre": 0.0,
+      "station": 0.0
+    }
+  },
+  {
+    "rank": 21,
+    "id": "2b2b9f643bc83700",
+    "name": "The Scots College Brighton Preparatory School: Sanoni Avenue",
+    "elements": [
+      {
+        "id": "segment:0f433b080f0f470b",
+        "street": "Sanoni Avenue",
+        "length_m": 200.2,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.200242,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.2002422138658194,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:542669ff55b324e5",
+        "street": "Sanoni Avenue",
+        "length_m": 2.5,
+        "fix": "cycleway_parking_both_sides",
+        "robust": "robust",
+        "width_source": "lanes",
+        "km": 0.002473,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.0,
+        "signals": 0,
+        "refuges": 0
+      }
+    ],
+    "totals": {
+      "km_by_fix": {
+        "quietway": 0.200242,
+        "cycleway_parking_both_sides": 0.002473
+      },
+      "parking_spaces": 0,
+      "lane_km": 0.0,
+      "speed_km": 0.200242,
+      "signals": 0,
+      "refuges": 0
+    },
+    "gain": 0.007822,
+    "score_after": 0.495281,
+    "people": {
+      "school": 89.20634920634893,
+      "college": 0.0,
+      "university": 0,
+      "aged_care": 0.0,
+      "library": 0.0,
+      "town_centre": 0.0,
+      "station": 0.0
+    }
+  },
+  {
+    "rank": 22,
+    "id": "a45180ffbd18ed9d",
+    "name": "The Scots College Brighton Preparatory School: Fraters Avenue",
+    "elements": [
+      {
+        "id": "segment:1e8fa15e9fa4f129",
+        "street": "Fraters Avenue",
+        "length_m": 109.3,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.109337,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.10933729953666811,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:81fe11c8bd7a8885",
+        "street": "Fraters Avenue",
+        "length_m": 7.5,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.0075,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.0074996163421987855,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:ea291a36158edbb1",
+        "street": "Fraters Avenue",
+        "length_m": 75.4,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.075373,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.07537253624114279,
+        "signals": 0,
+        "refuges": 0
+      }
+    ],
+    "totals": {
+      "km_by_fix": {
+        "quietway": 0.19221
+      },
+      "parking_spaces": 0,
+      "lane_km": 0.0,
+      "speed_km": 0.192209,
+      "signals": 0,
+      "refuges": 0
+    },
+    "gain": 0.009717,
+    "score_after": 0.504999,
+    "people": {
+      "school": 110.82352941176487,
+      "college": 0.0,
+      "university": 0,
+      "aged_care": 0.0,
+      "library": 0.0,
+      "town_centre": 0.0,
+      "station": 0.0
+    }
+  },
+  {
+    "rank": 23,
+    "id": "4b12c503c8d133b5",
+    "name": "Brighton Le Sands Public School: O'Neill Street",
+    "elements": [
+      {
+        "id": "segment:b7d6a3b0efb37048",
+        "street": "O'Neill Street",
+        "length_m": 105.1,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.105101,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.1051010566704677,
+        "signals": 0,
+        "refuges": 0
+      }
+    ],
+    "totals": {
+      "km_by_fix": {
+        "quietway": 0.105101
+      },
+      "parking_spaces": 0,
+      "lane_km": 0.0,
+      "speed_km": 0.105101,
+      "signals": 0,
+      "refuges": 0
+    },
+    "gain": 0.006688,
+    "score_after": 0.511687,
+    "people": {
+      "school": 0.0,
+      "college": 0.0,
+      "university": 0,
+      "aged_care": 0.0,
+      "library": 0.0,
+      "town_centre": 0.0,
+      "station": 0.0
+    }
+  },
+  {
+    "rank": 24,
+    "id": "39fb3a4f30ef3f4e",
+    "name": "St Therese Catholic Primary School: Coward Street, Gordon Street, Harris Street",
+    "elements": [
+      {
+        "id": "segment:50054e22913000bb",
+        "street": "Gordon Street",
+        "length_m": 8.8,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.008797,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.00879702690535355,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:ad42243db6625c8a",
+        "street": "Gordon Street",
+        "length_m": 440.3,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.440257,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.4402568683596881,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:adc36f754aa69412",
+        "street": "Harris Street",
+        "length_m": 9.3,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.009338,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.009338282923201721,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:c1176c885b2028fc",
+        "street": "Coward Street",
+        "length_m": 38.5,
+        "fix": "cycleway_in_spare",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.038502,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.0,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:fa44cefd605b028e",
+        "street": "Coward Street",
+        "length_m": 53.7,
+        "fix": "cycleway_in_spare",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.053691,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.0,
+        "signals": 0,
+        "refuges": 0
+      }
+    ],
+    "totals": {
+      "km_by_fix": {
+        "quietway": 0.458392,
+        "cycleway_in_spare": 0.092193
+      },
+      "parking_spaces": 0,
+      "lane_km": 0.0,
+      "speed_km": 0.458392,
+      "signals": 0,
+      "refuges": 0
+    },
+    "gain": 0.010163,
+    "score_after": 0.52185,
+    "people": {
+      "school": 158.35384615384646,
+      "college": 0.0,
+      "university": 0,
+      "aged_care": 0.0,
+      "library": 0.0,
+      "town_centre": 0.0,
+      "station": 0.0
+    }
+  },
+  {
+    "rank": 25,
+    "id": "be5a55b77b7cd68b",
+    "name": "Brighton-Le-Sands Library: Princess Street, unnamed residential",
+    "elements": [
+      {
+        "id": "segment:060bc009c8c02a14",
+        "street": "unnamed residential",
+        "length_m": 11.1,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.011109,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.01110916178339204,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:6b6b67acc0f560e2",
+        "street": "Princess Street",
+        "length_m": 6.1,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.006115,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.006114657252599901,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:d2cf868bbecf99d2",
+        "street": "Princess Street",
+        "length_m": 228.4,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.228367,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.22836721867662033,
+        "signals": 0,
+        "refuges": 0
+      },
+      {
+        "id": "segment:fd1de80540a61d22",
+        "street": "Princess Street",
+        "length_m": 7.1,
+        "fix": "quietway",
+        "robust": "check on site",
+        "width_source": "lanes",
+        "km": 0.007127,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.007127487242698649,
+        "signals": 0,
+        "refuges": 0
+      }
+    ],
+    "totals": {
+      "km_by_fix": {
+        "quietway": 0.252718
+      },
+      "parking_spaces": 0,
+      "lane_km": 0.0,
+      "speed_km": 0.252719,
+      "signals": 0,
+      "refuges": 0
+    },
+    "gain": 0.007837,
+    "score_after": 0.529687,
+    "people": {
+      "school": 0.0,
+      "college": 0.0,
+      "university": 0,
+      "aged_care": 0.0,
+      "library": 134.06666666666683,
+      "town_centre": 0.0,
+      "station": 0.0
+    }
+  }
+]
