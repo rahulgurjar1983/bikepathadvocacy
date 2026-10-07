@@ -1,5 +1,8 @@
+import heapq
 from collections import defaultdict
 from typing import NamedTuple
+
+from shapely.geometry import Point
 
 from bikeplan.access import Reach
 from bikeplan.fit import junction_fixes, segment_fit
@@ -107,3 +110,67 @@ def trip_values(people: dict, placed: list, results: list[Reach], weights: dict)
                 100 * people[node] * weights[kind] / (total * in_reach[node][kind] * weight)
             )
     return values
+
+
+def pickable(graph, planning: Planning) -> set:
+    boundary = graph.graph["boundary"]
+    inside = {
+        f"segment:{segment_id}": segment["inside_m"] > 0
+        for segment_id, segment in bike_segments(graph).items()
+    }
+    for name, element in planning.elements.items():
+        if element["kind"] == "junction":
+            node = graph.nodes[element["junction"]]
+            inside[name] = boundary.intersects(Point(node["x"], node["y"]))
+    return {name for name in planning.elements if inside.get(name)}
+
+
+def planned_routes(incoming: dict, place, reach_m: float) -> dict:
+    order = {node: number for number, node in enumerate(incoming)}
+    best = {place: (0.0, 0.0, frozenset())}
+    queue = [(0.0, 0.0, order.get(place, -1), place)]
+    while queue:
+        cost, length, _, node = heapq.heappop(queue)
+        if best[node][:2] != (cost, length):
+            continue
+        for source, edge_cost, edge_length, needs in incoming.get(node, ()):
+            total = length + edge_length
+            if total > reach_m:
+                continue
+            step = cost + edge_cost
+            if source in best and best[source][:2] <= (step, total):
+                continue
+            best[source] = (step, total, best[node][2] | needs)
+            heapq.heappush(queue, (step, total, order.get(source, -1), source))
+    return best
+
+
+def route_fixes(
+    graph,
+    planning: Planning,
+    placed: list,
+    results: list[Reach],
+    values: dict,
+    reach_m: float,
+    detour_max: float,
+) -> dict:
+    allowed = pickable(graph, planning)
+    incoming: dict = defaultdict(list)
+    for (u, v, k), item in sorted(planning.edges.items(), key=lambda pair: repr(pair[0])):
+        if set(item["needs"]) <= allowed:
+            length = graph[u][v][k]["length_m"]
+            incoming[v].append((u, item["cost"], length, frozenset(item["needs"])))
+    fixes: dict = defaultdict(float)
+    wanted: dict = defaultdict(list)
+    for index, node in sorted(values):
+        wanted[index].append(node)
+    for index, homes in sorted(wanted.items()):
+        place = placed[index][1]
+        routes = planned_routes(incoming, place, reach_m)
+        for home in homes:
+            if home not in routes:
+                continue
+            _, length, elements = routes[home]
+            if elements and length <= detour_max * results[index].within[home]:
+                fixes[elements] += values[(index, home)]
+    return dict(fixes)
