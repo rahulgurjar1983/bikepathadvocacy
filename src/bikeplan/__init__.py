@@ -9,6 +9,7 @@ from bikeplan.fit import fit_summary
 from bikeplan.network import build, summarise
 from bikeplan.propose import write_propose
 from bikeplan.report import write_report
+from bikeplan.run import run_all
 from bikeplan.snapshot import (
     OVERPASS_ENDPOINT,
     OverpassError,
@@ -57,7 +58,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--version", action="version", version=f"bikeplan {version('bikeplan')}")
     commands = parser.add_subparsers(dest="command", metavar="COMMAND", required=True)
     for name, text in LEAVES.items():
-        if name in {"access", "propose"}:
+        if name in {"access", "propose", "run"}:
             continue
         commands.add_parser(name, help=text, description=text)
     stress = commands.add_parser("stress", help=STRESS_HELP, description=STRESS_HELP)
@@ -72,6 +73,10 @@ def build_parser() -> argparse.ArgumentParser:
     propose.add_argument("region", help="Region file")
     propose.add_argument("--snapshot", required=True, help="Snapshot folder")
     propose.add_argument("--out", required=True, help="Output directory")
+    run = commands.add_parser("run", help=LEAVES["run"], description=LEAVES["run"])
+    run.add_argument("region", help="Region file")
+    run.add_argument("--snapshot", required=True, help="Snapshot folder")
+    run.add_argument("--out", required=True, help="Output directory")
     report = commands.add_parser("report", help=REPORT_HELP, description=REPORT_HELP)
     report.add_argument("region", help="Region file")
     report.add_argument("--snapshot", required=True, help="Snapshot folder")
@@ -223,6 +228,19 @@ def propose(path: str, snapshot: str, out: str) -> int:
     return 0
 
 
+def run(path: str, snapshot: str, out: str) -> int:
+    try:
+        region = load_region(path)
+        summary = run_all(region, load_profile(region.profile), snapshot, out)
+    except (ConfigError, OSError) as error:
+        print(error, file=sys.stderr)
+        return 1
+    print(f"score_before {summary['score']['before']}")
+    print(f"score_after {summary['score']['after']}")
+    print(f"projects {summary['projects']}")
+    return 0
+
+
 def report(path: str, snapshot: str, out: str) -> int:
     try:
         region = load_region(path)
@@ -289,6 +307,8 @@ def main(argv: list[str] | None = None) -> int:
         return access(args.region, args.snapshot, args.out)
     if args.command == "propose":
         return propose(args.region, args.snapshot, args.out)
+    if args.command == "run":
+        return run(args.region, args.snapshot, args.out)
     if args.command == "report":
         return report(args.region, args.snapshot, args.out)
     if (args.command, getattr(args, "subcommand", None)) == ("config", "show"):
