@@ -14,6 +14,7 @@ from shapely.geometry import Point, Polygon
 
 from bikeplan.network import boundary_centre, utm_crs
 from bikeplan.snapshot import gpkg_rings
+from bikeplan.stress import score_edges
 
 DUPLICATE_RADIUS_M = 50.0
 SHOP_JOIN_M = 150.0
@@ -260,3 +261,91 @@ def reach(graph, sources: list, reach_m: float, detour_max: float, aaa: set) -> 
         }
         found.append(Reach(within, safe))
     return found
+
+
+def score_access(people: dict, placed: list, results: list[Reach], weights: dict) -> dict:
+    counts: dict = defaultdict(lambda: defaultdict(lambda: [0, 0]))
+    for (kind, _), found in zip(placed, results, strict=True):
+        for node in found.within:
+            counts[node][kind][0] += 1
+            counts[node][kind][1] += node in found.safe
+    homes_found = {}
+    for node, count in people.items():
+        types = {kind: safe / total for kind, (total, safe) in counts[node].items() if total}
+        weight = sum(weights[kind] for kind in types)
+        mean = (
+            sum(weights[kind] * value for kind, value in types.items()) / weight if weight else 0.0
+        )
+        homes_found[node] = {"people": count, "score": mean, "types": types}
+    total_people = sum(people.values())
+    weighted = sum(item["people"] * item["score"] for item in homes_found.values())
+    summary: dict = {
+        "score": round(100 * weighted / total_people, 1) if total_people else 0.0,
+        "types": {},
+        "safe_people": {},
+        "homes": homes_found,
+    }
+    for kind in weights:
+        reached = [item for item in homes_found.values() if kind in item["types"]]
+        in_reach = sum(item["people"] for item in reached)
+        share = sum(item["people"] * item["types"][kind] for item in reached)
+        summary["types"][kind] = round(100 * share / in_reach, 1) if in_reach else 0.0
+        summary["safe_people"][kind] = sum(
+            people[node] for node in people if counts[node][kind][1] > 0
+        )
+    return summary
+
+
+def point_feature(x: float, y: float, properties: dict) -> dict:
+    geometry = {"type": "Point", "coordinates": [round(x, 6), round(y, 6)]}
+    return {"type": "Feature", "geometry": geometry, "properties": properties}
+
+
+def write_access(graph, region, profile, snapshot: str | Path, out: str | Path) -> dict:
+    out = Path(out)
+    to_metres = Transformer.from_crs(4326, graph.graph["crs"], always_xy=True)
+    to_degrees = Transformer.from_crs(graph.graph["crs"], 4326, always_xy=True)
+    found = places(snapshot)
+    for place in found:
+        place["x"], place["y"] = to_metres.transform(place["lon"], place["lat"])
+    boundary = graph.graph["boundary"]
+    kept = in_scope_places(found, boundary, region.analysis_buffer_m)
+    nodes, missed = snap_points([(p["x"], p["y"]) for p in kept], graph)
+    aaa = {key for key, item in score_edges(graph, profile).items() if item["aaa"]}
+    placed = [(p["type"], node) for p, node in zip(kept, nodes, strict=True) if node is not None]
+    results = reach(
+        graph, [node for _, node in placed], region.access.reach_m, region.access.detour_max, aaa
+    )
+    resident = homes(population_units(snapshot, graph.graph["crs"]), graph, boundary)
+    weights = {name: item.weight for name, item in region.destinations.items()}
+    scored = score_access(resident.people, placed, results, weights)
+    out.mkdir(parents=True, exist_ok=True)
+    place_features = [
+        point_feature(
+            p["lon"],
+            p["lat"],
+            {"type": p["type"], "name": p["name"], "osm_id": p["osm_id"], "node": node},
+        )
+        for p, node in zip(kept, nodes, strict=True)
+    ]
+    home_features = []
+    for node, item in sorted(scored["homes"].items()):
+        lon, lat = to_degrees.transform(graph.nodes[node]["x"], graph.nodes[node]["y"])
+        properties = {
+            "node": node,
+            "people": item["people"],
+            "score": item["score"],
+            "types": item["types"],
+        }
+        home_features.append(point_feature(lon, lat, properties))
+    for name, features in (("places", place_features), ("access_homes", home_features)):
+        collection = {"type": "FeatureCollection", "features": features}
+        (out / f"{name}.geojson").write_text(json.dumps(collection))
+    summary = {
+        "score": scored["score"],
+        "types": scored["types"],
+        "safe_people": scored["safe_people"],
+        "not_snapped": {"places": len(missed), "people": resident.unsnapped},
+    }
+    (out / "access_summary.json").write_text(json.dumps(summary, indent=2) + "\n")
+    return summary
