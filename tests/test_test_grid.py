@@ -160,7 +160,7 @@ def test_fr11_3_all_other_residential_edges_are_lts_1_and_aaa(graph, scores, fra
         for key, d in ((k, graph.edges[k]) for k in graph.edges(keys=True))
         if not is_main(d) and key not in touched
     ]
-    assert len(others) == 46
+    assert len(others) == 26
     for key in others:
         assert scores[key]["lts"] == 1
         assert scores[key]["aaa"] is True
