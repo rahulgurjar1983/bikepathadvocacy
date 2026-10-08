@@ -1,4 +1,3 @@
-import json
 import re
 from pathlib import Path
 
@@ -22,6 +21,7 @@ SPEC = """# Spec 01
 | FR-1.2 | The tool does another thing. | MUST |
 | FR-1.3 | The tool does a third thing, as FR-1.1 does. | SHOULD |
 | FR-1.4 | The tool does a fourth thing. | MUST |
+| FR-3.1 | The tool counts street. | MUST |
 
 | Spec ID | What the tests show |
 |---------|---------------------|
@@ -34,6 +34,7 @@ JUNIT = """<testsuites><testsuite>
 <testcase classname="tests.t" name="test_fr1_2_does_it"><failure message="boom"/></testcase>
 <testcase classname="tests.t" name="test_fr1_3_does_it"><skipped message="no"/></testcase>
 <testcase classname="tests.t" name="test_fr11_4_other"/>
+<testcase classname="tests.t" name="test_fr3_1_counts"/>
 </testsuite></testsuites>"""
 
 
@@ -51,15 +52,13 @@ def tree(tmp_path):
     (root / "PROGRESS.md").write_text("- [x] **P1.1** Does things (FR-1.1)\n")
     junit = tmp_path / "junit.xml"
     junit.write_text(JUNIT)
-    figures = tmp_path / "figures.json"
-    figures.write_text(json.dumps([{"id": "F1", "label": "Km of road", "spec": "spec 01"}]))
-    return root, junit, figures, tmp_path / "checks.html"
+    return root, junit, tmp_path / "checks.html"
 
 
 def build(tree):
-    _, junit, figures, out = tree
-    argv = ["checks", str(junit), "--root", str(tree[0]), "--figures", str(figures)]
-    return main([*argv, "--out", str(out)]), out
+    root, junit, out = tree
+    argv = ["checks", str(junit), "--root", str(root), "--out", str(out)]
+    return main(argv), out
 
 
 def entries(out):
@@ -75,12 +74,8 @@ def status_of(entry):
 def test_fr13_11_every_spec_id_in_the_repo_has_an_entry(tmp_path):
     junit = tmp_path / "junit.xml"
     junit.write_text("<testsuites/>")
-    figures = tmp_path / "figures.json"
-    figures.write_text("[]")
     out = tmp_path / "checks.html"
-    code = main(
-        ["checks", str(junit), "--root", str(ROOT), "--figures", str(figures), "--out", str(out)]
-    )
+    code = main(["checks", str(junit), "--root", str(ROOT), "--out", str(out)])
     wanted = set()
     for path in [ROOT / "SPECIFICATION.md", *sorted((ROOT / "specs").glob("*.md"))]:
         wanted.update(ledger.SPEC_ID.findall(path.read_text()))
@@ -149,8 +144,10 @@ def test_fr13_11_each_entry_has_every_field(tree):
 
 def test_fr13_11_the_entry_points_at_the_figures_of_its_spec(tree):
     _, out = build(tree)
-    assert "F1" in entries(out)["FR-1.1"]
-    assert "Km of road" in entries(out)["FR-1.1"]
+    found = entries(out)
+    assert "F1" in found["FR-3.1"]
+    assert "Street a bike may use" in found["FR-3.1"]
+    assert "No figure in the report shows this" in found["FR-1.1"]
 
 
 def test_fr13_11_the_page_is_the_same_bytes_on_every_build(tree):
@@ -165,7 +162,7 @@ def test_fr13_11_the_page_has_a_viewport_and_counts_by_status(tree):
     _, out = build(tree)
     text = out.read_text()
     assert '<meta name="viewport"' in text
-    assert "1 met, 2 fail, 1 not built yet" in text
+    assert "2 met, 2 fail, 1 not built yet" in text
 
 
 def test_fr13_11_a_missing_results_file_fails_hard(tree, capsys):
