@@ -29,6 +29,7 @@ jobs:
           version: "0.11.3"
           enable-cache: true
       - run: uv sync --frozen
+      - run: scripts/install-gitleaks.sh
       - name: Name the release after the merged pull request
         id: name
         run: |
