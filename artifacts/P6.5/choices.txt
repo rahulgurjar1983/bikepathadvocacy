@@ -1,0 +1,6 @@
+au-nsw | wide residential 14 m | cycleway_in_spare | False | None
+au-nsw | parked residential 12 m | cycleway_parking_one_side | False | None
+au-nsw | narrow residential 7 m | quietway | True | Transport for NSW
+generic | wide residential 14 m | cycleway_in_spare | False | None
+generic | parked residential 12 m | cycleway_parking_one_side | False | None
+generic | narrow residential 7 m | quietway | True | the road authority that sets speed limits

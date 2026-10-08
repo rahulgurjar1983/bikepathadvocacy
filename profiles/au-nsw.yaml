@@ -69,6 +69,13 @@ quietway:
   target_speed_kmh:
     value: 30
     source: TfNSW Cycleway Design Toolbox (2020)
+fit:
+  prefer_separation:
+    value: true
+    source: 'assumption: a council can build a separated lane on its own local roads, but a 30 km/h limit needs Transport for NSW approval (NSW Speed Zoning Guidelines)'
+  speed_approval_body:
+    value: Transport for NSW
+    source: NSW Speed Zoning Guidelines
 crossing:
   refuge_min_m:
     value: 1.8

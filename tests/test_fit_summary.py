@@ -1,3 +1,4 @@
+import dataclasses
 import gzip
 import json
 from pathlib import Path
@@ -6,12 +7,15 @@ import pytest
 from shapely.geometry import box
 
 from bikeplan import main
-from bikeplan.config import load_profile, load_region
+from bikeplan.config import Fit, Num, load_profile, load_region
 from bikeplan.fit import fit_summary
 from tests.test_fit_junction import junction
 from tests.test_width_fusion import BOUNDARY, FIXTURE, REGION, graph_of
 
-PROFILE = load_profile("au-nsw", "profiles")
+SHIPPED = load_profile("au-nsw", "profiles")
+PROFILE = dataclasses.replace(
+    SHIPPED, fit=Fit(Num(False, "test", False), SHIPPED.fit.speed_approval_body)
+)
 WEIGHTS = load_region("regions/test-grid.yaml").proposals.disruption_weights
 
 
