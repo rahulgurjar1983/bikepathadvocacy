@@ -57,7 +57,10 @@ def segment_elements(graph, profile, weights) -> tuple[dict, set]:
             )
             point = line.interpolate(0.5, normalized=True)
             lon, lat = to_degrees.transform(point.x, point.y)
+            chosen = next(item for item in result["candidates"] if item["fix"] == result["fix"])
             elements[f"segment:{segment_id}"] = {
+                "aaa_after": chosen["accepted"],
+                "margin_m": chosen["margin_m"],
                 "kind": "segment",
                 "segment": segment_id,
                 "fix": result["fix"],
@@ -545,6 +548,8 @@ def element_record(name: str, element: dict) -> dict:
         "street": element["street"],
         "length_m": 0.0 if junction else round(element["length_m"], 1),
         "fix": element["fix"],
+        "aaa_after": True if junction else element["aaa_after"],
+        "margin_m": None if junction else element["margin_m"],
         "robust": "robust" if junction else element["robust"],
         "width_source": None if junction else element["width_source"],
         "km": 0.0 if junction else round(element["km"], 6),
