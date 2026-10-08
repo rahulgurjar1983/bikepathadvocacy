@@ -765,3 +765,15 @@ grep -o "[0-9]* met, [0-9]* tested only, [0-9]* fail, [0-9]* not built yet" arti
 
 Expect: all tests pass and `bikeplan checks` exits 0. The grep prints `1 met, 3 tested only, 0 fail, 179 not built yet` for this partial test run. FR-13.13 is met because the Bayside `report.html` is under 8 MB. No no-tools step sends the reader to the verification file.
 Artifact: `artifacts/R1.12/checks.html`
+
+### V1.3
+
+```bash
+uv run pytest tests/test_elevation.py -q
+W=$(mktemp -d) && cp -r tests/fixtures/test-grid/snapshot $W/snap
+uv run python -c "import sys; from bikeplan.adapters.copernicus_glo30 import copernicus_glo30 as f; from bikeplan.config import load_region; print(f(load_region('regions/test-grid.yaml'), (-33.96, 151.14, -33.93, 151.17), sys.argv[1])[0].sha256)" $W/snap
+uv run bikeplan route figures artifacts/V1.3/route.gpx --region regions/test-grid.yaml --snapshot $W/snap --out artifacts/V1.3
+```
+
+Expect: all 14 tests pass. The second command downloads the real Copernicus GLO-30 tile S34 E151 and prints the sha256 of the cut `elevation.tif`. The third command prints the path of `route_figures.json`, whose total holds `grade_limits` (5 percent, 100 m, with sources) and an empty `steep` list, because the route is flat. The 52 edges of the grid have a largest grade of 2.72 percent.
+Artifact: `artifacts/V1.3/route_figures.json`

@@ -6,7 +6,7 @@ from pyproj import Transformer
 from shapely.geometry import LineString, Point
 from shapely.strtree import STRtree
 
-from bikeplan.config import Profile, Region, load_profile
+from bikeplan.config import Grade, Profile, Region, load_profile
 from bikeplan.network import build, first
 from bikeplan.route import Section, match_route, read_route
 from bikeplan.stress import (
@@ -90,7 +90,42 @@ def crossing_at(graph, node, keys, flags) -> dict | None:
     }
 
 
-def section_figures(graph, scores, flags, gates, tree, to_lonlat, section: Section) -> dict:
+def steep_stretches(graph, keys, steep_pct, min_length_m, place) -> list[dict]:
+    stretches, run = [], []
+
+    def close():
+        length = sum(graph.edges[k]["length_m"] for k in run)
+        if length >= min_length_m:
+            rise = sum(graph.edges[k]["rise_m"] for k in run)
+            node = graph.nodes[run[0][0]]
+            stretches.append(
+                {
+                    "lonlat": place(node["x"], node["y"]),
+                    "length_m": round(length, 2),
+                    "grade_pct": round(rise / length * 100, 2),
+                }
+            )
+
+    for key in [*keys, None]:
+        grade = graph.edges[key].get("grade_pct") if key else None
+        steep = grade is not None and abs(grade) >= steep_pct
+        joined = (
+            steep
+            and run
+            and run[-1][1] == key[0]
+            and (grade > 0) == (graph.edges[run[-1]]["grade_pct"] > 0)
+        )
+        if run and not joined:
+            close()
+            run = []
+        if steep:
+            run.append(key)
+    return stretches
+
+
+def section_figures(
+    graph, scores, flags, gates, tree, to_lonlat, section: Section, grade: Grade
+) -> dict:
     match = match_route(graph, section.points)
     crs_line = LineString(
         Transformer.from_crs(4326, graph.graph["crs"], always_xy=True).itransform(section.points)
@@ -171,6 +206,9 @@ def section_figures(graph, scores, flags, gates, tree, to_lonlat, section: Secti
         "crossings": crossings,
         "crossings_unsignalised": sum(not c["signal"] for c in crossings),
         "flags": found_flags,
+        "steep": steep_stretches(
+            graph, match.edges, grade.steep_pct.value, grade.min_length_m.value, place
+        ),
     }
 
 
@@ -190,6 +228,7 @@ def add_up(sections: list[dict]) -> dict:
         "crossings": [c for s in sections for c in s["crossings"]],
         "crossings_unsignalised": sum(s["crossings_unsignalised"] for s in sections),
         "flags": [f for s in sections for f in s["flags"]],
+        "steep": [t for s in sections for t in s["steep"]],
     }
 
 
@@ -199,8 +238,18 @@ def route_figures(graph, profile: Profile, sections: list[Section]) -> dict:
     gates = graph.graph.get("gates", [])
     tree = STRtree([Point(g["x"], g["y"]) for g in gates])
     to_lonlat = Transformer.from_crs(graph.graph["crs"], 4326, always_xy=True)
-    found = [section_figures(graph, scores, flags, gates, tree, to_lonlat, s) for s in sections]
-    return {"sections": found, "total": add_up(found)}
+    found = [
+        section_figures(graph, scores, flags, gates, tree, to_lonlat, s, profile.grade)
+        for s in sections
+    ]
+    limits = {
+        name: {"value": num.value, "source": num.source}
+        for name, num in (
+            ("steep_pct", profile.grade.steep_pct),
+            ("min_length_m", profile.grade.min_length_m),
+        )
+    }
+    return {"sections": found, "total": {**add_up(found), "grade_limits": limits}}
 
 
 def write_route_figures(route, region: Region, snapshot, out) -> Path:
