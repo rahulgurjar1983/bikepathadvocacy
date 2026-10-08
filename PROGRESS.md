@@ -82,7 +82,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 - [x] **P7.2** Snapping, and homes from population units (FR-7.3, FR-7.4, FR-7.9)
 - [x] **P7.3** Any-route reach and safe reach (FR-7.5, FR-7.6)
 - [x] **P7.4** Scores and `bikeplan access`; the Bayside baseline as the artifact (FR-7.7, FR-7.8)
-- [ ] **P7.5** The last-leg allowance: a trip may start on up to `last_leg_m` (default 200 m) of calm local street from home (FR-7.11, FR-1.13)
+- [x] **P7.5** The last-leg allowance: a trip may start on up to `last_leg_m` (default 200 m) of calm local street from home (FR-7.11, FR-1.13)
 
 ## Phase 8: Propose
 

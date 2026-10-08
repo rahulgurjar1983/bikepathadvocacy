@@ -675,3 +675,8 @@ uv run python -I artifacts/P6.5/demo.py | tee artifacts/P6.5/choices.txt
 
 Expect: The tests pass. A 14 m and a 12 m parked residential street get `cycleway_in_spare` and `cycleway_parking_one_side` with no speed approval. A 7 m street with no room for a separated fix gets `quietway`, `True`, and `Transport for NSW` for `au-nsw`, or `the road authority that sets speed limits` for `generic`.
 Artifact: `artifacts/P6.5/choices.txt`
+
+### P7.5
+Command: `uv run pytest tests/test_access_last_leg.py tests/test_config.py -q`, then `uv run bikeplan access regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/p75 && jq -c '{score}' /tmp/p75/access_summary.json`, and again with `last_leg_m: 0` under `access:` in a copy of the region file.
+Expect: The tests pass. Bayside scores 0.6 with the default 200 m and 0.1 with `last_leg_m: 0`.
+Artifact: `artifacts/P7.5/compare.txt`
