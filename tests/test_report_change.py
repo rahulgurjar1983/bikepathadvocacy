@@ -1,7 +1,7 @@
 import json
 import re
-from pathlib import Path
 from html.parser import HTMLParser
+from pathlib import Path
 
 import pytest
 from selenium import webdriver
