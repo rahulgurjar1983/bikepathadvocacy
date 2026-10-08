@@ -1,8 +1,6 @@
 import argparse
-import json
 import sys
 from importlib.metadata import version
-from pathlib import Path
 
 from bikeplan.access import write_access
 from bikeplan.checks import write_checks
@@ -21,6 +19,7 @@ from bikeplan.snapshot import (
     verify_snapshot,
 )
 from bikeplan.stress import write_stress
+from bikeplan.verify import verify_outputs
 from bikeplan.width import width_summary
 
 LEAVES = {
@@ -242,15 +241,18 @@ def run(path: str, snapshot: str, out: str) -> int:
 
 def verify(directory: str) -> int:
     try:
-        summary = json.loads((Path(directory) / "summary.json").read_text())
-    except (OSError, ValueError) as error:
-        print(error, file=sys.stderr)
+        results = verify_outputs(directory)
+    except (OSError, ValueError, KeyError) as error:
+        print(f"fail inputs: {error!r}", file=sys.stderr)
         return 1
-    if summary["candidates"] and not summary["projects"]:
-        print(f"{summary['candidates']} candidates but no project", file=sys.stderr)
-        return 1
-    print(f"ok candidates {summary['candidates']} projects {summary['projects']}")
-    return 0
+    failed = 0
+    for name, problems in results:
+        if problems:
+            failed += 1
+            print(f"fail {name}: {'; '.join(problems)}", file=sys.stderr)
+        else:
+            print(f"ok {name}")
+    return 1 if failed else 0
 
 
 def report(path: str, snapshot: str, out: str) -> int:

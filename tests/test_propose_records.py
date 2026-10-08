@@ -51,6 +51,8 @@ def test_fr8_6_a_project_record_holds_every_field():
             "street": "High St",
             "length_m": 400.0,
             "fix": "cycleway_parking_both_sides",
+            "aaa_after": True,
+            "margin_m": 0.0,
             "robust": "robust",
             "width_source": "osm_tag",
             "km": 0.4,

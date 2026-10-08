@@ -708,3 +708,15 @@ jq '{candidates,projects,projects_by_kind,score}' "$OUT/summary.json" | tee arti
 
 Expect: 7 tests pass. With the shipped region file, Bayside has 23637 candidates and gives 4 projects (2 neighbourhood, 2 route fixes), and the score goes from 0.6 to 0.95 (exact). `bikeplan verify` prints `ok` and exits 0; on a run with candidates and no project it exits 1. The run takes about 6 minutes.
 Artifact: `artifacts/P8.6/summary.txt`
+
+### P9.5
+
+```bash
+uv run pytest tests/test_verify.py tests/test_propose_verify.py -q
+OUT=$(mktemp -d)/out
+uv run bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out "$OUT"
+uv run bikeplan verify "$OUT" | tee artifacts/P9.5/verify.txt
+```
+
+Expect: 14 tests pass. Each check fails on a broken copy of good outputs: a changed byte, an element left at LTS 2, a negative margin, a score of 101, a score that falls, and a wrong total. On the Bayside run, `verify` prints `ok` for the eight checks (`hashes`, `aaa_after`, `margins`, `scores`, `score_order`, `project_totals`, `summary_totals`, `projects`) and exits 0. A failed check prints `fail <check>` on standard error and the exit code is 1.
+Artifact: `artifacts/P9.5/verify.txt`
