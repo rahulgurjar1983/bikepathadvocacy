@@ -17,6 +17,7 @@ Restart=on-failure
 RestartSec=120
 Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
 Environment=RALPH_FALLBACK_BIN=%h/.local/bin/codex
+Environment=RALPH_DEEPSEEK_ENV=%h/.config/bikepathadvocacy/deepseek.env
 Environment=RALPH_TURN_SECS=7200
 Environment=RALPH_BACKOFF_SECS=1800
 
