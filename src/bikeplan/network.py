@@ -341,6 +341,10 @@ def build(snapshot: str | Path, region: Region, profile: Profile) -> nx.MultiDiG
     set_lengths(graph)
     graph.graph["points"] = points
     graph.graph["boundary"] = boundary_polygon(folder / "boundary.geojson", crs)
+    if (folder / "parcels.gpkg").is_file():
+        from bikeplan.width import set_reserves
+
+        set_reserves(graph, folder / "parcels.gpkg", crs)
     return graph
 
 

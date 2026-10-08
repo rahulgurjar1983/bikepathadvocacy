@@ -1,0 +1,5 @@
+lanes low 186.442
+none none 60.255
+osm_tag medium 2.556
+reserve low 302.712
+reserve very low 39.133

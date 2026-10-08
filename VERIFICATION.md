@@ -654,3 +654,14 @@ grep -o "[0-9]* met, [0-9]* fail, [0-9]* not built yet" artifacts/R1.10/checks.h
 
 Expect: All FR-13.11 tests pass. The full run passes 787 tests, `bikeplan checks` exits 0, and the grep prints `134 met, 0 fail, 44 not built yet`. A failing test makes the command exit 1, and so makes `scripts/release.sh` stop before any upload.
 Artifact: `artifacts/R1.10/checks.html`
+
+### P11.1
+
+```bash
+uv run pytest tests/test_cadastre.py -q
+mkdir -p artifacts/P11.1
+uv run bikeplan width summary regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 | tee artifacts/P11.1/width_summary.txt
+```
+
+Expect: The tests pass. The Bayside snapshot holds `parcels.gpkg` with 170084 lots, fetched in 642 requests, and `bikeplan snapshot verify` lists it as ok. The summary prints `reserve low 302.712` and `reserve very low 39.133`, so 341.845 km of street now take their width from the measured reserve, where the run before had none. The file is on the snapshot release `snapshot-au-nsw-bayside-2026-10-01`; its sha256 is in the manifest entry.
+Artifact: `artifacts/P11.1/width_summary.txt`, `artifacts/P11.1/parcels_manifest.json`

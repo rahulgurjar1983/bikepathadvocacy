@@ -53,6 +53,18 @@
       "licence": "CC BY 4.0",
       "attribution": "Kontur Population dataset, Kontur Inc.",
       "retrieved_at": "2026-10-06T17:03:15Z"
+    },
+    {
+      "name": "parcels.gpkg",
+      "path": "parcels.gpkg",
+      "sha256": "b67ed12f0c0f73297541540b57e9f62f5bb7e2124d643b2cda739a6c240e5615",
+      "bytes": 48844800,
+      "source": "NSW Cadastre, Lot layer, NSW Spatial Services",
+      "request": "{\"box\": [-34.034191, 151.071754, -33.895188, 151.26065], \"requests\": 642, \"parcels\": 170084}",
+      "url": "https://maps.six.nsw.gov.au/arcgis/rest/services/public/NSW_Cadastre/MapServer/9",
+      "licence": "CC BY 4.0",
+      "attribution": "\u00a9 State of New South Wales (NSW Spatial Services), NSW Cadastre",
+      "retrieved_at": "2026-10-08T02:56:12Z"
     }
   ]
 }

@@ -1,8 +1,9 @@
 import math
 from dataclasses import dataclass
 
+import geopandas
 import numpy as np
-from shapely import Point, unary_union
+from shapely import Point, STRtree, unary_union
 from shapely.geometry import LineString
 
 from bikeplan.config import Profile
@@ -85,6 +86,28 @@ def reserve_estimate(found: Reserve, profile: Profile) -> Estimate:
     )
 
 
+def set_reserves(graph, parcels_path, crs) -> None:
+    frame = geopandas.read_file(parcels_path).to_crs(crs)
+    lots = list(frame.geometry)
+    index = STRtree(lots)
+    for segment in bike_segments(graph).values():
+        if segment["inside_m"] <= 0:
+            continue
+        keys = [key for key, _ in segment["edges"]]
+        first = segment["edges"][0][1]
+        line = first.get("geometry")
+        if line is None:
+            u, v, _ = keys[0]
+            line = LineString([(graph.nodes[n]["x"], graph.nodes[n]["y"]) for n in (u, v)])
+        near = [lots[i] for i in index.query(line.buffer(RESERVE_REACH_M))]
+        found = reserve(line, near)
+        if found is None:
+            continue
+        for key in keys:
+            graph.edges[key]["reserve_m"] = found.width_m
+            graph.edges[key]["reserve_spread_m"] = found.spread_m
+
+
 def parked_sides(data: dict, class_parking: bool) -> int:
     states = [parking_on_side(data, side) for side in SIDES]
     return sum(state == "yes" or (state == "unknown" and class_parking) for state in states)
@@ -151,6 +174,9 @@ def estimates(
 def fuse(
     data: dict, profile: Profile, reserve_m: float | None = None, spread_m: float = 0.0
 ) -> dict:
+    if reserve_m is None:
+        reserve_m = data.get("reserve_m")
+        spread_m = data.get("reserve_spread_m") or 0.0
     found_reserve = None if reserve_m is None else Reserve(reserve_m, spread_m, 0)
     kept, dropped = estimates(data, profile, found_reserve)
     best = kept[0] if kept else None

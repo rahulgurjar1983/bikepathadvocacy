@@ -1,5 +1,7 @@
 import gzip
 import hashlib
+import importlib
+import importlib.util
 import json
 import math
 import re
@@ -549,6 +551,9 @@ ADAPTERS["kontur_population"] = kontur_population
 
 
 def fetch_snapshot(region: Region, out: str | Path, endpoint: str = OVERPASS_ENDPOINT) -> dict:
+    for name in region.snapshot.adapters:
+        if name not in ADAPTERS and importlib.util.find_spec(f"bikeplan.adapters.{name}"):
+            importlib.import_module(f"bikeplan.adapters.{name}")
     unknown = [name for name in region.snapshot.adapters if name not in ADAPTERS]
     if unknown:
         raise OverpassError(f"no adapter named {', '.join(unknown)}")
