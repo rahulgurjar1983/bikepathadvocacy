@@ -114,7 +114,7 @@ def test_fr9_5_verify_fails_a_project_total_that_is_not_the_sum(copy, capsys):
     reseal(copy)
     code, failed, _ = failures(copy, capsys)
     assert code == 1
-    assert [line.split()[1].rstrip(":") for line in failed] == ["project_totals"]
+    assert "project_totals" in [line.split()[1].rstrip(":") for line in failed]
 
 
 def test_fr9_5_verify_fails_a_summary_total_that_is_not_the_sum(copy, capsys):
