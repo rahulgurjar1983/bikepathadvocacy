@@ -22,6 +22,7 @@ WAY_TAGS = [
     "oneway",
     "oneway:bicycle",
     "access",
+    "opening_hours",
     "bicycle",
     "service",
     "cycleway",
@@ -55,6 +56,7 @@ WAY_TAGS = [
 KEPT_APART = ["osmid", "bike_ok", "contraflow", *WAY_TAGS]
 MILE_KMH = 1.609344
 WALK_KMH = 10.0
+GATE_BARRIERS = {"gate", "lift_gate", "swing_gate", "sliding_gate"}
 BIKE_YES = {"yes", "designated"}
 BIKE_NO = {"no", "dismount"}
 CLOSED_ACCESS = {"private", "no"}
@@ -300,6 +302,22 @@ def signal_points(xml: Path, crs: CRS) -> list[dict]:
     return points
 
 
+def gate_points(xml: Path, crs: CRS) -> list[dict]:
+    to_metres = Transformer.from_crs(4326, crs, always_xy=True)
+    points = []
+    for _, node in ET.iterparse(xml):
+        if node.tag != "node":
+            continue
+        tags = {tag.get("k"): tag.get("v") for tag in node.iter("tag")}
+        if tags.get("barrier") in GATE_BARRIERS:
+            x, y = to_metres.transform(float(node.get("lon")), float(node.get("lat")))
+            points.append(
+                {"x": x, "y": y, "barrier": tags["barrier"], "access": tags.get("access")}
+            )
+        node.clear()
+    return points
+
+
 def boundary_polygon(path: Path, crs: CRS):
     feature = json.loads(path.read_text())
     geometry = feature["geometry"] if feature["type"] == "Feature" else feature
@@ -335,11 +353,13 @@ def build(snapshot: str | Path, region: Region, profile: Profile) -> nx.MultiDiG
         xml.write_bytes(gzip.decompress((folder / "network.osm.gz").read_bytes()))
         graph = ox.graph_from_xml(xml, bidirectional=False, simplify=False, retain_all=True)
         points = signal_points(xml, crs)
+        gates = gate_points(xml, crs)
     mark_bike_access(graph, profile)
     graph = ox.simplify_graph(graph, edge_attrs_differ=KEPT_APART)
     graph = ox.project_graph(graph, to_crs=crs)
     set_lengths(graph)
     graph.graph["points"] = points
+    graph.graph["gates"] = gates
     graph.graph["boundary"] = boundary_polygon(folder / "boundary.geojson", crs)
     if (folder / "parcels.gpkg").is_file():
         from bikeplan.width import set_reserves
