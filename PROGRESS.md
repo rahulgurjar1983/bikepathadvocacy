@@ -103,7 +103,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 
 ## Phase V: Review a route or a plan
 
-- [ ] **V1.1** Route files in, map matching with `mappymatch`, and `bikeplan region corridor` (FR-14.1, FR-14.2, FR-14.3)
+- [x] **V1.1** Route files in, map matching with `mappymatch`, and `bikeplan region corridor` (FR-14.1, FR-14.2, FR-14.3)
 - [ ] **V1.2** Route figures, breaks, crossings, and gate and opening-hours flags (FR-14.4, FR-14.5, FR-14.10)
 - [ ] **V1.3** Copernicus GLO-30 elevation adapter and steep stretch flags (FR-14.9)
 - [ ] **V1.4** Fixes, disruption and access value along a route, and claim verdicts (FR-14.6, FR-14.7)

@@ -1,0 +1,1 @@
+mascot-walk {'geojson': '/tmp/v11/regions/mascot-walk.geojson'}

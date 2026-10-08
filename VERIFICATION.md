@@ -720,3 +720,13 @@ uv run bikeplan verify "$OUT" | tee artifacts/P9.5/verify.txt
 
 Expect: 14 tests pass. Each check fails on a broken copy of good outputs: a changed byte, an element left at LTS 2, a negative margin, a score of 101, a score that falls, and a wrong total. On the Bayside run, `verify` prints `ok` for the eight checks (`hashes`, `aaa_after`, `margins`, `scores`, `score_order`, `project_totals`, `summary_totals`, `projects`) and exits 0. A failed check prints `fail <check>` on standard error and the exit code is 1.
 Artifact: `artifacts/P9.5/verify.txt`
+
+### V1.1
+
+```bash
+uv run pytest tests/test_route_read.py tests/test_route_match.py tests/test_region_corridor.py -q
+uv run bikeplan region corridor route.gpx --id mascot-walk --out regions
+```
+
+Expect: all 11 tests pass; the second command prints the path of the new region file, whose boundary is the route grown by `analysis_buffer_m` (a route over 300 km² is refused with a split message). Matching the 1.4 km Mascot test walk to the Bayside snapshot gives 584 m off network and a matched share of 0.592.
+Artifact: `artifacts/V1.1/match.json`
