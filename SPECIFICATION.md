@@ -166,3 +166,7 @@ A task is done only when all of these hold:
 | `specs/12-validation.md` | Checks against the council plan, data quality and sensitivity |
 
 Spec numbers come from `specs/REGISTRY.md`.
+
+## Review repair plan
+
+Spec 15 defines the review fixes and their acceptance cases. It amends the named older rules. The loop takes the repair rows first, then finishes the adapter and validation rows. A model result is a planning estimate; all-ages status does not guarantee that a child can ride alone. Field gaps stay visible.

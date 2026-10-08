@@ -14,7 +14,7 @@ The public report speaks for one resident: the author named in the region file's
 
 ## Safe words
 
-Call a street safe for children only when it is safe for all ages. Level 1 alone is "calm", because a calm street can still fail the all-ages rule.
+Say a street meets the model's all-ages criteria. State whether its evidence is confirmed, assumed or unknown. Never guarantee child safety. Level 1 alone is "calm", since a calm street can still fail the rule.
 
 ## Banned words
 
@@ -40,4 +40,4 @@ Show the author's name and suburb only. Never show a street address, phone numbe
 
 ## Example
 
-> I live in Kogarah. Of the 591 km of street that a bike may use in Bayside, 115 km are safe for a child to ride alone [F3]. I ask council to close the gaps between those streets first. The appendix shows how to check every number here.
+> I live in Kogarah. Of the 591 km of street that a bike may use in Bayside, 115 km meet the model's all-ages criteria [F3]. I ask council to close the gaps between those streets first. The appendix shows how to check every number here.

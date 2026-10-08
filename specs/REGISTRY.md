@@ -19,3 +19,4 @@ Each spec has one number. Take the next free number when you add a spec, and add
 | 12 | `specs/12-validation.md` | Council plan check, data quality, sensitivity |
 | 13 | `specs/13-public-report.md` | The public report in every release |
 | 14 | `specs/14-review.md` | Review a route or a plan |
+| 15 | `specs/15-review-improvements.md` | Trustworthy advice, validation and council use |

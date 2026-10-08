@@ -66,3 +66,11 @@ def test_fr0_10_github_head_ref_wins(repo, monkeypatch):
     repo.commit("touch input")
     monkeypatch.setenv("GITHUB_HEAD_REF", "loop/p1-thing")
     assert inputs.main(["--base", base]) == 1
+
+
+def test_fr0_31_loop_cannot_change_release_plumbing(repo, capsys):
+    base = start(repo, "loop/Q1.2-private")
+    repo.write("scripts/release.sh", "changed\n")
+    repo.commit("touch release input")
+    assert inputs.main(["--base", base]) == 1
+    assert "scripts/release.sh" in capsys.readouterr().out

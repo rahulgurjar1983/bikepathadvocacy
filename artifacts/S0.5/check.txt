@@ -1,0 +1,43 @@
+Review input checks, 2026-10-09
+
+Before implementation:
+18 new runner/proof cases failed.
+2 unavailable-fallback/stale-fetch cases failed.
+2 proof ID/exact-retention cases failed.
+2 release tag cases and the protected-script case failed.
+The fallback extras case failed after correcting its fixture setup.
+The known input blocker reason case failed.
+
+After implementation:
+105 passed in 101.03s: test_release_tag, test_inputs, test_loop,
+test_proof_rows, test_redgreen, test_ledger.
+1 passed in 1.53s: known_input_blocker, added after the prior run collected.
+5 passed in 3.97s: existing release copy, stale-parent and voice-change cases.
+Bash syntax, Ruff lint and format pass; no existing test was removed.
+
+Commands:
+uv run --frozen pytest gates/tests/test_release_tag.py gates/tests/test_inputs.py gates/tests/test_loop.py gates/tests/test_proof_rows.py gates/tests/test_redgreen.py gates/tests/test_ledger.py -q
+uv run --frozen pytest gates/tests/test_loop.py -q -k known_input_blocker
+uv run --frozen pytest tests/test_release.py -q -k 'copies or copied or another_commit or voice_file'
+bash -n loop.sh scripts/release.sh
+uv run --frozen ruff check gates
+uv run --frozen ruff format --check gates
+
+Installed interfaces: codex-cli 0.162.0; Claude Code 2.1.292.
+Claude supports --model and --effort.
+Codex supports --model, model_reasoning_effort and --ignore-user-config.
+The local model catalog lists gpt-6.1-sol and gpt-6-astra with medium/high effort.
+Live model use is proved by the deployed loop's attempt log, not these fixtures.
+
+Primary: Sonnet 5.5 medium for routine; Opus 5.5 high for reasoning/escalation.
+Fallback: GPT-6.1 Sol medium for routine; GPT-6 Astra high for reasoning/escalation.
+Per-attempt counters include limited/failed providers. Cost of Codex is unknown.
+
+Policy sources checked 2026-10-09:
+https://learn.chatgpt.com/docs/models
+https://code.claude.com/docs/en/model-config
+https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence
+https://learn.chatgpt.com/docs/build-skills
+
+These are input controls and a work plan. Application repairs Q1/P10/P11/P12/Q2
+remain open and need their own tests, real artifacts and merged CI proof.

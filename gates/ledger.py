@@ -76,7 +76,9 @@ def open_issues(path: Path = NOTES) -> set[str]:
 
 
 def pick(rows: list[Row]) -> Row | None:
-    return next((row for row in rows if row.pickable), None)
+    from gates.loopstate import is_blocked
+
+    return next((row for row in rows if row.pickable and not is_blocked(row.ident)), None)
 
 
 def main(argv: list[str] | None = None) -> int:

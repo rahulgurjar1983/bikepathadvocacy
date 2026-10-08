@@ -4,11 +4,28 @@ The loop works these rows from the top down, one row per turn. A row is done (`[
 
 Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 needs a person. Each row ends with the spec IDs its tests must cover.
 
+## Review repairs: work these before the remaining phases
+
+Tags: [reasoning] needs deep checks; [routine] is a scoped build; [proof] only adds tests and proof, with no tool change. A row's spec lists its acceptance cases. Each row below reads spec 15 and the older specs named by its IDs.
+
+- [ ] **Q1.1** [reasoning] Finite stop rule, exact gain data, correct explanation and curve-limit notice; rebuild Bayside with shipped weights (FR-15.1, FR-8.14)
+- [ ] **Q1.2** [routine] Enforce private route paths and release exclusion; the input branch adds the ignore rule now (FR-15.18, FR-14.12)
+- [ ] **Q1.3** [reasoning] Keep reserve, carriageway and usable verge apart; remove circular fit proof; split model margin from source confidence; allow an empty confirmed shortlist with explicit survey options when no eligible project gains enough (FR-15.4)
+- [ ] **Q1.4** [reasoning] Crossing movements and confirmed, assumed or unknown safety; no absolute child-safety claims (FR-15.5)
+- [ ] **Q1.5** [reasoning] Count unique people and type gains separately in every output, including route reviews (FR-15.6)
+- [ ] **Q1.6** [reasoning] One package identity drives map, totals, list, sheets and exports; keep the old shortlist as a named option (FR-15.2)
+- [ ] **Q1.7** [routine] Put advice first; fold long tables; 390 px layout, keyboard, status and print checks; keep report size limit (FR-15.3)
+- [ ] **Q1.8** [reasoning] Recompute fixes, safety, margins, access and stop from inputs; reject tampered but rehashed outputs (FR-15.7)
+- [ ] **Q1.9** [reasoning] Public checks prove every part of each claim; plain Python recipes derive answers from raw data (FR-15.8)
+- [ ] **Q1.10** [reasoning] Check required snapshot adapters, effective dates and missing files; obtain complete inputs before switching the public manifest; publish a new immutable snapshot ID rather than overwrite a prior snapshot (FR-15.9)
+- [ ] **Q1.11** [reasoning] Reuse immutable graph and access work with versioned cache keys; cold and warm output bytes match; fast and full modes have labels (FR-15.16)
+
 ## Phase S: Scaffold (operator)
 
 - [x] **S0.1** Gates: red-green, test retention, no comments, no source reads, reading level, secrets, spec coverage, verification, inputs, generic code, ledger (FR-0.2, FR-0.3, FR-0.4, FR-0.5, FR-0.6, FR-0.7, FR-0.8, FR-0.9, FR-0.10, FR-0.16, FR-0.17, FR-0.18)
 - [x] **S0.2** Ralph loop, row picker, lean agent turns, cost log, model escalation, quiet CI wait and PR shipping (FR-0.13, FR-0.14, FR-0.20, FR-0.21, FR-0.22, FR-0.23, FR-0.25)
 - [x] **S0.3** Git hooks and Telegram notes (FR-0.15, FR-0.19)
+- [x] **S0.5** Operator inputs: proof gate, task model routing, bounded stalls, attempt logs and safe release tags (FR-0.27, FR-0.28, FR-0.29, FR-0.30, FR-0.31)
 - [x] **S0.4** 👤 Operator: prove the loop end to end on a real turn: it picks P0.1, opens a PR, CI passes and the PR merges itself (FR-0.13, FR-0.22, FR-0.23, FR-0.25)
 
 ## Phase 0: Foundation
@@ -120,22 +137,32 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 
 ## Phase 10: End to end
 
-- [ ] **P10.1** 👤 (needs a gate path for proof tests that pass on base code; see BLOCKED in AGENT_NOTES.md) Two runs match byte for byte, for the test grid and for Bayside (FR-11.5, NFR-1)
-- [ ] **P10.2** `scripts/e2e.sh` runs Bayside end to end within the time and memory limits; the operator then adds the CI `e2e` job (FR-11.7, NFR-3)
-- [ ] **P10.3** Cambridge snapshots, runs and verifies with no code change (FR-11.8, NFR-6)
-- [ ] **P10.4** `bikeplan region new` and legal default speeds by country, so any council or city can start from one command (FR-1.11, FR-1.12)
+- [ ] **P10.1** [proof] [reasoning] Two runs match byte for byte, for the test grid and for Bayside (FR-11.5, NFR-1)
+- [ ] **P10.2** [reasoning] `scripts/e2e.sh` runs Bayside end to end within the time and memory limits; the operator then adds the CI `e2e` job (FR-11.7, NFR-3)
+- [ ] **P10.3** [reasoning] Cambridge snapshots, runs and verifies with no code change (FR-11.8, NFR-6)
+- [ ] **P10.4** [reasoning] `bikeplan region new` and legal default speeds by country, so any council or city can start from one command (FR-1.11, FR-1.12)
 
 ## Phase 11: Australian adapters
 
-- [ ] **P11.2** NSW road segment function and lanes set ADT (FR-10.3)
-- [ ] **P11.3** TfNSW speed zones (FR-10.4, FR-10.9)
-- [ ] **P11.4** TfNSW crash counts on project sheets (FR-10.5)
-- [ ] **P11.5** ABS mesh block population (FR-10.6)
-- [ ] **P11.6** Official school and aged care lists (FR-10.7)
+- [ ] **P11.2** [reasoning] NSW road segment function and lanes set ADT (FR-10.3)
+- [ ] **P11.3** [reasoning] TfNSW speed zones (FR-10.4, FR-10.9)
+- [ ] **P11.4** [reasoning] TfNSW crash counts on project sheets (FR-10.5)
+- [ ] **P11.5** [reasoning] ABS mesh block population (FR-10.6)
+- [ ] **P11.6** [reasoning] Official school and aged care lists (FR-10.7)
 
 ## Phase 12: Validation and the Bayside report
 
-- [ ] **P12.1** Data quality table (FR-12.1)
-- [ ] **P12.2** Sensitivity runs (FR-12.2)
-- [ ] **P12.3** Benchmark overlap, with the Bayside priority network (FR-12.3, FR-12.4)
-- [ ] **P12.4** Bayside report release, and README numbers with rebuild commands (FR-12.5)
+- [ ] **P12.1** [reasoning] Observed, inferred, default and missing inputs by class and project, with dated sources (FR-12.1, FR-15.9)
+- [ ] **P12.2** [reasoning] Sensitivity, pool-size checks and linked-fix toy optimum (FR-12.2, FR-15.10)
+- [ ] **P12.3** [reasoning] Council benchmark overlap with route status and source uncertainty (FR-12.3, FR-12.4, FR-15.13)
+- [ ] **P12.4** [reasoning] Bayside release and README with rebuilt figures, status, quick start and limits (FR-12.5, FR-15.19)
+
+## Council delivery and wider proof
+
+- [ ] **Q2.1** [reasoning] Validate official joins, population scope and real destination entrances after the Australian adapters ship (FR-15.11)
+- [ ] **Q2.2** [reasoning] Field audit schema, template and model comparison; if observations are unavailable, keep the observation task separate and open (FR-15.12)
+- [ ] **Q2.3** 👤 Field observations for a diverse street and crossing sample; only mark done with sourced real measurements (FR-15.12)
+- [ ] **Q2.4** [reasoning] Project owners, approvals, dependencies, cost bands, spending limits and next council decision; unknown is never zero (FR-15.14)
+- [ ] **Q2.5** [reasoning] Sourced aggregated access and gaps by age and households without cars, with coverage and units (FR-15.15)
+- [ ] **Q2.6** [reasoning] Traffic-side profiles and mirrored street fixtures; fresh Bayside and Cambridge proof with shipped inputs (FR-15.17)
+- [ ] **Q2.7** [reasoning] EW6 or Mascot-Eastlakes pilot: sourced route options, complete trips, space changes, cost uncertainty and a concrete council ask (FR-15.13, FR-15.14, FR-15.19)
