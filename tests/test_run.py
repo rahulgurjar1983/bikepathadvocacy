@@ -16,6 +16,7 @@ COMMITTED = Path("tests/fixtures/test-grid/snapshot")
 RUN = "import sys\nfrom bikeplan import main\nsys.exit(main(sys.argv[1:]))\n"
 FILES = [
     "access_homes.geojson",
+    "frontier.json",
     "network.geojson",
     "places.geojson",
     "projects.csv",

@@ -15,7 +15,7 @@ from bikeplan import main
 
 REGION = "tests/fixtures/test-grid/region.yaml"
 COMMITTED = Path("tests/fixtures/test-grid/snapshot")
-FILES = ["figures.json", "map.json", "report.html", "segments.csv"]
+FILES = ["figures.json", "frontier.json", "map.json", "report.html", "segments.csv"]
 
 
 @pytest.fixture(scope="module")
@@ -51,7 +51,7 @@ def test_fr13_1_writes_every_file_and_sha256sums_matches(output):
 
 def test_fr13_1_figures_are_sorted_with_every_field(output):
     figures = json.loads((output / "figures.json").read_text())
-    assert [item["id"] for item in figures] == ["F1", "F2", "F3", "F4"]
+    assert [item["id"] for item in figures] == [f"F{n}" for n in range(1, 14)]
     for item in figures:
         assert set(item) == {
             "id",
@@ -181,7 +181,7 @@ def test_fr13_2_no_number_outside_a_figure_link_or_the_appendix(output):
 
 def test_fr13_2_the_figure_links_hold_the_numbers_and_resolve_to_one_entry(output):
     page = parsed(output)
-    assert sorted(set(page.links)) == ["F1", "F2", "F3", "F4"]
+    assert sorted(set(page.links)) == sorted(f"F{n}" for n in range(1, 14))
     for figure_id in page.links:
         assert page.ids.count(figure_id) == 1
         assert figure_id in page.entries
