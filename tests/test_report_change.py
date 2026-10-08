@@ -1,5 +1,6 @@
 import json
 import re
+from pathlib import Path
 from html.parser import HTMLParser
 
 import pytest
@@ -237,3 +238,21 @@ def test_fr9_2_people_in_a_project_sheet_are_whole_numbers(built):
     counts = re.findall(r"<code>([^<]*)</code>", people)[1::2]
     assert counts
     assert all(re.fullmatch(r"\d+", text) for text in counts)
+
+
+def change_part(out):
+    html = (out / "report.html").read_text()
+    return re.search(r'<section id="change".*?</section>', html, re.S).group(0)
+
+
+def test_fr8_14_the_report_says_when_the_cap_was_reached(tmp_path):
+    text = (
+        Path(REGION)
+        .read_text()
+        .replace("  max_projects: 25\n", "  max_projects: 25\n  frontier_max_projects: 1\n")
+    )
+    region = tmp_path / "region.yaml"
+    region.write_text(text)
+    out = tmp_path / "out"
+    assert main(["report", str(region), "--snapshot", str(COMMITTED), "--out", str(out)]) == 0
+    assert "cap" in re.search(r'id="change-capped".*?</p>', change_part(out), re.S).group(0)
