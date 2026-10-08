@@ -677,6 +677,12 @@ Expect: The tests pass. A 14 m and a 12 m parked residential street get `cyclewa
 Artifact: `artifacts/P6.5/choices.txt`
 
 ### P7.5
-Command: `uv run pytest tests/test_access_last_leg.py tests/test_config.py -q`, then `uv run bikeplan access regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/p75 && jq -c '{score}' /tmp/p75/access_summary.json`, and again with `last_leg_m: 0` under `access:` in a copy of the region file.
-Expect: The tests pass. Bayside scores 0.6 with the default 200 m and 0.1 with `last_leg_m: 0`.
+
+```bash
+uv run pytest tests/test_access_last_leg.py tests/test_config.py -q
+uv run bikeplan access regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/p75
+jq -c '{score}' /tmp/p75/access_summary.json
+```
+
+Expect: The tests pass. Bayside scores 0.6 with the default 200 m, and 0.1 when a copy of the region file sets `last_leg_m: 0` under `access:`.
 Artifact: `artifacts/P7.5/compare.txt`
