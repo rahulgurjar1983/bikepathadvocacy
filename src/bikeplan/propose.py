@@ -898,12 +898,12 @@ def scaled_region(region, scenario: Scenario, frontier: bool = True):
 
 
 def recommended_stop(picks: list[dict], ratio: float) -> int | None:
-    if not picks:
-        return None
-    first = picks[0]
     stop = None
+    best = 0.0
     for item in picks:
-        if item["gain"] * first["cost"] >= ratio * first["gain"] * item["cost"]:
+        per_point = item["gain"] / item["cost"] if item["cost"] else float("inf")
+        best = max(best, per_point)
+        if per_point >= ratio * best:
             stop = item["rank"]
     return stop
 
@@ -971,13 +971,16 @@ def scenario_curve(
         graph, scaled, profile, placed, people, weights, names, legs, corridors
     )
     picks = curve_picks(picked, planning)
+    stop = recommended_stop(picks, region.proposals.recommend_ratio)
     shapes = project_features(solved, planning, project_records(picked, planning))
     return {
         "shapes": shapes,
         "id": scenario.id,
         "label": scenario.label,
         "scales": scenario.scales,
-        "recommended_stop": recommended_stop(picks, region.proposals.recommend_ratio),
+        "recommended_stop": stop,
+        "cap_reached": stop is not None
+        and stop == len(picks) == region.proposals.frontier_max_projects,
         "picks": picks,
     }
 

@@ -599,6 +599,18 @@ jq -c '.scenarios[] | {id, recommended_stop, picks: (.picks | length)}' "$OUT/fr
 Expect: The tests pass. The run writes `frontier.json` with the scenarios `light`, `shipped` and `heavy`, each with 60 picks and a `recommended_stop`. The wall clock time is under 30 minutes (23:26 on this host) and the peak memory is under 6 GB (1.85 GB). `projects.json` is the same as before.
 Artifact: `artifacts/P8.7/frontier-summary.json`
 
+### P8.8
+
+```bash
+OUT=$(mktemp -d)/out
+/usr/bin/time -v uv run bikeplan propose regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out "$OUT" 2> artifacts/P8.8/time-full.txt
+jq '{scenarios: [.scenarios[] | {id, picks: (.picks | length), recommended_stop, cap_reached}]}' "$OUT/frontier.json" > artifacts/P8.8/frontier-summary.json
+uv run pytest tests/test_propose_frontier.py tests/test_report_change.py -q -k 'test_fr8_14_the_stop_compares_each_pick_with_the_best_pick_so_far or test_fr8_14_the_best_so_far_can_come_after_a_weak_first_pick or test_fr8_13_the_default_cap_is_150_picks or test_fr8_14_a_curve_cut_off_by_the_cap_says_so or test_fr8_14_the_report_says_when_the_cap_was_reached'
+```
+
+Expect: The five focused tests pass. The Bayside curves each contain 150 picks, with recommended stops at ranks 109, 130 and 114. The cap report test shows the note when the stop is the last pick.
+Artifact: `artifacts/P8.8/frontier-summary.json`, `artifacts/P8.8/time-full.txt`, `artifacts/P8.8/run.log`
+
 ### P9.1
 
 ```bash

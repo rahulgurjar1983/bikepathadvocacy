@@ -85,7 +85,7 @@ def test_fr8_14_the_region_file_can_list_its_own_scenarios(tmp_path):
         Scenario("calm", "Parking is precious", {"parking_space": 3.0}),
     )
     assert scenarios_for(region.proposals) == list(region.proposals.scenarios)
-    assert region.proposals.frontier_max_projects == 60
+    assert region.proposals.frontier_max_projects == 150
     assert region.proposals.recommend_ratio == 0.25
 
 
@@ -145,3 +145,39 @@ def test_fr13_15_frontier_json_holds_the_shapes_of_every_pick(tmp_path):
     assert picked == shaped
     assert all("rank" not in item["properties"] for item in data["shapes"]["features"])
     assert all(item["geometry"]["coordinates"] for item in data["shapes"]["features"])
+
+
+def test_fr8_14_the_stop_compares_each_pick_with_the_best_pick_so_far():
+    picks = [
+        {"rank": 1, "gain": 1.0, "cost": 10.0},
+        {"rank": 2, "gain": 10.0, "cost": 10.0},
+        {"rank": 3, "gain": 2.0, "cost": 10.0},
+        {"rank": 4, "gain": 3.0, "cost": 10.0},
+    ]
+    assert recommended_stop(picks, 0.25) == 4
+    assert recommended_stop(picks, 0.3) == 4
+    assert recommended_stop(picks, 0.5) == 2
+
+
+def test_fr8_14_the_best_so_far_can_come_after_a_weak_first_pick():
+    picks = [
+        {"rank": 1, "gain": 1.0, "cost": 10.0},
+        {"rank": 2, "gain": 10.0, "cost": 10.0},
+        {"rank": 3, "gain": 2.4, "cost": 10.0},
+    ]
+    assert recommended_stop(picks, 0.25) == 2
+
+
+def test_fr8_13_the_default_cap_is_150_picks():
+    assert (
+        load_region("tests/fixtures/test-grid/region.yaml").proposals.frontier_max_projects == 150
+    )
+
+
+def test_fr8_14_a_curve_cut_off_by_the_cap_says_so():
+    graph = star([(400, BUSY), (400, BUSY), (400, BUSY)])
+    people = {1: 10, 2: 10, 3: 10}
+    cut = curve(graph, people, region_with(frontier_max_projects=2))
+    whole = curve(graph, people)
+    assert cut["cap_reached"] is True
+    assert whole["cap_reached"] is False

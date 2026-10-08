@@ -292,6 +292,16 @@ def change_scripts(frontier: dict) -> str:
     )
 
 
+def capped_note(chosen: dict) -> str:
+    if not chosen.get("cap_reached"):
+        return ""
+    return (
+        '<p id="change-capped">The curve reached its cap of '
+        f"{len(chosen['picks']) - 1} projects while my stop was still on its last project, "
+        "so more projects were left out.</p>"
+    )
+
+
 def change_section(frontier: dict, by_id: dict) -> str:
     chosen = default_scenario(frontier)
     stop = chosen["recommended_stop"] or 0
@@ -311,6 +321,7 @@ def change_section(frontier: dict, by_id: dict) -> str:
         "of what my first project gained. The fixes up to that stop change "
         f"{link(by_id['F11'])} of street. Move the slider to see the cost of doing less or "
         "more.</p>"
+        f"{capped_note(chosen)}"
         f"<fieldset><legend>Scenario</legend>{radios}</fieldset>"
         '<p><label for="change-slider">How much change</label> '
         f'<input type="range" id="change-slider" min="0" max="{len(chosen["picks"]) - 1}" '

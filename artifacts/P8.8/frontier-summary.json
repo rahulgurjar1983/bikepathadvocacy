@@ -1,0 +1,22 @@
+{
+  "scenarios": [
+    {
+      "id": "light",
+      "picks": 150,
+      "recommended_stop": 109,
+      "cap_reached": false
+    },
+    {
+      "id": "shipped",
+      "picks": 150,
+      "recommended_stop": 130,
+      "cap_reached": false
+    },
+    {
+      "id": "heavy",
+      "picks": 150,
+      "recommended_stop": 114,
+      "cap_reached": false
+    }
+  ]
+}
