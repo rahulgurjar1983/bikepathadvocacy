@@ -411,3 +411,45 @@ def test_fr0_20_agent_shell_may_wait_an_hour_for_the_push(loop_repo):
     result = run_loop(repo, env, "1")
     assert result.returncode == 0, result.stdout + result.stderr
     assert (state / "bash_max").read_text() == "3600000"
+
+
+def deepseek_settings(tmp_path: Path, extra: str = "") -> Path:
+    settings = tmp_path / "deepseek.env"
+    settings.write_text(
+        "# test settings\nANTHROPIC_BASE_URL=https://deepseek.invalid/anthropic\n" + extra
+    )
+    return settings
+
+
+def test_fr0_13_deepseek_runs_when_claude_and_codex_are_limited(loop_repo, tmp_path):
+    limited = {"type": "turn.failed", "error": {"message": "You've hit your usage limit."}}
+    repo, env, state = codex_env(loop_repo, tmp_path, [limited], exit_code=1)
+    env["RALPH_DEEPSEEK_ENV"] = str(deepseek_settings(tmp_path))
+    env["FAKE_RUN"] = 'printf "%s" "${ANTHROPIC_BASE_URL:-}" > "$FAKE_STATE/base_url"'
+    result = run_loop(repo, env, "1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert (state / "base_url").read_text() == "https://deepseek.invalid/anthropic"
+    assert "--model" not in args_of(state, 2)
+    row = first_row(repo)
+    assert row[3] == "deepseek"
+    assert row[6] == ""
+
+
+def test_fr0_13_every_agent_limited_sleeps_after_trying_deepseek(loop_repo, tmp_path):
+    limited = {"type": "turn.failed", "error": {"message": "You've hit your usage limit."}}
+    repo, env, _state = codex_env(loop_repo, tmp_path, [limited], exit_code=1)
+    env["RALPH_DEEPSEEK_ENV"] = str(deepseek_settings(tmp_path, "FAKE_LIMIT_ON=2\n"))
+    result = run_loop(repo, env, "1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    log = (repo.path / "ralph.log").read_text()
+    assert "running deepseek" in log
+    assert "usage limit hit" in log
+
+
+def test_fr0_13_missing_deepseek_settings_fail_hard(loop_repo, tmp_path):
+    repo, env, state = loop_repo
+    env["RALPH_DEEPSEEK_ENV"] = str(tmp_path / "missing.env")
+    result = run_loop(repo, env, "1")
+    assert result.returncode != 0
+    assert "deepseek settings" in (repo.path / "ralph.log").read_text()
+    assert count(state) == 0
