@@ -6,13 +6,16 @@ from shapely.geometry import LineString, box
 from bikeplan.access import reach
 from bikeplan.config import load_profile, load_region
 from bikeplan.network import build
+from bikeplan.page import summary_section
 from bikeplan.propose import (
     Corridors,
     add_corridor_paths,
     greedy_picks,
     planning_network,
+    project_records,
     write_propose,
 )
+from bikeplan.run import DISRUPTION, project_summary
 from tests.test_propose_command import REGION as REGION_FILE
 from tests.test_propose_command import snapshot
 from tests.test_propose_network import BUSY, PROFILE, REGION
@@ -104,7 +107,7 @@ def way(tags, points):
 
 def corridor_files(folder):
     rail = {"railway": "rail"}
-    ring = [(-33.9120, 151.1190), (-33.9120, 151.1310), (-33.9100, 151.1310), (-33.9100, 151.1190)]
+    ring = [(-33.9130, 151.1190), (-33.9130, 151.1310), (-33.9100, 151.1310), (-33.9100, 151.1190)]
     line = [(-33.91213, 151.1200), (-33.91213, 151.1300)]
     elements = [way(rail, line), way({"landuse": "grass"}, [*ring, ring[0]])]
     (folder / "corridors.json").write_text(json.dumps({"elements": elements}))
@@ -135,3 +138,37 @@ def test_fr14_11_without_a_corridor_file_no_candidate_is_made(tmp_path):
         build(folder, region, profile), region, profile, folder, tmp_path / "o", None, stats
     )
     assert stats["corridor_candidates"] == 0
+
+
+def picked_records():
+    new_graph, planning, _ = made(loop_graph())
+    picked = greedy_picks(
+        new_graph,
+        planning,
+        [("school", 1)],
+        {0: 10},
+        WEIGHTS,
+        limits(max_projects=1, min_gain=0.0),
+        REACH_M,
+        DETOUR,
+    )
+    return project_records(picked, planning)
+
+
+def test_fr14_11_the_summary_counts_corridor_candidates_picked_and_not_picked():
+    found = project_summary(picked_records(), ["school"], 3)
+    assert found["corridor_candidates"] == {"made": 3, "picked": 1, "not_picked": 2}
+    assert list(found["km_by_fix"]) == ["new_path"]
+
+
+def test_fr14_11_the_report_summary_says_how_many_corridor_candidates_were_picked():
+    records = picked_records()
+    summary = {
+        "score": {"before": 1.0, "after": 2.0},
+        "projects": 1,
+        "disruption": dict.fromkeys(DISRUPTION, 0),
+        **project_summary(records, ["school"], 3),
+    }
+    html = summary_section(summary)
+    assert "Corridor candidates" in html
+    assert "<td>not picked</td><td>2</td>" in html
