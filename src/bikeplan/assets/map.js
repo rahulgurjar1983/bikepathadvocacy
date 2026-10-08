@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
     secondary: 5, secondary_link: 5, primary: 6, primary_link: 6, trunk: 7, trunk_link: 7,
   };
   const map = L.map("report-map-canvas", { attributionControl: false });
+  window.reportMap = map;
   const boundary = L.geoJSON(data.boundary, {
     style: { color: "#444444", weight: 2, dashArray: "6 6", fill: false },
     interactive: false,

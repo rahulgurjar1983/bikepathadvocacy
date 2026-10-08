@@ -411,7 +411,14 @@ def snapshot_date(region: Region) -> str:
     return f"<time>{day.day} {MONTHS[day.month - 1]} {day.year}</time>"
 
 
-def page(region: Region, figures: list[dict], map_text: str, details: str, data_script: str):
+def page(
+    region: Region,
+    figures: list[dict],
+    map_text: str,
+    details: str,
+    data_script: str,
+    change: str = "",
+):
     by_id = {item["id"]: item for item in figures}
     appendix = "".join(entry(item) for item in figures)
     area = region.name.split(",")[0]
@@ -431,6 +438,7 @@ def page(region: Region, figures: list[dict], map_text: str, details: str, data_
         f"<p>I ask council to measure the street where I have no width. "
         "Please read the appendix to check every number.</p></section>"
         f"{map_section(by_id, has_stage('propose'))}"
+        f"{change}"
         f"{chart([item for item in figures if item['id'] != 'F4'])}"
         f"{glossary_section(terms)}"
         f'<section id="appendix"><h2>How to check every number</h2>'

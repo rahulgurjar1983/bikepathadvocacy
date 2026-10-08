@@ -1,0 +1,304 @@
+import hashlib
+import html
+import json
+from pathlib import Path
+
+from bikeplan.report import SOURCES, link
+
+ASSETS = Path(__file__).parent / "assets"
+PRELUDE = (
+    "import json;d=json.load(open('frontier.json'));"
+    "s=[c for c in d['scenarios'] if c['id']=={scenario!r}][0];"
+    "p=s['picks'][s['recommended_stop'] or 0];print({expr})"
+)
+STEP_FIGURES = [
+    ("F5", "Access score at the recommended stop", "points", "p['score']", lambda p: p["score"]),
+    (
+        "F6",
+        "Disruption score at the recommended stop",
+        "points",
+        "p['disruption']",
+        lambda p: p["disruption"],
+    ),
+    (
+        "F7",
+        "Parking spaces taken at the recommended stop",
+        "spaces",
+        "p['parking_spaces']",
+        lambda p: p["parking_spaces"],
+    ),
+    (
+        "F8",
+        "Traffic-lane length taken at the recommended stop",
+        "km",
+        "p['lane_km']",
+        lambda p: p["lane_km"],
+    ),
+    (
+        "F9",
+        "Street length with a lower speed limit at the recommended stop",
+        "km",
+        "p['speed_km']",
+        lambda p: p["speed_km"],
+    ),
+    (
+        "F10",
+        "People who gain safe reach at the recommended stop",
+        "people",
+        "round(sum(p['people'].values()),3)",
+        lambda p: round(sum(p["people"].values()), 3),
+    ),
+    (
+        "F11",
+        "Street length changed at the recommended stop",
+        "km",
+        "round(sum(p['km_by_fix'].values()),3)",
+        lambda p: round(sum(p["km_by_fix"].values()), 3),
+    ),
+]
+METHOD = (
+    "I take the projects in the order I picked them, and add up what each one costs and gains. "
+    "The shown step is the recommended stop of the {label} scenario. The recipe reads that step "
+    "from frontier.json; change the rank in it to check any other step."
+)
+ROWS = [
+    ("Access score", "score", "F5"),
+    ("Disruption score", "disruption", "F6"),
+    ("Parking spaces taken", "parking_spaces", "F7"),
+    ("Traffic-lane km taken", "lane_km", "F8"),
+    ("Speed-change km", "speed_km", "F9"),
+]
+STROKES = ("#1b5e8a", "#2e7d32", "#8a5a00", "#7b2cbf", "#a33")
+DASHES = ("", "8 4", "2 4", "10 4 2 4", "6 2")
+WIDTH = 600
+HEIGHT = 300
+LEFT = 50
+TOP = 20
+SPAN_X = 520
+SPAN_Y = 220
+
+
+def frontier_data(raw: dict, before: float, kinds: list, shapes: dict) -> dict:
+    baseline = {
+        "rank": 0,
+        "id": None,
+        "kind": None,
+        "name": "No change",
+        "gain": 0.0,
+        "cost": 0.0,
+        "disruption": 0.0,
+        "parking_spaces": 0,
+        "lane_km": 0.0,
+        "speed_km": 0.0,
+        "signals": 0,
+        "refuges": 0,
+        "km_by_fix": {},
+        "score": before,
+        "people": dict.fromkeys(kinds, 0),
+    }
+    scenarios = [{**item, "picks": [baseline, *item["picks"]]} for item in raw["scenarios"]]
+    default = next((item for item in scenarios if item["id"] == "shipped"), scenarios[0])
+    return {
+        "baseline": before,
+        "default": default["id"],
+        "scenarios": scenarios,
+        "shapes": shapes,
+    }
+
+
+def default_scenario(frontier: dict) -> dict:
+    return next(item for item in frontier["scenarios"] if item["id"] == frontier["default"])
+
+
+def change_figures(frontier: dict, text: str) -> list[dict]:
+    digest = hashlib.sha256(text.encode()).hexdigest()
+    chosen = default_scenario(frontier)
+    stop = chosen["recommended_stop"] or 0
+    pick = chosen["picks"][stop]
+    base = {
+        "spec": "spec 13",
+        "inputs": [{"name": "frontier.json", "sha256": digest}],
+        "sources": SOURCES,
+    }
+    method = METHOD.format(label=chosen["label"])
+    figures = [
+        {
+            **base,
+            "id": figure_id,
+            "label": label,
+            "value": value(pick),
+            "unit": unit,
+            "method": method,
+            "recipe": PRELUDE.format(scenario=chosen["id"], expr=expr),
+        }
+        for figure_id, label, unit, expr, value in STEP_FIGURES
+    ]
+    steps = sum(len(item["picks"]) for item in frontier["scenarios"])
+    figures.append(
+        {
+            **base,
+            "id": "F12",
+            "label": "Steps drawn on the access against disruption chart",
+            "value": steps,
+            "unit": "steps",
+            "method": "Each scenario draws one point for no change and one for each project I "
+            "picked. I count the points of every scenario.",
+            "recipe": "import json;print(sum(len(c['picks']) "
+            "for c in json.load(open('frontier.json'))['scenarios']))",
+        }
+    )
+    figures.append(
+        {
+            **base,
+            "id": "F13",
+            "label": "Projects up to the recommended stop",
+            "value": stop,
+            "unit": "projects",
+            "method": "I find the last project whose access gain for each point of disruption "
+            "is still a set share of my first project's. That project's rank is the stop.",
+            "recipe": PRELUDE.format(scenario=chosen["id"], expr="s['recommended_stop'] or 0"),
+        }
+    )
+    return figures
+
+
+def number(value) -> str:
+    return str(value)
+
+
+def fix_names(frontier: dict) -> list[str]:
+    return sorted(
+        {
+            fix
+            for item in frontier["scenarios"]
+            for pick in item["picks"]
+            for fix in pick["km_by_fix"]
+        }
+    )
+
+
+def total_rows(frontier: dict, pick: dict) -> str:
+    rows = [(label, key, figure, pick[key]) for label, key, figure in ROWS]
+    rows += [
+        (f"People gaining safe reach: {kind.replace('_', ' ')}", f"people.{kind}", "F10", count)
+        for kind, count in sorted(pick["people"].items())
+    ]
+    rows += [
+        (
+            f"Km of {fix.replace('_', ' ')}",
+            f"km.{fix}",
+            "F11",
+            pick["km_by_fix"].get(fix, 0),
+        )
+        for fix in fix_names(frontier)
+    ]
+    return "".join(
+        f'<tr><th scope="row">{html.escape(label)}</th>'
+        f'<td><a href="#{figure}" data-total="{html.escape(key, quote=True)}">'
+        f"{number(value)}</a></td></tr>"
+        for label, key, figure, value in rows
+    )
+
+
+def chart_scale(frontier: dict) -> tuple[float, float]:
+    points = [pick for item in frontier["scenarios"] for pick in item["picks"]]
+    top_x = max(pick["disruption"] for pick in points) or 1
+    top_y = max(pick["score"] - frontier["baseline"] for pick in points) or 1
+    return top_x, top_y
+
+
+def chart_points(frontier: dict, item: dict) -> list[tuple[float, float]]:
+    top_x, top_y = chart_scale(frontier)
+    return [
+        (
+            LEFT + pick["disruption"] / top_x * SPAN_X,
+            TOP + SPAN_Y - (pick["score"] - frontier["baseline"]) / top_y * SPAN_Y,
+        )
+        for pick in item["picks"]
+    ]
+
+
+def chart_section(frontier: dict) -> str:
+    chosen = default_scenario(frontier)
+    stop = chosen["recommended_stop"] or 0
+    curves = []
+    labels = []
+    rows = []
+    for index, item in enumerate(frontier["scenarios"]):
+        points = chart_points(frontier, item)
+        selected = item["id"] == chosen["id"]
+        text = " ".join(f"{x:.2f},{y:.2f}" for x, y in points)
+        curves.append(
+            f'<polyline id="curve-{html.escape(item["id"])}" points="{text}" fill="none" '
+            f'stroke="{STROKES[index % len(STROKES)]}" '
+            f'stroke-dasharray="{DASHES[index % len(DASHES)]}" '
+            f'stroke-width="{4 if selected else 2}" data-selected="{str(selected).lower()}"/>'
+        )
+        labels.append(
+            f'<text x="{LEFT + 8}" y="{TOP + 14 + index * 16}" '
+            f'fill="{STROKES[index % len(STROKES)]}">'
+            f"{html.escape(item['label'])} ({DASHES[index % len(DASHES)] or 'solid'})</text>"
+        )
+        rows += [
+            f"<tr><td>{html.escape(item['label'])}</td>"
+            + "".join(
+                f'<td><a href="#F12">{number(value)}</a></td>'
+                for value in (
+                    pick["rank"],
+                    pick["disruption"],
+                    round(pick["score"] - frontier["baseline"], 3),
+                )
+            )
+            + "</tr>"
+            for pick in item["picks"]
+        ]
+    x, y = chart_points(frontier, chosen)[stop]
+    base_y = TOP + SPAN_Y
+    return (
+        '<svg id="change-chart" role="img" '
+        f'viewBox="0 0 {WIDTH} {HEIGHT}" width="100%" aria-labelledby="change-chart-title">'
+        '<title id="change-chart-title">Access gained against disruption, one line for each '
+        "scenario, with a dot at the step on the slider</title>"
+        f'<line x1="{LEFT}" y1="{TOP}" x2="{LEFT}" y2="{base_y}" stroke="#444"/>'
+        f'<line x1="{LEFT}" y1="{base_y}" x2="{LEFT + SPAN_X}" y2="{base_y}" stroke="#444"/>'
+        f'<text x="{LEFT}" y="{HEIGHT - 8}">More disruption, to the right</text>'
+        f'<text x="4" y="{TOP - 6}">More access gained, upward</text>'
+        f"{''.join(curves)}{''.join(labels)}"
+        f'<circle id="change-dot" cx="{x:.2f}" cy="{y:.2f}" r="7" fill="#fff" stroke="#000" '
+        f'stroke-width="3" data-step="{stop}"/></svg>'
+        '<table data-for="change-chart"><caption>The same lines as a table</caption>'
+        "<tr><th>Scenario</th><th>Step</th><th>Disruption</th><th>Access gained</th></tr>"
+        f"{''.join(rows)}</table>"
+    )
+
+
+def change_section(frontier: dict, by_id: dict) -> str:
+    chosen = default_scenario(frontier)
+    stop = chosen["recommended_stop"] or 0
+    pick = chosen["picks"][stop]
+    radios = "".join(
+        f'<label><input type="radio" name="scenario" id="scenario-{html.escape(item["id"])}" '
+        f'value="{html.escape(item["id"])}"'
+        f"{' checked' if item['id'] == chosen['id'] else ''} disabled> "
+        f"{html.escape(item['label'])}</label>"
+        for item in frontier["scenarios"]
+    )
+    data = json.dumps(frontier, sort_keys=True).replace("</", "<\\/")
+    script = (ASSETS / "change.js").read_text()
+    return (
+        '<section id="change"><h2>How much change?</h2>'
+        '<p id="change-why">The slider opens at my recommended stop for the '
+        f"{html.escape(chosen['label'])} scenario: {link(by_id['F13'])}. I stop there because "
+        "each project after it gains less access for each point of disruption than a set share "
+        "of what my first project gained. Move the slider to see the cost of doing less or "
+        "more.</p>"
+        f"<fieldset><legend>Scenario</legend>{radios}</fieldset>"
+        '<p><label for="change-slider">How much change</label> '
+        f'<input type="range" id="change-slider" min="0" max="{len(chosen["picks"]) - 1}" '
+        f'value="{stop}" step="1" disabled> <output id="change-step"></output></p>'
+        '<table id="change-totals"><caption>Totals for the projects picked so far</caption>'
+        f"{total_rows(frontier, pick)}</table>"
+        f"{chart_section(frontier)}"
+        f'<script type="application/json" id="change-data">{data}</script>'
+        f"<script>{script}</script></section>"
+    )

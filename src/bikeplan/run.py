@@ -7,6 +7,7 @@ from importlib.metadata import version
 from pathlib import Path
 
 from bikeplan.access import write_access
+from bikeplan.change import change_figures, change_section, frontier_data
 from bikeplan.config import ConfigError, config_hash
 from bikeplan.fit import segment_fit
 from bikeplan.network import bike_segments, build
@@ -26,6 +27,7 @@ from bikeplan.width import fuse
 
 FILES = [
     "access_homes.geojson",
+    "frontier.json",
     "network.geojson",
     "places.geojson",
     "projects.csv",
@@ -64,20 +66,20 @@ def canon(value, key: str = "", parent: str = ""):
     return value
 
 
-def rounded_coordinates(value):
+def rounded_coordinates(value, places: int = 7):
     if isinstance(value, list | tuple):
-        return [rounded_coordinates(item) for item in value]
-    return round(value, 7)
+        return [rounded_coordinates(item, places) for item in value]
+    return round(value, places)
 
 
 def dump(data) -> bytes:
     return (json.dumps(canon(data), sort_keys=True, indent=2) + "\n").encode()
 
 
-def collection(features: list[dict]) -> dict:
+def collection(features: list[dict], places: int = 7) -> dict:
     for item in features:
         geometry = item["geometry"]
-        geometry["coordinates"] = rounded_coordinates(geometry["coordinates"])
+        geometry["coordinates"] = rounded_coordinates(geometry["coordinates"], places)
     return {
         "type": "FeatureCollection",
         "features": sorted(features, key=lambda item: str(item["id"])),
@@ -162,6 +164,7 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
         places = read_json(base / "places.geojson")["features"]
         homes = read_json(base / "access_homes.geojson")["features"]
         shapes = read_json(base / "projects.geojson")["features"]
+        raw = read_json(base / "frontier.json")
     kinds = list(weights)
     before = access["score"]
     after = records[-1]["score_after"] if records else before
@@ -189,6 +192,11 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
         "places": canon(place_layer),
         "project_shapes": canon(shape_layer),
     }
+    frontier_shapes = collection(
+        with_ids(raw["shapes"]["features"], lambda p: f"{p['project']}:{p['id']}"), 5
+    )
+    frontier_bytes = dump(frontier_data(raw, before, kinds, frontier_shapes))
+    frontier = json.loads(frontier_bytes)
     fixes = {item["properties"]["segment_id"]: item["properties"]["fix"] for item in features}
     rows = segment_rows(graph, profile, fixes)
     text = segments_text(rows)
@@ -196,18 +204,20 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
         json.dumps(map_data(graph, rows, Path(snapshot), payload["project_shapes"]), sort_keys=True)
         + "\n"
     )
-    figures = figure_list(text, map_text)
+    figures = [*figure_list(text, map_text), *change_figures(frontier, frontier_bytes.decode())]
     page_text = page(
         region,
         figures,
         map_text,
         details(payload["summary"], canon(sheets), profile, payload),
         page_scripts(payload),
+        change_section(frontier, {item["id"]: item for item in figures}),
     )
     outputs = {
         "access_homes.geojson": dump(
             collection(with_ids(homes, lambda properties: str(properties["node"])))
         ),
+        "frontier.json": frontier_bytes,
         "network.geojson": dump(network),
         "places.geojson": dump(place_layer),
         "projects.csv": csv_bytes(records, kinds),
@@ -218,6 +228,7 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
     }
     files = {
         "figures.json": (json.dumps(figures, indent=2, sort_keys=True) + "\n").encode(),
+        "frontier.json": frontier_bytes,
         "map.json": map_text.encode(),
         "segments.csv": text.encode(),
     }
