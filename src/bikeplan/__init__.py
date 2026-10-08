@@ -9,6 +9,7 @@ from bikeplan.fit import fit_summary
 from bikeplan.network import build, summarise
 from bikeplan.page import profile_rows
 from bikeplan.propose import write_propose
+from bikeplan.route import RouteError, write_corridor
 from bikeplan.run import run_all, write_report
 from bikeplan.snapshot import (
     OVERPASS_ENDPOINT,
@@ -29,6 +30,7 @@ LEAVES = {
     "verify": "Verify the outputs of a run",
 }
 
+LIKE_REGION = "regions/au-nsw-bayside.yaml"
 STRESS_HELP = "Score the stress level of each road edge"
 REPORT_HELP = "Build the public report and its data files"
 CHECKS_HELP = "Build checks.html from a test run and the specs"
@@ -38,6 +40,7 @@ GROUPS = {
     "network": {"summary": "Summarise the road network"},
     "width": {"summary": "Summarise road widths"},
     "fit": {"summary": "Summarise cycleway fit"},
+    "region": {"corridor": "Make a region from a route file"},
     "snapshot": {
         "fetch": "Fetch the input data of a region",
         "verify": "Check a snapshot folder against its manifest",
@@ -51,6 +54,7 @@ GROUP_HELP = {
     "network": "Network commands",
     "width": "Width commands",
     "fit": "Fit commands",
+    "region": "Region commands",
     "snapshot": "Snapshot commands",
 }
 
@@ -103,6 +107,11 @@ def build_parser() -> argparse.ArgumentParser:
             if (name, sub) in {("network", "summary"), ("width", "summary"), ("fit", "summary")}:
                 leaf.add_argument("region", help="Region file")
                 leaf.add_argument("--snapshot", required=True, help="Snapshot folder")
+            if (name, sub) == ("region", "corridor"):
+                leaf.add_argument("route", help="Route file")
+                leaf.add_argument("--id", required=True, help="Region ID")
+                leaf.add_argument("--like", default=LIKE_REGION, help="Region file to copy")
+                leaf.add_argument("--out", default="regions", help="Output directory")
             if (name, sub) == ("snapshot", "fetch"):
                 leaf.add_argument("region", help="Region file")
                 leaf.add_argument("--out", required=True, help="Output directory")
@@ -268,6 +277,16 @@ def report(path: str, snapshot: str, out: str) -> int:
     return 0
 
 
+def region_corridor(route: str, region_id: str, like: str, out: str) -> int:
+    try:
+        target = write_corridor(route, region_id, like, out)
+    except (RouteError, ConfigError, OSError) as error:
+        print(error, file=sys.stderr)
+        return 1
+    print(target)
+    return 0
+
+
 def snapshot_fetch(path: str, out: str, endpoint: str) -> int:
     try:
         manifest = fetch_snapshot(load_region(path), out, endpoint)
@@ -337,6 +356,8 @@ def main(argv: list[str] | None = None) -> int:
         return fit_summary_command(args.region, args.snapshot)
     if (args.command, getattr(args, "subcommand", None)) == ("network", "summary"):
         return network_summary(args.region, args.snapshot)
+    if (args.command, getattr(args, "subcommand", None)) == ("region", "corridor"):
+        return region_corridor(args.route, args.id, args.like, args.out)
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "fetch"):
         return snapshot_fetch(args.region, args.out, args.endpoint)
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "verify"):
