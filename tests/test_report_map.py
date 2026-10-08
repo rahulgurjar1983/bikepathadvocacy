@@ -72,6 +72,7 @@ def test_fr13_9_map_data_adds_up_to_f1_and_f4(built, data):
     assert km == figures["F1"]["value"] == figures["F4"]["value"]
     assert "map.json" in (built / "SHA256SUMS").read_text()
     assert {s["lts"] for s in data["segments"]} == {1, 3, 4}
+    assert data["projects"]["features"]
 
 
 def test_fr13_9_the_inline_data_is_the_map_file(built, data):
@@ -85,6 +86,7 @@ def test_fr13_9_the_inline_data_is_the_map_file(built, data):
 def test_fr13_9_chromium_logs_no_error_and_paints_each_level_colour(browser, data):
     errors = [m for m in browser.get_log("browser") if m["level"] == "SEVERE"]
     assert not errors
+    assert browser.find_element(By.ID, "layer-proposed").is_enabled()
     painted = strokes(browser)
     assert len(painted) == len(data["segments"])
     blue = {c for c in painted if channels(c)[2] > channels(c)[0]}

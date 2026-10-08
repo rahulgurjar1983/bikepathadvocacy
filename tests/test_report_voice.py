@@ -137,6 +137,7 @@ def test_fr13_5_the_report_shows_no_phone_email_or_street_address_of_the_author(
     page = parse(report)
     assert "Rahul Gurjar, Kogarah" in " ".join(page.parts)
     assert "I ask council" in " ".join(page.parts)
+    assert "sheets" in page.ids
     text = markup(report)
     assert not re.search(r"[\w.+-]+@[\w-]+\.[\w.]+", text)
     assert not re.search(
