@@ -159,7 +159,6 @@ def test_fr10_8_manifest_entry_has_every_field(cadastre_server, tmp_path):
 def grid_with_parcels(tmp_path):
     folder = tmp_path / "snapshot"
     shutil.copytree(GRID, folder)
-    to_degrees = Transformer.from_crs(32756, 4326, always_xy=True)
     origin = Transformer.from_crs(4326, 32756, always_xy=True).transform(151.15, -33.95)
     east0, north0 = round(origin[0]), round(origin[1])
     blocks = [rectangle(10, -300, 40, 900), rectangle(-40, -300, -10, 900)]
