@@ -121,9 +121,7 @@ def project_summary(records: list[dict], kinds: list, made: int = 0) -> dict:
     for record in records:
         for fix, km in record["totals"]["km_by_fix"].items():
             km_by_fix[fix] = km_by_fix.get(fix, 0.0) + km
-    picked = sum(
-        any(item["fix"] == "new_path" for item in record["elements"]) for record in records
-    )
+    picked = sum("new_path" in record["totals"]["km_by_fix"] for record in records)
     return {
         "km_by_fix": km_by_fix,
         "corridor_candidates": {"made": made, "picked": picked, "not_picked": made - picked},
