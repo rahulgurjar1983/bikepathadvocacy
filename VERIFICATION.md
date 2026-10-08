@@ -820,3 +820,15 @@ uv run pytest tests/test_propose_corridor.py -v
 
 Expect: every corridor test passes: a rail-side path is made, scored and picked ahead of fixing the streets, no path is made without open land, near nodes or the least length, and the summary and report count the candidates made, picked and not picked.
 Artifact: `artifacts/V1.6/corridor-tests.txt`
+
+### R1.13
+
+```bash
+uv run pytest tests/test_report_change.py tests/test_propose_frontier.py -q
+OUT=$(mktemp -d)
+uv run bikeplan report tests/fixtures/test-grid/region.yaml --snapshot tests/fixtures/test-grid/snapshot --out "$OUT"
+(cd "$OUT" && sha256sum -c SHA256SUMS && stat -c '%s %n' report.html)
+```
+
+Expect: all tests pass; headless Chromium moves the slider and the map projects, totals and chart dot follow `frontier.json`; the scenario switch picks another curve; `SHA256SUMS` lists `frontier.json` and every file prints OK.
+Artifact: `artifacts/R1.13/check.txt`
