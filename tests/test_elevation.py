@@ -8,9 +8,9 @@ from threading import Thread
 import numpy
 import pytest
 import rasterio
-from bikeplan.adapters.copernicus_glo30 import copernicus_glo30
 from rasterio.transform import from_origin
 
+from bikeplan.adapters.copernicus_glo30 import copernicus_glo30
 from bikeplan.config import load_profile, load_region
 from bikeplan.network import build
 from bikeplan.review import route_figures
