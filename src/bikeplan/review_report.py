@@ -255,7 +255,8 @@ def route_section(figures: Figures, total: dict, sections: list) -> str:
                     f"Route on {text.lower()}",
                     f"t['total']['km_by_facility']['{key}']",
                     "km",
-                    "I add up the matched streets by how they are built, and the stretches off the network.",
+                    "I add up the matched streets by how they are built, "
+                    "and the stretches off the network.",
                 ),
             )
             for key, text in (
@@ -326,10 +327,17 @@ def route_section(figures: Figures, total: dict, sections: list) -> str:
         "<table><tr><th>Section</th><th>Length</th><th>Safe for all ages</th><th>Breaks</th>"
         f"<th>Crossings with no signal</th></tr>{rows}</table>"
     )
-    breaks = "".join(
-        f"<li>A break of {link(figures.add('Length of a break', f"t['total']['breaks'][{i}]['length_m']", 'm', 'I join the stretches that are not safe for all ages, in route order, and read the length.'))}.</li>"
-        for i in range(len(total["breaks"]))
-    )
+    break_rows = []
+    for index in range(len(total["breaks"])):
+        length = figures.add(
+            "Length of a break",
+            f"t['total']['breaks'][{index}]['length_m']",
+            "m",
+            "I join the stretches that are not safe for all ages, "
+            "in route order, and read the length.",
+        )
+        break_rows.append(f"<li>A break of {link(length)}.</li>")
+    breaks = "".join(break_rows)
     crossings = "".join(
         f"<li>{html.escape(item['road'])}: {'a signal' if item['signal'] else 'no signal'}.</li>"
         for item in total["crossings"]
@@ -500,7 +508,8 @@ def page(
         '<section id="appendix"><h2>How to check every number</h2>'
         f"<p>This review uses the data snapshot of {snapshot_date(region)}.</p>{appendix}"
         "<h3>How to rebuild this review</h3><pre>uv run bikeplan review &lt;route file&gt; "
-        "--claims &lt;claims file&gt; --region &lt;region file&gt; --snapshot &lt;snapshot folder&gt; "
+        "--claims &lt;claims file&gt; --region &lt;region file&gt; "
+        "--snapshot &lt;snapshot folder&gt; "
         "--out &lt;folder&gt;</pre></section></body></html>\n"
     )
 
