@@ -209,7 +209,7 @@ def test_fr13_11_the_page_has_a_viewport_and_counts_by_status(tree):
     _, out = build(tree)
     text = out.read_text()
     assert '<meta name="viewport"' in text
-    assert "0 met, 1 tested only, 2 fail, 1 not built yet" in text
+    assert "0 met, 2 tested only, 2 fail, 1 not built yet" in text
 
 
 def test_fr13_11_a_missing_results_file_fails_hard(tree, capsys):
