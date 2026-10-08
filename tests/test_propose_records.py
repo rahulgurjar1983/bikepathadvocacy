@@ -9,6 +9,7 @@ LOW = {**BUSY, "name": "Low St"}
 FIELDS = {
     "rank",
     "id",
+    "kind",
     "name",
     "elements",
     "totals",
@@ -92,6 +93,7 @@ def test_fr8_6_signals_and_refuges_are_counted_from_junction_elements():
     picked = [
         {
             "id": "abc",
+            "kind": "route",
             "elements": ("junction:1", "junction:2", "junction:3"),
             "gain": 1.0,
             "score_after": 1.0,
