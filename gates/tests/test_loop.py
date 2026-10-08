@@ -587,17 +587,15 @@ def test_fr0_29_failed_fetch_stops_before_an_agent_turn(loop_repo, tmp_path):
 
 
 def test_fr0_28_codex_fallback_disables_plugins_and_local_skills(loop_repo, tmp_path):
-    repo, env, state = loop_repo
-    fallback = make_fake(tmp_path, "fallback")
-    env["FAKE_LIMIT_ON"] = "1"
-    env["RALPH_FALLBACK_BIN"] = str(fallback)
+    done = {"type": "turn.completed", "usage": {"input_tokens": 10, "output_tokens": 2}}
+    repo, env, state = codex_env(loop_repo, tmp_path, [done])
     skill = tmp_path / "codex-home/skills/example/SKILL.md"
     skill.parent.mkdir(parents=True)
     skill.write_text("---\nname: example\ndescription: example\n---\n")
     env["CODEX_HOME"] = str(skill.parents[2])
     result = run_loop(repo, env, "1")
     assert result.returncode == 0, result.stdout + result.stderr
-    args = args_of(state, 1, "fallback")
+    args = (state / "codex.args").read_text().splitlines()
     assert "features.plugins=false" in args
     settings = next(arg for arg in args if arg.startswith("skills.config="))
     assert str(skill.resolve()) in settings
