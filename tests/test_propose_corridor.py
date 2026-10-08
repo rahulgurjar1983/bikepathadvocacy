@@ -171,4 +171,4 @@ def test_fr14_11_the_report_summary_says_how_many_corridor_candidates_were_picke
     }
     html = summary_section(summary)
     assert "Corridor candidates" in html
-    assert "<td>not picked</td><td>2</td>" in html
+    assert "<td><code>not picked</code></td><td><code>2</code></td>" in html
