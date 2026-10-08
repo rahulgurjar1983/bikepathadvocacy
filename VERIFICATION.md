@@ -777,3 +777,13 @@ uv run bikeplan route figures artifacts/V1.3/route.gpx --region regions/test-gri
 
 Expect: all 14 tests pass. The second command downloads the real Copernicus GLO-30 tile S34 E151 and prints the sha256 of the cut `elevation.tif`. The third command prints the path of `route_figures.json`, whose total holds `grade_limits` (5 percent, 100 m, with sources) and an empty `steep` list, because the route is flat. The 52 edges of the grid have a largest grade of 2.72 percent.
 Artifact: `artifacts/V1.3/route_figures.json`
+
+### V1.4
+
+```bash
+uv run pytest tests/test_route_fixes.py tests/test_review_verdicts.py tests/test_route_claims_command.py -q
+uv run bikeplan route figures artifacts/V1.4/route.gpx --region regions/test-grid.yaml --snapshot tests/fixtures/test-grid/snapshot --out artifacts/V1.4 --claims artifacts/V1.4/claims.yaml
+```
+
+Expect: all 19 tests pass. The second command prints the path of `route_figures.json` and writes `verdicts.json` next to it. The route needs one signal fix, which takes no parking and no lane. The homes gaining safe reach are 750 people, all to the school, or 625 a km. The ranked project of the same length gains the same 750 at 0 km. The four claims give "holds", "does not hold", "holds" and "outside this tool".
+Artifact: `artifacts/V1.4/verdicts.json`
