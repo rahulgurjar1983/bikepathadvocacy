@@ -686,3 +686,12 @@ jq -c '{score}' /tmp/p75/access_summary.json
 
 Expect: The tests pass. Bayside scores 0.6 with the default 200 m, and 0.1 when a copy of the region file sets `last_leg_m: 0` under `access:`.
 Artifact: `artifacts/P7.5/compare.txt`
+
+### P8.5
+
+```bash
+uv run pytest tests/test_propose_big.py -v | tee artifacts/P8.5/big-projects.txt
+```
+
+Expect: 9 tests pass. A cell between main roads becomes one neighbourhood project. A run of main road between two cells becomes a corridor project only where its fix fits. A neighbourhood whose route fixes each gain under `min_gain` is picked with a gain of 100.0. The test-grid run counts its one project as a route fix.
+Artifact: `artifacts/P8.5/big-projects.txt`

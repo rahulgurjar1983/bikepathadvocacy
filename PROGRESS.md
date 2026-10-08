@@ -89,7 +89,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 - [x] **P8.1** Planning network and trip values (FR-8.1, FR-8.2)
 - [x] **P8.2** Route fixes from planned routes (FR-8.3, FR-8.7)
 - [x] **P8.3** Greedy picks with exact gains (FR-8.4, FR-8.5)
-- [ ] **P8.5** Neighbourhood and corridor projects in the candidate pool (FR-8.11)
+- [x] **P8.5** Neighbourhood and corridor projects in the candidate pool (FR-8.11)
 - [ ] **P8.6** Bayside with the shipped region file gives projects and a higher score; `bikeplan verify` fails a run with candidates but no project (FR-8.12)
 - [ ] **P8.4** Project records, `bikeplan propose`, fast updates and stable output (FR-8.6, FR-8.8, FR-8.9, FR-8.10); reopened on 2026-10-08 because its proof lowered `min_gain`; done once P8.6 passes with the shipped file
 
