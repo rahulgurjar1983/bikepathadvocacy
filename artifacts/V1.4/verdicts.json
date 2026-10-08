@@ -1,0 +1,39 @@
+[
+  {
+    "claimed": 0.5,
+    "id": "c1",
+    "measure": "aaa_share",
+    "measured": 0.5,
+    "op": ">=",
+    "quote": "Half of the route is safe for all ages.",
+    "source": "https://example.org/plan",
+    "verdict": "holds"
+  },
+  {
+    "claimed": 0,
+    "id": "c2",
+    "measure": "crossings_unsignalised",
+    "measured": 1,
+    "op": "<=",
+    "quote": "No road crossings without signals.",
+    "source": "https://example.org/plan",
+    "verdict": "does not hold"
+  },
+  {
+    "claimed": 0,
+    "id": "c3",
+    "measure": "parking_spaces_lost",
+    "measured": 0.0,
+    "op": "<=",
+    "quote": "It takes no space from cars.",
+    "source": "https://example.org/plan",
+    "verdict": "holds"
+  },
+  {
+    "id": "c4",
+    "quote": "It costs 12 million dollars.",
+    "reason": "cost",
+    "source": "https://example.org/plan",
+    "verdict": "outside this tool"
+  }
+]
