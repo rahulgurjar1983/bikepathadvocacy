@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Data-driven proposals for safe, connected, all-ages bike paths for any region"
 requires-python = ">=3.12,<3.13"
 dependencies = [
+    "geopandas>=1.2.0",
     "networkx>=3.7",
     "numpy>=2.5.3",
     "osmnx>=2.1.1",

@@ -8,7 +8,7 @@ analysis_buffer_m: 2680
 profile: au-nsw
 snapshot:
   osm_date: "2026-10-01T00:00:00Z"
-  adapters: [kontur_population]
+  adapters: [kontur_population, nsw_cadastre]
 population:
   source: kontur_population
 destinations:
