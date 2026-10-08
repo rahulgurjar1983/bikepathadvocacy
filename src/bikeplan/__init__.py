@@ -3,6 +3,7 @@ import sys
 from importlib.metadata import version
 
 from bikeplan.access import write_access
+from bikeplan.checks import write_checks
 from bikeplan.config import ConfigError, config_hash, load_profile, load_region
 from bikeplan.fit import fit_summary
 from bikeplan.network import build, summarise
@@ -29,6 +30,7 @@ LEAVES = {
 
 STRESS_HELP = "Score the stress level of each road edge"
 REPORT_HELP = "Build the public report and its data files"
+CHECKS_HELP = "Build checks.html from a test run and the specs"
 
 GROUPS = {
     "config": {"show": "Show the resolved config"},
@@ -80,6 +82,10 @@ def build_parser() -> argparse.ArgumentParser:
     report.add_argument("region", help="Region file")
     report.add_argument("--snapshot", required=True, help="Snapshot folder")
     report.add_argument("--out", required=True, help="Output directory")
+    checks = commands.add_parser("checks", help=CHECKS_HELP, description=CHECKS_HELP)
+    checks.add_argument("junit", help="Test results in JUnit XML")
+    checks.add_argument("--root", default=".", help="Repository folder")
+    checks.add_argument("--out", required=True, help="Output file")
     for name, subs in GROUPS.items():
         group = commands.add_parser(name, help=GROUP_HELP[name], description=GROUP_HELP[name])
         group_commands = group.add_subparsers(
@@ -300,6 +306,8 @@ def main(argv: list[str] | None = None) -> int:
         return run(args.region, args.snapshot, args.out)
     if args.command == "report":
         return report(args.region, args.snapshot, args.out)
+    if args.command == "checks":
+        return write_checks(args.root, args.junit, args.out)
     if (args.command, getattr(args, "subcommand", None)) == ("config", "show"):
         return config_show(args.region)
     if (args.command, getattr(args, "subcommand", None)) == ("width", "summary"):
