@@ -30,7 +30,6 @@ LEAVES = {
     "verify": "Verify the outputs of a run",
 }
 
-LIKE_REGION = "regions/au-nsw-bayside.yaml"
 STRESS_HELP = "Score the stress level of each road edge"
 REPORT_HELP = "Build the public report and its data files"
 CHECKS_HELP = "Build checks.html from a test run and the specs"
@@ -110,7 +109,7 @@ def build_parser() -> argparse.ArgumentParser:
             if (name, sub) == ("region", "corridor"):
                 leaf.add_argument("route", help="Route file")
                 leaf.add_argument("--id", required=True, help="Region ID")
-                leaf.add_argument("--like", default=LIKE_REGION, help="Region file to copy")
+                leaf.add_argument("--like", required=True, help="Region file to copy")
                 leaf.add_argument("--out", default="regions", help="Output directory")
             if (name, sub) == ("snapshot", "fetch"):
                 leaf.add_argument("region", help="Region file")
