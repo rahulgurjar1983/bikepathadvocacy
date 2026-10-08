@@ -1,10 +1,15 @@
+import dataclasses
+
 import pytest
 
-from bikeplan.config import load_profile, load_region
+from bikeplan.config import Fit, Num, load_profile, load_region
 from bikeplan.fit import choose, cross_section
 from tests.test_fit_options import CASES, street
 
-PROFILE = load_profile("au-nsw", "profiles")
+SHIPPED = load_profile("au-nsw", "profiles")
+PROFILE = dataclasses.replace(
+    SHIPPED, fit=Fit(Num(False, "test", False), SHIPPED.fit.speed_approval_body)
+)
 WEIGHTS = load_region("regions/test-grid.yaml").proposals.disruption_weights
 
 
