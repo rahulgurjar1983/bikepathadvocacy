@@ -1,7 +1,7 @@
+import importlib
 import json
 import re
 
-import bikeplan.report
 import pytest
 
 from bikeplan import main
@@ -50,10 +50,11 @@ def test_fr13_12_the_proposed_changes_switch_is_on_in_the_page(report_out):
     assert "disabled" not in box.group(1)
     assert 'id="proposed-note"></p>' in html
     data = re.search(r'<script type="application/json" id="map-data">(.*?)</script>', html, re.S)
-    assert len(json.loads(data.group(1))["projects"]) == 1
+    assert len(json.loads(data.group(1))["projects"]["features"]) == 1
 
 
 def test_fr13_12_no_list_of_missing_stages_exists():
-    assert not hasattr(bikeplan.report, "MISSING_STAGES")
-    assert bikeplan.report.has_stage("propose")
-    assert not bikeplan.report.has_stage("nothing_here")
+    report = importlib.import_module("bikeplan.report")
+    assert not hasattr(report, "MISSING_STAGES")
+    assert report.has_stage("propose")
+    assert not report.has_stage("nothing_here")

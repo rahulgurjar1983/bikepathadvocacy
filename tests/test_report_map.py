@@ -1,6 +1,5 @@
 import json
 import re
-from pathlib import Path
 
 import pytest
 from selenium import webdriver
@@ -156,7 +155,9 @@ def test_fr13_9_the_proposed_changes_switch_is_on_and_draws_each_project(browser
         "document.querySelector('#report-map svg path.map-project')"
         ".dispatchEvent(new MouseEvent('mouseover', {bubbles: true}));"
     )
-    text = browser.find_element(By.CSS_SELECTOR, ".leaflet-tooltip").get_attribute("textContent")
+    text = browser.find_elements(By.CSS_SELECTOR, ".leaflet-tooltip")[-1].get_attribute(
+        "textContent"
+    )
     assert "Rank 1" in text
     assert "signals" in text
     switch(browser, "layer-proposed")

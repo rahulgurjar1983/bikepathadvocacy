@@ -139,7 +139,9 @@ def test_fr13_5_the_report_shows_no_phone_email_or_street_address_of_the_author(
     assert "I ask council" in " ".join(page.parts)
     text = markup(report)
     assert not re.search(r"[\w.+-]+@[\w-]+\.[\w.]+", text)
-    assert not re.search(r"\+?\d[\d ()-]{8,}\d", re.sub(r"[0-9a-f]{64}", "", text))
+    assert not re.search(
+        r"\+?\d[\d ()-]{8,}\d", re.sub(r"\d{4}-\d{2}-\d{2}|[0-9a-f]{64}", "", text)
+    )
     assert not re.search(r"\b\d+\s+[A-Z][a-z]+ (Street|St|Road|Rd|Avenue|Ave)\b", text)
 
 
