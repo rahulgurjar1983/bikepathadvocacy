@@ -34,7 +34,7 @@ You are one turn of a build loop that runs on its own. Do one task well, save it
 - **Real outcomes.** Test what the code does, not what its source says. A test that reads source files, or passes without the code, is fake. The red-green gate will catch it.
 - **Offline runs.** Only `bikeplan snapshot` may use the network. Every other command reads the snapshot.
 - **Every number has a command.** Any number in a doc or report must come with a command that rebuilds it.
-- **Red main stops all work.** If CI on `main` is red, making it green is the only task.
+- **Red main stops all work.** If CI on `main` is red, or the last `release` run failed (`gh run list --workflow release.yml --limit 1`), making it green is the only task. If the cause is an input, such as the workflow file, write a spec issue and send a note.
 - **Readable docs.** Each Markdown file you change must pass `uv run python -m gates.readability <file>`. Put real project words in `GLOSSARY.md`. Reword hard plain words.
 - **Dependencies.** Add each package your code imports with `uv add <package>`. It may use the network, and it works on this host. Commit `pyproject.toml` and `uv.lock` with the code that needs them. Never lean on a package that only comes in through another one, and never hand-roll what a package already does.
 - **No secrets in git.** Keys live in files under `~/.config/`, never in the repo.
