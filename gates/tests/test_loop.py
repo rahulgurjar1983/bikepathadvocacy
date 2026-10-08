@@ -558,3 +558,29 @@ def test_fr0_29_stop_interrupts_a_provider_backoff(loop_repo, tmp_path):
     result = run_loop(repo, env, "1", timeout=4)
     assert result.returncode == 0, result.stdout + result.stderr
     assert "loop finished after 0 turn(s)" in result.stdout
+
+
+def test_fr0_28_reasoning_rows_do_not_use_third_party_fallback(loop_repo, tmp_path):
+    failed = {"type": "turn.failed", "error": {"message": "Selected model is at capacity."}}
+    repo, env, state = codex_env(loop_repo, tmp_path, [failed], exit_code=1)
+    repo.write("PROGRESS.md", "- [ ] **Q1.1** [reasoning] Stop policy (FR-15.1)\n")
+    env["RALPH_DEEPSEEK_ENV"] = str(deepseek_settings(tmp_path))
+    result = run_loop(repo, env, "1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "skipping third-party fallback for reasoning work" in result.stdout
+    rows = [
+        json.loads(line)
+        for line in (repo.path / ".ralph/model-usage.jsonl").read_text().splitlines()
+    ]
+    assert all(row["provider"] != "deepseek" for row in rows)
+    assert count(state) == 2
+
+
+def test_fr0_29_failed_fetch_stops_before_an_agent_turn(loop_repo, tmp_path):
+    repo, env, state = loop_repo
+    env.pop("RALPH_SKIP_SYNC")
+    repo.git("remote", "add", "origin", str(tmp_path / "missing-remote"))
+    result = run_loop(repo, env, "1")
+    assert result.returncode == 2, result.stdout + result.stderr
+    assert "git fetch failed; the loop stopped" in result.stdout
+    assert count(state) == 0
