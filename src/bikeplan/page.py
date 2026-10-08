@@ -28,6 +28,7 @@ STRIP_COLORS = {
     "cycleway": "#45a66a",
     "separator": "#2e555a",
 }
+ROBUST_LABELS = {"robust": "holds up", "check on site": "check on site"}
 METHOD = [
     "The tool reads one snapshot of OpenStreetMap and the other open data named under credits. "
     "It makes no network call.",
@@ -76,7 +77,7 @@ def profile_rows(item, prefix=""):
 
 
 def cell(value) -> str:
-    return f"<td>{html.escape(str(value))}</td>"
+    return f"<td><code>{html.escape(str(value))}</code></td>"
 
 
 def table(head: list[str], rows: list[list]) -> str:
@@ -101,23 +102,6 @@ def summary_section(summary: dict) -> str:
         f"{table(['Item', 'Total'], disruption)}"
         "<h3>People who gain safe reach, by place type</h3>"
         f"{table(['Place type', 'People'], people)}</section>"
-    )
-
-
-def map_section() -> str:
-    boxes = "".join(
-        f'<label><input type="checkbox" id="layer-{name}"{checked}> {text}</label>'
-        for name, text, checked in (
-            ("lts", "Stress level", " checked"),
-            ("aaa", "Safe for all ages", ""),
-            ("places", "Places", ""),
-            ("projects", "Projects", " checked"),
-        )
-    )
-    return (
-        '<section id="map"><h2>Map</h2>'
-        f"<fieldset><legend>Layers</legend>{boxes}</fieldset>"
-        '<div id="report-map-canvas" style="height: 480px"></div></section>'
     )
 
 
@@ -183,9 +167,18 @@ def project_map(record: dict, features: list[dict]) -> str:
     return (
         f'<svg class="project-map" id="project-map-{html.escape(record["id"])}" '
         f'data-project-id="{html.escape(record["id"])}" width="600" height="140" '
-        'viewBox="0 0 600 140" '
+        'viewBox="0,0,600,140" '
         f'role="img" aria-label="Map of {html.escape(record["name"])}">'
         f"<title>Map of {html.escape(record['name'])}</title>{paths}{dots}</svg>"
+        f'<table data-for="project-map-{html.escape(record["id"])}">'
+        "<caption>The same map as a table</caption>"
+        "<tr><th>Street</th><th>Fix</th></tr>"
+        + "".join(
+            f"<tr><td><code>{html.escape(str(item['properties']['street']))}</code></td>"
+            f"<td><code>{html.escape(item['properties']['fix'])}</code></td></tr>"
+            for item in selected
+        )
+        + "</table>"
     )
 
 
@@ -217,17 +210,20 @@ def cross_section(project_id: str, element_id: str, item: dict, phase: str) -> s
             cursor += scaled
         labels.append(label)
     view_width = max(cursor, total * 40, 1.0)
-    label_list = "".join(f"<li>{html.escape(label)}</li>" for label in labels)
+    drawing_id = html.escape(f"xs-{project_id}-{element_id}-{item['id']}-{phase}", quote=True)
+    label_rows = "".join(f"<tr><td><code>{html.escape(label)}</code></td></tr>" for label in labels)
     return (
         '<figure class="cross-section-figure">'
         f"<figcaption>{phase.title()} cross-section</figcaption>"
-        f'<svg class="cross-section" data-project-id="{html.escape(project_id)}" '
+        f'<svg class="cross-section" id="{drawing_id}" data-project-id="{html.escape(project_id)}" '
         f'data-element-id="{html.escape(element_id)}" '
         f'data-section-id="{html.escape(item["id"])}" data-phase="{phase}" '
         f'data-total-width-m="{total:.1f}" width="{view_width:.3f}" height="32" '
-        f'viewBox="0 0 {view_width:.3f} 32" '
+        f'viewBox="0,0,{view_width:.3f},32" '
         'role="img" aria-label="Cross-section drawn to scale">'
-        f'{"".join(shapes)}</svg><ul class="strip-labels">{label_list}</ul></figure>'
+        f"<title>{phase.title()} cross-section drawn to scale</title>{''.join(shapes)}</svg>"
+        f'<table class="strip-labels" data-for="{drawing_id}">'
+        f"<caption>The same strips as a table</caption>{label_rows}</table></figure>"
     )
 
 
@@ -248,7 +244,7 @@ def sheet(record: dict, features: list[dict]) -> str:
             item["id"],
             item["street"],
             item["fix"],
-            item["robust"],
+            ROBUST_LABELS.get(item["robust"], item["robust"]),
             item["width_source"] or "none",
             item["width_confidence"] or "none",
             item["length_m"],
@@ -274,8 +270,9 @@ def sheet(record: dict, features: list[dict]) -> str:
             source = section["width_source"] or "none"
             confidence = section["width_confidence"] or "none"
             drawings.append(
-                f"<h5>{html.escape(section['street'])}; width source {html.escape(source)}, "
-                f"confidence {html.escape(confidence)}</h5>"
+                f"<h5><code>{html.escape(section['street'])}</code>; width source "
+                f"<code>{html.escape(source)}</code>, confidence "
+                f"<code>{html.escape(confidence)}</code></h5>"
                 + "".join(
                     cross_section(record["id"], element["id"], section, phase)
                     for phase in ("before", "after")
@@ -350,31 +347,23 @@ def data_block(payload: dict) -> str:
     return f'<script type="application/json" id="page-data">{text}</script>'
 
 
-def render(summary: dict, records: list[dict], profile, payload: dict) -> str:
-    title = html.escape(summary["region"])
-    sections = [
-        summary_section(summary),
-        map_section(),
-        projects_section(records),
-        sheets_section(records, payload),
-        method_section(),
-        assumptions_section(profile),
-        credits_section(summary["credits"]),
-        rebuild_section(summary),
-    ]
-    head = (
-        '<meta charset="utf-8">'
-        f"<title>Bike path plan: {title}</title>"
-        f"<style>{(ASSETS / 'leaflet.css').read_text()}</style>"
+def details(summary: dict, records: list[dict], profile, payload: dict) -> str:
+    return "".join(
+        [
+            summary_section(summary),
+            projects_section(records),
+            sheets_section(records, payload),
+            method_section(),
+            assumptions_section(profile),
+            credits_section(summary["credits"]),
+            rebuild_section(summary),
+        ]
     )
-    scripts = (
-        f"<script>{(ASSETS / 'leaflet.js').read_text()}</script>"
+
+
+def page_scripts(payload: dict) -> str:
+    return (
         f"{data_block(payload)}"
         "<script>document.querySelectorAll('[data-check-link]').forEach(link => {"
         "link.href = link.dataset.checkLink;});</script>"
-        f"<script>{(ASSETS / 'page_map.js').read_text()}</script>"
-    )
-    return (
-        f'<!DOCTYPE html>\n<html lang="en">\n<head>{head}</head>\n<body>'
-        f"<h1>Bike path plan: {title}</h1>{''.join(sections)}{scripts}</body>\n</html>\n"
     )

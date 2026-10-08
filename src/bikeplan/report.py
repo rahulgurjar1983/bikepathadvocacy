@@ -1,6 +1,7 @@
 import csv
 import hashlib
 import html
+import importlib.util
 import io
 import json
 import re
@@ -16,7 +17,6 @@ from bikeplan.network import bike_segments
 from bikeplan.stress import score_edges
 from bikeplan.width import fuse
 
-MISSING_STAGES = ("fit", "access", "propose")
 SOURCES = [
     {
         "name": "OpenStreetMap contributors",
@@ -175,7 +175,7 @@ def map_places(snapshot: Path) -> list[dict]:
     return sorted(places, key=lambda p: (p["kind"], p["lat"], p["lon"], p["name"]))
 
 
-def map_data(graph, rows: list[list], snapshot: Path) -> dict:
+def map_data(graph, rows: list[list], snapshot: Path, projects: dict) -> dict:
     to_lonlat = Transformer.from_crs(graph.graph["crs"], 4326, always_xy=True)
     scored = {row[0]: row for row in rows}
     segments = []
@@ -200,6 +200,7 @@ def map_data(graph, rows: list[list], snapshot: Path) -> dict:
     return {
         "boundary": boundary,
         "places": map_places(snapshot),
+        "projects": projects,
         "segments": sorted(segments, key=lambda s: s["id"]),
     }
 
@@ -282,9 +283,17 @@ STYLE = (
     "article,table,svg{break-inside:avoid}}"
 )
 GLOSSARY = {
+    "ADT": "average daily traffic: how many motor vehicles use a street in a day.",
     "AAA": "All Ages and Abilities: a street that is safe for a child or an older rider.",
     "access": "how many needed places a home can reach by bike.",
     "bike": "a bicycle, including an electric bicycle.",
+    "disruption": "what a change takes from people who drive or park today.",
+    "Furth": "Peter Furth, who wrote the stress tables that I use.",
+    "OpenStreetMap": "the free map of the world that volunteers keep up to date.",
+    "profile": "the list of rules and numbers that I use for one country.",
+    "project": "a set of street and junction changes that I propose together.",
+    "reserve": "the strip of land beside a street that the public owns.",
+    "snapshot": "one saved copy of the open data that I read.",
     "council": "the local government that runs the streets in an area.",
     "data": "facts and numbers that I read from a file.",
     "width": "how wide a street or lane is, in metres.",
@@ -300,6 +309,10 @@ def glossary_section(terms: dict[str, str]) -> str:
     return f'<section id="report-glossary"><h2>Words I use</h2><dl>{items}</dl></section>'
 
 
+def has_stage(name: str) -> bool:
+    return importlib.util.find_spec(f"bikeplan.{name}") is not None
+
+
 def map_section(by_id: dict, proposed_ready: bool) -> str:
     keys = "".join(
         f'<label><input type="checkbox" id="layer-lts-{level}" checked> {text}</label>'
@@ -313,7 +326,7 @@ def map_section(by_id: dict, proposed_ready: bool) -> str:
         "to draw."
     )
     return (
-        '<section id="report-map"><h2>Map of every street a bike may use</h2>'
+        '<section id="map"><section id="report-map"><h2>Map of every street a bike may use</h2>'
         f"<p>Each line is one street segment. The map draws {link(by_id['F4'])} of street. "
         "Hover over a line, or tap it, to read the street name, its type, its stress level and "
         "whether it is safe for all ages. The dashed line is the council boundary.</p>"
@@ -325,15 +338,16 @@ def map_section(by_id: dict, proposed_ready: bool) -> str:
         f'<label><input type="checkbox" id="layer-proposed"{disabled}> Proposed changes</label>'
         f'<p id="proposed-note">{note}</p></fieldset>'
         '<div id="report-map-canvas" role="region" aria-label="Map of the streets"></div>'
-        "</section>"
+        "</section></section>"
     )
 
 
-def map_scripts(map_text: str) -> str:
+def map_scripts(map_text: str, data_script: str) -> str:
     safe = map_text.replace("</", "<\\/")
     return (
         f"<style>{(ASSETS / 'leaflet.css').read_text()}</style>"
         f"<script>{(ASSETS / 'leaflet.js').read_text()}</script>"
+        f"{data_script}"
         f'<script type="application/json" id="map-data">{safe}</script>'
         f"<script>{(ASSETS / 'map.js').read_text()}</script>"
     )
@@ -374,63 +388,36 @@ def snapshot_date(region: Region) -> str:
     return f"<time>{day.day} {MONTHS[day.month - 1]} {day.year}</time>"
 
 
-def page(region: Region, figures: list[dict], map_text: str) -> str:
+def page(region: Region, figures: list[dict], map_text: str, details: str, data_script: str):
     by_id = {item["id"]: item for item in figures}
-    gaps = "".join(
-        f"<section><h2>{stage.capitalize()}</h2>"
-        f"<p>The {stage} stage is not built yet.</p></section>"
-        for stage in MISSING_STAGES
-    )
     appendix = "".join(entry(item) for item in figures)
     area = region.name.split(",")[0]
     terms = {area: "the council area this report covers.", **GLOSSARY}
+    author = f"<p>By {html.escape(region.report.author)}</p>" if region.report.author else ""
     return (
         '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width, initial-scale=1">'
         f"<title>Bike paths in {html.escape(region.name)}</title>"
-        f"<style>{STYLE}</style>{map_scripts(map_text)}</head><body>"
+        f"<style>{STYLE}</style>{map_scripts(map_text, data_script)}</head><body>"
         f"<h1>Bike paths in {html.escape(region.name)}</h1>"
-        f"<p>By {html.escape(region.report.author)}</p>"
+        f"{author}"
         f'<section id="opening"><h2>What the data shows</h2>'
         f"<p>I checked {link(by_id['F1'])} of street that a bike may use. "
         f"{link(by_id['F2'])} of it is safe for a child to ride alone. "
         f"For {link(by_id['F3'])} I have no width.</p>"
         f"<p>I ask council to measure the street where I have no width. "
         "Please read the appendix to check every number.</p></section>"
-        f"{map_section(by_id, 'propose' not in MISSING_STAGES)}"
+        f"{map_section(by_id, has_stage('propose'))}"
         f"{chart([item for item in figures if item['id'] != 'F4'])}"
-        f"{gaps}"
         f"{glossary_section(terms)}"
         f'<section id="appendix"><h2>How to check every number</h2>'
-        f"<p>This report uses the data snapshot of {snapshot_date(region)}.</p>{appendix}</section>"
+        f"<p>This report uses the data snapshot of {snapshot_date(region)}.</p>{appendix}"
+        f"{details}</section>"
         "</body></html>\n"
     )
 
 
-def write_report(graph, region: Region, profile: Profile, out, snapshot) -> list[dict]:
-    if region.report.author is None:
-        raise ConfigError("report.author is missing: the report needs the name and suburb")
-    out = Path(out)
-    out.mkdir(parents=True, exist_ok=True)
-    rows = segment_rows(graph, profile)
-    text = segments_text(rows)
-    map_text = json.dumps(map_data(graph, rows, Path(snapshot)), sort_keys=True) + "\n"
-    figures = figure_list(text, map_text)
-    html_text = page(region, figures, map_text)
-    found = leaks(html_text, [out.resolve(), Path(snapshot).resolve(), Path.cwd().resolve()])
+def check_leaks(html_text: str, out, snapshot) -> None:
+    found = leaks(html_text, [Path(out).resolve(), Path(snapshot).resolve(), Path.cwd().resolve()])
     if found:
         raise ConfigError(f"the report holds a time stamp or path: {found}")
-    files = {
-        "figures.json": json.dumps(figures, indent=2, sort_keys=True) + "\n",
-        "map.json": map_text,
-        "report.html": html_text,
-        "segments.csv": text,
-    }
-    for name, content in files.items():
-        (out / name).write_text(content)
-    sums = "".join(
-        f"{hashlib.sha256(content.encode()).hexdigest()}  {name}\n"
-        for name, content in sorted(files.items())
-    )
-    (out / "SHA256SUMS").write_text(sums)
-    return figures

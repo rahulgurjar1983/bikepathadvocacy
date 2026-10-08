@@ -167,6 +167,7 @@ def fuse(
 
 
 def check_links(lat: float, lon: float) -> dict:
+    lat, lon = round(lat, 6), round(lon, 6)
     return {
         "street_view": f"https://www.google.com/maps/@?api=1&map_action=pano&viewpoint={lat},{lon}",
         "mapillary": f"https://www.mapillary.com/app/?lat={lat}&lng={lon}&z=18",
