@@ -1,4 +1,3 @@
-import gzip
 import hashlib
 import json
 import os
@@ -11,23 +10,7 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
-FIXTURE = ROOT / "tests/fixtures/network/junctions.osm"
-BOUNDARY = {
-    "type": "Feature",
-    "properties": {},
-    "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-            [
-                [151.10, -33.97],
-                [151.14, -33.97],
-                [151.14, -33.88],
-                [151.10, -33.88],
-                [151.10, -33.97],
-            ]
-        ],
-    },
-}
+GRID = ROOT / "tests/fixtures/test-grid"
 GH_STAND_IN = """#!{python}
 import json, os, shutil, sys
 from pathlib import Path
@@ -90,23 +73,21 @@ def repo(tmp_path):
     work = tmp_path / "repo"
     (work / "scripts").mkdir(parents=True)
     (work / "regions").mkdir()
-    shutil.copy(ROOT / "regions/au-nsw-bayside.yaml", work / "regions/au-nsw-bayside.yaml")
     source = tmp_path / "source"
-    source.mkdir()
-    (source / "network.osm.gz").write_bytes(gzip.compress(FIXTURE.read_bytes(), mtime=0))
-    (source / "boundary.geojson").write_text(json.dumps(BOUNDARY))
-    entries = [
-        {
-            "name": path.name,
-            "path": path.name,
-            "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
-            "bytes": path.stat().st_size,
-        }
-        for path in sorted(source.iterdir())
-    ]
-    manifest = {"region": "au-nsw-bayside", "snapshot_id": "2026-10-01", "files": entries}
+    shutil.copytree(GRID / "snapshot", source)
+    (work / "regions/au-nsw-bayside.yaml").write_text(
+        (GRID / "region.yaml")
+        .read_text()
+        .replace("id: test-grid", "id: au-nsw-bayside")
+        .replace(
+            "tests/fixtures/test-grid/snapshot/boundary.geojson", str(source / "boundary.geojson")
+        )
+    )
+    manifest = json.loads((source / "manifest.json").read_text())
+    manifest["region"] = "au-nsw-bayside"
     folder = work / "snapshots/au-nsw-bayside/2026-10-01"
     folder.mkdir(parents=True)
+    (source / "manifest.json").write_text(json.dumps(manifest))
     (folder / "manifest.json").write_text(json.dumps(manifest))
     bin_dir = tmp_path / "bin"
     bin_dir.mkdir()
