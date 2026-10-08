@@ -579,12 +579,12 @@ Artifact: `artifacts/R1.8/tests.txt`
 
 ```bash
 uv run pytest tests/test_propose_records.py tests/test_propose_update.py tests/test_propose_command.py -q
-sed 's/min_gain: 0.05/min_gain: 0.001/' regions/au-nsw-bayside.yaml > "$TMPDIR/bayside-low.yaml"
-/usr/bin/time -v uv run bikeplan propose "$TMPDIR/bayside-low.yaml" --snapshot data/cache/au-nsw-bayside/2026-10-01 --out "$OUT"
+OUT=$(mktemp -d)/out
+/usr/bin/time -v uv run bikeplan propose regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out "$OUT"
 jq '.[0:10] | map({rank, name, gain, score_after})' "$OUT/projects.json"
 ```
 
-Expect: The tests pass. The run prints `projects 25` and `score_after 0.529687`, and takes about 5 minutes 20 seconds with 1.4 GB of memory, inside NFR-3. The three files `projects.json`, `projects.csv` and `projects.geojson` are written. With the shipped `min_gain` of 0.05 the run gives `projects 0`, because the best Bayside gain is 0.035 (see Spec issues in `AGENT_NOTES.md`).
+Expect: The tests pass. With the shipped region file (`min_gain` 0.05) the run prints `projects 4` and `score_after 0.947908`, and takes about 4 minutes 15 seconds, inside NFR-3. The three files `projects.json`, `projects.csv` and `projects.geojson` are written. P8.6 proves the same file end to end.
 Artifact: `artifacts/P8.4/projects.json`
 
 ### P9.1

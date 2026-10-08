@@ -20,7 +20,6 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 - `gates/tests/test_loop.py::test_fr0_13_usage_limit_turn_is_not_counted` times out after 60 seconds on `origin/main` too. Proof: `git checkout origin/main && uv run pytest gates/tests/test_loop.py -q -k usage_limit`. The pre-push hook still let the push through.
 
-- P8.4 Bayside: `min_gain: 0.05` in `regions/au-nsw-bayside.yaml` (spec 01) stops the run at once, so `bikeplan propose` writes no projects. The baseline access score is 0.1, and the best exact gain is 0.035. Proof: run the command on `data/cache/au-nsw-bayside/2026-10-01` (3 minutes 34 seconds, prints `projects 0`). With `min_gain` at 0.001 it picks 25 projects.
 
 ## BLOCKED
 
