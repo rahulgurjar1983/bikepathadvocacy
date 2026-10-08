@@ -730,3 +730,13 @@ uv run bikeplan region corridor route.gpx --id mascot-walk --like regions/au-nsw
 
 Expect: all 11 tests pass; the second command prints the path of the new region file, whose boundary is the route grown by `analysis_buffer_m` (a route over 300 km² is refused with a split message). Matching the 1.4 km Mascot test walk to the Bayside snapshot gives 584 m off network and a matched share of 0.592.
 Artifact: `artifacts/V1.1/match.json`
+
+### V1.2
+
+```bash
+uv run pytest tests/test_route_figures.py tests/test_route_crossings.py tests/test_route_flags.py -q
+uv run bikeplan route figures artifacts/V1.2/route.gpx --region regions/test-grid.yaml --snapshot tests/fixtures/test-grid/snapshot --out artifacts/V1.2
+```
+
+Expect: all 15 tests pass; the second command prints the path of `route_figures.json`. For the two-section test-grid route the total shows 1.0 km on shared streets, 0.0702 km off network, 0.6 km safe for all ages, one break, one unsignalised crossing and a matched share of 0.9415.
+Artifact: `artifacts/V1.2/route_figures.json`
