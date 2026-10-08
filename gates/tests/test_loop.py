@@ -453,3 +453,108 @@ def test_fr0_13_missing_deepseek_settings_fail_hard(loop_repo, tmp_path):
     assert result.returncode != 0
     assert "deepseek settings" in (repo.path / "ralph.log").read_text()
     assert count(state) == 0
+
+
+def test_fr0_28_reasoning_row_uses_opus_high_effort(loop_repo):
+    repo, env, state = loop_repo
+    repo.write("PROGRESS.md", "- [ ] **Q1.1** [reasoning] Stop policy (FR-15.1)\n")
+    result = run_loop(repo, env, "1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert flag_value(args_of(state, 1), "--model") == "opus"
+    assert flag_value(args_of(state, 1), "--effort") == "high"
+
+
+def test_fr0_28_routine_row_has_explicit_medium_effort(loop_repo):
+    repo, env, state = loop_repo
+    result = run_loop(repo, env, "1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert flag_value(args_of(state, 1), "--effort") == "medium"
+
+
+@pytest.mark.parametrize(
+    ("tag", "model", "effort"),
+    [("[routine]", "gpt-6.1-sol", "medium"), ("[reasoning]", "gpt-6-astra", "high")],
+)
+def test_fr0_28_codex_fallback_pins_model_and_effort(loop_repo, tmp_path, tag, model, effort):
+    done = {"type": "turn.completed", "usage": {"input_tokens": 10, "output_tokens": 2}}
+    repo, env, state = codex_env(loop_repo, tmp_path, [done])
+    repo.write("PROGRESS.md", f"- [ ] **Q1.1** {tag} Work (FR-15.1)\n")
+    result = run_loop(repo, env, "1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    args = (state / "codex.args").read_text().splitlines()
+    assert args[args.index("--model") + 1] == model
+    assert f'model_reasoning_effort="{effort}"' in args
+    assert "--ignore-user-config" in args
+
+
+def test_fr0_30_every_attempt_records_the_actual_model(loop_repo, tmp_path):
+    done = {"type": "turn.completed", "usage": {"input_tokens": 10, "output_tokens": 2}}
+    repo, env, _ = codex_env(loop_repo, tmp_path, [done])
+    result = run_loop(repo, env, "1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    rows = [
+        json.loads(line)
+        for line in (repo.path / ".ralph/model-usage.jsonl").read_text().splitlines()
+    ]
+    assert [(r["provider"], r["model"], r["effort"]) for r in rows] == [
+        ("claude", "sonnet", "medium"),
+        ("codex", "gpt-6.1-sol", "medium"),
+    ]
+    assert rows[0]["exit"] == 1
+    assert rows[1]["output_tokens"] == 2
+
+
+def test_fr0_29_three_stalls_advance_to_the_next_row_and_survive_restart(loop_repo):
+    repo, env, state = loop_repo
+    repo.append("PROGRESS.md", "- [ ] **P0.3** Later task (FR-11.3)\n")
+    env["RALPH_MAX_IDLE"] = "1"
+    env["RALPH_IDLE_SECS"] = "0"
+    assert run_loop(repo, env, "3").returncode == 0
+    assert run_loop(repo, env, "1").returncode == 0
+    assert "P0.3" in args_of(state, 4)
+    blocked = json.loads((repo.path / ".ralph/stalls.json").read_text())
+    assert blocked["P0.2"]["blocked"] is True
+    assert blocked["P0.2"]["attempts"] == 3
+
+
+def test_fr0_29_changed_prompt_unblocks_a_stalled_row(loop_repo):
+    repo, env, state = loop_repo
+    env["RALPH_MAX_IDLE"] = "1"
+    env["RALPH_IDLE_SECS"] = "0"
+    assert run_loop(repo, env, "3").returncode == 0
+    state_file = repo.path / ".ralph/stalls.json"
+    assert json.loads(state_file.read_text())["P0.2"]["blocked"] is True
+    repo.write("PROMPT.md", "New requirement: check the outputs.\n")
+    assert run_loop(repo, env, "1").returncode == 0
+    assert "P0.2" in args_of(state, 4)
+    assert json.loads(state_file.read_text())["P0.2"]["attempts"] == 1
+
+
+def test_fr0_29_waiting_ci_does_not_use_the_stall_budget(loop_repo):
+    repo, env, _ = loop_repo
+    env["FAKE_RUN"] = (
+        'printf \'%s\' \'{"row":"P0.2","status":"waiting_ci","pr":1}\' > .ralph/turn-result.json'
+    )
+    assert run_loop(repo, env, "4").returncode == 0
+    row = json.loads((repo.path / ".ralph/stalls.json").read_text())["P0.2"]
+    assert row["attempts"] == 0
+    assert row["blocked"] is False
+    assert row["outcome"] == "waiting_ci"
+
+
+def test_fr0_29_stop_interrupts_a_provider_backoff(loop_repo, tmp_path):
+    repo, env, _ = loop_repo
+    limited = tmp_path / "limited"
+    limited.write_text("#!/usr/bin/env bash\necho 'usage limit reached'\ntouch STOP\nexit 1\n")
+    limited.chmod(0o755)
+    env.update(
+        {
+            "RALPH_CLAUDE_BIN": str(limited),
+            "RALPH_BACKOFF_SECS": "10",
+            "RALPH_MAX_SLEEP_SECS": "10",
+            "RALPH_HOLD_POLL_SECS": "0.1",
+        }
+    )
+    result = run_loop(repo, env, "1", timeout=4)
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "loop finished after 0 turn(s)" in result.stdout
