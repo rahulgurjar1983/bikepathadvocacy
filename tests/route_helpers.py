@@ -1,4 +1,5 @@
 import json
+from itertools import pairwise
 
 from pyproj import Transformer
 
@@ -58,7 +59,7 @@ def corner_route():
 
 def densify(points, step=20):
     out = []
-    for (x0, y0), (x1, y1) in zip(points, points[1:]):
+    for (x0, y0), (x1, y1) in pairwise(points):
         count = int(max(abs(x1 - x0), abs(y1 - y0)) // step)
         out += [(x0 + (x1 - x0) * i / count, y0 + (y1 - y0) * i / count) for i in range(count)]
-    return out + [points[-1]]
+    return [*out, points[-1]]

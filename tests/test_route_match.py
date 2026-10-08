@@ -1,10 +1,10 @@
 import random
 
 import pytest
-from bikeplan.route import match_route
 
 from bikeplan.config import load_profile, load_region
 from bikeplan.network import build
+from bikeplan.route import match_route
 from tests.route_helpers import REGION, SNAPSHOT, corner_route, densify, lonlat
 
 
