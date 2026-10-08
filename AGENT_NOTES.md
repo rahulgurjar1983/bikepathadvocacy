@@ -23,7 +23,7 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## BLOCKED
 
-None yet.
+- V1.7: I could not find the public RideWithGPS track for CycleSydney Ride 22. The wiki page for the ride (`cyclesydney.wiki/sutherland/`) sends the reader on to other domains: `syd.lat`, then `nisdy.online`, then `sdy005.cyou`. I did not follow the third one, since it looks like a hijacked redirect. The ask: send the `ridewithgps.com/routes/<number>` link for Ride 22, or its GPX file, and the exact quotes you want judged. Put the GPX in `data/private/ride22/` and the claims in `data/private/ride22/claims.yaml`. Also check that `data/private/` is in `.gitignore`; it is not now.
 - `boundary_geojson` joins relation ways into rings in plain Python, because shapely is not in the offline lock. `fetch_boundary` stores the raw reply only while it checks it, so an open relation leaves no file. The network query asks for XML; gzip is the job of the fetch command row.
 - `fetch_snapshot` in `src/bikeplan/snapshot.py` runs each adapter from the `ADAPTERS` dict as `adapter(region, box, out_dir)` and expects a list of `ManifestEntry` with `path` relative to the out dir. `kontur_population` is now in it.
 - The Bayside network fetch takes about 3 minutes and gives a 5.5 MB gzip. Run it in the background.
