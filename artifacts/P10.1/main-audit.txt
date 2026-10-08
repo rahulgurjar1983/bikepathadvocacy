@@ -1,11 +1,11 @@
-Fresh base command: git fetch origin && git worktree add --detach /tmp/bikepath-p10.1-turn origin/main
+Fresh base command: git fetch origin && git worktree add --detach /tmp/bikepath-p10.1-proof-20261009 origin/main
 Base commit: ec169f8b57d7676740650a8068d54f367a0d912d
 Grid command (in the fresh worktree): uv run --project /home/oem/claude/bikepathadvocacy --frozen pytest tests/test_run.py::test_fr11_5_two_test_grid_runs_give_the_same_hash_file tests/test_run.py::test_fr9_2_two_runs_give_the_same_bytes -q
-Grid result: 2 passed in 5.90s
+Grid result: 2 passed in 5.20s
 Prior Bayside result: check.txt records the same base commit; no new Bayside run was made this turn.
 Saved pair audit command: diff -rq /tmp/pytest-of-oem/pytest-335/bayside0/one /tmp/pytest-of-oem/pytest-335/bayside0/two
 Saved pair audit result: exit 2, both temp folders no longer exist.
-Gate rule command (in the fresh worktree): PYTHONPATH=src:. uv run --frozen python -c 'from gates.redgreen import judge; item="tests/test_run_bayside.py::test_fr11_5_two_bayside_runs_give_the_same_hash_file"; print(judge([item], {item: "passed"}))'
-Gate rule result: ([], ['tests/test_run_bayside.py::test_fr11_5_two_bayside_runs_give_the_same_hash_file'], [])
-The gate rule probe classifies a prior passing result; it does not run Bayside.
+Gate rule command (in the fresh worktree): PYTHONPATH=src:. uv run --project /home/oem/claude/bikepathadvocacy --frozen python -c 'from gates.redgreen import judge; item="tests/test_run.py::test_fr11_5_two_test_grid_runs_give_the_same_hash_file"; print(judge([item], {item: "passed"}))'
+Gate rule result: ([], ['tests/test_run.py::test_fr11_5_two_test_grid_runs_give_the_same_hash_file'], [])
+The gate rule probe classifies the fresh grid result; it does not run Bayside.
 Next step: an operator must provide a rule and gate path for proof rows whose tests already pass on base code.
