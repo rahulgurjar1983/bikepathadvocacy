@@ -725,7 +725,7 @@ Artifact: `artifacts/P9.5/verify.txt`
 
 ```bash
 uv run pytest tests/test_route_read.py tests/test_route_match.py tests/test_region_corridor.py -q
-uv run bikeplan region corridor route.gpx --id mascot-walk --out regions
+uv run bikeplan region corridor route.gpx --id mascot-walk --like regions/au-nsw-bayside.yaml --out regions
 ```
 
 Expect: all 11 tests pass; the second command prints the path of the new region file, whose boundary is the route grown by `analysis_buffer_m` (a route over 300 km² is refused with a split message). Matching the 1.4 km Mascot test walk to the Bayside snapshot gives 584 m off network and a matched share of 0.592.
