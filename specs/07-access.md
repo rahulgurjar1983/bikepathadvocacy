@@ -39,6 +39,7 @@ Ways and relations use their centre point. Places that share an OSM ID, or that 
 | FR-7.8 | `bikeplan access <region file> --snapshot <dir> --out <dir>` writes `places.geojson`, `access_homes.geojson` (node, people, home score, type scores) and `access_summary.json` (region score, type scores, people with safe reach by type, places not snapped). | MUST |
 | FR-7.9 | Places just outside the boundary but within `analysis_buffer_m` count as places. Homes outside the boundary do not count. | MUST |
 | FR-7.10 | The places query of spec 02 fetches every node, way and relation that has a tag in section 3, and every `shop=*`, in the boundary box grown by `analysis_buffer_m`, with `out center tags`. | MUST |
+| FR-7.11 | A trip is safe when its route is safe for all ages except for its first stretch from the home, of at most `access.last_leg_m` along local streets (`residential`, `living_street`, `unclassified` or `service`) at stress level 1 or 2, crossing no level 3 or 4 road. The detour rule of FR-7.6 applies to the whole route. `last_leg_m` is set in the region file, defaults to 200, and may be 0 to turn the allowance off. The report states the value in its method as an assumption. | MUST |
 
 ## 5. Test plan
 
@@ -56,6 +57,7 @@ Tests use small graphs whose distances can be checked by hand.
 | FR-7.8 | The command writes the three files for a fixture |
 | FR-7.9 | A school 1 km outside the boundary counts; a home outside does not |
 | FR-7.10 | The query text holds each tag of section 3 and `shop`, the date line and `out center tags` |
+| FR-7.11 | A home 150 m along a level 2 local street from a safe network is safe with the default; at 250 m it is not; with `last_leg_m` 0 it is not; a first stretch that crosses a level 4 road is not |
 
 ## 6. Validation evidence
 
