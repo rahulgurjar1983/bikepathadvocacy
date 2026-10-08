@@ -66,7 +66,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 - [x] **R1.7** `scripts/release.sh <tag>` builds every public report, the artifacts archive and the index, and uploads them to a release, copying unchanged reports forward; it replaces `scripts/release-report.sh`; the operator then adds the CI `release` workflow that runs on every merge (FR-13.7)
 - [x] **R1.8** `scripts/release.sh` copies reports forward only from the release whose `index.html` names the commit `HEAD^`; when that release is missing it rebuilds, so a queued or skipped run can never copy a stale report (FR-13.7)
 - [x] **R1.9** One report: `bikeplan run` and `bikeplan report` share one builder, which uses every stage the code has, with projects, sheets and the proposed changes switch (FR-13.12)
-- [ ] **R1.10** `checks.html` in every release: each requirement in plain words, how a councillor checks it, and this release's result (FR-13.11)
+- [x] **R1.10** `checks.html` in every release: each requirement in plain words, how a councillor checks it, and this release's result (FR-13.11)
 
 ## Phase 6: Fit
 

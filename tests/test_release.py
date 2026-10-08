@@ -36,6 +36,13 @@ import hashlib, json, os, sys
 from pathlib import Path
 
 args = sys.argv[1:]
+if args[0] == "checks":
+    with open(os.environ["BP_LOG"], "a") as log:
+        log.write(json.dumps(args) + "\\n")
+    if os.environ.get("BP_FAIL_CHECKS"):
+        sys.exit(1)
+    Path(args[args.index("--out") + 1]).write_text("<html>checks</html>")
+    sys.exit(0)
 if os.environ.get("BP_REAL"):
     from bikeplan import main
 
@@ -59,6 +66,20 @@ if args[0] in ("report", "review"):
     (out / "SHA256SUMS").write_text(sums)
     sys.exit(0)
 sys.exit(2)
+"""
+
+
+PYTEST_STAND_IN = """#!{python}
+import json, os, sys
+from pathlib import Path
+
+args = sys.argv[1:]
+with open(os.environ["PYTEST_LOG"], "a") as log:
+    log.write(json.dumps(args) + "\\n")
+for arg in args:
+    if arg.startswith("--junitxml="):
+        Path(arg.split("=", 1)[1]).write_text("<testsuites/>")
+sys.exit(int(os.environ.get("PYTEST_EXIT", "0")))
 """
 
 
@@ -93,6 +114,7 @@ def repo(tmp_path):
     bin_dir.mkdir()
     executable(bin_dir / "gh", GH_STAND_IN)
     executable(bin_dir / "bikeplan", BIKEPLAN_STAND_IN)
+    executable(bin_dir / "pytest", PYTEST_STAND_IN)
     (work / "artifacts/X1").mkdir(parents=True)
     (work / "artifacts/X1/out.txt").write_text("one\n")
     (work / "VOICE.md").write_text("one\n")
@@ -159,6 +181,8 @@ def run_script(work, source, bin_dir, tag, path=None, **extra):
     env["BP_LOG"] = str(bin_dir.parent / "bp.log")
     env["GH_SOURCE"] = str(source)
     env["BIKEPLAN"] = str(bin_dir / "bikeplan")
+    env["PYTEST"] = str(bin_dir / "pytest")
+    env["PYTEST_LOG"] = str(bin_dir.parent / "pytest.log")
     env["PYTHONPATH"] = str(ROOT / "src")
     env["RELEASE_OUT"] = str(bin_dir.parent / "out")
     env.update(extra)

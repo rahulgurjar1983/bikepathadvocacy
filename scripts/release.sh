@@ -9,6 +9,7 @@ for tool in gh tar gzip sha256sum git; do
   fi
 done
 read -r -a bikeplan <<<"${BIKEPLAN:-uv run --frozen bikeplan}"
+read -r -a pytest <<<"${PYTEST:-uv run --frozen pytest}"
 commit="$(git rev-parse HEAD)"
 work="$(mktemp -d)"
 if [ -n "${RELEASE_OUT:-}" ]; then
@@ -131,11 +132,23 @@ if [ "$count" = 0 ]; then
   exit 2
 fi
 
+tests_ok=1
+if ! "${pytest[@]}" -q --junitxml="$work/junit.xml" >"$work/pytest.log" 2>&1; then
+  tests_ok=0
+  tail -n 40 "$work/pytest.log" >&2
+fi
+checks_ok=1
+"${bikeplan[@]}" checks "$work/junit.xml" --root . --out "$out/checks.html" || checks_ok=0
+if [ "$tests_ok" = 0 ] || [ "$checks_ok" = 0 ]; then
+  echo "release: a check failed, so nothing is uploaded" >&2
+  exit 1
+fi
+
 tar --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner -cf - artifacts | gzip -n >"$out/artifacts.tar.gz"
 {
   echo "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Bike path reports</title></head><body><h1>Bike path reports</h1><table><tr><th>Kind</th><th>Report</th><th>Region</th><th>Snapshot</th><th>Commit</th><th>Source</th></tr>"
   printf '%s' "$rows"
-  echo "</table><p><a href=\"artifacts.tar.gz\">artifacts.tar.gz</a></p></body></html>"
+  echo "</table><p><a href=\"checks.html\">checks.html</a></p><p><a href=\"artifacts.tar.gz\">artifacts.tar.gz</a></p></body></html>"
 } >"$out/index.html"
 (cd "$out" && sha256sum -- $(ls | grep -vx SHA256SUMS) >SHA256SUMS && sha256sum --check --strict SHA256SUMS)
 files=("$out"/*)
