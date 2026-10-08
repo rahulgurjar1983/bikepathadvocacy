@@ -1,0 +1,19 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.1, pluggy-1.6.0 -- /home/oem/claude/bikepathadvocacy/.venv/bin/python
+rootdir: /home/oem/claude/bikepathadvocacy
+configfile: pyproject.toml
+plugins: cov-7.1.0
+collecting ... collected 10 items
+
+tests/test_propose_corridor.py::test_fr14_11_a_rail_side_path_is_made_between_two_nodes_with_open_land_beside PASSED [ 10%]
+tests/test_propose_corridor.py::test_fr14_11_no_path_is_made_without_open_land_beside_the_line PASSED [ 20%]
+tests/test_propose_corridor.py::test_fr14_11_no_path_is_made_when_the_nodes_are_far_from_the_line PASSED [ 30%]
+tests/test_propose_corridor.py::test_fr14_11_no_path_is_made_between_nodes_closer_than_the_least_length PASSED [ 40%]
+tests/test_propose_corridor.py::test_fr14_11_a_new_path_does_not_shorten_the_baseline_distance PASSED [ 50%]
+tests/test_propose_corridor.py::test_fr14_11_a_cheap_path_is_scored_and_picked_ahead_of_fixing_the_streets PASSED [ 60%]
+tests/test_propose_corridor.py::test_fr14_11_the_command_counts_the_corridor_candidates_it_made PASSED [ 70%]
+tests/test_propose_corridor.py::test_fr14_11_without_a_corridor_file_no_candidate_is_made PASSED [ 80%]
+tests/test_propose_corridor.py::test_fr14_11_the_summary_counts_corridor_candidates_picked_and_not_picked PASSED [ 90%]
+tests/test_propose_corridor.py::test_fr14_11_the_report_summary_says_how_many_corridor_candidates_were_picked PASSED [100%]
+
+============================== 10 passed in 2.88s ==============================
