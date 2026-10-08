@@ -94,7 +94,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 - [x] **P8.5** Neighbourhood and corridor projects in the candidate pool (FR-8.11)
 - [x] **P8.6** Bayside with the shipped region file gives projects and a higher score; `bikeplan verify` fails a run with candidates but no project (FR-8.12)
 - [x] **P8.4** Project records, `bikeplan propose`, fast updates and stable output (FR-8.6, FR-8.8, FR-8.9, FR-8.10); reopened on 2026-10-08 because its proof lowered `min_gain`; done once P8.6 passes with the shipped file
-- [ ] **P8.7** The trade-off curve: picks carried past `min_gain`, three disruption scenarios and a recommended stop, in `frontier.json` (FR-8.13, FR-8.14)
+- [x] **P8.7** The trade-off curve: picks carried past `min_gain`, three disruption scenarios and a recommended stop, in `frontier.json` (FR-8.13, FR-8.14)
 - [ ] **R1.13** The report's "how much change" slider, scenario switch and access-against-disruption chart, driving the map and totals (FR-13.15)
 
 ## Phase 9: Run, report and verify
