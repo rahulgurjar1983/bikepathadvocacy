@@ -1,36 +1,24 @@
-import gzip
 import json
 import re
-from pathlib import Path
 
 import pytest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
 from bikeplan import main
-from tests.test_report import BOUNDARY, REGION
+from tests.report_snapshot import crafted
+from tests.test_report import REGION
 
-FIXTURE = Path("tests/fixtures/network/cases.osm")
+
+def node(number, lat, lon, tags):
+    return {"type": "node", "id": number, "lat": lat, "lon": lon, "tags": tags}
+
+
 PLACES = {
     "elements": [
-        {
-            "type": "node",
-            "lat": -33.9101,
-            "lon": 151.1202,
-            "tags": {"amenity": "school", "name": "A"},
-        },
-        {
-            "type": "node",
-            "lat": -33.9102,
-            "lon": 151.1204,
-            "tags": {"amenity": "school", "name": "B"},
-        },
-        {
-            "type": "way",
-            "center": {"lat": -33.9103, "lon": 151.1206},
-            "tags": {"railway": "station", "name": "Cases Station"},
-        },
-        {"type": "node", "lat": -33.9104, "lon": 151.1208, "tags": {"shop": "bakery"}},
+        node(3000, -33.9482999, 151.1567429, {"amenity": "school", "name": "Grid School"}),
+        node(3001, -33.9482999, 151.1572, {"amenity": "school", "name": "Second School"}),
+        node(3002, -33.9478, 151.1567429, {"railway": "station", "name": "Grid Station"}),
     ]
 }
 
@@ -42,10 +30,7 @@ def channels(colour):
 
 @pytest.fixture(scope="module")
 def built(tmp_path_factory):
-    folder = tmp_path_factory.mktemp("map-snapshot")
-    (folder / "network.osm.gz").write_bytes(gzip.compress(FIXTURE.read_bytes(), mtime=0))
-    (folder / "boundary.geojson").write_text(json.dumps(BOUNDARY))
-    (folder / "places.json").write_text(json.dumps(PLACES))
+    folder = crafted(tmp_path_factory.mktemp("map-snapshot"), PLACES)
     out = tmp_path_factory.mktemp("map-out")
     assert main(["report", REGION, "--snapshot", str(folder), "--out", str(out)]) == 0
     return out
@@ -86,7 +71,8 @@ def test_fr13_9_map_data_adds_up_to_f1_and_f4(built, data):
     km = round(sum(float(s["length_m"]) for s in data["segments"]) / 1000, 3)
     assert km == figures["F1"]["value"] == figures["F4"]["value"]
     assert "map.json" in (built / "SHA256SUMS").read_text()
-    assert {s["lts"] for s in data["segments"]} == {1, 2, 3, 4}
+    assert {s["lts"] for s in data["segments"]} == {1, 3, 4}
+    assert data["projects"]["features"]
 
 
 def test_fr13_9_the_inline_data_is_the_map_file(built, data):
@@ -100,11 +86,12 @@ def test_fr13_9_the_inline_data_is_the_map_file(built, data):
 def test_fr13_9_chromium_logs_no_error_and_paints_each_level_colour(browser, data):
     errors = [m for m in browser.get_log("browser") if m["level"] == "SEVERE"]
     assert not errors
+    assert browser.find_element(By.ID, "layer-proposed").is_enabled()
     painted = strokes(browser)
     assert len(painted) == len(data["segments"])
     blue = {c for c in painted if channels(c)[2] > channels(c)[0]}
     red = {c for c in painted if channels(c)[0] > channels(c)[2]}
-    assert len(blue) == 2
+    assert len(blue) == 1
     assert len(red) == 2
     assert blue | red == set(painted)
 
@@ -157,12 +144,26 @@ def test_fr13_9_hover_names_street_type_level_and_all_ages(browser, data):
     assert "safe for all ages" in text.lower()
 
 
-def test_fr13_9_the_proposed_changes_switch_is_off_and_says_why(browser):
+def test_fr13_9_the_proposed_changes_switch_is_on_and_draws_each_project(browser):
     box = browser.find_element(By.ID, "layer-proposed")
-    assert not box.is_enabled()
+    assert box.is_enabled()
     assert not box.is_selected()
-    note = browser.find_element(By.ID, "proposed-note").text
-    assert "rank" in note
+    assert browser.find_element(By.ID, "proposed-note").text == ""
+    count = "return document.querySelectorAll('#report-map svg path.map-project').length"
+    assert browser.execute_script(count) == 0
+    switch(browser, "layer-proposed")
+    assert browser.execute_script(count) == 1
+    browser.execute_script(
+        "document.querySelector('#report-map svg path.map-project')"
+        ".dispatchEvent(new MouseEvent('mouseover', {bubbles: true}));"
+    )
+    text = browser.find_elements(By.CSS_SELECTOR, ".leaflet-tooltip")[-1].get_attribute(
+        "textContent"
+    )
+    assert "Rank 1" in text
+    assert "signals" in text
+    switch(browser, "layer-proposed")
+    assert browser.execute_script(count) == 0
 
 
 def test_fr13_9_the_map_is_a_figure_with_an_appendix_entry(built):

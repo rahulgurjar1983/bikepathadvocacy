@@ -1,5 +1,4 @@
 import ast
-import gzip
 import hashlib
 import json
 import re
@@ -14,33 +13,14 @@ import pytest
 
 from bikeplan import main
 
-FIXTURE = Path("tests/fixtures/network/junctions.osm")
-REGION = "regions/au-nsw-bayside.yaml"
-BOUNDARY = {
-    "type": "Feature",
-    "properties": {},
-    "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-            [
-                [151.10, -33.97],
-                [151.14, -33.97],
-                [151.14, -33.88],
-                [151.10, -33.88],
-                [151.10, -33.97],
-            ]
-        ],
-    },
-}
+REGION = "tests/fixtures/test-grid/region.yaml"
+COMMITTED = Path("tests/fixtures/test-grid/snapshot")
 FILES = ["figures.json", "map.json", "report.html", "segments.csv"]
 
 
 @pytest.fixture(scope="module")
-def snapshot(tmp_path_factory):
-    folder = tmp_path_factory.mktemp("snapshot")
-    (folder / "network.osm.gz").write_bytes(gzip.compress(FIXTURE.read_bytes(), mtime=0))
-    (folder / "boundary.geojson").write_text(json.dumps(BOUNDARY))
-    return folder
+def snapshot():
+    return COMMITTED
 
 
 @pytest.fixture(scope="module")
@@ -102,10 +82,11 @@ def test_fr13_1_each_recipe_prints_its_value_from_the_release_files(output):
         assert float(shown) == pytest.approx(item["value"])
 
 
-def test_fr13_1_a_stage_the_code_lacks_gives_one_plain_line(output):
+def test_fr13_1_every_stage_the_code_has_is_in_the_report(output):
     html = (output / "report.html").read_text()
-    for stage in ("access", "propose"):
-        assert html.count(f"The {stage} stage is not built yet.") == 1
+    assert "not built yet" not in html
+    for name in ("summary", "projects", "sheets"):
+        assert f'id="{name}"' in html
 
 
 def test_fr13_1_the_report_holds_the_stage_figures_as_links(output):

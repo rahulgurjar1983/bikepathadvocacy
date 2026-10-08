@@ -8,8 +8,7 @@ from bikeplan.fit import fit_summary
 from bikeplan.network import build, summarise
 from bikeplan.page import profile_rows
 from bikeplan.propose import write_propose
-from bikeplan.report import write_report
-from bikeplan.run import run_all
+from bikeplan.run import run_all, write_report
 from bikeplan.snapshot import (
     OVERPASS_ENDPOINT,
     OverpassError,
@@ -235,7 +234,7 @@ def report(path: str, snapshot: str, out: str) -> int:
     try:
         region = load_region(path)
         profile = load_profile(region.profile)
-        figures = write_report(build(snapshot, region, profile), region, profile, out, snapshot)
+        figures = write_report(region, profile, snapshot, out)
     except (ConfigError, OSError) as error:
         print(error, file=sys.stderr)
         return 1

@@ -630,3 +630,15 @@ uv run bikeplan run regions/test-grid.yaml --snapshot tests/fixtures/test-grid/s
 
 Expect: Both FR-9.4 tests pass. The run prints `score_before 25.0`, `score_after 100.0` and `projects 1`. Every output hash check says `OK`.
 Artifact: `artifacts/P9.4/run/report.html`
+
+### R1.9
+
+```bash
+uv run pytest tests/test_report_one.py -q
+uv run bikeplan report tests/fixtures/test-grid/region.yaml --snapshot tests/fixtures/test-grid/snapshot --out artifacts/R1.9/report
+uv run bikeplan run tests/fixtures/test-grid/region.yaml --snapshot tests/fixtures/test-grid/snapshot --out /tmp/r19run
+cmp /tmp/r19run/report.html artifacts/R1.9/report/report.html
+```
+
+Expect: All five FR-13.12 tests pass. `cmp` prints nothing, because both commands write the same `report.html`, which holds the ranked projects, their sheets and a proposed changes switch that is on.
+Artifact: `artifacts/R1.9/report/report.html`

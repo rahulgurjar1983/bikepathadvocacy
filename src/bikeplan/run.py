@@ -7,11 +7,19 @@ from importlib.metadata import version
 from pathlib import Path
 
 from bikeplan.access import write_access
-from bikeplan.config import config_hash
+from bikeplan.config import ConfigError, config_hash
 from bikeplan.fit import segment_fit
 from bikeplan.network import bike_segments, build
-from bikeplan.page import credits_for, render
+from bikeplan.page import credits_for, details, page_scripts
 from bikeplan.propose import csv_fields, csv_row, write_propose
+from bikeplan.report import (
+    check_leaks,
+    figure_list,
+    map_data,
+    page,
+    segment_rows,
+    segments_text,
+)
 from bikeplan.snapshot import verify_snapshot
 from bikeplan.stress import score_edges, stress_features, stress_summary
 from bikeplan.width import fuse
@@ -132,7 +140,7 @@ def csv_bytes(records: list[dict], kinds: list) -> bytes:
     return buffer.getvalue().encode()
 
 
-def run_all(region, profile, snapshot: str | Path, out: str | Path) -> dict:
+def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, list[dict]]:
     _, failed = verify_snapshot(snapshot)
     if failed:
         raise SnapshotError("; ".join(failed))
@@ -167,6 +175,27 @@ def run_all(region, profile, snapshot: str | Path, out: str | Path) -> dict:
     network = collection(features)
     place_layer = collection(with_ids(places, lambda p: f"{p['osm_id']}:{p['type']}"))
     shape_layer = collection(with_ids(shapes, lambda properties: properties["id"]))
+    payload = {
+        "summary": canon(summary),
+        "projects": canon(records),
+        "network": canon(network),
+        "places": canon(place_layer),
+        "project_shapes": canon(shape_layer),
+    }
+    rows = segment_rows(graph, profile)
+    text = segments_text(rows)
+    map_text = (
+        json.dumps(map_data(graph, rows, Path(snapshot), payload["project_shapes"]), sort_keys=True)
+        + "\n"
+    )
+    figures = figure_list(text, map_text)
+    page_text = page(
+        region,
+        figures,
+        map_text,
+        details(payload["summary"], canon(sheets), profile, payload),
+        page_scripts(payload),
+    )
     outputs = {
         "access_homes.geojson": dump(
             collection(with_ids(homes, lambda properties: str(properties["node"])))
@@ -176,25 +205,39 @@ def run_all(region, profile, snapshot: str | Path, out: str | Path) -> dict:
         "projects.csv": csv_bytes(records, kinds),
         "projects.geojson": dump(shape_layer),
         "projects.json": dump(records),
-        "report.html": render(
-            canon(summary),
-            canon(sheets),
-            profile,
-            {
-                "summary": canon(summary),
-                "projects": canon(records),
-                "network": canon(network),
-                "places": canon(place_layer),
-                "project_shapes": canon(shape_layer),
-            },
-        ).encode(),
+        "report.html": page_text.encode(),
         "summary.json": dump(summary),
     }
-    target = Path(out)
+    files = {
+        "figures.json": (json.dumps(figures, indent=2, sort_keys=True) + "\n").encode(),
+        "map.json": map_text.encode(),
+        "segments.csv": text.encode(),
+    }
+    return summary, outputs, files, figures
+
+
+def write_files(target: Path, contents: dict) -> list[str]:
     target.mkdir(parents=True, exist_ok=True)
     lines = []
-    for name in sorted(outputs):
-        (target / name).write_bytes(outputs[name])
-        lines.append(f"{hashlib.sha256(outputs[name]).hexdigest()}  {name}\n")
-    (target / "outputs.sha256").write_text("".join(lines))
+    for name in sorted(contents):
+        (target / name).write_bytes(contents[name])
+        lines.append(f"{hashlib.sha256(contents[name]).hexdigest()}  {name}\n")
+    return lines
+
+
+def run_all(region, profile, snapshot: str | Path, out: str | Path) -> dict:
+    summary, outputs, _, _ = build_all(region, profile, snapshot)
+    check_leaks(outputs["report.html"].decode(), out, snapshot)
+    lines = write_files(Path(out), outputs)
+    (Path(out) / "outputs.sha256").write_text("".join(lines))
     return summary
+
+
+def write_report(region, profile, snapshot: str | Path, out: str | Path) -> list[dict]:
+    if region.report.author is None:
+        raise ConfigError("report.author is missing: the report needs the name and suburb")
+    _, outputs, files, figures = build_all(region, profile, snapshot)
+    check_leaks(outputs["report.html"].decode(), out, snapshot)
+    lines = write_files(Path(out), {**files, "report.html": outputs["report.html"]})
+    (Path(out) / "SHA256SUMS").write_text("".join(lines))
+    return figures

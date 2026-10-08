@@ -74,6 +74,34 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const placeLayers = { schools: placeLayer("school", "#f2c200"), stations: placeLayer("station", "#ffffff") };
 
+  const proposed = L.layerGroup();
+  if (data.projects) {
+    for (const feature of data.projects.features) {
+      const found = feature.properties;
+      const shape = L.geoJSON(feature, {
+        pointToLayer: function (item, latlng) {
+          return L.circleMarker(latlng, {
+            className: "map-project", radius: 8, color: "#7b2cbf", weight: 3,
+            fillColor: "#ffffff", fillOpacity: 1,
+          });
+        },
+        style: function () {
+          return { className: "map-project", color: "#7b2cbf", weight: 6, opacity: 0.9 };
+        },
+      });
+      shape.eachLayer(function (layer) {
+        layer.bindTooltip(describe("Rank " + found.rank + ": " + found.fix + ", " + found.street), {
+          sticky: true,
+        });
+      });
+      proposed.addLayer(shape);
+    }
+  }
+  document.getElementById("layer-proposed").addEventListener("change", function (event) {
+    if (event.target.checked) proposed.addTo(map);
+    else proposed.remove();
+  });
+
   for (const level of [1, 2, 3, 4]) {
     document.getElementById("layer-lts-" + level).addEventListener("change", function (event) {
       levels[level] = event.target.checked;
