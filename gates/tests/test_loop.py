@@ -600,3 +600,17 @@ def test_fr0_28_codex_fallback_disables_plugins_and_local_skills(loop_repo, tmp_
     settings = next(arg for arg in args if arg.startswith("skills.config="))
     assert str(skill.resolve()) in settings
     assert "enabled=false" in settings
+
+
+def test_fr0_29_known_input_blocker_advances_and_logs_its_reason(loop_repo):
+    repo, env, state = loop_repo
+    repo.append("PROGRESS.md", "- [ ] **P0.3** Other work (FR-11.3)\n")
+    outcome = json.dumps({"row": "P0.2", "status": "input_blocked", "reason": "bad width rule"})
+    env["FAKE_RUN"] = f"printf '%s' '{outcome}' > .ralph/turn-result.json"
+    first = run_loop(repo, env, "1")
+    assert first.returncode == 0, first.stdout + first.stderr
+    assert "blocked: bad width rule" in first.stdout
+    env.pop("FAKE_RUN")
+    second = run_loop(repo, env, "1")
+    assert second.returncode == 0, second.stdout + second.stderr
+    assert "P0.3" in args_of(state, 2)
