@@ -70,6 +70,7 @@ ROWS = [
 ]
 STROKES = ("#1b5e8a", "#2e7d32", "#8a5a00", "#7b2cbf", "#a33")
 DASHES = ("", "8 4", "2 4", "10 4 2 4", "6 2")
+DASH_NAMES = ("solid", "long dashes", "dots", "dash and dot", "short dashes")
 WIDTH = 600
 HEIGHT = 300
 LEFT = 50
@@ -237,7 +238,7 @@ def chart_section(frontier: dict) -> str:
         labels.append(
             f'<text x="{LEFT + 8}" y="{TOP + 14 + index * 16}" '
             f'fill="{STROKES[index % len(STROKES)]}">'
-            f"{html.escape(item['label'])} ({DASHES[index % len(DASHES)] or 'solid'})</text>"
+            f"{html.escape(item['label'])} ({DASH_NAMES[index % len(DASH_NAMES)]})</text>"
         )
         rows += [
             f"<tr><td>{html.escape(item['label'])}</td>"
@@ -256,7 +257,7 @@ def chart_section(frontier: dict) -> str:
     base_y = TOP + SPAN_Y
     return (
         '<svg id="change-chart" role="img" '
-        f'viewBox="0 0 {WIDTH} {HEIGHT}" width="100%" aria-labelledby="change-chart-title">'
+        f'viewBox="0,0,{WIDTH},{HEIGHT}" width="100%" aria-labelledby="change-chart-title">'
         '<title id="change-chart-title">Access gained against disruption, one line for each '
         "scenario, with a dot at the step on the slider</title>"
         f'<line x1="{LEFT}" y1="{TOP}" x2="{LEFT}" y2="{base_y}" stroke="#444"/>'
@@ -272,6 +273,14 @@ def chart_section(frontier: dict) -> str:
     )
 
 
+def change_scripts(frontier: dict) -> str:
+    data = json.dumps(frontier, sort_keys=True).replace("</", "<\\/")
+    return (
+        f'<script type="application/json" id="change-data">{data}</script>'
+        f"<script>{(ASSETS / 'change.js').read_text()}</script>"
+    )
+
+
 def change_section(frontier: dict, by_id: dict) -> str:
     chosen = default_scenario(frontier)
     stop = chosen["recommended_stop"] or 0
@@ -283,14 +292,13 @@ def change_section(frontier: dict, by_id: dict) -> str:
         f"{html.escape(item['label'])}</label>"
         for item in frontier["scenarios"]
     )
-    data = json.dumps(frontier, sort_keys=True).replace("</", "<\\/")
-    script = (ASSETS / "change.js").read_text()
     return (
         '<section id="change"><h2>How much change?</h2>'
         '<p id="change-why">The slider opens at my recommended stop for the '
         f"{html.escape(chosen['label'])} scenario: {link(by_id['F13'])}. I stop there because "
         "each project after it gains less access for each point of disruption than a set share "
-        "of what my first project gained. Move the slider to see the cost of doing less or "
+        "of what my first project gained. The fixes up to that stop change "
+        f"{link(by_id['F11'])} of street. Move the slider to see the cost of doing less or "
         "more.</p>"
         f"<fieldset><legend>Scenario</legend>{radios}</fieldset>"
         '<p><label for="change-slider">How much change</label> '
@@ -298,7 +306,5 @@ def change_section(frontier: dict, by_id: dict) -> str:
         f'value="{stop}" step="1" disabled> <output id="change-step"></output></p>'
         '<table id="change-totals"><caption>Totals for the projects picked so far</caption>'
         f"{total_rows(frontier, pick)}</table>"
-        f"{chart_section(frontier)}"
-        f'<script type="application/json" id="change-data">{data}</script>'
-        f"<script>{script}</script></section>"
+        f"{chart_section(frontier)}</section>"
     )

@@ -7,7 +7,7 @@ from importlib.metadata import version
 from pathlib import Path
 
 from bikeplan.access import write_access
-from bikeplan.change import change_figures, change_section, frontier_data
+from bikeplan.change import change_figures, change_scripts, change_section, frontier_data
 from bikeplan.config import ConfigError, config_hash
 from bikeplan.fit import segment_fit
 from bikeplan.network import bike_segments, build
@@ -212,6 +212,7 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
         details(payload["summary"], canon(sheets), profile, payload),
         page_scripts(payload),
         change_section(frontier, {item["id"]: item for item in figures}),
+        change_scripts(frontier),
     )
     outputs = {
         "access_homes.geojson": dump(

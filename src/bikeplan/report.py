@@ -418,6 +418,7 @@ def page(
     details: str,
     data_script: str,
     change: str = "",
+    change_head: str = "",
 ):
     by_id = {item["id"]: item for item in figures}
     appendix = "".join(entry(item) for item in figures)
@@ -428,7 +429,7 @@ def page(
         '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width, initial-scale=1">'
         f"<title>Bike paths in {html.escape(region.name)}</title>"
-        f"<style>{STYLE}</style>{map_scripts(map_text, data_script)}</head><body>"
+        f"<style>{STYLE}</style>{map_scripts(map_text, data_script)}{change_head}</head><body>"
         f"<h1>Bike paths in {html.escape(region.name)}</h1>"
         f"{author}"
         f'<section id="opening"><h2>What the data shows</h2>'
@@ -438,8 +439,8 @@ def page(
         f"<p>I ask council to measure the street where I have no width. "
         "Please read the appendix to check every number.</p></section>"
         f"{map_section(by_id, has_stage('propose'))}"
+        f"{chart([item for item in figures if item['id'] in KEEP])}"
         f"{change}"
-        f"{chart([item for item in figures if item['id'] != 'F4'])}"
         f"{glossary_section(terms)}"
         f'<section id="appendix"><h2>How to check every number</h2>'
         f"<p>This report uses the data snapshot of {snapshot_date(region)}.</p>{appendix}"

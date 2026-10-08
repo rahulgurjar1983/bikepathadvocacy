@@ -33,18 +33,13 @@ window.addEventListener("load", function () {
         const shape = L.geoJSON(feature, {
           pointToLayer: function (item, latlng) {
             return L.circleMarker(latlng, {
-              className: "change-project", radius: 8, color: "#e66100", weight: 3,
+              className: "change-project", radius: 8, color: "#e66100", weight: 3, interactive: false,
               fillColor: "#ffffff", fillOpacity: 1,
             });
           },
           style: function () {
-            return { className: "change-project", color: "#e66100", weight: 7, opacity: 0.9 };
+            return { className: "change-project", color: "#e66100", weight: 7, opacity: 0.9, interactive: false };
           },
-        });
-        const text = document.createElement("div");
-        text.textContent = "Project " + pick.rank + ": " + feature.properties.fix + ", " + feature.properties.street;
-        shape.eachLayer(function (layer) {
-          layer.bindTooltip(text.cloneNode(true), { sticky: true });
         });
         shape.addTo(group);
       }
