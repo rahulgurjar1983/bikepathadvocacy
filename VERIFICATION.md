@@ -763,5 +763,5 @@ uv run bikeplan checks "$OUT/junit.xml" --root . --release "$OUT" --out artifact
 grep -o "[0-9]* met, [0-9]* tested only, [0-9]* fail, [0-9]* not built yet" artifacts/R1.12/checks.html
 ```
 
-Expect: all tests pass and `bikeplan checks` exits 0. The grep prints `1 met, 3 tested only, 0 fail, 179 not built yet` for this partial test run. FR-13.13 is met because the Bayside `report.html` is under 8 MB. No no-tools step sends the reader to `VERIFICATION.md`.
+Expect: all tests pass and `bikeplan checks` exits 0. The grep prints `1 met, 3 tested only, 0 fail, 179 not built yet` for this partial test run. FR-13.13 is met because the Bayside `report.html` is under 8 MB. No no-tools step sends the reader to the verification file.
 Artifact: `artifacts/R1.12/checks.html`
