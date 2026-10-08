@@ -7,10 +7,10 @@ from urllib.parse import parse_qs, urlsplit
 
 import geopandas
 import pytest
-from bikeplan.adapters.nsw_cadastre import nsw_cadastre
 from pyproj import Transformer
 from shapely.geometry import box as rectangle
 
+from bikeplan.adapters.nsw_cadastre import nsw_cadastre
 from bikeplan.config import load_profile, load_region
 from bikeplan.network import build
 from bikeplan.snapshot import ADAPTERS, OverpassError
