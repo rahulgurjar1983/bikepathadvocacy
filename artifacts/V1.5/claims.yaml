@@ -1,0 +1,16 @@
+- id: safe
+  quote: Most of the route is safe for all ages.
+  source: https://example.org/plan
+  measure: aaa_share
+  op: ">="
+  value: 0.5
+- id: near
+  quote: The route runs on the street the whole way.
+  source: https://example.org/plan
+  measure: matched_share
+  op: ">="
+  value: 0.95
+- id: cost
+  quote: It costs little.
+  source: https://example.org/plan
+  outside: I do not measure cost.

@@ -1,0 +1,29 @@
+[
+  {
+    "claimed": 0.5,
+    "id": "safe",
+    "measure": "aaa_share",
+    "measured": 0.18181818181818182,
+    "op": ">=",
+    "quote": "Most of the route is safe for all ages.",
+    "source": "https://example.org/plan",
+    "verdict": "does not hold"
+  },
+  {
+    "claimed": 0.95,
+    "id": "near",
+    "measure": "matched_share",
+    "measured": 0.9362,
+    "op": ">=",
+    "quote": "The route runs on the street the whole way.",
+    "source": "https://example.org/plan",
+    "verdict": "partly"
+  },
+  {
+    "id": "cost",
+    "quote": "It costs little.",
+    "reason": "I do not measure cost.",
+    "source": "https://example.org/plan",
+    "verdict": "outside this tool"
+  }
+]

@@ -1,0 +1,834 @@
+[
+  {
+    "id": "F1",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Length of the route",
+    "method": "I match the route to the streets and add up its length.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(t['total']['route_km'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "km",
+    "value": 1.1
+  },
+  {
+    "id": "F2",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Route that is safe for all ages",
+    "method": "I add up the matched streets that are safe for all ages.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(t['total']['km_aaa'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "km",
+    "value": 0.2
+  },
+  {
+    "id": "F3",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Breaks in the safe run",
+    "method": "I join the stretches that are not safe for all ages, in route order, and count them.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(len(t['total']['breaks']),3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "breaks",
+    "value": 1
+  },
+  {
+    "id": "F4",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Crossings with no signal",
+    "method": "I count the roads that the route crosses or joins where no signal stands.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(t['total']['crossings_unsignalised'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "crossings",
+    "value": 2
+  },
+  {
+    "id": "F5",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Claims that I judge",
+    "method": "I count the claims in the claims file.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(len(v),3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "claims",
+    "value": 3
+  },
+  {
+    "id": "F6",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Share of the route that is safe for all ages",
+    "method": "I measure the route with the method of the figure and read the result.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(t['total']['km_aaa']/t['total']['route_km'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "share of route",
+    "value": 0.182
+  },
+  {
+    "id": "F7",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Value that the claim names for: share of the route that is safe for all ages",
+    "method": "I read the value from the claims file.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(v[0]['claimed'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "share of route",
+    "value": 0.5
+  },
+  {
+    "id": "F8",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Share of the route that follows a street a bike may use",
+    "method": "I measure the route with the method of the figure and read the result.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(t['total']['matched_share'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "share of route",
+    "value": 0.936
+  },
+  {
+    "id": "F9",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Value that the claim names for: share of the route that follows a street a bike may use",
+    "method": "I read the value from the claims file.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(v[1]['claimed'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "share of route",
+    "value": 0.95
+  },
+  {
+    "id": "F10",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Route on a separated path or lane",
+    "method": "I add up the matched streets by how they are built, and the stretches off the network.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(t['total']['km_by_facility']['separated'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "km",
+    "value": 0.0
+  },
+  {
+    "id": "F11",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Route on a painted lane",
+    "method": "I add up the matched streets by how they are built, and the stretches off the network.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(t['total']['km_by_facility']['painted'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "km",
+    "value": 0.0
+  },
+  {
+    "id": "F12",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Route on a street shared with traffic",
+    "method": "I add up the matched streets by how they are built, and the stretches off the network.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(t['total']['km_by_facility']['shared'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "km",
+    "value": 1.0
+  },
+  {
+    "id": "F13",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Route on no street: the route needs new building",
+    "method": "I add up the matched streets by how they are built, and the stretches off the network.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(t['total']['km_by_facility']['off_network'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "km",
+    "value": 0.07
+  },
+  {
+    "id": "F14",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Route at stress level 1",
+    "method": "I add up the matched streets by their stress level.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(t['total']['km_by_lts']['1'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "km",
+    "value": 0.2
+  },
+  {
+    "id": "F15",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Route at stress level 2",
+    "method": "I add up the matched streets by their stress level.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(t['total']['km_by_lts']['2'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "km",
+    "value": 0.0
+  },
+  {
+    "id": "F16",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Route at stress level 3",
+    "method": "I add up the matched streets by their stress level.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(t['total']['km_by_lts']['3'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "km",
+    "value": 0.4
+  },
+  {
+    "id": "F17",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Route at stress level 4",
+    "method": "I add up the matched streets by their stress level.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(t['total']['km_by_lts']['4'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "km",
+    "value": 0.4
+  },
+  {
+    "id": "F18",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Length of a section",
+    "method": "I read the length of the section.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(t['sections'][0]['route_km'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "km",
+    "value": 1.1
+  },
+  {
+    "id": "F19",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Safe for all ages in a section",
+    "method": "I add up the streets that are safe for all ages.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(t['sections'][0]['km_aaa'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "km",
+    "value": 0.2
+  },
+  {
+    "id": "F20",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Breaks in a section",
+    "method": "I count the stretches that are not safe for all ages.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(len(t['sections'][0]['breaks']),3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "breaks",
+    "value": 1
+  },
+  {
+    "id": "F21",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Crossings with no signal in a section",
+    "method": "I count the crossings with no signal.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(t['sections'][0]['crossings_unsignalised'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "crossings",
+    "value": 2
+  },
+  {
+    "id": "F22",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Length of a break",
+    "method": "I join the stretches that are not safe for all ages, in route order, and read the length.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(t['total']['breaks'][0]['length_m'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "m",
+    "value": 870.22
+  },
+  {
+    "id": "F23",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Steep stretches",
+    "method": "I count the runs of streets at or over the steep limit of the profile.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(len(t['total']['steep']),3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "steep stretches",
+    "value": 0
+  },
+  {
+    "id": "F24",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Flags for gates, hours or access",
+    "method": "I count the streets with opening hours, a gate or access that is not open to the public.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(len(t['total']['flags']),3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "flags",
+    "value": 0
+  },
+  {
+    "id": "F25",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Parking spaces lost",
+    "method": "I add the parking spaces that the fixes remove.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(t['total']['disruption']['parking_spaces'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "spaces",
+    "value": 0.0
+  },
+  {
+    "id": "F26",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Traffic lane length lost",
+    "method": "I add the traffic lane length that the fixes remove.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(t['total']['disruption']['lane_km'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "km",
+    "value": 0.0
+  },
+  {
+    "id": "F27",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Signals needed",
+    "method": "I count the crossings that need a signal.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(t['total']['disruption']['signals'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "signals",
+    "value": 2
+  },
+  {
+    "id": "F28",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Refuges needed",
+    "method": "I count the crossings that need a refuge.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(t['total']['disruption']['refuges'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "refuges",
+    "value": 0
+  },
+  {
+    "id": "F29",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Route with no fix that fits",
+    "method": "I add the streets where no fix fits.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(t['total']['disruption']['no_fit_km'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "km",
+    "value": 0.4
+  },
+  {
+    "id": "F30",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "People who gain a safe way to a needed place",
+    "method": "I make the whole route safe for all ages and count the people who gain a safe way.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(t['total']['access']['homes_gaining_safe_reach'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "people",
+    "value": 0
+  },
+  {
+    "id": "F31",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "People gaining a safe way for each km",
+    "method": "I divide that gain by the route length.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(t['total']['access']['gain_per_km'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "people",
+    "value": 0.0
+  },
+  {
+    "id": "F32",
+    "inputs": [
+      {
+        "name": "route_figures.json",
+        "sha256": "da1a00f19dda0bef6d9e189203912a32ceea7a37bc41e1e206e87ae562cecb54"
+      },
+      {
+        "name": "verdicts.json",
+        "sha256": "cfc255e0ec1eb0852f0af88d8fb4ff3edbe392a8269a3801608a9c41d7dcb829"
+      }
+    ],
+    "label": "Projects of the same length that I rank",
+    "method": "I take ranked projects in order while they fit the route length.",
+    "recipe": "import json;t=json.load(open('route_figures.json'));v=json.load(open('verdicts.json'));print(round(t['total']['access']['ranked']['projects'],3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 14",
+    "unit": "projects",
+    "value": 1
+  }
+]

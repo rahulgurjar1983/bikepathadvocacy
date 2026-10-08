@@ -787,3 +787,15 @@ uv run bikeplan route figures artifacts/V1.4/route.gpx --region regions/test-gri
 
 Expect: all 18 tests pass. The second command prints the path of `route_figures.json` and writes `verdicts.json` next to it. The route needs one signal fix, which takes no parking and no lane. The homes gaining safe reach are 750 people, all to the school, or 625 a km. The ranked project of the same length gains the same 750 at 0 km. The four claims give "holds", "does not hold", "holds" and "outside this tool".
 Artifact: `artifacts/V1.4/verdicts.json`
+
+### V1.5
+
+```bash
+uv run pytest tests/test_review_report.py -q
+uv run bikeplan review artifacts/V1.5/route.gpx --claims artifacts/V1.5/claims.yaml --region tests/fixtures/test-grid/region.yaml --snapshot tests/fixtures/test-grid/snapshot --out artifacts/V1.5/report --reply artifacts/V1.5/reply.yaml
+cd artifacts/V1.5/report
+sha256sum -c SHA256SUMS
+```
+
+Expect: the focused tests pass, the report shows the route layer and right of reply, and every output digest checks.
+Artifact: `artifacts/V1.5/report/report.html`
