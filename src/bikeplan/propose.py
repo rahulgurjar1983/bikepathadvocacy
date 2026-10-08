@@ -967,11 +967,13 @@ def scenario_curve(
     scaled = dataclasses.replace(
         scaled, access=dataclasses.replace(scaled.access, reach_m=reach_m, detour_max=detour_max)
     )
-    _, planning, picked = solve(
+    solved, planning, picked = solve(
         graph, scaled, profile, placed, people, weights, names, legs, corridors
     )
     picks = curve_picks(picked, planning)
+    shapes = project_features(solved, planning, project_records(picked, planning))
     return {
+        "shapes": shapes,
         "id": scenario.id,
         "label": scenario.label,
         "scales": scenario.scales,
@@ -1036,5 +1038,19 @@ def write_propose(
         )
         for scenario in scenarios_for(region.proposals)
     ]
-    (out / "frontier.json").write_text(json.dumps({"scenarios": curves}, indent=2) + "\n")
+    shapes: dict = {}
+    for curve in curves:
+        for item in curve.pop("shapes"):
+            properties = {key: value for key, value in item["properties"].items() if key != "rank"}
+            shapes.setdefault(
+                (properties["project"], properties["id"]), {**item, "properties": properties}
+            )
+    frontier = {
+        "scenarios": curves,
+        "shapes": {
+            "type": "FeatureCollection",
+            "features": [shapes[key] for key in sorted(shapes)],
+        },
+    }
+    (out / "frontier.json").write_text(json.dumps(frontier, indent=2) + "\n")
     return records
