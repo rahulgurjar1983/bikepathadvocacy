@@ -7,12 +7,13 @@ from urllib.parse import parse_qs, urlsplit
 
 import geopandas
 import pytest
+from bikeplan.adapters.nsw_cadastre import nsw_cadastre
 from pyproj import Transformer
 from shapely.geometry import box as rectangle
 
 from bikeplan.config import load_profile, load_region
 from bikeplan.network import build
-from bikeplan.snapshot import ADAPTERS, OverpassError, nsw_cadastre
+from bikeplan.snapshot import ADAPTERS, OverpassError
 from bikeplan.width import fuse
 
 BOX = (-33.941, 151.1065, -33.919, 151.1335)
@@ -216,3 +217,18 @@ def test_fr10_2_snapshot_without_parcels_builds_with_no_reserve():
     graph = build(GRID, region, profile)
 
     assert all(fuse(data, profile)["reserve_m"] is None for _, _, data in graph.edges(data=True))
+
+
+def test_fr10_1_fetch_loads_the_adapter_named_in_the_region_file(tmp_path, monkeypatch):
+    import sys
+
+    from bikeplan.snapshot import fetch_snapshot
+
+    monkeypatch.delitem(ADAPTERS, "nsw_cadastre", raising=False)
+    monkeypatch.delitem(sys.modules, "bikeplan.adapters.nsw_cadastre", raising=False)
+    region = bayside()
+
+    with pytest.raises(OverpassError):
+        fetch_snapshot(region, tmp_path, endpoint="http://127.0.0.1:9/none")
+
+    assert "nsw_cadastre" in ADAPTERS
