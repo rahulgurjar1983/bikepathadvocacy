@@ -1,6 +1,8 @@
 import argparse
+import json
 import sys
 from importlib.metadata import version
+from pathlib import Path
 
 from bikeplan.access import write_access
 from bikeplan.checks import write_checks
@@ -61,7 +63,9 @@ def build_parser() -> argparse.ArgumentParser:
     for name, text in LEAVES.items():
         if name in {"access", "propose", "run"}:
             continue
-        commands.add_parser(name, help=text, description=text)
+        leaf = commands.add_parser(name, help=text, description=text)
+        if name == "verify":
+            leaf.add_argument("directory", help="Output folder of a run")
     stress = commands.add_parser("stress", help=STRESS_HELP, description=STRESS_HELP)
     stress.add_argument("region", help="Region file")
     stress.add_argument("--snapshot", required=True, help="Snapshot folder")
@@ -236,6 +240,19 @@ def run(path: str, snapshot: str, out: str) -> int:
     return 0
 
 
+def verify(directory: str) -> int:
+    try:
+        summary = json.loads((Path(directory) / "summary.json").read_text())
+    except (OSError, ValueError) as error:
+        print(error, file=sys.stderr)
+        return 1
+    if summary["candidates"] and not summary["projects"]:
+        print(f"{summary['candidates']} candidates but no project", file=sys.stderr)
+        return 1
+    print(f"ok candidates {summary['candidates']} projects {summary['projects']}")
+    return 0
+
+
 def report(path: str, snapshot: str, out: str) -> int:
     try:
         region = load_region(path)
@@ -304,6 +321,8 @@ def main(argv: list[str] | None = None) -> int:
         return propose(args.region, args.snapshot, args.out)
     if args.command == "run":
         return run(args.region, args.snapshot, args.out)
+    if args.command == "verify":
+        return verify(args.directory)
     if args.command == "report":
         return report(args.region, args.snapshot, args.out)
     if args.command == "checks":

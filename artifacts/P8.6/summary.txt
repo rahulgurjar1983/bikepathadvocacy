@@ -1,0 +1,13 @@
+{
+  "candidates": 23637,
+  "projects": 4,
+  "projects_by_kind": {
+    "corridor": 0,
+    "neighbourhood": 2,
+    "route": 2
+  },
+  "score": {
+    "after": 0.9,
+    "before": 0.6
+  }
+}

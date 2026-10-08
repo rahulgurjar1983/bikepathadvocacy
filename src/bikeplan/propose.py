@@ -13,11 +13,20 @@ from pyproj import Transformer
 from shapely.geometry import LineString, MultiLineString, Point, mapping
 from shapely.ops import transform
 
-from bikeplan.access import EdgeTable, Reach, edge_table, reach, safe_reach, scene, score_access
+from bikeplan.access import (
+    EdgeTable,
+    Reach,
+    edge_table,
+    last_legs,
+    reach,
+    safe_reach,
+    scene,
+    score_access,
+)
 from bikeplan.fit import FIXES, junction_fixes, segment_fit
 from bikeplan.fit import cross_section as fit_cross_section
 from bikeplan.network import bike_segments
-from bikeplan.stress import edge_aaa, own_lts, raise_for_crossings
+from bikeplan.stress import edge_aaa, own_lts, raise_for_crossings, score_edges
 from bikeplan.width import check_links, fuse
 
 CORRIDOR_FIXES = tuple(fix for fix in FIXES if fix != "quietway")
@@ -353,6 +362,7 @@ def update_reach(
     old: set,
     new: set,
     table: EdgeTable | None = None,
+    legs=None,
 ) -> tuple[list[Reach], list[int]]:
     heads = {key[1] for key in old ^ new}
     redone = [
@@ -367,6 +377,7 @@ def update_reach(
         reach_m,
         detour_max,
         new,
+        legs,
     )
     updated = list(results)
     for index, found in zip(redone, fresh, strict=True):
@@ -423,6 +434,8 @@ def greedy_picks(
     detour_max: float,
     names: list | None = None,
     candidates: dict | None = None,
+    stats: dict | None = None,
+    legs=None,
 ) -> list[dict]:
     candidates = {} if candidates is None else candidates
     sources = [node for _, node in placed]
@@ -438,7 +451,7 @@ def greedy_picks(
         return aaa | {key for key, item in planning.edges.items() if set(item["needs"]) <= done}
 
     now = aaa_after(set())
-    results = reach(graph, sources, reach_m, detour_max, now, table)
+    results = reach(graph, sources, reach_m, detour_max, now, table, legs)
     counts = reach_counts(placed, results)
     score = exact_score(people, placed, results, weights)
     current = fixed_planning(graph, planning, fixed, proposals.metres_per_point)
@@ -460,6 +473,8 @@ def greedy_picks(
             if remaining and value > 0:
                 found[remaining] = value
                 kinds[remaining] = candidates[elements]
+        if stats is not None and not picked:
+            stats["candidates"] = len(found)
         costs = {
             elements: sum(planning.elements[name]["score"] for name in sorted(elements - fixed))
             for elements in found
@@ -471,7 +486,15 @@ def greedy_picks(
         best = None
         for elements in ranked:
             trial, redone = update_reach(
-                graph, sources, results, reach_m, detour_max, now, aaa_after(set(elements)), table
+                graph,
+                sources,
+                results,
+                reach_m,
+                detour_max,
+                now,
+                aaa_after(set(elements)),
+                table,
+                legs,
             )
             gain = gain_between(people, placed, weights, counts, results, trial, redone)
             if gain < proposals.min_gain:
@@ -487,7 +510,7 @@ def greedy_picks(
         km += sum(planning.elements[name].get("km", 0.0) for name in sorted(elements))
         before = results
         results, redone = update_reach(
-            graph, sources, results, reach_m, detour_max, now, aaa_after(set()), table
+            graph, sources, results, reach_m, detour_max, now, aaa_after(set()), table, legs
         )
         now = aaa_after(set())
         changed = {key[1] for key, item in planning.edges.items() if elements & set(item["needs"])}
@@ -680,6 +703,7 @@ def write_propose(
     snapshot: str | Path,
     out: str | Path,
     sheets: list | None = None,
+    stats: dict | None = None,
 ) -> list[dict]:
     out = Path(out)
     kept, nodes, _, placed, resident, weights = scene(graph, region, snapshot)
@@ -700,6 +724,13 @@ def write_propose(
         region.access.detour_max,
         names,
         big_projects(graph, planning, profile),
+        stats,
+        last_legs(
+            graph,
+            score_edges(graph, profile),
+            sorted(resident.people),
+            region.access.last_leg_m,
+        ),
     )
     records = project_records(picked, planning)
     if sheets is not None:

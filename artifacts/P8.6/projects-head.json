@@ -1,0 +1,30 @@
+[
+  {
+    "rank": 1,
+    "name": "The Scots College Brighton Preparatory School: Carruthers Drive",
+    "kind": "route",
+    "gain": 0.1,
+    "score_after": 0.7
+  },
+  {
+    "rank": 2,
+    "name": "St George TAFE: unnamed cycleway",
+    "kind": "neighbourhood",
+    "gain": 0.1,
+    "score_after": 0.8
+  },
+  {
+    "rank": 3,
+    "name": "school: Boeing Place, Bruce Street, Francis Avenue",
+    "kind": "route",
+    "gain": 0.1,
+    "score_after": 0.8
+  },
+  {
+    "rank": 4,
+    "name": "Rockdale: Geeves Avenue",
+    "kind": "neighbourhood",
+    "gain": 0.1,
+    "score_after": 0.9
+  }
+]
