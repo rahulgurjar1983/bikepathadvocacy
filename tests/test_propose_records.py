@@ -101,7 +101,9 @@ def test_fr8_6_signals_and_refuges_are_counted_from_junction_elements():
             "people": {"school": 5.0},
         }
     ]
-    totals = project_records(picked, planning)[0]["totals"]
+    record = project_records(picked, planning)[0]
+    totals = record["totals"]
+    assert record["kind"] == "route"
     assert (totals["signals"], totals["refuges"]) == (1, 2)
     assert totals["km_by_fix"] == {}
 
