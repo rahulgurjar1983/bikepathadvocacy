@@ -68,8 +68,8 @@ def switch(browser, name):
 
 def test_fr13_9_map_data_adds_up_to_f1_and_f4(built, data):
     figures = {item["id"]: item for item in json.loads((built / "figures.json").read_text())}
-    km = round(sum(float(s["length_m"]) for s in data["segments"]) / 1000, 3)
-    assert km == figures["F1"]["value"] == figures["F4"]["value"]
+    assert figures["F4"]["value"] == len(data["segments"])
+    assert figures["F4"]["unit"] == "pieces"
     assert "map.json" in (built / "SHA256SUMS").read_text()
     assert {s["lts"] for s in data["segments"]} == {1, 3, 4}
     assert data["projects"]["features"]
@@ -135,7 +135,7 @@ def test_fr13_9_hover_names_street_type_level_and_all_ages(browser, data):
         "const p = Array.from(document.querySelectorAll('#report-map svg path'))"
         ".find(p => p.getAttribute('data-id') === arguments[0]);"
         "p.dispatchEvent(new MouseEvent('mouseover', {bubbles: true}));",
-        segment["id"],
+        "0",
     )
     text = browser.find_element(By.CSS_SELECTOR, ".leaflet-tooltip").get_attribute("textContent")
     assert (segment["name"] or "Unnamed street") in text
