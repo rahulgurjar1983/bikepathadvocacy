@@ -67,7 +67,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 - [x] **R1.8** `scripts/release.sh` copies reports forward only from the release whose `index.html` names the commit `HEAD^`; when that release is missing it rebuilds, so a queued or skipped run can never copy a stale report (FR-13.7)
 - [x] **R1.9** One report: `bikeplan run` and `bikeplan report` share one builder, which uses every stage the code has, with projects, sheets and the proposed changes switch (FR-13.12)
 - [x] **R1.10** `checks.html` in every release: each requirement in plain words, how a councillor checks it, and this release's result (FR-13.11)
-- [ ] **R1.11** A small report: at most 8 MB for Bayside, with a slim merged map; detail moves to the data archive. The 2026-10-08 report was 106 MB (FR-13.13)
+- [x] **R1.11** A small report: at most 8 MB for Bayside, with a slim merged map; detail moves to the data archive. The 2026-10-08 report was 106 MB (FR-13.13)
 
 ## Phase 6: Fit
 

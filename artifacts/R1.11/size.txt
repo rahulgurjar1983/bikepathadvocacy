@@ -1,0 +1,8 @@
+1788270 report.html
+1487134 map.json
+2385405 segments.csv
+2928 figures.json
+figures.json: OK
+map.json: OK
+report.html: OK
+segments.csv: OK

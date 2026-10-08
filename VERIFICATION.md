@@ -740,3 +740,14 @@ uv run bikeplan route figures artifacts/V1.2/route.gpx --region regions/test-gri
 
 Expect: all 15 tests pass; the second command prints the path of `route_figures.json`. For the two-section test-grid route the total shows 1.0 km on shared streets, 0.0702 km off network, 0.6 km safe for all ages, one break, one unsignalised crossing and a matched share of 0.9415.
 Artifact: `artifacts/V1.2/route_figures.json`
+
+### R1.11
+
+```bash
+uv run pytest tests/test_report_small.py tests/test_report_map.py -q
+uv run bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out "$OUT"
+stat -c '%s %n' "$OUT/report.html"
+```
+
+Expect: all tests pass; `report.html` is under 8000000 bytes (1788270 on 2026-10-08, down from 106 MB), and `sha256sum -c SHA256SUMS` prints OK for every file.
+Artifact: `artifacts/R1.11/size.txt`
