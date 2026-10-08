@@ -588,6 +588,7 @@ def greedy_picks(
     score = exact_score(people, placed, results, weights)
     current = fixed_planning(graph, planning, fixed, proposals.metres_per_point)
     picked: list[dict] = []
+    safe_now = score_access(people, placed, results, weights)["safe_people"]
     km = 0.0
     while len(picked) < proposals.max_projects and km < proposals.budget_km:
         values = trip_values(people, placed, results, weights)
@@ -596,12 +597,21 @@ def greedy_picks(
         )
         kinds = dict.fromkeys(found, "route")
         ordered = sorted(found.items(), key=lambda pair: project_id(pair[0]))
+        by_first: dict = defaultdict(list)
+        for position, (fix, worth) in enumerate(ordered):
+            by_first[min(fix)].append((position, fix, worth))
         for elements in sorted(candidates, key=project_id):
             remaining = elements - fixed
             if remaining in found:
                 kinds[remaining] = candidates[elements]
                 continue
-            value = sum(worth for fix, worth in ordered if fix <= remaining)
+            inside = sorted(
+                (position, worth)
+                for name in remaining
+                for position, fix, worth in by_first.get(name, ())
+                if fix <= remaining
+            )
+            value = sum(worth for _, worth in inside)
             if remaining and value > 0:
                 found[remaining] = value
                 kinds[remaining] = candidates[elements]
@@ -651,8 +661,8 @@ def greedy_picks(
                 del routes[index]
         gained = newly_safe(people, before, results)
         main = max(range(len(gained)), key=lambda index: (gained[index], -index))
-        safe_before = score_access(people, placed, before, weights)["safe_people"]
-        safe_after = score_access(people, placed, results, weights)["safe_people"]
+        safe_before = safe_now
+        safe_after = safe_now = score_access(people, placed, results, weights)["safe_people"]
         picked.append(
             {
                 "id": project_id(elements),
