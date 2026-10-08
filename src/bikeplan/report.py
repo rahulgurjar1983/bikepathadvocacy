@@ -10,7 +10,7 @@ from pathlib import Path
 
 from pyproj import Transformer
 from shapely.geometry import LineString
-from shapely.ops import transform
+from shapely.ops import linemerge, transform
 
 from bikeplan.config import ConfigError, Profile, Region
 from bikeplan.network import bike_segments
@@ -48,22 +48,19 @@ STATION_TAGS = (
 )
 MAP_FIGURE = (
     "F4",
-    "Street drawn on the map",
+    "Street piece drawn on the map",
     "spec 13",
-    "I draw each street segment once on the map. I add up the length of every segment I drew.",
+    "I join street segments that touch and share a name, street type, stress level, safety and "
+    "fix. I draw each joined piece once. I count the pieces I drew.",
 )
-MAP_RECIPE = (
-    "import json;"
-    "print(round(sum(float(s['length_m']) for s in json.load(open('map.json'))['segments'])"
-    "/1000,3))"
-)
+MAP_RECIPE = "import json;print(len(json.load(open('map.json'))['segments']))"
 LEVEL_KEYS = (
     ("1", "Level one: the calmest (pale blue)"),
     ("2", "Level two: calm (dark blue)"),
     ("3", "Level three: busy (pale red)"),
     ("4", "Level four: the busiest (dark red)"),
 )
-HEADER = ["segment_id", "length_m", "lts", "aaa", "width_source"]
+HEADER = ["segment_id", "length_m", "lts", "aaa", "width_source", "fix"]
 FIGURES = [
     (
         "F1",
@@ -99,7 +96,7 @@ RECIPE = (
 )
 
 
-def segment_rows(graph, profile: Profile) -> list[list]:
+def segment_rows(graph, profile: Profile, fixes: dict) -> list[list]:
     scores = score_edges(graph, profile)
     rows = []
     for segment_id, segment in bike_segments(graph).items():
@@ -112,6 +109,7 @@ def segment_rows(graph, profile: Profile) -> list[list]:
                 max(scores[key]["lts"] for key in keys),
                 int(all(scores[key]["aaa"] for key in keys)),
                 found["width_source"] or "none",
+                fixes.get(segment_id) or "",
             ]
         )
     return sorted(rows)
@@ -175,6 +173,30 @@ def map_places(snapshot: Path) -> list[dict]:
     return sorted(places, key=lambda p: (p["kind"], p["lat"], p["lon"], p["name"]))
 
 
+def merge_pieces(pieces: list[dict]) -> list[dict]:
+    groups: dict = {}
+    for item in pieces:
+        key = (item["name"], item["highway"], item["lts"], item["aaa"], item["fix"] or "")
+        groups.setdefault(key, []).extend(LineString(line) for line in item["lines"])
+    merged = []
+    for key in sorted(groups):
+        name, highway, lts, aaa, fix = key
+        joined = linemerge(sorted(groups[key], key=lambda line: list(line.coords)))
+        for line in getattr(joined, "geoms", [joined]):
+            coords = [list(point) for point in line.coords]
+            merged.append(
+                {
+                    "name": name,
+                    "highway": highway,
+                    "lts": lts,
+                    "aaa": aaa,
+                    "fix": fix or None,
+                    "lines": [coords],
+                }
+            )
+    return sorted(merged, key=lambda item: (item["lines"][0], item["name"], item["highway"]))
+
+
 def map_data(graph, rows: list[list], snapshot: Path, projects: dict) -> dict:
     to_lonlat = Transformer.from_crs(graph.graph["crs"], 4326, always_xy=True)
     scored = {row[0]: row for row in rows}
@@ -187,12 +209,11 @@ def map_data(graph, rows: list[list], snapshot: Path, projects: dict) -> dict:
         data = segment["edges"][0][1]
         segments.append(
             {
-                "id": row[0],
                 "name": first(data.get("name")),
                 "highway": first(data.get("highway")),
-                "length_m": float(row[1]),
                 "lts": row[2],
                 "aaa": bool(row[3]),
+                "fix": row[5] or None,
                 "lines": lines,
             }
         )
@@ -201,7 +222,7 @@ def map_data(graph, rows: list[list], snapshot: Path, projects: dict) -> dict:
         "boundary": boundary,
         "places": map_places(snapshot),
         "projects": projects,
-        "segments": sorted(segments, key=lambda s: s["id"]),
+        "segments": merge_pieces(segments),
     }
 
 
@@ -225,13 +246,13 @@ def figure_list(text: str, map_text: str) -> list[dict]:
             }
         )
     figure_id, label, spec, method = MAP_FIGURE
-    km = sum(float(s["length_m"]) for s in json.loads(map_text)["segments"]) / 1000
+    pieces = len(json.loads(map_text)["segments"])
     figures.append(
         {
             "id": figure_id,
             "label": label,
-            "value": round(km, 3),
-            "unit": "km",
+            "value": pieces,
+            "unit": "pieces",
             "spec": spec,
             "method": method,
             "inputs": [

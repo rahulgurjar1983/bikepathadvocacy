@@ -187,7 +187,8 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
         "places": canon(place_layer),
         "project_shapes": canon(shape_layer),
     }
-    rows = segment_rows(graph, profile)
+    fixes = {item["properties"]["segment_id"]: item["properties"]["fix"] for item in features}
+    rows = segment_rows(graph, profile, fixes)
     text = segments_text(rows)
     map_text = (
         json.dumps(map_data(graph, rows, Path(snapshot), payload["project_shapes"]), sort_keys=True)

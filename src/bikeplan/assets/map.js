@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  const streets = data.segments.map(function (segment) {
+  const streets = data.segments.map(function (segment, index) {
     const layer = L.polyline(segment.lines, {
       color: colours[segment.lts],
       weight: weights[segment.highway] || 3,
@@ -40,10 +40,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     const safe = segment.aaa ? "Safe for all ages" : "Not safe for all ages";
     mark(layer, {
-      "data-id": segment.id,
+      "data-id": String(index),
       text:
         (segment.name || "Unnamed street") + ", " + segment.highway +
-        ". Stress level " + segment.lts + ". " + safe + ".",
+        ". Stress level " + segment.lts + ". " + safe + "." +
+        (segment.fix ? " Fix: " + segment.fix + "." : ""),
     });
     return { layer: layer, segment: segment };
   });

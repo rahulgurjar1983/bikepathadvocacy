@@ -346,7 +346,8 @@ def rebuild_section(summary: dict) -> str:
 
 
 def data_block(payload: dict) -> str:
-    text = json.dumps(payload, sort_keys=True).replace("</", "<\\/")
+    kept = {name: payload[name] for name in ("project_shapes", "projects", "summary")}
+    text = json.dumps(kept, sort_keys=True).replace("</", "<\\/")
     return f'<script type="application/json" id="page-data">{text}</script>'
 
 
