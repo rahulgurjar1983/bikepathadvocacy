@@ -7,6 +7,7 @@ from pathlib import Path
 import yaml
 from pyproj import Transformer
 from shapely.geometry import LineString, Point
+from shapely.ops import substring
 from shapely.strtree import STRtree
 
 from bikeplan.access import edge_table, last_legs, reach, safe_reach, scene, score_access
@@ -257,10 +258,20 @@ def section_figures(
     km_lts = dict.fromkeys(LEVELS, 0.0)
     km_aaa = 0.0
     found_flags = []
+    lines = []
     for key in match.edges:
         data = graph.edges[key]
         geometry = edge_line(graph, key)
         score = scores[key]
+        lines.append(
+            {
+                "name": street_name(data),
+                "lts": score["lts"],
+                "aaa": bool(score["aaa"]),
+                "off": False,
+                "line": [place(*c) for c in geometry.coords],
+            }
+        )
         km = data["length_m"] / 1000
         km_facility[facility_class(data)] += km
         km_lts[str(score["lts"])] += km
@@ -283,6 +294,15 @@ def section_figures(
             )
     for start, end in match.off_stretches:
         km_facility["off_network"] += (end - start) / 1000
+        lines.append(
+            {
+                "name": "Off network",
+                "lts": None,
+                "aaa": False,
+                "off": True,
+                "line": [place(*c) for c in substring(crs_line, start, end).coords],
+            }
+        )
         items.append(
             {
                 "at": (start + end) / 2,
@@ -311,7 +331,7 @@ def section_figures(
         if crossing:
             node = graph.nodes[first_key[1]]
             crossings.append({**crossing, "lonlat": place(node["x"], node["y"])})
-    extra = {"_edges": match.edges}
+    extra = {"_edges": match.edges, "_layer": lines}
     if planning is not None:
         fixes, no_fit = route_fixes(graph, planning, scores, match.edges, place)
         extra |= {"fixes": fixes, "no_fit": no_fit, "disruption": disruption(fixes, no_fit)}
@@ -423,6 +443,7 @@ def route_figures(
     sections: list[Section],
     region: Region | None = None,
     snapshot=None,
+    layer: list | None = None,
 ) -> dict:
     scores = score_edges(graph, profile)
     flags = junction_points(graph)
@@ -435,6 +456,10 @@ def route_figures(
         for s in sections
     ]
     edges = [key for section in found for key in section.pop("_edges")]
+    for section in found:
+        lines = section.pop("_layer")
+        if layer is not None:
+            layer.extend(lines)
     limits = {
         name: {"value": num.value, "source": num.source}
         for name, num in (

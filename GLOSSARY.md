@@ -16,6 +16,7 @@ Each term below is a project word. The reading gate swaps these words for a plai
 - **BNA** — Bicycle Network Analysis: a method from PeopleForBikes that scores how well safe bike routes link homes to places.
 - **cadastre** — the official map of land lots and their edges.
 - **carriageway** — the part of a road between the kerbs where cars drive.
+- **claim** — a plan statement that route data can check.
 - **commit** — one saved change in git.
 - **council** — the local government that runs streets in an area.
 - **cycleway** — a bike lane or path kept apart from cars.
@@ -27,11 +28,13 @@ Each term below is a project word. The reading gate swaps these words for a plai
 - **GeoJSON** — a text file format for map shapes.
 - **GeoPackage** — a one-file database format for map data.
 - **gitleaks** — a tool that scans git for leaked secrets.
+- **km** — a kilometre, equal to one thousand metres.
 - **km/h** — kilometres per hour.
 - **Kontur** — a company that gives away population counts on a grid for every country.
 - **LGA** — Local Government Area: the land one council runs.
 - **LTS** — Level of Traffic Stress: a score from 1 to 4 of how hard a street feels on a bike.
 - **manifest** — a list of input files with where each came from and its hash.
+- **method** — the steps used to get a result.
 - **Mekuria** — Maaza Mekuria, who wrote the first Level of Traffic Stress report with Furth.
 - **Mineta** — the Mineta Transportation Institute, which put out the first Level of Traffic Stress report.
 - **NACTO** — a group of city transport leaders in the United States that writes street design guides.
@@ -47,16 +50,22 @@ Each term below is a project word. The reading gate swaps these words for a plai
 - **Python** — the coding language this tool is written in.
 - **Ralph** — a build loop that runs an AI coding agent once per task until the task list is done.
 - **region** — the area one run covers, such as one council.
+- **refuge** — an island at a crossing where a person can wait.
+- **reply** — an answer sent by a plan author.
 - **reserve** — the strip of public land a road sits in, from fence to fence.
 - **ruff** — a Python lint and format tool.
 - **separator** — the kerb, island or gap that keeps a bike lane apart from cars.
 - **signal** — a traffic light.
 - **snapshot** — a fixed copy of input data taken on one date.
 - **spec** — a file that says what a part of the system must do.
+- **section** — one named part of a route file.
+- **stress** — how hard traffic makes a street feel to ride.
 - **Sydney** — the largest city in New South Wales.
 - **systemd** — the Linux service manager that keeps the loop running.
 - **textstat** — the Python library that scores how easy text is to read.
+- **test grid** — a made-up map used to test route and street code.
 - **TfNSW** — Transport for NSW, the state transport agency.
 - **traffic** — the cars, trucks and buses that use a road.
 - **quietway** — a local street made calm for bikes with a low speed limit and few cars.
 - **width** — how wide a road or lane is, in metres.
+- **verdict** — a finding on whether a claim holds.

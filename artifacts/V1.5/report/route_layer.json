@@ -1,0 +1,145 @@
+{
+  "breaks": [
+    {
+      "length_m": 870.22,
+      "lonlat": [
+        151.152161,
+        -33.950035
+      ]
+    }
+  ],
+  "crossings": [
+    {
+      "junction": 1009,
+      "lonlat": [
+        151.154324,
+        -33.950067
+      ],
+      "lts": 3,
+      "refuge": false,
+      "road": "Main Road",
+      "signal": false
+    },
+    {
+      "junction": 1011,
+      "lonlat": [
+        151.154402,
+        -33.946461
+      ],
+      "lts": 3,
+      "refuge": false,
+      "road": "Main Road",
+      "signal": false
+    }
+  ],
+  "lines": [
+    {
+      "aaa": true,
+      "line": [
+        [
+          151.149998,
+          -33.950002
+        ],
+        [
+          151.152161,
+          -33.950035
+        ]
+      ],
+      "lts": 1,
+      "name": "unnamed residential",
+      "off": false
+    },
+    {
+      "aaa": false,
+      "line": [
+        [
+          151.152161,
+          -33.950035
+        ],
+        [
+          151.154324,
+          -33.950067
+        ]
+      ],
+      "lts": 3,
+      "name": "unnamed residential",
+      "off": false
+    },
+    {
+      "aaa": false,
+      "line": [
+        [
+          151.154324,
+          -33.950067
+        ],
+        [
+          151.154363,
+          -33.948264
+        ]
+      ],
+      "lts": 4,
+      "name": "Main Road",
+      "off": false
+    },
+    {
+      "aaa": false,
+      "line": [
+        [
+          151.154363,
+          -33.948264
+        ],
+        [
+          151.154402,
+          -33.946461
+        ]
+      ],
+      "lts": 4,
+      "name": "Main Road",
+      "off": false
+    },
+    {
+      "aaa": false,
+      "line": [
+        [
+          151.154402,
+          -33.946461
+        ],
+        [
+          151.156565,
+          -33.946494
+        ]
+      ],
+      "lts": 3,
+      "name": "unnamed residential",
+      "off": false
+    },
+    {
+      "aaa": false,
+      "line": [
+        [
+          151.15689,
+          -33.946496
+        ],
+        [
+          151.157,
+          -33.946498
+        ],
+        [
+          151.157217,
+          -33.946501
+        ],
+        [
+          151.157433,
+          -33.946505
+        ],
+        [
+          151.157649,
+          -33.946508
+        ]
+      ],
+      "lts": null,
+      "name": "Off network",
+      "off": true
+    }
+  ]
+}

@@ -1,0 +1,255 @@
+{
+  "sections": [
+    {
+      "breaks": [
+        {
+          "length_m": 870.22,
+          "lonlat": [
+            151.152161,
+            -33.950035
+          ]
+        }
+      ],
+      "crossings": [
+        {
+          "junction": 1009,
+          "lonlat": [
+            151.154324,
+            -33.950067
+          ],
+          "lts": 3,
+          "refuge": false,
+          "road": "Main Road",
+          "signal": false
+        },
+        {
+          "junction": 1011,
+          "lonlat": [
+            151.154402,
+            -33.946461
+          ],
+          "lts": 3,
+          "refuge": false,
+          "road": "Main Road",
+          "signal": false
+        }
+      ],
+      "crossings_unsignalised": 2,
+      "disruption": {
+        "fix_km": {},
+        "lane_km": 0.0,
+        "no_fit_km": 0.4,
+        "parking_spaces": 0.0,
+        "refuges": 0,
+        "signals": 2,
+        "speed_km": 0.0
+      },
+      "fixes": [
+        {
+          "fix": "signals",
+          "id": "junction:1009",
+          "junction": 1009,
+          "lane_km": 0.0,
+          "length_m": 0.0,
+          "parking_spaces": 0.0,
+          "refuges": 0,
+          "signals": 1,
+          "speed_km": 0.0,
+          "street": "unnamed residential"
+        },
+        {
+          "fix": "signals",
+          "id": "junction:1011",
+          "junction": 1011,
+          "lane_km": 0.0,
+          "length_m": 0.0,
+          "parking_spaces": 0.0,
+          "refuges": 0,
+          "signals": 1,
+          "speed_km": 0.0,
+          "street": "unnamed residential"
+        }
+      ],
+      "flags": [],
+      "km_aaa": 0.2,
+      "km_by_facility": {
+        "off_network": 0.0702,
+        "painted": 0.0,
+        "separated": 0.0,
+        "shared": 1.0
+      },
+      "km_by_lts": {
+        "1": 0.2,
+        "2": 0.0,
+        "3": 0.4,
+        "4": 0.4
+      },
+      "matched_share": 0.9362,
+      "name": "Test route",
+      "no_fit": [
+        {
+          "length_m": 200.0,
+          "lonlat": [
+            151.154324,
+            -33.950067
+          ],
+          "street": "Main Road"
+        },
+        {
+          "length_m": 200.0,
+          "lonlat": [
+            151.154363,
+            -33.948264
+          ],
+          "street": "Main Road"
+        }
+      ],
+      "off_network_km": 0.0702,
+      "route_km": 1.1,
+      "steep": []
+    }
+  ],
+  "total": {
+    "access": {
+      "gain_per_km": 0.0,
+      "homes_gaining_safe_reach": 0,
+      "ranked": {
+        "km": 0.0,
+        "projects": 1,
+        "safe_people_gain": {
+          "aged_care": 0,
+          "college": 0,
+          "library": 0,
+          "school": 750.0,
+          "station": 0,
+          "town_centre": 0,
+          "university": 0
+        }
+      },
+      "safe_people_gain": {
+        "aged_care": 0,
+        "college": 0,
+        "library": 0,
+        "school": 0.0,
+        "station": 0,
+        "town_centre": 0,
+        "university": 0
+      }
+    },
+    "breaks": [
+      {
+        "length_m": 870.22,
+        "lonlat": [
+          151.152161,
+          -33.950035
+        ]
+      }
+    ],
+    "crossings": [
+      {
+        "junction": 1009,
+        "lonlat": [
+          151.154324,
+          -33.950067
+        ],
+        "lts": 3,
+        "refuge": false,
+        "road": "Main Road",
+        "signal": false
+      },
+      {
+        "junction": 1011,
+        "lonlat": [
+          151.154402,
+          -33.946461
+        ],
+        "lts": 3,
+        "refuge": false,
+        "road": "Main Road",
+        "signal": false
+      }
+    ],
+    "crossings_unsignalised": 2,
+    "disruption": {
+      "fix_km": {},
+      "lane_km": 0.0,
+      "no_fit_km": 0.4,
+      "parking_spaces": 0.0,
+      "refuges": 0,
+      "signals": 2,
+      "speed_km": 0.0
+    },
+    "fixes": [
+      {
+        "fix": "signals",
+        "id": "junction:1009",
+        "junction": 1009,
+        "lane_km": 0.0,
+        "length_m": 0.0,
+        "parking_spaces": 0.0,
+        "refuges": 0,
+        "signals": 1,
+        "speed_km": 0.0,
+        "street": "unnamed residential"
+      },
+      {
+        "fix": "signals",
+        "id": "junction:1011",
+        "junction": 1011,
+        "lane_km": 0.0,
+        "length_m": 0.0,
+        "parking_spaces": 0.0,
+        "refuges": 0,
+        "signals": 1,
+        "speed_km": 0.0,
+        "street": "unnamed residential"
+      }
+    ],
+    "flags": [],
+    "grade_limits": {
+      "min_length_m": {
+        "source": "assumption: a climb under 100 m is over before it tires most riders",
+        "value": 100
+      },
+      "steep_pct": {
+        "source": "AASHTO Guide for the Development of Bicycle Facilities (2012), grades steeper than 5 percent are hard to ride",
+        "value": 5
+      }
+    },
+    "km_aaa": 0.2,
+    "km_by_facility": {
+      "off_network": 0.0702,
+      "painted": 0.0,
+      "separated": 0.0,
+      "shared": 1.0
+    },
+    "km_by_lts": {
+      "1": 0.2,
+      "2": 0.0,
+      "3": 0.4,
+      "4": 0.4
+    },
+    "matched_share": 0.9362,
+    "no_fit": [
+      {
+        "length_m": 200.0,
+        "lonlat": [
+          151.154324,
+          -33.950067
+        ],
+        "street": "Main Road"
+      },
+      {
+        "length_m": 200.0,
+        "lonlat": [
+          151.154363,
+          -33.948264
+        ],
+        "street": "Main Road"
+      }
+    ],
+    "off_network_km": 0.0702,
+    "route_km": 1.1,
+    "steep": []
+  }
+}

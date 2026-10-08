@@ -310,6 +310,8 @@ GLOSSARY = {
     "bike": "a bicycle, including an electric bicycle.",
     "disruption": "what a change takes from people who drive or park today.",
     "Furth": "Peter Furth, who wrote the stress tables that I use.",
+    "km": "a kilometre, which is one thousand metres.",
+    "method": "the steps and measures used to get a result.",
     "OpenStreetMap": "the free map of the world that volunteers keep up to date.",
     "profile": "the list of rules and numbers that I use for one country.",
     "project": "a set of street and junction changes that I propose together.",

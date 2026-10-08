@@ -10,6 +10,7 @@ from bikeplan.network import build, summarise
 from bikeplan.page import profile_rows
 from bikeplan.propose import write_propose
 from bikeplan.review import ClaimError, write_route_figures
+from bikeplan.review_report import write_review
 from bikeplan.route import RouteError, write_corridor
 from bikeplan.run import run_all, write_report
 from bikeplan.snapshot import (
@@ -33,6 +34,7 @@ LEAVES = {
 
 STRESS_HELP = "Score the stress level of each road edge"
 REPORT_HELP = "Build the public report and its data files"
+REVIEW_HELP = "Review a route and build its report"
 CHECKS_HELP = "Build checks.html from a test run and the specs"
 
 GROUPS = {
@@ -91,6 +93,13 @@ def build_parser() -> argparse.ArgumentParser:
     report.add_argument("region", help="Region file")
     report.add_argument("--snapshot", required=True, help="Snapshot folder")
     report.add_argument("--out", required=True, help="Output directory")
+    review = commands.add_parser("review", help=REVIEW_HELP, description=REVIEW_HELP)
+    review.add_argument("route", help="Route file")
+    review.add_argument("--claims", required=True, help="Claims file")
+    review.add_argument("--region", required=True, help="Region file")
+    review.add_argument("--snapshot", required=True, help="Snapshot folder")
+    review.add_argument("--out", required=True, help="Output directory")
+    review.add_argument("--reply", help="Right of reply file")
     checks = commands.add_parser("checks", help=CHECKS_HELP, description=CHECKS_HELP)
     checks.add_argument("junit", help="Test results in JUnit XML")
     checks.add_argument("--root", default=".", help="Repository folder")
@@ -286,6 +295,16 @@ def report(path: str, snapshot: str, out: str) -> int:
     return 0
 
 
+def review(route: str, claims: str, region: str, snapshot: str, out: str, reply=None) -> int:
+    try:
+        write_review(route, claims, load_region(region), snapshot, out, reply)
+    except (ClaimError, ConfigError, OSError, ValueError) as error:
+        print(error, file=sys.stderr)
+        return 1
+    print(out)
+    return 0
+
+
 def region_corridor(route: str, region_id: str, like: str, out: str) -> int:
     try:
         target = write_corridor(route, region_id, like, out)
@@ -365,6 +384,8 @@ def main(argv: list[str] | None = None) -> int:
         return verify(args.directory)
     if args.command == "report":
         return report(args.region, args.snapshot, args.out)
+    if args.command == "review":
+        return review(args.route, args.claims, args.region, args.snapshot, args.out, args.reply)
     if args.command == "checks":
         return write_checks(args.root, args.junit, args.out, args.release)
     if (args.command, getattr(args, "subcommand", None)) == ("config", "show"):
