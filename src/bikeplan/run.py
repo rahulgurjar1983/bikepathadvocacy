@@ -11,7 +11,7 @@ from bikeplan.config import ConfigError, config_hash
 from bikeplan.fit import segment_fit
 from bikeplan.network import bike_segments, build
 from bikeplan.page import credits_for, details, page_scripts
-from bikeplan.propose import csv_fields, csv_row, write_propose
+from bikeplan.propose import KINDS, csv_fields, csv_row, write_propose
 from bikeplan.report import (
     check_leaks,
     figure_list,
@@ -125,6 +125,9 @@ def project_summary(records: list[dict], kinds: list) -> dict:
         "km_by_fix": km_by_fix,
         "disruption": {
             name: sum(record["totals"][name] for record in records) for name in DISRUPTION
+        },
+        "projects_by_kind": {
+            kind: sum(record["kind"] == kind for record in records) for kind in KINDS
         },
         "safe_people_gain": {
             kind: sum(record["people"][kind] for record in records) for kind in kinds
