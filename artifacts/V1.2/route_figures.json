@@ -1,0 +1,112 @@
+{
+  "sections": [
+    {
+      "breaks": [],
+      "crossings": [],
+      "crossings_unsignalised": 0,
+      "flags": [],
+      "km_aaa": 0.6,
+      "km_by_facility": {
+        "off_network": 0.0,
+        "painted": 0.0,
+        "separated": 0.0,
+        "shared": 0.6
+      },
+      "km_by_lts": {
+        "1": 0.6,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0
+      },
+      "matched_share": 1.0,
+      "name": "Side streets",
+      "off_network_km": 0.0,
+      "route_km": 0.6
+    },
+    {
+      "breaks": [
+        {
+          "length_m": 470.21,
+          "lonlat": [
+            151.1522,
+            -33.948232
+          ]
+        }
+      ],
+      "crossings": [
+        {
+          "junction": 1010,
+          "lonlat": [
+            151.154363,
+            -33.948264
+          ],
+          "lts": 3,
+          "refuge": false,
+          "road": "Main Road",
+          "signal": false
+        }
+      ],
+      "crossings_unsignalised": 1,
+      "flags": [],
+      "km_aaa": 0.0,
+      "km_by_facility": {
+        "off_network": 0.0702,
+        "painted": 0.0,
+        "separated": 0.0,
+        "shared": 0.4
+      },
+      "km_by_lts": {
+        "1": 0.0,
+        "2": 0.0,
+        "3": 0.4,
+        "4": 0.0
+      },
+      "matched_share": 0.883,
+      "name": "Across Main Road",
+      "off_network_km": 0.0702,
+      "route_km": 0.6
+    }
+  ],
+  "total": {
+    "breaks": [
+      {
+        "length_m": 470.21,
+        "lonlat": [
+          151.1522,
+          -33.948232
+        ]
+      }
+    ],
+    "crossings": [
+      {
+        "junction": 1010,
+        "lonlat": [
+          151.154363,
+          -33.948264
+        ],
+        "lts": 3,
+        "refuge": false,
+        "road": "Main Road",
+        "signal": false
+      }
+    ],
+    "crossings_unsignalised": 1,
+    "flags": [],
+    "km_aaa": 0.6,
+    "km_by_facility": {
+      "off_network": 0.0702,
+      "painted": 0.0,
+      "separated": 0.0,
+      "shared": 1.0
+    },
+    "km_by_lts": {
+      "1": 0.6,
+      "2": 0.0,
+      "3": 0.4,
+      "4": 0.0
+    },
+    "matched_share": 0.9415,
+    "off_network_km": 0.0702,
+    "route_km": 1.2
+  }
+}

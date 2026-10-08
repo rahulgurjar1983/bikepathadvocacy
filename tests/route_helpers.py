@@ -1,4 +1,6 @@
+import gzip
 import json
+import shutil
 from itertools import pairwise
 
 from pyproj import Transformer
@@ -63,3 +65,39 @@ def densify(points, step=20):
         count = int(max(abs(x1 - x0), abs(y1 - y0)) // step)
         out += [(x0 + (x1 - x0) * i / count, y0 + (y1 - y0) * i / count) for i in range(count)]
     return [*out, points[-1]]
+
+
+def write_gpx_tracks(path, tracks):
+    body = ""
+    for name, points in tracks.items():
+        pts = "".join(f'<trkpt lat="{lat}" lon="{lon}"></trkpt>' for lon, lat in points)
+        body += f"<trk><name>{name}</name><trkseg>{pts}</trkseg></trk>"
+    path.write_text(
+        '<?xml version="1.0"?><gpx version="1.1" creator="test" '
+        f'xmlns="http://www.topografix.com/GPX/1/1">{body}</gpx>'
+    )
+    return path
+
+
+def edited_snapshot(tmp_path, edit):
+    folder = tmp_path / "snapshot"
+    shutil.copytree(SNAPSHOT, folder)
+    network = folder / "network.osm.gz"
+    network.write_bytes(
+        gzip.compress(edit(gzip.decompress(network.read_bytes()).decode()).encode())
+    )
+    return folder
+
+
+def way_tags(xml, way_id, tags):
+    extra = "".join(f'<tag k="{k}" v="{v}"/>' for k, v in tags.items())
+    return xml.replace(f'<way id="{way_id}">', f'<way id="{way_id}">{extra}', 1)
+
+
+def gate_on_way(xml, way_id, after_node, point, tags):
+    lon, lat = lonlat([point])[0]
+    extra = "".join(f'<tag k="{k}" v="{v}"/>' for k, v in tags.items())
+    xml = xml.replace("<way ", f'<node id="5000" lat="{lat}" lon="{lon}">{extra}</node><way ', 1)
+    ref = f'<nd ref="{after_node}"/>'
+    at = xml.index(ref, xml.index(f'<way id="{way_id}">')) + len(ref)
+    return xml[:at] + '<nd ref="5000"/>' + xml[at:]

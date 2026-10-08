@@ -9,6 +9,7 @@ from bikeplan.fit import fit_summary
 from bikeplan.network import build, summarise
 from bikeplan.page import profile_rows
 from bikeplan.propose import write_propose
+from bikeplan.review import write_route_figures
 from bikeplan.route import RouteError, write_corridor
 from bikeplan.run import run_all, write_report
 from bikeplan.snapshot import (
@@ -40,6 +41,7 @@ GROUPS = {
     "width": {"summary": "Summarise road widths"},
     "fit": {"summary": "Summarise cycleway fit"},
     "region": {"corridor": "Make a region from a route file"},
+    "route": {"figures": "Measure a route: facilities, stress levels, breaks, crossings, flags"},
     "snapshot": {
         "fetch": "Fetch the input data of a region",
         "verify": "Check a snapshot folder against its manifest",
@@ -54,6 +56,7 @@ GROUP_HELP = {
     "width": "Width commands",
     "fit": "Fit commands",
     "region": "Region commands",
+    "route": "Route commands",
     "snapshot": "Snapshot commands",
 }
 
@@ -111,6 +114,11 @@ def build_parser() -> argparse.ArgumentParser:
                 leaf.add_argument("--id", required=True, help="Region ID")
                 leaf.add_argument("--like", required=True, help="Region file to copy")
                 leaf.add_argument("--out", default="regions", help="Output directory")
+            if (name, sub) == ("route", "figures"):
+                leaf.add_argument("route", help="Route file")
+                leaf.add_argument("--region", required=True, help="Region file")
+                leaf.add_argument("--snapshot", required=True, help="Snapshot folder")
+                leaf.add_argument("--out", required=True, help="Output directory")
             if (name, sub) == ("snapshot", "fetch"):
                 leaf.add_argument("region", help="Region file")
                 leaf.add_argument("--out", required=True, help="Output directory")
@@ -286,6 +294,16 @@ def region_corridor(route: str, region_id: str, like: str, out: str) -> int:
     return 0
 
 
+def route_figures_command(route: str, region: str, snapshot: str, out: str) -> int:
+    try:
+        target = write_route_figures(route, load_region(region), snapshot, out)
+    except (RouteError, ConfigError, OSError) as error:
+        print(error, file=sys.stderr)
+        return 1
+    print(target)
+    return 0
+
+
 def snapshot_fetch(path: str, out: str, endpoint: str) -> int:
     try:
         manifest = fetch_snapshot(load_region(path), out, endpoint)
@@ -357,6 +375,8 @@ def main(argv: list[str] | None = None) -> int:
         return network_summary(args.region, args.snapshot)
     if (args.command, getattr(args, "subcommand", None)) == ("region", "corridor"):
         return region_corridor(args.route, args.id, args.like, args.out)
+    if (args.command, getattr(args, "subcommand", None)) == ("route", "figures"):
+        return route_figures_command(args.route, args.region, args.snapshot, args.out)
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "fetch"):
         return snapshot_fetch(args.region, args.out, args.endpoint)
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "verify"):
