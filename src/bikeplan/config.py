@@ -52,6 +52,13 @@ class DisruptionWeights:
 
 
 @dataclass(frozen=True)
+class Scenario:
+    id: str
+    label: str
+    scales: dict
+
+
+@dataclass(frozen=True)
 class Proposals:
     max_projects: int
     budget_km: float
@@ -59,6 +66,9 @@ class Proposals:
     min_gain: float
     metres_per_point: float
     disruption_weights: DisruptionWeights
+    frontier_max_projects: int = 60
+    recommend_ratio: float = 0.25
+    scenarios: tuple = ()
 
 
 @dataclass(frozen=True)
@@ -281,7 +291,8 @@ class Reader:
 
     def proposals(self, raw: Any) -> Proposals:
         names = {f.name for f in dataclasses.fields(Proposals)}
-        data = self.mapping(raw, "proposals", names, names)
+        optional = {"frontier_max_projects", "recommend_ratio", "scenarios"}
+        data = self.mapping(raw, "proposals", names, names - optional)
         weight_names = {f.name for f in dataclasses.fields(DisruptionWeights)}
         weights = self.mapping(
             data["disruption_weights"],
@@ -301,7 +312,30 @@ class Reader:
                     for name in (f.name for f in dataclasses.fields(DisruptionWeights))
                 )
             ),
+            self.whole(data.get("frontier_max_projects", 60), "proposals.frontier_max_projects"),
+            self.number(data.get("recommend_ratio", 0.25), "proposals.recommend_ratio"),
+            self.scenarios(data.get("scenarios", []), weight_names),
         )
+
+    def scenarios(self, raw: Any, weight_names: set[str]) -> tuple:
+        if not isinstance(raw, list):
+            raise self.fail("proposals.scenarios", "must be a list")
+        found = []
+        for index, item in enumerate(raw):
+            key = f"proposals.scenarios.{index}"
+            data = self.mapping(item, key, {"id", "label", "scale"}, {"id", "label", "scale"})
+            scale = self.mapping(data["scale"], f"{key}.scale", weight_names, set())
+            found.append(
+                Scenario(
+                    self.text(data["id"], f"{key}.id"),
+                    self.text(data["label"], f"{key}.label"),
+                    {
+                        name: self.number(value, f"{key}.scale.{name}")
+                        for name, value in scale.items()
+                    },
+                )
+            )
+        return tuple(found)
 
 
 class ProfileReader(Reader):

@@ -1,4 +1,5 @@
 import csv
+import dataclasses
 import hashlib
 import heapq
 import json
@@ -23,6 +24,7 @@ from bikeplan.access import (
     scene,
     score_access,
 )
+from bikeplan.config import Scenario
 from bikeplan.fit import FIXES, junction_fixes, segment_fit
 from bikeplan.fit import cross_section as fit_cross_section
 from bikeplan.network import bike_segments
@@ -32,6 +34,12 @@ from bikeplan.width import check_links, fuse
 CORRIDOR_FIXES = tuple(fix for fix in FIXES if fix != "quietway")
 KINDS = ("corridor", "neighbourhood", "route")
 PROJECT_FIXES = (*FIXES, "new_path")
+DEFAULT_SCENARIOS = (
+    Scenario("light", "Parking and lanes count half", {"parking_space": 0.5, "lane_km": 0.5}),
+    Scenario("shipped", "Weights as set", {}),
+    Scenario("heavy", "Parking and lanes count four times", {"parking_space": 4.0, "lane_km": 4.0}),
+)
+MIN_FRONTIER_GAIN = 1e-9
 SNAP_M = 60.0
 SIDE_M = 20.0
 OPEN_SHARE = 0.3
@@ -822,6 +830,146 @@ def project_features(graph, planning: Planning, records: list[dict]) -> list[dic
     return features
 
 
+def solve(
+    graph,
+    region,
+    profile,
+    placed: list,
+    people: dict,
+    weights: dict,
+    names: list | None = None,
+    legs=None,
+    corridors: Corridors | None = None,
+    stats: dict | None = None,
+):
+    planning = planning_network(graph, profile, region)
+    big = big_projects(graph, planning, profile)
+    made: list = []
+    if corridors is not None:
+        graph, planning, made = add_corridor_paths(
+            graph, planning, corridors, region.proposals.metres_per_point
+        )
+    if stats is not None:
+        stats["corridor_candidates"] = len(made)
+    picked = greedy_picks(
+        graph,
+        planning,
+        placed,
+        people,
+        weights,
+        region.proposals,
+        region.access.reach_m,
+        region.access.detour_max,
+        names,
+        big,
+        stats,
+        legs,
+    )
+    return graph, planning, picked
+
+
+def scenarios_for(proposals) -> list[Scenario]:
+    return list(proposals.scenarios or DEFAULT_SCENARIOS)
+
+
+def scaled_region(region, scenario: Scenario, frontier: bool = True):
+    weights = region.proposals.disruption_weights
+    scaled = dataclasses.replace(
+        weights, **{name: getattr(weights, name) * scale for name, scale in scenario.scales.items()}
+    )
+    changes = {"disruption_weights": scaled}
+    if frontier:
+        changes.update(
+            max_projects=region.proposals.frontier_max_projects,
+            budget_km=float("inf"),
+            min_gain=MIN_FRONTIER_GAIN,
+        )
+    return dataclasses.replace(region, proposals=dataclasses.replace(region.proposals, **changes))
+
+
+def recommended_stop(picks: list[dict], ratio: float) -> int | None:
+    if not picks:
+        return None
+    first = picks[0]
+    stop = None
+    for item in picks:
+        if item["gain"] * first["cost"] >= ratio * first["gain"] * item["cost"]:
+            stop = item["rank"]
+    return stop
+
+
+def curve_picks(picked: list[dict], planning: Planning) -> list[dict]:
+    records = project_records(picked, planning)
+    parking = lane = speed = signals = refuges = 0
+    disruption = 0.0
+    by_fix: dict = defaultdict(float)
+    people: dict = defaultdict(int)
+    found = []
+    for record, pick in zip(records, picked, strict=True):
+        totals = record["totals"]
+        parking += totals["parking_spaces"]
+        lane += totals["lane_km"]
+        speed += totals["speed_km"]
+        signals += totals["signals"]
+        refuges += totals["refuges"]
+        disruption += pick["cost"]
+        for fix, km in totals["km_by_fix"].items():
+            by_fix[fix] += km
+        for kind, count in record["people"].items():
+            people[kind] += count
+        found.append(
+            {
+                "rank": record["rank"],
+                "id": record["id"],
+                "kind": record["kind"],
+                "name": record["name"],
+                "gain": record["gain"],
+                "cost": round(pick["cost"], 6),
+                "disruption": round(disruption, 6),
+                "parking_spaces": parking,
+                "lane_km": round(lane, 6),
+                "speed_km": round(speed, 6),
+                "signals": signals,
+                "refuges": refuges,
+                "km_by_fix": {fix: round(by_fix[fix], 6) for fix in PROJECT_FIXES if fix in by_fix},
+                "score": record["score_after"],
+                "people": dict(people),
+            }
+        )
+    return found
+
+
+def scenario_curve(
+    graph,
+    region,
+    profile,
+    scenario: Scenario,
+    placed: list,
+    people: dict,
+    weights: dict,
+    reach_m: float,
+    detour_max: float,
+    names: list | None = None,
+    legs=None,
+    corridors: Corridors | None = None,
+) -> dict:
+    scaled = scaled_region(region, scenario)
+    scaled = dataclasses.replace(
+        scaled, access=dataclasses.replace(scaled.access, reach_m=reach_m, detour_max=detour_max)
+    )
+    _, planning, picked = solve(
+        graph, scaled, profile, placed, people, weights, names, legs, corridors
+    )
+    picks = curve_picks(picked, planning)
+    return {
+        "id": scenario.id,
+        "label": scenario.label,
+        "scales": scenario.scales,
+        "recommended_stop": recommended_stop(picks, region.proposals.recommend_ratio),
+        "picks": picks,
+    }
+
+
 def write_propose(
     graph,
     region,
@@ -833,37 +981,18 @@ def write_propose(
 ) -> list[dict]:
     out = Path(out)
     kept, nodes, _, placed, resident, weights = scene(graph, region, snapshot)
-    planning = planning_network(graph, profile, region)
-    big = big_projects(graph, planning, profile)
     legs = last_legs(
         graph, score_edges(graph, profile), sorted(resident.people), region.access.last_leg_m
     )
     corridors = read_corridors(snapshot, graph.graph["crs"])
-    made: list = []
-    if corridors is not None:
-        graph, planning, made = add_corridor_paths(
-            graph, planning, corridors, region.proposals.metres_per_point
-        )
-    if stats is not None:
-        stats["corridor_candidates"] = len(made)
     names = [
         place["name"] or place["type"]
         for place, node in zip(kept, nodes, strict=True)
         if node is not None
     ]
-    picked = greedy_picks(
-        graph,
-        planning,
-        placed,
-        resident.people,
-        weights,
-        region.proposals,
-        region.access.reach_m,
-        region.access.detour_max,
-        names,
-        big,
-        stats,
-        legs,
+    shipped_graph = graph
+    graph, planning, picked = solve(
+        graph, region, profile, placed, resident.people, weights, names, legs, corridors, stats
     )
     records = project_records(picked, planning)
     if sheets is not None:
@@ -880,4 +1009,22 @@ def write_propose(
         "features": project_features(graph, planning, records),
     }
     (out / "projects.geojson").write_text(json.dumps(collection))
+    curves = [
+        scenario_curve(
+            shipped_graph,
+            region,
+            profile,
+            scenario,
+            placed,
+            resident.people,
+            weights,
+            region.access.reach_m,
+            region.access.detour_max,
+            names,
+            legs,
+            corridors,
+        )
+        for scenario in scenarios_for(region.proposals)
+    ]
+    (out / "frontier.json").write_text(json.dumps({"scenarios": curves}, indent=2) + "\n")
     return records
