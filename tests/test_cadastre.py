@@ -115,9 +115,8 @@ def test_fr10_1_tile_under_the_limit_is_fetched_once(cadastre_server, tmp_path):
     nsw_cadastre(bayside(), BOX, tmp_path, endpoint)
 
     stored = geopandas.read_file(tmp_path / "parcels.gpkg")
-    widths = {round(envelope_width(request), 6) for request in state["requests"]}
     assert len(stored) == 10
-    assert len(widths) == 1
+    assert len(state["requests"]) == 9
 
 
 def test_fr10_1_parcels_are_stored_as_polygons_in_degrees(cadastre_server, tmp_path):
