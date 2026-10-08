@@ -95,6 +95,7 @@ def build_parser() -> argparse.ArgumentParser:
     checks.add_argument("junit", help="Test results in JUnit XML")
     checks.add_argument("--root", default=".", help="Repository folder")
     checks.add_argument("--out", required=True, help="Output file")
+    checks.add_argument("--release", required=True, help="Folder holding the release reports")
     for name, subs in GROUPS.items():
         group = commands.add_parser(name, help=GROUP_HELP[name], description=GROUP_HELP[name])
         group_commands = group.add_subparsers(
@@ -364,7 +365,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "report":
         return report(args.region, args.snapshot, args.out)
     if args.command == "checks":
-        return write_checks(args.root, args.junit, args.out)
+        return write_checks(args.root, args.junit, args.out, args.release)
     if (args.command, getattr(args, "subcommand", None)) == ("config", "show"):
         return config_show(args.region)
     if (args.command, getattr(args, "subcommand", None)) == ("width", "summary"):

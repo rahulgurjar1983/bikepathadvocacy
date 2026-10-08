@@ -751,3 +751,17 @@ stat -c '%s %n' "$OUT/report.html"
 
 Expect: all tests pass; `report.html` is under 8000000 bytes (1788270 on 2026-10-08, down from 106 MB), and `sha256sum -c SHA256SUMS` prints OK for every file.
 Artifact: `artifacts/R1.11/size.txt`
+
+### R1.12
+
+```bash
+uv run pytest tests/test_checks.py -q
+OUT=$(mktemp -d)
+uv run bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out "$OUT"
+uv run pytest tests/test_checks.py tests/test_report_small.py tests/test_report_map.py -q --junitxml="$OUT/junit.xml"
+uv run bikeplan checks "$OUT/junit.xml" --root . --release "$OUT" --out artifacts/R1.12/checks.html
+grep -o "[0-9]* met, [0-9]* tested only, [0-9]* fail, [0-9]* not built yet" artifacts/R1.12/checks.html
+```
+
+Expect: all tests pass and `bikeplan checks` exits 0. The grep prints `1 met, 3 tested only, 0 fail, 179 not built yet` for this partial test run. FR-13.13 is met because the Bayside `report.html` is under 8 MB. No no-tools step sends the reader to the verification file.
+Artifact: `artifacts/R1.12/checks.html`
