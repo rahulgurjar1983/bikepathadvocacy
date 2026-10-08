@@ -116,13 +116,17 @@ def with_ids(features: list[dict], make) -> list[dict]:
     return features
 
 
-def project_summary(records: list[dict], kinds: list) -> dict:
+def project_summary(records: list[dict], kinds: list, made: int = 0) -> dict:
     km_by_fix: dict = {}
     for record in records:
         for fix, km in record["totals"]["km_by_fix"].items():
             km_by_fix[fix] = km_by_fix.get(fix, 0.0) + km
+    picked = sum(
+        any(item["fix"] == "new_path" for item in record["elements"]) for record in records
+    )
     return {
         "km_by_fix": km_by_fix,
+        "corridor_candidates": {"made": made, "picked": picked, "not_picked": made - picked},
         "disruption": {
             name: sum(record["totals"][name] for record in records) for name in DISRUPTION
         },
@@ -155,7 +159,7 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
         base = Path(scratch)
         access = write_access(graph, region, profile, snapshot, base)
         sheets = []
-        stats = {"candidates": 0}
+        stats = {"candidates": 0, "corridor_candidates": 0}
         records = write_propose(graph, region, profile, snapshot, base, sheets, stats)
         places = read_json(base / "places.geojson")["features"]
         homes = read_json(base / "access_homes.geojson")["features"]
@@ -175,7 +179,7 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
         "projects": len(records),
         "not_snapped": access["not_snapped"],
         "credits": credits_for(manifest),
-        **project_summary(records, kinds),
+        **project_summary(records, kinds, stats["corridor_candidates"]),
     }
     network = collection(features)
     place_layer = collection(with_ids(places, lambda p: f"{p['osm_id']}:{p['type']}"))

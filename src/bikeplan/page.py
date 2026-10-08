@@ -93,12 +93,18 @@ def summary_section(summary: dict) -> str:
     disruption = [[label, summary["disruption"][key]] for key, label in DISRUPTION_LABELS]
     people = [[kind, f"{count}"] for kind, count in sorted(summary["safe_people_gain"].items())]
     by_kind = [[kind, count] for kind, count in sorted(summary["projects_by_kind"].items())]
+    corridors = summary["corridor_candidates"]
+    corridor_rows = [
+        [name.replace("_", " "), corridors[name]] for name in ("made", "picked", "not_picked")
+    ]
     return (
         '<section id="summary"><h2>Summary</h2>'
         f"<p>Access score {score['before']} before and {score['after']} after "
         f"{summary['projects']} projects.</p>"
         "<h3>Projects picked, by kind</h3>"
         f"{table(['Kind', 'Projects'], by_kind)}"
+        "<h3>Corridor candidates</h3>"
+        f"{table(['Outcome', 'Candidates'], corridor_rows)}"
         "<h3>Kilometres by fix</h3>"
         f"{table(['Fix', 'km'], fix_rows)}"
         "<h3>Disruption</h3>"
