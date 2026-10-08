@@ -136,6 +136,12 @@ class Quietway:
 
 
 @dataclass(frozen=True)
+class Fit:
+    prefer_separation: Num
+    speed_approval_body: Num
+
+
+@dataclass(frozen=True)
 class Crossing:
     refuge_min_m: Num
 
@@ -157,6 +163,7 @@ class Profile:
     parking: Parking
     road_diet: RoadDiet
     quietway: Quietway
+    fit: Fit
     crossing: Crossing
     road_classes: dict[str, RoadClass]
     implicit_speeds: dict[str, Num]
@@ -308,6 +315,28 @@ class ProfileReader(Reader):
             )
         )
 
+    def fit(self, raw: Any) -> Fit:
+        data = self.mapping(
+            raw,
+            "fit",
+            {"prefer_separation", "speed_approval_body"},
+            {"prefer_separation", "speed_approval_body"},
+        )
+        body = self.mapping(
+            data["speed_approval_body"],
+            "fit.speed_approval_body",
+            {"value", "source"},
+            {"value", "source"},
+        )
+        source = self.text(body["source"], "fit.speed_approval_body.source")
+        if not source.strip():
+            raise self.fail("fit.speed_approval_body.source", "must not be empty")
+        text = self.text(body["value"], "fit.speed_approval_body.value")
+        return Fit(
+            self.num(data["prefer_separation"], "fit.prefer_separation", "bool"),
+            Num(text, source, source.startswith("assumption:")),
+        )
+
     def width(self, raw: Any, key: str) -> Width:
         data = self.mapping(raw, key, {"min", "desirable"}, {"min"})
         desirable = data.get("desirable")
@@ -376,6 +405,7 @@ def load_profile(id: str, directory: str | Path | None = None) -> Profile:
         reader.group(data["parking"], "parking", Parking),
         reader.group(data["road_diet"], "road_diet", RoadDiet),
         reader.group(data["quietway"], "quietway", Quietway),
+        reader.fit(data["fit"]),
         reader.group(data["crossing"], "crossing", Crossing),
         reader.road_classes(data["road_classes"]),
         reader.implicit_speeds(data["implicit_speeds"]),

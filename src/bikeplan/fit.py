@@ -379,6 +379,7 @@ def choose(segment: dict, profile: Profile, weights, edges: list[dict] | None = 
     edges = edges or [segment]
     before = cross_section(segment, profile)
     result = {"status": "aaa", "fix": None, "score": None, "reasons": [], "candidates": []}
+    result |= {"needs_speed_approval": False, "speed_approval_body": None}
     result |= {"before": before, "after": before}
     if already_aaa(edges, profile):
         return result
@@ -390,8 +391,14 @@ def choose(segment: dict, profile: Profile, weights, edges: list[dict] | None = 
     if not accepted:
         reasons = [item["rejected"] or item["reason"] for item in found]
         return result | {"status": "no_fit", "reasons": reasons}
+    separated = [item for item in accepted if item["fix"] != "quietway"]
+    if profile.fit.prefer_separation.value and separated:
+        accepted = separated
     best = min(accepted, key=lambda item: item["score"])
+    approval = best["fix"] == "quietway"
     return result | {
+        "needs_speed_approval": approval,
+        "speed_approval_body": profile.fit.speed_approval_body.value if approval else None,
         "status": "fix",
         "fix": best["fix"],
         "score": best["score"],
