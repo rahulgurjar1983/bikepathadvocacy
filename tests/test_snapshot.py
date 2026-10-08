@@ -1,4 +1,5 @@
 import hashlib
+import re
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from threading import Thread
@@ -362,7 +363,8 @@ def routed_overpass_server():
 
 def bayside_without_adapters(tmp_path, adapters="[]"):
     text = Path("regions/au-nsw-bayside.yaml").read_text()
-    text = text.replace("adapters: [kontur_population]", f"adapters: {adapters}")
+    text, count = re.subn(r"adapters: \[[^\]]*\]", f"adapters: {adapters}", text)
+    assert count == 1
     path = tmp_path / "region.yaml"
     path.write_text(text)
     return path
