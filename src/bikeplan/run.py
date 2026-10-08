@@ -155,7 +155,8 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
         base = Path(scratch)
         access = write_access(graph, region, profile, snapshot, base)
         sheets = []
-        records = write_propose(graph, region, profile, snapshot, base, sheets)
+        stats = {"candidates": 0}
+        records = write_propose(graph, region, profile, snapshot, base, sheets, stats)
         places = read_json(base / "places.geojson")["features"]
         homes = read_json(base / "access_homes.geojson")["features"]
         shapes = read_json(base / "projects.geojson")["features"]
@@ -170,6 +171,7 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
         "score": {"before": before, "after": after},
         "km_by_lts": stress["km_by_lts"],
         "km_aaa": stress["km_aaa"],
+        "candidates": stats["candidates"],
         "projects": len(records),
         "not_snapped": access["not_snapped"],
         "credits": credits_for(manifest),
