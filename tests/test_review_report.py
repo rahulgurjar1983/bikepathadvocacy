@@ -266,8 +266,18 @@ def test_fr14_8_a_missing_author_fails_and_names_the_key(tmp_path, capsys):
     claims = tmp_path / "claims.yaml"
     claims.write_text(yaml.safe_dump(CLAIMS))
     code = main(
-        ["review", str(route), "--claims", str(claims), "--region", "regions/test-grid.yaml"]
-        + ["--snapshot", SNAPSHOT, "--out", str(tmp_path / "o")]
+        [
+            "review",
+            str(route),
+            "--claims",
+            str(claims),
+            "--region",
+            "regions/test-grid.yaml",
+            "--snapshot",
+            SNAPSHOT,
+            "--out",
+            str(tmp_path / "o"),
+        ]
     )
     assert code == 1
     assert "report.author" in capsys.readouterr().err
@@ -282,8 +292,18 @@ def test_fr14_8_an_unknown_measure_fails_and_names_it(tmp_path, capsys):
         )
     )
     code = main(
-        ["review", str(route), "--claims", str(claims), "--region", AUTHOR_REGION]
-        + ["--snapshot", SNAPSHOT, "--out", str(tmp_path / "o")]
+        [
+            "review",
+            str(route),
+            "--claims",
+            str(claims),
+            "--region",
+            AUTHOR_REGION,
+            "--snapshot",
+            SNAPSHOT,
+            "--out",
+            str(tmp_path / "o"),
+        ]
     )
     assert code == 1
     assert "vibes" in capsys.readouterr().err
