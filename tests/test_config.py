@@ -220,4 +220,6 @@ def test_fr1_13_last_leg_of_zero_loads(tmp_path):
 
 
 def test_fr1_13_negative_last_leg_names_the_key(tmp_path):
-    fails(tmp_path, changed(access__last_leg_m=-1), "last_leg_m")
+    path = write(tmp_path, changed(access__last_leg_m=-1))
+    with pytest.raises(ConfigError, match=r"access\.last_leg_m.*0 or more"):
+        load_region(path)
