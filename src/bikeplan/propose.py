@@ -3,9 +3,11 @@ import hashlib
 import heapq
 import json
 from collections import defaultdict
+from itertools import pairwise
 from pathlib import Path
 from typing import NamedTuple
 
+import networkx as nx
 import shapely
 from pyproj import Transformer
 from shapely.geometry import LineString, MultiLineString, Point, mapping
@@ -17,6 +19,9 @@ from bikeplan.fit import cross_section as fit_cross_section
 from bikeplan.network import bike_segments
 from bikeplan.stress import edge_aaa, own_lts, raise_for_crossings
 from bikeplan.width import check_links, fuse
+
+CORRIDOR_FIXES = tuple(fix for fix in FIXES if fix != "quietway")
+KINDS = ("corridor", "neighbourhood", "route")
 
 
 class Planning(NamedTuple):
@@ -248,6 +253,67 @@ def route_fixes(
     return dict(fixes)
 
 
+def segment_nodes(segment: dict) -> set:
+    return {node for (u, v, _), _ in segment["edges"] for node in (u, v)}
+
+
+def cell_projects(graph, profile, allowed: set) -> tuple[dict, dict]:
+    local = {}
+    barrier = set()
+    for segment_id, segment in bike_segments(graph).items():
+        if own_lts(segment["edges"][0][1], profile) < 3:
+            local[segment_id] = segment_nodes(segment)
+        else:
+            barrier |= segment_nodes(segment)
+    links = nx.Graph()
+    for segment_id, nodes in local.items():
+        links.add_node(("segment", segment_id))
+        links.add_edges_from((("segment", segment_id), ("node", node)) for node in nodes - barrier)
+    found = {}
+    cell_of: dict = defaultdict(set)
+    for number, component in enumerate(sorted(nx.connected_components(links), key=repr)):
+        members = sorted(item[1] for item in component if item[0] == "segment")
+        nodes = set().union(*(local[member] for member in members))
+        for node in nodes:
+            cell_of[node].add(number)
+        elements = {f"segment:{member}" for member in members}
+        elements |= {f"junction:{node}" for node in nodes}
+        elements &= allowed
+        if elements:
+            found[frozenset(elements)] = "neighbourhood"
+    return found, cell_of
+
+
+def corridor_projects(graph, planning: Planning, allowed: set, cell_of: dict) -> dict:
+    runs = nx.Graph()
+    at_node: dict = defaultdict(list)
+    nodes_of = {}
+    for segment_id, segment in bike_segments(graph).items():
+        name = f"segment:{segment_id}"
+        element = planning.elements.get(name)
+        if name in allowed and element and element["fix"] in CORRIDOR_FIXES:
+            nodes_of[name] = segment_nodes(segment)
+            runs.add_node(name)
+            for node in nodes_of[name]:
+                at_node[node].append(name)
+    for names in at_node.values():
+        for first, second in pairwise(names):
+            if planning.elements[first]["street"] == planning.elements[second]["street"]:
+                runs.add_edge(first, second)
+    found = {}
+    for run in nx.connected_components(runs):
+        cells = set().union(*(cell_of[node] for name in run for node in nodes_of[name]))
+        if len(cells) >= 2:
+            found[frozenset(run)] = "corridor"
+    return found
+
+
+def big_projects(graph, planning: Planning, profile, allowed: set | None = None) -> dict:
+    allowed = pickable(graph, planning) if allowed is None else allowed
+    found, cell_of = cell_projects(graph, profile, allowed)
+    return {**found, **corridor_projects(graph, planning, allowed, cell_of)}
+
+
 def project_id(names) -> str:
     return hashlib.sha256("".join(sorted(names)).encode()).hexdigest()[:16]
 
@@ -356,7 +422,9 @@ def greedy_picks(
     reach_m: float,
     detour_max: float,
     names: list | None = None,
+    candidates: dict | None = None,
 ) -> list[dict]:
+    candidates = {} if candidates is None else candidates
     sources = [node for _, node in placed]
     labels = names if names is not None else [str(node) for node in sources]
     fixed: set = set()
@@ -381,6 +449,17 @@ def greedy_picks(
         found = route_fixes(
             graph, current, placed, results, values, reach_m, detour_max, allowed, routes
         )
+        kinds = dict.fromkeys(found, "route")
+        ordered = sorted(found.items(), key=lambda pair: project_id(pair[0]))
+        for elements in sorted(candidates, key=project_id):
+            remaining = elements - fixed
+            if remaining in found:
+                kinds[remaining] = candidates[elements]
+                continue
+            value = sum(worth for fix, worth in ordered if fix <= remaining)
+            if remaining and value > 0:
+                found[remaining] = value
+                kinds[remaining] = candidates[elements]
         costs = {
             elements: sum(planning.elements[name]["score"] for name in sorted(elements - fixed))
             for elements in found
@@ -395,6 +474,8 @@ def greedy_picks(
                 graph, sources, results, reach_m, detour_max, now, aaa_after(set(elements)), table
             )
             gain = gain_between(people, placed, weights, counts, results, trial, redone)
+            if gain < proposals.min_gain:
+                continue
             key = (round(-gain / (costs[elements] + 1), 9), project_id(elements))
             if best is None or key < best[0]:
                 best = (key, elements, gain)
@@ -420,6 +501,7 @@ def greedy_picks(
         picked.append(
             {
                 "id": project_id(elements),
+                "kind": kinds[elements],
                 "elements": tuple(sorted(elements)),
                 "gain": round(gain, 6),
                 "cost": costs[elements],
@@ -476,6 +558,7 @@ def project_records(picked: list[dict], planning: Planning) -> list[dict]:
             {
                 "rank": rank,
                 "id": pick["id"],
+                "kind": pick["kind"],
                 "name": f"{pick['place']}: {', '.join(streets)}",
                 "elements": elements,
                 "totals": project_totals(elements),
@@ -616,6 +699,7 @@ def write_propose(
         region.access.reach_m,
         region.access.detour_max,
         names,
+        big_projects(graph, planning, profile),
     )
     records = project_records(picked, planning)
     if sheets is not None:

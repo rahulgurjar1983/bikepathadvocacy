@@ -1,0 +1,10 @@
+tests/test_propose_big.py::test_fr8_11_each_cell_between_main_roads_is_one_neighbourhood_project PASSED
+tests/test_propose_big.py::test_fr8_11_a_run_of_main_road_between_two_cells_is_a_corridor_project PASSED
+tests/test_propose_big.py::test_fr8_11_a_corridor_is_made_only_where_the_fix_fits PASSED
+tests/test_propose_big.py::test_fr8_11_a_main_road_that_reaches_only_one_cell_is_not_a_corridor PASSED
+tests/test_propose_big.py::test_fr8_11_a_neighbourhood_is_picked_when_no_single_route_fix_gains_enough PASSED
+tests/test_propose_big.py::test_fr8_11_without_the_neighbourhood_no_route_fix_gains_enough PASSED
+tests/test_propose_big.py::test_fr8_11_route_fixes_keep_their_own_kind PASSED
+tests/test_propose_big.py::test_fr8_11_the_summary_counts_projects_of_each_kind PASSED
+tests/test_propose_big.py::test_fr8_11_records_carry_the_kind PASSED
+============================== 9 passed in 1.37s ===============================

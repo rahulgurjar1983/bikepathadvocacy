@@ -92,10 +92,13 @@ def summary_section(summary: dict) -> str:
     fix_rows = [[name, f"{km:.3f}"] for name, km in sorted(fixes.items())] or [["none", "0.000"]]
     disruption = [[label, summary["disruption"][key]] for key, label in DISRUPTION_LABELS]
     people = [[kind, f"{count}"] for kind, count in sorted(summary["safe_people_gain"].items())]
+    by_kind = [[kind, count] for kind, count in sorted(summary["projects_by_kind"].items())]
     return (
         '<section id="summary"><h2>Summary</h2>'
         f"<p>Access score {score['before']} before and {score['after']} after "
         f"{summary['projects']} projects.</p>"
+        "<h3>Projects picked, by kind</h3>"
+        f"{table(['Kind', 'Projects'], by_kind)}"
         "<h3>Kilometres by fix</h3>"
         f"{table(['Fix', 'km'], fix_rows)}"
         "<h3>Disruption</h3>"
