@@ -19,6 +19,12 @@ window.addEventListener("load", function () {
     });
   }
 
+  function places(key) {
+    if (key.startsWith("people.")) return 0;
+    if (key.startsWith("km.")) return 3;
+    return { score: 1, disruption: 1, parking_spaces: 0, lane_km: 3, speed_km: 3 }[key];
+  }
+
   function value(pick, key) {
     if (key.startsWith("people.")) return pick.people[key.slice(7)];
     if (key.startsWith("km.")) return pick.km_by_fix[key.slice(3)] || 0;
@@ -51,7 +57,7 @@ window.addEventListener("load", function () {
     const pick = chosen.picks[step];
     draw(chosen, step);
     for (const cell of document.querySelectorAll("#change-totals [data-total]")) {
-      cell.textContent = String(value(pick, cell.dataset.total));
+      cell.textContent = value(pick, cell.dataset.total).toFixed(places(cell.dataset.total));
     }
     const point = document.getElementById("curve-" + current).getAttribute("points").split(" ")[step].split(",");
     dot.setAttribute("cx", point[0]);

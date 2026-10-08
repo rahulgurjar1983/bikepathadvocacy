@@ -832,3 +832,15 @@ uv run bikeplan report tests/fixtures/test-grid/region.yaml --snapshot tests/fix
 
 Expect: all tests pass; headless Chromium moves the slider and the map projects, totals and chart dot follow `frontier.json`; the scenario switch picks another curve; `SHA256SUMS` lists `frontier.json` and every file prints OK.
 Artifact: `artifacts/R1.13/check.txt`
+
+### R1.14
+
+```bash
+uv run pytest tests/test_report_change.py -q -k fr9_2
+OUT=$(mktemp -d)
+uv run bikeplan report tests/fixtures/test-grid/region.yaml --snapshot tests/fixtures/test-grid/snapshot --out "$OUT"
+grep -o 'data-total="people[^<]*<' "$OUT/report.html"
+```
+
+Expect: all `fr9_2` tests pass; the people counts in the totals, the summary, the ranked table and the project sheets are whole numbers; scores and disruption show one place; moving the slider shows the same rounding.
+Artifact: `artifacts/R1.14/check.txt`

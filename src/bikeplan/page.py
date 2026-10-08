@@ -91,7 +91,7 @@ def summary_section(summary: dict) -> str:
     fixes = summary["km_by_fix"]
     fix_rows = [[name, f"{km:.3f}"] for name, km in sorted(fixes.items())] or [["none", "0.000"]]
     disruption = [[label, summary["disruption"][key]] for key, label in DISRUPTION_LABELS]
-    people = [[kind, f"{count}"] for kind, count in sorted(summary["safe_people_gain"].items())]
+    people = [[kind, f"{count:.0f}"] for kind, count in sorted(summary["safe_people_gain"].items())]
     by_kind = [[kind, count] for kind, count in sorted(summary["projects_by_kind"].items())]
     corridors = summary["corridor_candidates"]
     corridor_rows = [
@@ -99,7 +99,7 @@ def summary_section(summary: dict) -> str:
     ]
     return (
         '<section id="summary"><h2>Summary</h2>'
-        f"<p>Access score {score['before']} before and {score['after']} after "
+        f"<p>Access score {score['before']:.1f} before and {score['after']:.1f} after "
         f"{summary['projects']} projects.</p>"
         "<h3>Projects picked, by kind</h3>"
         f"{table(['Kind', 'Projects'], by_kind)}"
@@ -119,9 +119,9 @@ def projects_section(records: list[dict]) -> str:
         [
             record["rank"],
             record["name"],
-            record["gain"],
-            record["score_after"],
-            sum(record["people"].values()),
+            f"{record['gain']:.1f}",
+            f"{record['score_after']:.1f}",
+            f"{sum(record['people'].values()):.0f}",
         ]
         for record in records
     ]
@@ -269,7 +269,7 @@ def sheet(record: dict, features: list[dict]) -> str:
         "Width confidence",
         "Length m",
     ]
-    people = [[kind, count] for kind, count in sorted(record["people"].items())]
+    people = [[kind, f"{count:.0f}"] for kind, count in sorted(record["people"].items())]
     disruption = [[label, record["totals"][key]] for key, label in DISRUPTION_LABELS]
     fixes = [[fix, km] for fix, km in sorted(record["totals"]["km_by_fix"].items())]
     drawings = []
@@ -292,7 +292,7 @@ def sheet(record: dict, features: list[dict]) -> str:
     return (
         f'<article id="project-{html.escape(record["id"])}">'
         f"<h3>{html.escape(record['name'])}</h3>"
-        f"<p>Gain {record['gain']}. Score after {record['score_after']}.</p>"
+        f"<p>Gain {record['gain']:.1f}. Score after {record['score_after']:.1f}.</p>"
         f"{project_map(record, features)}"
         f"{table(head, elements)}"
         f"<h4>Disruption totals</h4>{table(['Item', 'Total'], disruption)}"
