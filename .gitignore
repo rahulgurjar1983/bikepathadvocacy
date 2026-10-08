@@ -17,3 +17,4 @@ out/
 *.egg-info/
 dist/
 build/
+data/private/
