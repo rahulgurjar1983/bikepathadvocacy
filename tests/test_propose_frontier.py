@@ -133,3 +133,15 @@ def test_fr8_13_the_command_writes_frontier_json_with_a_curve_per_scenario(tmp_p
     projects = json.loads((out / "projects.json").read_text())
     assert len(shipped["picks"]) >= len(projects)
     assert shipped["recommended_stop"] in {item["rank"] for item in shipped["picks"]}
+
+
+def test_fr13_15_frontier_json_holds_the_shapes_of_every_pick(tmp_path):
+    folder = snapshot(tmp_path / "snap")
+    out = tmp_path / "out"
+    assert run(folder, out) == 0
+    data = json.loads((out / "frontier.json").read_text())
+    picked = {pick["id"] for item in data["scenarios"] for pick in item["picks"]}
+    shaped = {item["properties"]["project"] for item in data["shapes"]["features"]}
+    assert picked == shaped
+    assert all("rank" not in item["properties"] for item in data["shapes"]["features"])
+    assert all(item["geometry"]["coordinates"] for item in data["shapes"]["features"])
