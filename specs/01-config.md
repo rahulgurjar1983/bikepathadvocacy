@@ -141,10 +141,6 @@ widths_m:
 | `road_diet.max_adt` | 20000 | FHWA Road Diet Informational Guide (2014) |
 | `quietway.target_speed_kmh` | 30 | NACTO Designing for All Ages and Abilities (2017) |
 | `crossing.refuge_min_m` | 1.8 | Mekuria, Furth and Nixon (2012), Table 8 |
-| `fit.prefer_separation` | true | assumption: a council can build a separated lane on its own local roads, but a 30 km/h limit needs Transport for NSW approval (NSW Speed Zoning Guidelines) |
-| `fit.speed_approval_body` | Transport for NSW | NSW Speed Zoning Guidelines |
-| `fit.prefer_separation` | true | assumption: separated lanes are within a local road authority's powers in most places, and speed limits often are not |
-| `fit.speed_approval_body` | the road authority that sets speed limits | assumption |
 
 ## 8. Road class defaults
 
