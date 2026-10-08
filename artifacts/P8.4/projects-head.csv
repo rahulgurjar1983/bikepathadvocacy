@@ -1,3 +1,5 @@
-rank,id,name,elements,gain,score_after,parking_spaces,lane_km,speed_km,signals,refuges,km_quietway,km_cycleway_in_spare,km_cycleway_parking_one_side,km_cycleway_parking_both_sides,km_road_diet,km_verg
-1,b941eb43c2038053,"The Scots College Brighton Preparatory School: Carruthers Drive, Primrose Avenue",5,0.035471,0.140285,0,0.0,0.158516,0,0,0.158517,0.0,0.0,0.0,0.0,0.0,404.5345895934131,0.0,0,0.0,0.
-2,cb528c8f2533e48e,Mascot Library: High Street,9,0.032437,0.172723,0,0.0,0.640013,0,0,0.640013,0.0,0.0,0.002881,0.0,0.0,0.0,0.0,0,0.0,443.9185070503297,0.0,0.0
+rank,id,name,elements,gain,score_after,parking_spaces,lane_km,speed_km,signals,refuges,km_quietway,km_cycleway_in_spare,km_cycleway_parking_one_side,km_cycleway_parking_both_sides,km_road_diet,km_verge_path,people_school,people_college,people_university,people_aged_care,people_library,people_town_centre,people_station
+1,a74107dbbbcae1fb,The Scots College Brighton Preparatory School: Carruthers Drive,3,0.074807,0.659563,8,0.0,0.0,0,0,0.0,0.047095,0.0,0.040144,0.0,0.0,843.9056107291399,0.0,0,0.0,0.0,0.0,0.0
+2,b9a999953869c8b5,St George TAFE: unnamed cycleway,1,0.113542,0.773105,0,0.0,0.0,1,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1104.9641025641026,0,0.0,0.0,0.0,0.0
+3,f204bb8369f27f78,"school: Boeing Place, Bruce Street, Francis Avenue",4,0.062387,0.835492,2,0.0,0.0,0,0,0.0,0.0,0.0,0.007409,0.0,0.370856,1001.7957459207464,335.1666666666665,0,0.0,0.0,0.0,0.0
+4,e146f061330bc1d8,Rockdale: Geeves Avenue,11,0.112416,0.947908,46,0.0,0.0,0,0,0.0,0.0,0.0,0.190694,0.0,0.0,0.0,0.0,0,0.0,0.0,0.0,192.3072289156628
