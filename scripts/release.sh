@@ -138,7 +138,7 @@ if ! "${pytest[@]}" -q --junitxml="$work/junit.xml" >"$work/pytest.log" 2>&1; th
   tail -n 40 "$work/pytest.log" >&2
 fi
 checks_ok=1
-"${bikeplan[@]}" checks "$work/junit.xml" --root . --out "$out/checks.html" || checks_ok=0
+"${bikeplan[@]}" checks "$work/junit.xml" --root . --out "$out/checks.html" --release "$out" || checks_ok=0
 if [ "$tests_ok" = 0 ] || [ "$checks_ok" = 0 ]; then
   echo "release: a check failed, so nothing is uploaded" >&2
   exit 1
