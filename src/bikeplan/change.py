@@ -163,8 +163,19 @@ def change_figures(frontier: dict, text: str) -> list[dict]:
     return figures
 
 
-def number(value) -> str:
-    return str(value)
+PLACES = {"score": 1, "disruption": 1, "parking_spaces": 0, "lane_km": 3, "speed_km": 3}
+
+
+def places(key: str) -> int:
+    if key.startswith("people."):
+        return 0
+    if key.startswith("km."):
+        return 3
+    return PLACES[key]
+
+
+def number(value, key: str) -> str:
+    return f"{value:.{places(key)}f}"
 
 
 def fix_names(frontier: dict) -> list[str]:
@@ -196,7 +207,7 @@ def total_rows(frontier: dict, pick: dict) -> str:
     return "".join(
         f'<tr><th scope="row">{html.escape(label)}</th>'
         f'<td><a href="#{figure}" data-total="{html.escape(key, quote=True)}">'
-        f"{number(value)}</a></td></tr>"
+        f"{number(value, key)}</a></td></tr>"
         for label, key, figure, value in rows
     )
 
@@ -243,11 +254,11 @@ def chart_section(frontier: dict) -> str:
         rows += [
             f"<tr><td>{html.escape(item['label'])}</td>"
             + "".join(
-                f'<td><a href="#F12">{number(value)}</a></td>'
+                f'<td><a href="#F12">{value}</a></td>'
                 for value in (
                     pick["rank"],
-                    pick["disruption"],
-                    round(pick["score"] - frontier["baseline"], 3),
+                    f"{pick['disruption']:.1f}",
+                    f"{pick['score'] - frontier['baseline']:.1f}",
                 )
             )
             + "</tr>"
