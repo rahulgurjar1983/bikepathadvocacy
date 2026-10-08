@@ -39,11 +39,11 @@ fi
 last=""
 if [ "$changed" = 0 ]; then
   parent="$(git rev-parse HEAD^)"
-  while read -r tag; do
-    [ -n "$tag" ] || continue
-    gh release download "$tag" --pattern index.html --dir "$work/index-$tag"
-    if grep -q "$parent" "$work/index-$tag/index.html"; then
-      last="$tag"
+  while read -r prior_tag; do
+    [ -n "$prior_tag" ] || continue
+    gh release download "$prior_tag" --pattern index.html --dir "$work/index-$prior_tag"
+    if grep -q "$parent" "$work/index-$prior_tag/index.html"; then
+      last="$prior_tag"
       break
     fi
   done < <(gh release list --limit 100 --json tagName --jq '.[].tagName | select(startswith("v"))')

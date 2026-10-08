@@ -111,8 +111,81 @@ record_turn() {
   log "turn $turn $row_id: $used_model \$${cost:-?}, ${calls:-?} calls, ${cache_read:-?} cache-read, ${cache_write:-?} cache-write, ${output:-?} output tokens, progress $progress"
 }
 
+record_attempt() {
+  local row="$1" provider="$2" requested="$3" effort="$4" status="$5" log_file="$6" fields progress=no
+  fields="$(usage_fields "$log_file")"
+  if [ "$(commit_count)" -gt "$before" ]; then
+    progress=yes
+  fi
+  python3 - "$row" "$provider" "$requested" "$effort" "$status" "$progress" "$fields" <<'PYCODE'
+import datetime
+import json
+import sys
+
+row, provider, model, effort, status, progress, fields = sys.argv[1:]
+values = fields.split(",")
+entry = {
+    "utc": datetime.datetime.now(datetime.UTC).isoformat(),
+    "row": row, "provider": provider, "model": model, "effort": effort,
+    "exit": int(status), "progress": progress,
+    "cost_usd": float(values[0]) if values[0] and provider != "deepseek" else None,
+}
+for key, value in zip(("input_tokens", "cache_write_tokens", "cache_read_tokens", "output_tokens", "api_calls"), values[1:], strict=True):
+    entry[key] = int(value) if value else None
+with open(".ralph/model-usage.jsonl", "a") as target:
+    target.write(json.dumps(entry, sort_keys=True) + "\n")
+PYCODE
+}
+
+finish_row() {
+  local row="$1" progress="$2" outcome reason
+  if [ "$progress" = yes ]; then
+    rm -f .ralph/escalate
+  else
+    printf '%s\n' "$row" >.ralph/escalate
+  fi
+  outcome="$(python3 -m gates.loopstate "$row" "$progress" "$max_stalls")" || return 2
+  if [ "$outcome" = blocked ]; then
+    reason="$(python3 - "$row" <<'PYCODE'
+import sys
+from gates.loopstate import read_state
+print(read_state()[sys.argv[1]]["reason"])
+PYCODE
+    )" || return 2
+    log "row $row blocked: $reason; inputs saved in .ralph/stalls.json"
+  fi
+}
+
+bounded_backoff() {
+  local until=$((SECONDS + $1)) remaining tick
+  while [ "$SECONDS" -lt "$until" ] && [ ! -f STOP ] && [ ! -f HOLD ]; do
+    remaining=$((until - SECONDS))
+    tick="$hold_poll"
+    if [ "$remaining" -lt "${hold_poll%.*}" ]; then
+      tick="$remaining"
+    fi
+    sleep "$tick"
+  done
+}
+
 commit_count() {
   git rev-list --branches --count 2>/dev/null || echo 0
+}
+
+codex_skills_off() {
+  python3 - <<'PYCODE'
+import json
+import os
+from pathlib import Path
+
+home = Path.home()
+roots = {Path(os.environ.get("CODEX_HOME", home / ".codex")) / "skills", home / ".agents/skills", Path("/etc/codex/skills")}
+for parent in (Path.cwd(), *Path.cwd().parents):
+    roots.update((parent / ".agents/skills", parent / ".codex/skills"))
+paths = sorted({path.resolve() for root in roots if root.is_dir() for path in root.rglob("SKILL.md")})
+entries = ["{path=" + json.dumps(str(path)) + ",enabled=false}" for path in paths]
+print("skills.config=[" + ",".join(entries) + "]")
+PYCODE
 }
 
 main() {
@@ -137,6 +210,15 @@ main() {
   local pick_cmd="${RALPH_PICK_CMD:-uv run --frozen python -m gates.ledger pick}"
   local base_model="${RALPH_MODEL:-sonnet}"
   local escalate_model="${RALPH_ESCALATE_MODEL:-opus}"
+  local reasoning_model="${RALPH_REASONING_MODEL:-opus}"
+  local routine_effort="${RALPH_ROUTINE_EFFORT:-medium}"
+  local reasoning_effort="${RALPH_REASONING_EFFORT:-high}"
+  local codex_routine="${RALPH_CODEX_ROUTINE_MODEL:-gpt-6.1-sol}"
+  local codex_reasoning="${RALPH_CODEX_REASONING_MODEL:-gpt-6-astra}"
+  local codex_routine_effort="${RALPH_CODEX_ROUTINE_EFFORT:-medium}"
+  local codex_reasoning_effort="${RALPH_CODEX_REASONING_EFFORT:-high}"
+  local max_stalls="${RALPH_MAX_STALLS:-3}"
+  case "$max_stalls" in '' | 0 | *[!0-9]*) log "RALPH_MAX_STALLS must be positive"; exit 2 ;; esac
   local tools="${RALPH_TOOLS:-Bash,Read,Edit,Write,Glob,Grep,WebSearch,WebFetch}"
   local pause="${RALPH_PAUSE_SECS:-5}"
   local hold_poll="${RALPH_HOLD_POLL_SECS:-30}"
@@ -186,7 +268,7 @@ main() {
   fingerprint="$(cksum <"$self")"
 
   local i=0 idle=0 row status stamp turn_log note prompt agent_status secs rung rung_log
-  local model row_id before progress
+  local model row_id before progress effort role codex_model codex_effort codex_skills
   while [ "$i" -lt "$max" ]; do
     if [ -f STOP ]; then
       log "STOP file present; ending after $i turn(s)"
@@ -200,7 +282,10 @@ main() {
       continue
     fi
     if [ "${RALPH_SKIP_SYNC:-0}" != 1 ]; then
-      git fetch -q origin 2>>ralph.log || log "git fetch failed; working from the last fetch"
+      if ! git fetch -q origin 2>>ralph.log; then
+        log "git fetch failed; the loop stopped"
+        exit 2
+      fi
       if ! git checkout -q main 2>>ralph.log || ! git merge -q --ff-only origin/main 2>>ralph.log; then
         log "cannot return to an up-to-date main; commit or clear the work tree"
         notify "cannot return to an up-to-date main; the loop stopped"
@@ -239,27 +324,53 @@ main() {
     fi
     stamp="$(date -u +%Y%m%dT%H%M%SZ)"
     turn_log=".ralph/iter-${stamp}-$((i + 1)).log"
-    note="You are one turn of the Ralph loop. Work on this row only: ${row}. Follow PROMPT.md."
     row_id="${row%% *}"
+    note="$row_id"
+    prompt+=$'\n\n'"Work on this row only: ${row}. Follow PROMPT.md. The system turn note is its row ID."
     model="$base_model"
-    if [ "$(cat .ralph/escalate 2>/dev/null)" = "$row_id" ]; then
+    effort="$routine_effort"
+    role=routine
+    if [[ "$row" == *"[reasoning]"* ]]; then
+      model="$reasoning_model"
+      effort="$reasoning_effort"
+      role=reasoning
+    elif [ "$(cat .ralph/escalate 2>/dev/null)" = "$row_id" ]; then
       model="$escalate_model"
+      effort="$reasoning_effort"
+      role=reasoning
     fi
+    codex_model="$codex_routine"
+    codex_effort="$codex_routine_effort"
+    if [ "$role" = reasoning ]; then
+      codex_model="$codex_reasoning"
+      codex_effort="$codex_reasoning_effort"
+    fi
+    rm -f .ralph/turn-result.json
     before="$(commit_count)"
-    log "turn $((i + 1))/$max: $row ($model)"
-    run_agent "$claude_bin" -p "$prompt" --model "$model" "${perm[@]}" \
+    log "turn $((i + 1))/$max: $row ($model, effort $effort, role $role)"
+    run_agent "$claude_bin" -p "$prompt" --model "$model" --effort "$effort" "${perm[@]}" \
       --append-system-prompt "$note" --output-format json --disable-slash-commands \
       --strict-mcp-config --tools "$tools" >"$turn_log" 2>&1 </dev/null
     agent_status=$?
     cat "$turn_log" >>ralph.log
+    record_attempt "$row_id" claude "$model" "$effort" "$agent_status" "$turn_log" || exit 2
 
-    if [ "$agent_status" -ne 0 ] && is_limited "$turn_log"; then
+    if [ "$agent_status" -ne 0 ] && { is_limited "$turn_log" || provider_failed "$turn_log"; }; then
       for rung in ${rungs[@]+"${rungs[@]}"}; do
+        if [ "$rung" = deepseek ] && [ "$role" = reasoning ]; then
+          log "skipping third-party fallback for reasoning work"
+          continue
+        fi
+        rm -f .ralph/turn-result.json
         log "usage limit on the agent before; running $rung"
         rung_log="${turn_log%.log}-$rung.log"
         if [ "$rung" = codex ]; then
+          codex_skills="$(codex_skills_off)" || exit 2
           printf '%s\n\n%s\n' "$prompt" "$note" |
-            run_agent "$fallback_bin" --dangerously-bypass-approvals-and-sandbox exec --json --cd "$PWD" - \
+            run_agent "$fallback_bin" --dangerously-bypass-approvals-and-sandbox exec --json --ignore-user-config \
+              --model "$codex_model" -c "model_reasoning_effort=\"$codex_effort\"" \
+              -c 'features.multi_agent=false' -c 'features.multi_agent_v2=false' \
+              -c 'features.plugins=false' -c "$codex_skills" --cd "$PWD" - \
               >"$rung_log" 2>&1
         else
           run_agent env -u ANTHROPIC_API_KEY "${deepseek_settings[@]}" "$claude_bin" -p "$prompt" "${perm[@]}" \
@@ -268,6 +379,11 @@ main() {
         fi
         agent_status=$?
         cat "$rung_log" >>ralph.log
+        if [ "$rung" = codex ]; then
+          record_attempt "$row_id" "$rung" "$codex_model" "$codex_effort" "$agent_status" "$rung_log" || exit 2
+        else
+          record_attempt "$row_id" "$rung" provider-default provider-default "$agent_status" "$rung_log" || exit 2
+        fi
         if rung_limited "$rung" "$agent_status" "$rung_log"; then
           continue
         fi
@@ -281,6 +397,7 @@ main() {
           label=fallback
         fi
         record_turn "$i" "$row_id" "$label" "$agent_status" "$progress" "$rung_log"
+        finish_row "$row_id" "$progress" || exit 2
         sleep "$pause"
         continue 2
       done
@@ -289,7 +406,7 @@ main() {
         secs="$max_sleep"
       fi
       log "usage limit hit; sleeping ${secs}s; this turn does not count"
-      sleep "$secs"
+      bounded_backoff "$secs"
       continue
     fi
 
@@ -307,6 +424,7 @@ main() {
       printf '%s\n' "$row_id" >.ralph/escalate
     fi
     record_turn "$i" "$row_id" "$model" "$agent_status" "$progress" "$turn_log"
+    finish_row "$row_id" "$progress" || exit 2
     sleep "$pause"
   done
   log "loop finished after $i turn(s)"

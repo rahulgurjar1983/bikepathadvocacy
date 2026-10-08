@@ -2,12 +2,14 @@ import argparse
 import ast
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
 
+from gates import ledger
 from gates.common import (
     TEST_ROOTS,
     ToolMissing,
@@ -21,6 +23,7 @@ from gates.common import (
     is_test_path,
     ref_exists,
 )
+from gates.speccov import spec_id_of
 
 OVERLAY_FILES = ("pyproject.toml", "uv.lock", "conftest.py")
 GIT_LOCATION_VARS = (
@@ -36,6 +39,7 @@ PLUGIN_NAME = "redgreen_probe"
 PLUGIN_SOURCE = """
 import json
 import os
+import re
 
 RESULTS = {}
 with open(os.environ["REDGREEN_SELECT"]) as handle:
@@ -263,12 +267,94 @@ def touched_items(
     return touched
 
 
+def proof_request(base: str):
+    branch = os.environ.get("GITHUB_HEAD_REF") or git("branch", "--show-current").strip()
+    match = re.match(r"^loop/([A-Z][0-9]+\.[0-9]+)(?:-|$)", branch)
+    if match is None:
+        return None
+    row = match[1]
+    path = f"artifacts/{row}/proof.json"
+    text = file_at("HEAD", path)
+    head_rows, _ = ledger.parse(file_at("HEAD", "PROGRESS.md") or "")
+    chosen = next((item for item in head_rows if item.ident == row), None)
+    if text is None and (chosen is None or "[proof]" not in chosen.title):
+        return None
+    base_rows, _ = ledger.parse(file_at(base, "PROGRESS.md") or "")
+    original = next((item for item in base_rows if item.ident == row), None)
+    if original is None or "[proof]" not in original.title or chosen is None:
+        raise ValueError("proof: row must be authorised on base")
+    if chosen.title != original.title:
+        raise ValueError("proof: row must be authorised on base")
+    if text is None:
+        raise ValueError("proof: manifest is required")
+    manifest = json.loads(text)
+    if not isinstance(manifest, dict) or manifest.get("row") != row:
+        raise ValueError("proof: manifest names a different row")
+    if manifest.get("base_commit") != git("rev-parse", base).strip():
+        raise ValueError("proof: base commit mismatch")
+    ids = manifest.get("requirement_ids")
+    if not isinstance(ids, list) or not ids or set(ids) != set(chosen.spec_ids):
+        raise ValueError("proof: requirement IDs must match the row")
+    cases = manifest.get("cases")
+    if not isinstance(cases, list) or not cases or len(set(cases)) != len(cases):
+        raise ValueError("proof: case list must match touched items")
+    covered = {spec_id_of(item.rsplit("::", 1)[-1].split("[", 1)[0]) for item in cases}
+    if covered != set(chosen.spec_ids):
+        raise ValueError("proof: cases must cover the row requirements")
+    for line in git("diff", "--name-only", base, "HEAD").splitlines():
+        if line in ("PROGRESS.md", "VERIFICATION.md", "AGENT_NOTES.md"):
+            continue
+        if line.startswith(f"artifacts/{row}/"):
+            continue
+        if not is_test_file(line):
+            raise ValueError(f"proof: forbidden path {line}")
+        before = file_at(base, line)
+        if before is not None:
+            original_tree = ast.parse(before)
+            after = file_at("HEAD", line) or ""
+            after_tree = ast.parse(after)
+            names = {node.name for node in original_tree.body if isinstance(node, ast.FunctionDef)}
+            added = [
+                node
+                for node in after_tree.body
+                if isinstance(node, ast.FunctionDef)
+                and node.name.startswith("test_")
+                and node.name not in names
+            ]
+            if not after.startswith(before) or not added:
+                raise ValueError(f"proof: existing test or fixture changed {line}")
+            after_tree.body = [
+                node
+                for node in after_tree.body
+                if not (
+                    isinstance(node, ast.FunctionDef)
+                    and node.name.startswith("test_")
+                    and node.name not in names
+                )
+            ]
+            if ast.dump(original_tree) != ast.dump(after_tree):
+                raise ValueError(f"proof: existing test or fixture changed {line}")
+    before_rows = {(item.ident, item.title, item.mark) for item in base_rows if item.ident != row}
+    after_rows = {(item.ident, item.title, item.mark) for item in head_rows if item.ident != row}
+    if before_rows != after_rows:
+        raise ValueError("proof: another row changed")
+    return manifest
+
+
 def red(base: str, verbose: bool = False) -> int:
     python = python_bin()
     if not preflight(python):
         return fail_hard("redgreen", f"pytest is required; '{python} -m pytest --version' failed")
+    try:
+        proof = proof_request(base)
+    except (ValueError, TypeError) as error:
+        print(error)
+        return 1
     files = changed_test_files(base)
     if not files:
+        if proof is not None:
+            print("proof: case list must match touched items")
+            return 1
         print("redgreen: nothing to check (no test file changed)")
         return 0
     head_bodies = {name: function_bodies(file_at("HEAD", name) or "") for name in files}
@@ -286,6 +372,13 @@ def red(base: str, verbose: bool = False) -> int:
         base_raw, _, _ = collect(base_tree, sorted(set(files.values())), python)
         base_ids = renamed_ids(base_raw, files)
         touched = touched_items(head_ids, base_ids, head_bodies, base_bodies)
+        if proof is not None:
+            if set(proof["cases"]) != set(touched):
+                print("proof: case list must match touched items")
+                return 1
+            head_work = work / "head-results"
+            head_work.mkdir()
+            head_results = run_items(head_tree, touched, python, head_work)
         if not touched:
             print("redgreen: nothing to check (no new or changed test item)")
             return 0
@@ -298,6 +391,14 @@ def red(base: str, verbose: bool = False) -> int:
         remove_worktree(head_tree)
         remove_worktree(base_tree)
         shutil.rmtree(work, ignore_errors=True)
+    if proof is not None:
+        if any(
+            results.get(item) != "passed" or head_results.get(item) != "passed" for item in touched
+        ):
+            print("proof: cases must pass on base and head")
+            return 1
+        print(f"proof: {len(touched)} case(s) pass on base and head")
+        return 0
     red_items, fake, unknown = judge(touched, results)
     if verbose:
         for item in red_items:
