@@ -1,8 +1,8 @@
 import pytest
-from bikeplan.review import route_figures
 
 from bikeplan.config import load_profile, load_region
 from bikeplan.network import build
+from bikeplan.review import route_figures
 from bikeplan.route import read_route
 from tests.route_helpers import REGION, SNAPSHOT, corner_route, densify, lonlat, write_gpx_track
 
