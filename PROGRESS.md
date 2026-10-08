@@ -74,7 +74,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 - [x] **P6.2** Robust flag and disruption counts (FR-6.4, FR-6.5)
 - [x] **P6.3** Rescoring and choosing the fix; the six worked cases pass (FR-6.6, FR-6.7, FR-6.9)
 - [x] **P6.4** Junction fixes and `bikeplan fit summary` (FR-6.8, FR-6.10)
-- [ ] **P6.5** Separated lanes first: where one fits, it wins over a 30 km/h quiet street; a quiet street is the fallback, marked as needing speed approval (FR-6.11)
+- [x] **P6.5** Separated lanes first: where one fits, it wins over a 30 km/h quiet street; a quiet street is the fallback, marked as needing speed approval (FR-6.11)
 
 ## Phase 7: Access
 

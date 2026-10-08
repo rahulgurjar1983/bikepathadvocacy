@@ -665,3 +665,13 @@ uv run bikeplan width summary regions/au-nsw-bayside.yaml --snapshot data/cache/
 
 Expect: The tests pass. The Bayside snapshot holds `parcels.gpkg` with 170084 lots, fetched in 642 requests, and `bikeplan snapshot verify` lists it as ok. The summary prints `reserve low 302.712` and `reserve very low 39.133`, so 341.845 km of street now take their width from the measured reserve, where the run before had none. The file is on the snapshot release `snapshot-au-nsw-bayside-2026-10-01`; its sha256 is in the manifest entry.
 Artifact: `artifacts/P11.1/width_summary.txt`, `artifacts/P11.1/parcels_manifest.json`
+
+### P6.5
+
+```bash
+uv run pytest tests/test_fit_separation.py tests/test_fit_choice.py -q
+uv run python -I artifacts/P6.5/demo.py | tee artifacts/P6.5/choices.txt
+```
+
+Expect: The tests pass. A 14 m and a 12 m parked residential street get `cycleway_in_spare` and `cycleway_parking_one_side` with no speed approval. A 7 m street with no room for a separated fix gets `quietway`, `True`, and `Transport for NSW` for `au-nsw`, or `the road authority that sets speed limits` for `generic`.
+Artifact: `artifacts/P6.5/choices.txt`
