@@ -55,8 +55,21 @@ These are hand-worked and must be tests. Lane minimum 3.0 m, parking 2.1 m, one-
 | FR-6.8 | At each junction where crossing stress keeps a leg from AAA, the junction fix is a `refuge` when Mineta table 8 then gives LTS 1, otherwise `signals`. Disruption is one refuge or one signal. | MUST |
 | FR-6.9 | Each result keeps the cross-section before and after the fix as strips, for spec 09 to draw. | MUST |
 | FR-6.10 | `bikeplan fit summary <region file> --snapshot <dir>` prints the km of street per chosen fix, the km that is `no_fit`, and the share of fits that are `robust`. | MUST |
+| FR-6.11 | When the profile sets `fit.prefer_separation`, a fix that gives bikes their own space kept apart from cars (a cycleway in spare width, a cycleway made by removing parking, a road diet, or a verge path) and passes FR-6.6 is chosen over `quietway`, whatever their disruption scores. Among those, FR-6.7 picks the least disruptive. `quietway` is chosen only when no separated fix fits, and it is marked `needs_speed_approval` with the body the profile names (`au-nsw`: Transport for NSW). Both shipped profiles set `prefer_separation` to true, as an assumption: a council can build a separated lane on its own local roads, but it cannot set a 30 km/h limit alone. | MUST |
 
-## 7. Test plan
+## 7. ## Fit settings in each profile
+
+FR-6.11 reads these keys. The profile tests of spec 01 leave them out; the fit tests check them.
+
+| Profile | Key | Value | Source |
+|---------|-----|-------|--------|
+| `au-nsw` | `fit.prefer_separation` | true | assumption: a council can build a separated lane on its own local roads, but a 30 km/h limit needs Transport for NSW approval (NSW Speed Zoning Guidelines) |
+| `au-nsw` | `fit.speed_approval_body` | Transport for NSW | NSW Speed Zoning Guidelines |
+| `generic` | `fit.prefer_separation` | true | assumption: separated lanes are within a local road authority's powers in most places, and speed limits often are not |
+| `generic` | `fit.speed_approval_body` | the road authority that sets speed limits | assumption |
+
+
+Test plan
 
 | Spec ID | What the tests show |
 |---------|---------------------|
@@ -70,6 +83,7 @@ These are hand-worked and must be tests. Lane minimum 3.0 m, parking 2.1 m, one-
 | FR-6.8 | A crossing of a 4-lane 40 km/h road gets a refuge (table 8 gives LTS 1); a crossing of a 4-lane 60 km/h road gets signals; a crossing of a 2-lane 50 km/h road needs no fix (table 7 already gives LTS 1) |
 | FR-6.9 | The after strips show the cycleway and separator in the right place |
 | FR-6.10 | The summary on a fixture prints the expected km |
+| FR-6.11 | A wide street where a cycleway fits in spare width gets the cycleway, not `quietway`; a narrow street where nothing separated fits gets `quietway` with `needs_speed_approval`; with `prefer_separation` false the least disruptive fix wins as before |
 
 ## 8. Validation evidence
 

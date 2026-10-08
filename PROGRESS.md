@@ -53,6 +53,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 - [x] **P5.1** Lane-based and tag-based widths, with range checks (FR-5.1, FR-5.2, FR-5.7)
 - [x] **P5.2** Road reserve measured from parcels (FR-5.3, FR-5.4)
 - [x] **P5.3** Width fusion, check links and `bikeplan width summary` (FR-5.5, FR-5.6, FR-5.8)
+- [ ] **P11.1** NSW cadastre parcels and measured Bayside reserves (FR-10.1, FR-10.2, FR-10.8); moved up on 2026-10-08 so wide streets show their real width before projects are picked
 
 ## Phase R: Public report (ships with every release)
 
@@ -73,6 +74,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 - [x] **P6.2** Robust flag and disruption counts (FR-6.4, FR-6.5)
 - [x] **P6.3** Rescoring and choosing the fix; the six worked cases pass (FR-6.6, FR-6.7, FR-6.9)
 - [x] **P6.4** Junction fixes and `bikeplan fit summary` (FR-6.8, FR-6.10)
+- [ ] **P6.5** Separated lanes first: where one fits, it wins over a 30 km/h quiet street; a quiet street is the fallback, marked as needing speed approval (FR-6.11)
 
 ## Phase 7: Access
 
@@ -80,6 +82,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 - [x] **P7.2** Snapping, and homes from population units (FR-7.3, FR-7.4, FR-7.9)
 - [x] **P7.3** Any-route reach and safe reach (FR-7.5, FR-7.6)
 - [x] **P7.4** Scores and `bikeplan access`; the Bayside baseline as the artifact (FR-7.7, FR-7.8)
+- [ ] **P7.5** The last-leg allowance: a trip may start on up to `last_leg_m` (default 200 m) of calm local street from home (FR-7.11, FR-1.13)
 
 ## Phase 8: Propose
 
@@ -118,7 +121,6 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 
 ## Phase 11: Australian adapters
 
-- [ ] **P11.1** NSW cadastre parcels and measured Bayside reserves (FR-10.1, FR-10.2, FR-10.8)
 - [ ] **P11.2** NSW road segment function and lanes set ADT (FR-10.3)
 - [ ] **P11.3** TfNSW speed zones (FR-10.4, FR-10.9)
 - [ ] **P11.4** TfNSW crash counts on project sheets (FR-10.5)
