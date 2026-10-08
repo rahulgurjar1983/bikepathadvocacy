@@ -73,7 +73,8 @@ def rounded_coordinates(value, places: int = 7):
 
 
 def dump(data) -> bytes:
-    return (json.dumps(canon(data), sort_keys=True, indent=2) + "\n").encode()
+    saved = data if isinstance(data, dict) and "scenarios" in data else canon(data)
+    return (json.dumps(saved, sort_keys=True, indent=2) + "\n").encode()
 
 
 def collection(features: list[dict], places: int = 7) -> dict:

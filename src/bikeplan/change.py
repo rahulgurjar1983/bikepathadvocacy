@@ -292,13 +292,13 @@ def change_scripts(frontier: dict) -> str:
     )
 
 
-def capped_note(chosen: dict) -> str:
-    if not chosen.get("cap_reached"):
+def capped_note(chosen: dict, note_id: str = "change-capped") -> str:
+    if not chosen.get("truncated"):
         return ""
     return (
-        '<p id="change-capped">The curve reached its cap of '
-        f"{len(chosen['picks']) - 1} projects while my stop was still on its last project, "
-        "so more projects were left out.</p>"
+        f'<p id="{html.escape(note_id)}">The {html.escape(chosen["label"])} curve reached '
+        f"its cap of {chosen['evaluated_projects']} projects. The curve is cut short, "
+        "even if the recommended stop is earlier. More picks may be possible.</p>"
     )
 
 
@@ -317,12 +317,21 @@ def change_section(frontier: dict, by_id: dict) -> str:
         '<section id="change"><h2>How much change?</h2>'
         '<p id="change-why">The slider opens at my recommended stop for the '
         f"{html.escape(chosen['label'])} scenario: {link(by_id['F13'])}. I stop there because "
-        "each project after it gains less access for each point of disruption than a set share "
-        "of what my first project gained. The fixes up to that stop change "
+        "I divide each pick's gain by its cost plus one. I compare that ratio with the "
+        "best ratio so far, including this pick. I mark the last rank whose ratio is at least "
+        f"<code>{chosen['recommend_ratio']}</code> times that best ratio. I use full precision, "
+        "before rounding the values shown here. A later pick can meet the rule again. "
+        "The fixes up to that stop change "
         f"{link(by_id['F11'])} of street. Move the slider to see the cost of doing less or "
         "more.</p>"
-        f"{capped_note(chosen)}"
-        f"<fieldset><legend>Scenario</legend>{radios}</fieldset>"
+        + "".join(
+            capped_note(
+                item,
+                "change-capped" if item["id"] == chosen["id"] else f"change-capped-{item['id']}",
+            )
+            for item in frontier["scenarios"]
+        )
+        + f"<fieldset><legend>Scenario</legend>{radios}</fieldset>"
         '<p><label for="change-slider">How much change</label> '
         f'<input type="range" id="change-slider" min="0" max="{len(chosen["picks"]) - 1}" '
         f'value="{stop}" step="1" disabled> <output id="change-step"></output></p>'
