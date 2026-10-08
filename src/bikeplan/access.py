@@ -35,6 +35,8 @@ AMENITY_TYPES = {
 }
 SNAP_M = 300.0
 HOME_HIGHWAYS = {"residential", "living_street", "unclassified"}
+LEG_BATCH = 256
+LEG_HIGHWAYS = HOME_HIGHWAYS | {"service"}
 AGED_CARE_KINDS = {"nursing_home", "assisted_living"}
 
 
@@ -278,6 +280,37 @@ def masked_matrix(table: EdgeTable, mask: np.ndarray) -> csr_array:
     )
 
 
+def with_legs(runs: np.ndarray, legs: coo_array) -> np.ndarray:
+    starts = np.flatnonzero(np.r_[True, legs.row[1:] != legs.row[:-1]])
+    homes = legs.row[starts]
+    joined = np.minimum.reduceat(runs[:, legs.col] + legs.data, starts, axis=1)
+    out = runs.copy()
+    out[:, homes] = np.minimum(runs[:, homes], joined)
+    return out
+
+
+def last_legs(graph, scores: dict, homes: list, leg_m: float, table: EdgeTable | None = None):
+    if not leg_m or not homes:
+        return None
+    table = table or edge_table(graph)
+    hot = {node for (u, v, _), item in scores.items() if item["lts"] >= 3 for node in (u, v)}
+    allowed = {
+        key
+        for key, item in scores.items()
+        if item["lts"] <= 2 and key[0] not in hot and highways(graph.edges[key]) & LEG_HIGHWAYS
+    }
+    matrix = masked_matrix(table, allowed_mask(table, allowed)).T.tocsr()
+    sources = np.array([table.index[node] for node in homes])
+    parts = []
+    for start in range(0, len(sources), LEG_BATCH):
+        batch = sources[start : start + LEG_BATCH]
+        runs = dijkstra(matrix, directed=True, indices=batch, limit=leg_m)
+        rows, cols = np.nonzero(np.isfinite(runs))
+        parts.append((batch[rows], cols, runs[rows, cols]))
+    rows, cols, data = (np.concatenate(item) for item in zip(*parts, strict=True))
+    return coo_array((data, (rows, cols)), shape=(len(table.nodes),) * 2)
+
+
 def safe_reach(
     table: EdgeTable,
     withins: list[dict],
@@ -285,10 +318,13 @@ def safe_reach(
     reach_m: float,
     detour_max: float,
     aaa: set,
+    legs: coo_array | None = None,
 ) -> list[Reach]:
     columns = [table.index[source] for source in sources]
     matrix = masked_matrix(table, allowed_mask(table, aaa))
     runs = dijkstra(matrix, directed=True, indices=columns, limit=reach_m)
+    if legs is not None:
+        runs = with_legs(runs, legs)
     return [
         Reach(
             within,
@@ -309,6 +345,7 @@ def reach(
     detour_max: float,
     aaa: set,
     table: EdgeTable | None = None,
+    legs: coo_array | None = None,
 ) -> list[Reach]:
     table = table or edge_table(graph)
     columns = [table.index[source] for source in sources]
@@ -317,7 +354,7 @@ def reach(
     withins = [
         {table.nodes[n]: float(row[n]) for n in np.flatnonzero(np.isfinite(row))} for row in runs
     ]
-    return safe_reach(table, withins, sources, reach_m, detour_max, aaa)
+    return safe_reach(table, withins, sources, reach_m, detour_max, aaa, legs)
 
 
 def score_access(people: dict, placed: list, results: list[Reach], weights: dict) -> dict:
@@ -385,9 +422,18 @@ def write_access(graph, region, profile, snapshot: str | Path, out: str | Path) 
     out = Path(out)
     to_degrees = Transformer.from_crs(graph.graph["crs"], 4326, always_xy=True)
     kept, nodes, missed, placed, resident, weights = scene(graph, region, snapshot)
-    aaa = {key for key, item in score_edges(graph, profile).items() if item["aaa"]}
+    edge_scores = score_edges(graph, profile)
+    aaa = {key for key, item in edge_scores.items() if item["aaa"]}
+    table = edge_table(graph)
+    legs = last_legs(graph, edge_scores, sorted(resident.people), region.access.last_leg_m, table)
     results = reach(
-        graph, [node for _, node in placed], region.access.reach_m, region.access.detour_max, aaa
+        graph,
+        [node for _, node in placed],
+        region.access.reach_m,
+        region.access.detour_max,
+        aaa,
+        table,
+        legs,
     )
     scored = score_access(resident.people, placed, results, weights)
     out.mkdir(parents=True, exist_ok=True)

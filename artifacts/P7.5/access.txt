@@ -1,0 +1,1 @@
+{"score":0.6,"types":{"school":0.5,"college":0.6,"university":0.0,"aged_care":0.2,"library":0.3,"town_centre":0.1,"station":0.5}}
