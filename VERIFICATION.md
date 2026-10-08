@@ -587,6 +587,18 @@ jq '.[0:10] | map({rank, name, gain, score_after})' "$OUT/projects.json"
 Expect: The tests pass. With the shipped region file (`min_gain` 0.05) the run prints `projects 4` and `score_after 0.947908`, and takes about 4 minutes 15 seconds, inside NFR-3. The three files `projects.json`, `projects.csv` and `projects.geojson` are written. P8.6 proves the same file end to end.
 Artifact: `artifacts/P8.4/projects.json`
 
+### P8.7
+
+```bash
+uv run pytest tests/test_propose_frontier.py -q
+OUT=$(mktemp -d)/out
+/usr/bin/time -v uv run bikeplan propose regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out "$OUT"
+jq -c '.scenarios[] | {id, recommended_stop, picks: (.picks | length)}' "$OUT/frontier.json"
+```
+
+Expect: The tests pass. The run writes `frontier.json` with the scenarios `light`, `shipped` and `heavy`, each with 60 picks and a `recommended_stop`. The wall clock time is under 30 minutes (23:26 on this host) and the peak memory is under 6 GB (1.85 GB). `projects.json` is the same as before.
+Artifact: `artifacts/P8.7/frontier-summary.json`
+
 ### P9.1
 
 ```bash
