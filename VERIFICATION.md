@@ -599,6 +599,39 @@ jq -c '.scenarios[] | {id, recommended_stop, picks: (.picks | length)}' "$OUT/fr
 Expect: The tests pass. The run writes `frontier.json` with the scenarios `light`, `shipped` and `heavy`, each with 60 picks and a `recommended_stop`. The wall clock time is under 30 minutes (23:26 on this host) and the peak memory is under 6 GB (1.85 GB). `projects.json` is the same as before.
 Artifact: `artifacts/P8.7/frontier-summary.json`
 
+### P10.1
+
+The prior runs matched. This row stays open: the Bayside tests pass on the base
+code, so the red-green rule needs an input fix before they can ship. The old
+temp run files are gone; use the command below to build a new pair.
+
+Run from the repo root with the shipped region files:
+
+```bash
+set -euo pipefail
+uv run --frozen bikeplan snapshot pull snapshots/au-nsw-bayside/2026-10-01/manifest.json
+OUT=$(mktemp -d)
+for region in test-grid au-nsw-bayside; do
+  snapshot=tests/fixtures/test-grid/snapshot
+  if [ "$region" = au-nsw-bayside ]; then
+    snapshot=data/cache/au-nsw-bayside/2026-10-01
+  fi
+  for seed in 1 2; do
+    PYTHONHASHSEED=$seed uv run --frozen bikeplan run "regions/$region.yaml" --snapshot "$snapshot" --out "$OUT/$region/$seed"
+    uv run --frozen bikeplan verify "$OUT/$region/$seed"
+    (cd "$OUT/$region/$seed" && sha256sum -c outputs.sha256)
+  done
+  diff -rq "$OUT/$region/1" "$OUT/$region/2"
+done
+cmp "$OUT/test-grid/1/outputs.sha256" artifacts/P10.1/test-grid.outputs.sha256
+cmp "$OUT/au-nsw-bayside/1/outputs.sha256" artifacts/P10.1/bayside.outputs.sha256
+```
+
+Expect: Both pairs match byte for byte. Each hash and verify check passes.
+The sums match the saved files for the same code and inputs.
+
+Artifact: `artifacts/P10.1/test-grid.outputs.sha256`, `artifacts/P10.1/bayside.outputs.sha256`, `artifacts/P10.1/check.txt`, `artifacts/P10.1/main-audit.txt`
+
 ### P8.8
 
 ```bash

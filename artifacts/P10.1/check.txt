@@ -1,0 +1,5 @@
+Command: uv run --frozen pytest tests/test_run.py::test_fr11_5_two_test_grid_runs_give_the_same_hash_file tests/test_run.py::test_fr9_2_two_runs_give_the_same_bytes tests/test_run_bayside.py -q
+Result: 4 passed in 3750.77s (1:02:30)
+Base commit: ec169f8b57d7676740650a8068d54f367a0d912d (origin/main)
+Test-grid outputs: test-grid.outputs.sha256
+Bayside outputs: bayside.outputs.sha256

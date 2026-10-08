@@ -120,7 +120,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 
 ## Phase 10: End to end
 
-- [ ] **P10.1** Two runs match byte for byte, for the test grid and for Bayside (FR-11.5, NFR-1)
+- [ ] **P10.1** 👤 (needs a gate path for proof tests that pass on base code; see BLOCKED in AGENT_NOTES.md) Two runs match byte for byte, for the test grid and for Bayside (FR-11.5, NFR-1)
 - [ ] **P10.2** `scripts/e2e.sh` runs Bayside end to end within the time and memory limits; the operator then adds the CI `e2e` job (FR-11.7, NFR-3)
 - [ ] **P10.3** Cambridge snapshots, runs and verifies with no code change (FR-11.8, NFR-6)
 - [ ] **P10.4** `bikeplan region new` and legal default speeds by country, so any council or city can start from one command (FR-1.11, FR-1.12)

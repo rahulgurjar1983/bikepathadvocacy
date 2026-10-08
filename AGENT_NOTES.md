@@ -19,10 +19,12 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 ## Spec issues
 
 - `gates/tests/test_loop.py::test_fr0_13_usage_limit_turn_is_not_counted` times out after 60 seconds on `origin/main` too. Proof: `git checkout origin/main && uv run pytest gates/tests/test_loop.py -q -k usage_limit`. The pre-push hook still let the push through.
+- P10.1: fresh `origin/main` still has the base commit in `artifacts/P10.1/check.txt`. The grid tests pass there; see the command and result in `artifacts/P10.1/main-audit.txt`. The prior Bayside tests also passed on that base, so the red-green rule bars them. The old temp run files are now gone; the committed hashes are a past record, not a fresh byte check. Keep the row open and held until the operator fixes the rule and gate. Copy run proof out of pytest temp paths before a later test run clears them.
 
 
 ## BLOCKED
 
+- P10.1: Operator ask: add a rule and gate path for proof rows whose real tests pass on base code. The loop cannot edit `PROMPT.md` or `gates/redgreen.py`. Fresh base proof is in `artifacts/P10.1/main-audit.txt`; the gate marks a passing result as fake. Once that input fix ships, clear the hold and run the saved Bayside tests. Do not change code just to make a test fail.
 - V1.7: I could not find the public RideWithGPS track for CycleSydney Ride 22. The wiki page for the ride (`cyclesydney.wiki/sutherland/`) sends the reader on to other domains: `syd.lat`, then `nisdy.online`, then `sdy005.cyou`. I did not follow the third one, since it looks like a hijacked redirect. The ask: send the `ridewithgps.com/routes/<number>` link for Ride 22, or its GPX file, and the exact quotes you want judged. Put the GPX in `data/private/ride22/` and the claims in `data/private/ride22/claims.yaml`. Also check that `data/private/` is in `.gitignore`; it is not now.
 - `boundary_geojson` joins relation ways into rings in plain Python, because shapely is not in the offline lock. `fetch_boundary` stores the raw reply only while it checks it, so an open relation leaves no file. The network query asks for XML; gzip is the job of the fetch command row.
 - `fetch_snapshot` in `src/bikeplan/snapshot.py` runs each adapter from the `ADAPTERS` dict as `adapter(region, box, out_dir)` and expects a list of `ManifestEntry` with `path` relative to the out dir. `kontur_population` is now in it.
