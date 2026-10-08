@@ -66,7 +66,7 @@ class Proposals:
     min_gain: float
     metres_per_point: float
     disruption_weights: DisruptionWeights
-    frontier_max_projects: int = 60
+    frontier_max_projects: int = 150
     recommend_ratio: float = 0.25
     scenarios: tuple = ()
 
@@ -312,7 +312,7 @@ class Reader:
                     for name in (f.name for f in dataclasses.fields(DisruptionWeights))
                 )
             ),
-            self.whole(data.get("frontier_max_projects", 60), "proposals.frontier_max_projects"),
+            self.whole(data.get("frontier_max_projects", 150), "proposals.frontier_max_projects"),
             self.number(data.get("recommend_ratio", 0.25), "proposals.recommend_ratio"),
             self.scenarios(data.get("scenarios", []), weight_names),
         )
