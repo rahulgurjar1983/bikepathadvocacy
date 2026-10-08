@@ -76,6 +76,13 @@ fit:
   speed_approval_body:
     value: the road authority that sets speed limits
     source: 'assumption: the body that sets speed limits differs by place'
+grade:
+  steep_pct:
+    value: 5
+    source: AASHTO Guide for the Development of Bicycle Facilities (2012), grades steeper than 5 percent are hard to ride
+  min_length_m:
+    value: 100
+    source: 'assumption: a climb under 100 m is over before it tires most riders'
 crossing:
   refuge_min_m:
     value: 1.8

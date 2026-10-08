@@ -76,6 +76,13 @@ fit:
   speed_approval_body:
     value: Transport for NSW
     source: NSW Speed Zoning Guidelines
+grade:
+  steep_pct:
+    value: 5
+    source: AASHTO Guide for the Development of Bicycle Facilities (2012), grades steeper than 5 percent are hard to ride
+  min_length_m:
+    value: 100
+    source: 'assumption: a climb under 100 m is over before it tires most riders'
 crossing:
   refuge_min_m:
     value: 1.8

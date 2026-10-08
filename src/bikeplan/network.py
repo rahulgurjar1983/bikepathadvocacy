@@ -365,6 +365,10 @@ def build(snapshot: str | Path, region: Region, profile: Profile) -> nx.MultiDiG
         from bikeplan.width import set_reserves
 
         set_reserves(graph, folder / "parcels.gpkg", crs)
+    if (folder / "elevation.tif").is_file():
+        from bikeplan.elevation import set_grades
+
+        set_grades(graph, folder / "elevation.tif")
     return graph
 
 

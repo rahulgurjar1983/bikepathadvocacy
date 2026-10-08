@@ -148,6 +148,12 @@ class Crossing:
 
 
 @dataclass(frozen=True)
+class Grade:
+    steep_pct: Num
+    min_length_m: Num
+
+
+@dataclass(frozen=True)
 class RoadClass:
     speed_kmh: Num
     adt: Num
@@ -166,6 +172,7 @@ class Profile:
     quietway: Quietway
     fit: Fit
     crossing: Crossing
+    grade: Grade
     road_classes: dict[str, RoadClass]
     implicit_speeds: dict[str, Num]
 
@@ -413,6 +420,7 @@ def load_profile(id: str, directory: str | Path | None = None) -> Profile:
         reader.group(data["quietway"], "quietway", Quietway),
         reader.fit(data["fit"]),
         reader.group(data["crossing"], "crossing", Crossing),
+        reader.group(data["grade"], "grade", Grade),
         reader.road_classes(data["road_classes"]),
         reader.implicit_speeds(data["implicit_speeds"]),
     )
