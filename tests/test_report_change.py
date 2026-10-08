@@ -179,3 +179,61 @@ def test_fr13_15_the_chart_has_a_title_and_a_table(built):
     assert re.search(r'<svg id="change-chart"[^>]*role="img"', section)
     assert re.search(r"<title[^>]*>[^<]+</title>", section)
     assert 'data-for="change-chart"' in section
+
+
+PLACES = {"score": 1, "disruption": 1, "parking_spaces": 0, "lane_km": 3, "speed_km": 3}
+
+
+def places(key):
+    if key.startswith("people."):
+        return 0
+    if key.startswith("km."):
+        return 3
+    return PLACES[key]
+
+
+def test_fr9_2_people_in_the_totals_are_whole_numbers(built):
+    html = (built / "report.html").read_text()
+    section = re.search(r'<section id="change".*?</section>', html, re.S).group(0)
+    cells = re.findall(r'data-total="(people\.[a-z_]+)">([^<]*)<', section)
+    assert cells
+    assert all(re.fullmatch(r"\d+", text) for _, text in cells)
+
+
+def test_fr9_2_moving_the_slider_shows_rounded_totals(browser, frontier):
+    chosen = scenario(frontier, "shipped")
+    for step in (0, 1, len(chosen["picks"]) - 1):
+        move(browser, step)
+        for item in browser.find_elements(By.CSS_SELECTOR, "#change-totals [data-total]"):
+            key = item.get_attribute("data-total")
+            want = f"{step_value(chosen['picks'][step], key):.{places(key)}f}"
+            assert item.text == want
+
+
+def section_of(built, name):
+    html = (built / "report.html").read_text()
+    return re.search(rf'<section id="{name}".*?</section>', html, re.S).group(0)
+
+
+def test_fr9_2_people_in_the_projects_table_are_whole_numbers(built):
+    row = re.search(r"<tbody><tr>(.*?)</tr>", section_of(built, "projects"), re.S).group(1)
+    cells = re.findall(r"<code>([^<]*)</code>", row)
+    assert re.fullmatch(r"\d+", cells[-1])
+
+
+def test_fr9_2_people_in_the_summary_are_whole_numbers(built):
+    summary = section_of(built, "summary")
+    people = summary.split("People who gain safe reach, by place type")[1]
+    cells = re.findall(r"<code>([^<]*)</code>", people)
+    counts = cells[1::2]
+    assert counts
+    assert all(re.fullmatch(r"\d+", text) for text in counts)
+
+
+def test_fr9_2_people_in_a_project_sheet_are_whole_numbers(built):
+    html = (built / "report.html").read_text()
+    sheet = re.search(r"<article id=\"project-.*?</article>", html, re.S).group(0)
+    people = sheet.split("<th>Place type</th><th>People</th>")[1]
+    counts = re.findall(r"<code>([^<]*)</code>", people)[1::2]
+    assert counts
+    assert all(re.fullmatch(r"\d+", text) for text in counts)
