@@ -177,5 +177,5 @@ def test_fr13_15_the_chart_has_a_title_and_a_table(built):
     html = (built / "report.html").read_text()
     section = re.search(r'<section id="change".*?</section>', html, re.S).group(0)
     assert re.search(r'<svg id="change-chart"[^>]*role="img"', section)
-    assert "<title>" in section
+    assert re.search(r"<title[^>]*>[^<]+</title>", section)
     assert 'data-for="change-chart"' in section
