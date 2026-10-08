@@ -34,6 +34,8 @@ Look at every trip from a home to a place that has no safe route today. Find the
 | FR-8.10 | The same inputs give the same projects in the same order, byte for byte. | MUST |
 | FR-8.11 | Besides route fixes, the candidate pool holds two larger kinds of project. A neighbourhood project takes one cell of streets bounded by level 3 or 4 roads and the region boundary: every local street in it gets its least disruptive fix, and each place where its routes meet the edge gets the junction fix of spec 06. A corridor project is a separated cycleway, road diet or verge path along one unbroken run of a main road between two cells, where the fix fits. Each is scored with exact gains like any other candidate, and the report says how many of each kind were picked. | MUST |
 | FR-8.12 | With the region file as shipped, the Bayside run gives at least one project, and the score after the last project is above the score before. A proof never edits the region file, a profile or a threshold to get a result. If the shipped settings give no project, the row stays open and the problem goes to the spec issues. | MUST |
+| FR-8.13 | Besides the shipped pick list, `bikeplan propose` writes `frontier.json`: the greedy picks carried on past `min_gain`, until `proposals.frontier_max_projects` (default 60) or until no candidate gains anything. After each pick it records the running totals: the weighted disruption score, parking spaces, traffic-lane km, speed-change km, signals, refuges and km of each fix, and the access score and the people gaining safe reach by place type. | MUST |
+| FR-8.14 | `frontier.json` holds one such curve per scenario. A scenario scales the disruption weights. The region file may list scenarios under `proposals.scenarios`, each with an `id`, a plain `label` and a scale per weight; with none listed there are three: `light` (parking and lanes count half), `shipped` (the weights as set) and `heavy` (parking and lanes count four times). The run also marks a recommended stop on each curve: the last pick whose access gain per point of disruption is at least `proposals.recommend_ratio` (default 0.25) times that of the first pick. Building all scenarios for Bayside takes at most 30 minutes and 6 GB on a 2-core CI runner. | MUST |
 
 ## 5. Test plan
 
@@ -53,6 +55,8 @@ Tests use hand-made graphs where the best pick can be worked out by hand.
 | FR-8.10 | Two runs give byte-identical files |
 | FR-8.11 | On the test grid, a neighbourhood project whose single route fixes each gain less than `min_gain` is picked, with a gain above `min_gain`; a corridor project is made only where its fix fits |
 | FR-8.12 | The Bayside validation run with the shipped region file writes at least one project and a higher score after; `bikeplan verify` fails a run with candidates but no project |
+| FR-8.13 | On the test grid the curve goes past `min_gain`, stops at the cap or when gains reach zero, and each running total equals the sum of the picks so far |
+| FR-8.14 | Three default scenarios exist; a heavier parking scale moves a parking-removal project later in its curve; the recommended stop follows the ratio rule; the Bayside build time and memory are logged and within the limit |
 
 ## 6. Validation evidence
 
