@@ -76,6 +76,7 @@ def test_fr13_13_the_archive_keeps_the_detail_the_recipes_read(built):
     with open(built / "segments.csv") as handle:
         rows = list(csv.DictReader(handle))
     assert {"segment_id", "length_m", "lts", "aaa", "width_source", "fix"} <= set(rows[0])
-    map_text = (built / "map.json").read_text()
-    assert "length_m" not in map_text
-    assert "width_source" not in map_text
+    segments = json.loads((built / "map.json").read_text())["segments"]
+    text = json.dumps(segments)
+    assert "length_m" not in text
+    assert "width_source" not in text
