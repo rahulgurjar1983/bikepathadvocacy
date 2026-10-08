@@ -122,8 +122,8 @@ def test_fr9_3_the_data_is_inlined_as_json(page, out):
     summary = json.loads((out / "summary.json").read_text())
     assert data["summary"] == summary
     assert len(data["projects"]) == 1
-    assert data["network"]["type"] == "FeatureCollection"
-    assert data["places"]["type"] == "FeatureCollection"
+    assert "network" not in data
+    assert "places" not in data
     assert data["project_shapes"]["type"] == "FeatureCollection"
 
 
