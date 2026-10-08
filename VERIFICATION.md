@@ -889,3 +889,16 @@ grep -o 'data-total="people[^<]*<' "$OUT/report.html"
 
 Expect: all `fr9_2` tests pass; the people counts in the totals, the summary, the ranked table and the project sheets are whole numbers; scores and disruption show one place; moving the slider shows the same rounding.
 Artifact: `artifacts/R1.14/check.txt`
+
+
+### S0.5
+
+```bash
+uv run --frozen pytest gates/tests/test_release_tag.py gates/tests/test_inputs.py gates/tests/test_loop.py gates/tests/test_proof_rows.py gates/tests/test_redgreen.py gates/tests/test_ledger.py -q
+uv run --frozen pytest tests/test_release.py -q -k 'copies or copied or another_commit or voice_file'
+bash -n loop.sh scripts/release.sh
+git check-ignore data/private/probe.gpx
+```
+
+Expect: all focused tests pass. Proof needs a prior row tag, exact base, case IDs and passing cases on both trees. Model and effort reach each CLI. Three stalls advance the row; a CI wait does not. A known blocker logs its reason. Reuse uploads to the new tag only. Private paths are ignored. CI runs every test before this row merges.
+Artifact: `artifacts/S0.5/check.txt`

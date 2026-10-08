@@ -112,3 +112,11 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 - Report number format lives in `change.places` and `change.js` `places`; keep both in step. The test grid has round numbers, so a rounding test must use people counts, which show as `750.0` before the fix.
 - P8.8: the cap note appears only when the recommended stop is the last generated pick. The report test copies the test-grid region to a temporary file and lowers its cap to reach that case.
+
+
+## Review input repairs (2026-10-09)
+
+- Spec 15 and Q1/Q2 cover the review. Each row has tests and real proof to save. Old done rows do not prove the new rules.
+- P10.1 is a proof row now. Use the narrow path in PROMPT.md; keep the tool unchanged and save fresh full-region proof. Past hash lists are not fresh output files.
+- The release failure for PR 103 reused the requested tag while scanning old releases. FR-0.31 fixes this in the operator inputs and protects scripts/release.sh from loop edits. Never upload new assets to an old tag.
+- Per-attempt model logs are separate from usage.csv. The installed service pins IDs and effort. A provider limit is not a stalled task.
