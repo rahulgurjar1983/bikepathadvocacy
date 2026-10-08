@@ -20,6 +20,7 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 - `gates/tests/test_loop.py::test_fr0_13_usage_limit_turn_is_not_counted` times out after 60 seconds on `origin/main` too. Proof: `git checkout origin/main && uv run pytest gates/tests/test_loop.py -q -k usage_limit`. The pre-push hook still let the push through.
 - P10.1: `git worktree add --detach /tmp/bikepath-p10.1-main origin/main` confirmed fresh main at `ec169f8b57d7676740650a8068d54f367a0d912d`. On that same commit, `uv run --frozen pytest tests/test_run.py::test_fr11_5_two_test_grid_runs_give_the_same_hash_file tests/test_run.py::test_fr9_2_two_runs_give_the_same_bytes tests/test_run_bayside.py -q` passed all four checks. The test file adds no code change, so it also passes on the base and the red-green gate rejects it. This verification-only row needs a rule for retaining a real test when the current code already meets the requirement.
+- P10.1 follow-up: fresh main is still the commit in `artifacts/P10.1/check.txt`. The fresh worktree grid checks pass; the saved Bayside files still match their hashes. See `artifacts/P10.1/main-audit.txt` and the P10.1 rebuild command in `VERIFICATION.md`. Operator ask: add a rule and gate path for proof rows whose real tests pass on base code. Keep P10.1 open until that path can retain the Bayside tests. Do not add a needless code change to force a red test.
 
 
 ## BLOCKED
