@@ -20,6 +20,19 @@ fallback_limited() {
     grep -qiE 'hit your[[:alnum:][:space:]-]{0,16}limit|usage limit|limit (reached|exceeded)|reached your[[:alnum:][:space:]-]{0,16}limit|at capacity|rate limit'
 }
 
+provider_failed() {
+  grep -qiE '(api|stream|server|http|request)[[:space:]]*error[[:space:][:punct:]]*(code[[:space:]]*)?(402|429|5[0-9][0-9])|overloaded_error|insufficient balance|authentication (failed|error)|unauthori[sz]ed|connection refused|network is unreachable' "$1"
+}
+
+rung_limited() {
+  local rung="$1" status="$2" log_file="$3"
+  [ "$status" -ne 0 ] || return 1
+  case "$rung" in
+    codex) fallback_limited "$log_file" ;;
+    *) is_limited "$log_file" || provider_failed "$log_file" ;;
+  esac
+}
+
 reset_secs() {
   local line clock zone target now secs
   line="$(grep -ioE '(resets|try again at|available at)[^.]*' "$1" | tail -1)"
@@ -87,6 +100,9 @@ PY
 record_turn() {
   local turn="$1" row_id="$2" used_model="$3" status="$4" progress="$5" log_file="$6" fields
   fields="$(usage_fields "$log_file")"
+  if [ "$used_model" = deepseek ]; then
+    fields=",${fields#*,}"
+  fi
   if [ ! -f .ralph/usage.csv ]; then
     echo "utc,turn,row,model,exit,progress,cost_usd,input,cache_write,cache_read,output,api_calls" >.ralph/usage.csv
   fi
@@ -116,6 +132,7 @@ main() {
 
   local claude_bin="${RALPH_CLAUDE_BIN:-claude}"
   local fallback_bin="${RALPH_FALLBACK_BIN:-}"
+  local deepseek_env="${RALPH_DEEPSEEK_ENV:-}"
   local prompt_file="${RALPH_PROMPT_FILE:-PROMPT.md}"
   local pick_cmd="${RALPH_PICK_CMD:-uv run --frozen python -m gates.ledger pick}"
   local base_model="${RALPH_MODEL:-sonnet}"
@@ -140,10 +157,35 @@ main() {
     log "agent '$claude_bin' is not on PATH"
     exit 127
   fi
+  local rungs=() deepseek_settings=() line
+  if [ -n "$fallback_bin" ]; then
+    if ! command -v "$fallback_bin" >/dev/null 2>&1; then
+      log "fallback agent '$fallback_bin' is not on PATH"
+      exit 127
+    fi
+    rungs+=(codex)
+  fi
+  if [ -n "$deepseek_env" ]; then
+    if [ ! -r "$deepseek_env" ]; then
+      log "deepseek settings $deepseek_env cannot be read"
+      exit 1
+    fi
+    while IFS= read -r line || [ -n "$line" ]; do
+      case "$line" in
+        '' | '#'*) ;;
+        *=*) deepseek_settings+=("$line") ;;
+      esac
+    done <"$deepseek_env"
+    if [ "${#deepseek_settings[@]}" -eq 0 ]; then
+      log "deepseek settings $deepseek_env name no setting"
+      exit 1
+    fi
+    rungs+=(deepseek)
+  fi
   local fingerprint
   fingerprint="$(cksum <"$self")"
 
-  local i=0 idle=0 row status stamp turn_log note prompt agent_status secs fallback_log
+  local i=0 idle=0 row status stamp turn_log note prompt agent_status secs rung rung_log
   local model row_id before progress
   while [ "$i" -lt "$max" ]; do
     if [ -f STOP ]; then
@@ -212,25 +254,36 @@ main() {
     cat "$turn_log" >>ralph.log
 
     if [ "$agent_status" -ne 0 ] && is_limited "$turn_log"; then
-      if [ -n "$fallback_bin" ]; then
-        log "usage limit on $claude_bin; running the fallback agent"
-        fallback_log="${turn_log%.log}-fallback.log"
-        printf '%s\n\n%s\n' "$prompt" "$note" |
-          run_agent "$fallback_bin" --dangerously-bypass-approvals-and-sandbox exec --json --cd "$PWD" - \
-            >"$fallback_log" 2>&1
+      for rung in ${rungs[@]+"${rungs[@]}"}; do
+        log "usage limit on the agent before; running $rung"
+        rung_log="${turn_log%.log}-$rung.log"
+        if [ "$rung" = codex ]; then
+          printf '%s\n\n%s\n' "$prompt" "$note" |
+            run_agent "$fallback_bin" --dangerously-bypass-approvals-and-sandbox exec --json --cd "$PWD" - \
+              >"$rung_log" 2>&1
+        else
+          run_agent env -u ANTHROPIC_API_KEY "${deepseek_settings[@]}" "$claude_bin" -p "$prompt" "${perm[@]}" \
+            --append-system-prompt "$note" --output-format json --disable-slash-commands \
+            --strict-mcp-config --tools "$tools" >"$rung_log" 2>&1 </dev/null
+        fi
         agent_status=$?
-        cat "$fallback_log" >>ralph.log
-        if ! { [ "$agent_status" -ne 0 ] && fallback_limited "$fallback_log"; }; then
-          i=$((i + 1))
-          progress=no
-          if [ "$(commit_count)" -gt "$before" ]; then
-            progress=yes
-          fi
-          record_turn "$i" "$row_id" fallback "$agent_status" "$progress" "$fallback_log"
-          sleep "$pause"
+        cat "$rung_log" >>ralph.log
+        if rung_limited "$rung" "$agent_status" "$rung_log"; then
           continue
         fi
-      fi
+        i=$((i + 1))
+        progress=no
+        if [ "$(commit_count)" -gt "$before" ]; then
+          progress=yes
+        fi
+        local label="$rung"
+        if [ "$rung" = codex ]; then
+          label=fallback
+        fi
+        record_turn "$i" "$row_id" "$label" "$agent_status" "$progress" "$rung_log"
+        sleep "$pause"
+        continue 2
+      done
       secs="$(reset_secs "$turn_log")"
       if [ "$secs" -gt "$max_sleep" ]; then
         secs="$max_sleep"
