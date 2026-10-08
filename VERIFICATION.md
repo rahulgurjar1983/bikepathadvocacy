@@ -695,3 +695,16 @@ uv run pytest tests/test_propose_big.py -v | tee artifacts/P8.5/big-projects.txt
 
 Expect: 9 tests pass. A cell between main roads becomes one neighbourhood project. A run of main road between two cells becomes a corridor project only where its fix fits. A neighbourhood whose route fixes each gain under `min_gain` is picked with a gain of 100.0. The test-grid run counts its one project as a route fix.
 Artifact: `artifacts/P8.5/big-projects.txt`
+
+### P8.6
+
+```bash
+uv run pytest tests/test_propose_verify.py -q
+OUT=$(mktemp -d)/out
+uv run bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out "$OUT"
+uv run bikeplan verify "$OUT" | tee artifacts/P8.6/run.txt
+jq '{candidates,projects,projects_by_kind,score}' "$OUT/summary.json" | tee artifacts/P8.6/summary.txt
+```
+
+Expect: 7 tests pass. With the shipped region file, Bayside has 23637 candidates and gives 4 projects (2 neighbourhood, 2 route fixes), and the score goes from 0.6 to 0.95 (exact). `bikeplan verify` prints `ok` and exits 0; on a run with candidates and no project it exits 1. The run takes about 6 minutes.
+Artifact: `artifacts/P8.6/summary.txt`
