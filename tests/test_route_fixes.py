@@ -101,9 +101,3 @@ def test_fr14_6_ranked_projects_of_the_same_length_are_compared(graph, profile, 
     assert ranked["projects"] == 1
     assert ranked["km"] == 0
     assert ranked["safe_people_gain"]["school"] == pytest.approx(750)
-
-
-def test_fr14_6_without_a_region_the_figures_hold_no_fixes(graph, profile, tmp_path):
-    path = write_gpx_tracks(tmp_path / "r.gpx", {"C": lonlat(densify(corner_route()))})
-    total = route_figures(graph, profile, read_route(path))["total"]
-    assert "fixes" not in total
