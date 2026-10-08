@@ -642,3 +642,15 @@ cmp /tmp/r19run/report.html artifacts/R1.9/report/report.html
 
 Expect: All five FR-13.12 tests pass. `cmp` prints nothing, because both commands write the same `report.html`, which holds the ranked projects, their sheets and a proposed changes switch that is on.
 Artifact: `artifacts/R1.9/report/report.html`
+
+### R1.10
+
+```bash
+uv run pytest tests/test_checks.py -q
+uv run pytest -q --junitxml=/tmp/junit.xml
+uv run bikeplan checks /tmp/junit.xml --out artifacts/R1.10/checks.html
+grep -o "[0-9]* met, [0-9]* fail, [0-9]* not built yet" artifacts/R1.10/checks.html
+```
+
+Expect: All FR-13.11 tests pass. The full run passes 787 tests, `bikeplan checks` exits 0, and the grep prints `134 met, 0 fail, 44 not built yet`. A failing test makes the command exit 1, and so makes `scripts/release.sh` stop before any upload.
+Artifact: `artifacts/R1.10/checks.html`
