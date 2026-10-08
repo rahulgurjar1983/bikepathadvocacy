@@ -80,3 +80,21 @@ def test_fr0_27_proof_exception_rejects_invalid_scope(mini, capsys, change, mess
     mini.commit("invalid proof")
     assert redgreen.main(["red", base]) != 0
     assert message in capsys.readouterr().out
+
+
+def test_fr0_27_proof_cases_must_name_the_rows_requirements(mini, capsys):
+    base, manifest = proof_branch(mini)
+    mini.write("tests/test_proof.py", BODY.replace("fr11_5", "fr9_5"))
+    manifest["cases"] = [CASE.replace("fr11_5", "fr9_5")]
+    mini.write("artifacts/P10.1/proof.json", json.dumps(manifest))
+    mini.commit("proof cites unrelated test")
+    assert redgreen.main(["red", base]) != 0
+    assert "proof: cases must cover the row requirements" in capsys.readouterr().out
+
+
+def test_fr0_27_existing_tests_stay_byte_identical(mini, capsys):
+    base, _ = proof_branch(mini)
+    mini.append("tests/test_core.py", "\n\n")
+    mini.commit("change an existing test file")
+    assert redgreen.main(["red", base]) != 0
+    assert "proof: existing test or fixture changed" in capsys.readouterr().out
