@@ -601,8 +601,9 @@ Artifact: `artifacts/P8.7/frontier-summary.json`
 
 ### P10.1
 
-The saved runs match. This row stays open: the Bayside tests pass on the base
-code, so the red-green rule needs an input fix before they can ship.
+The prior runs matched. This row stays open: the Bayside tests pass on the base
+code, so the red-green rule needs an input fix before they can ship. The old
+temp run files are gone; use the command below to build a new pair.
 
 Run from the repo root with the shipped region files:
 
