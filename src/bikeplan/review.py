@@ -452,13 +452,19 @@ def route_figures(
     return {"sections": found, "total": total}
 
 
-def write_route_figures(route, region: Region, snapshot, out) -> Path:
+def write_route_figures(route, region: Region, snapshot, out, claims=None) -> Path:
     profile = load_profile(region.profile, "profiles")
-    figures = route_figures(build(snapshot, region, profile), profile, read_route(route))
+    wanted = read_claims(claims) if claims else None
+    figures = route_figures(
+        build(snapshot, region, profile), profile, read_route(route), region, snapshot
+    )
     target = Path(out)
     target.mkdir(parents=True, exist_ok=True)
     path = target / "route_figures.json"
     path.write_text(json.dumps(figures, indent=2, sort_keys=True) + "\n")
+    if wanted is not None:
+        verdicts = claim_verdicts(wanted, figures["total"])
+        (target / "verdicts.json").write_text(json.dumps(verdicts, indent=2, sort_keys=True) + "\n")
     return path
 
 

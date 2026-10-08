@@ -9,7 +9,7 @@ from bikeplan.fit import fit_summary
 from bikeplan.network import build, summarise
 from bikeplan.page import profile_rows
 from bikeplan.propose import write_propose
-from bikeplan.review import write_route_figures
+from bikeplan.review import ClaimError, write_route_figures
 from bikeplan.route import RouteError, write_corridor
 from bikeplan.run import run_all, write_report
 from bikeplan.snapshot import (
@@ -120,6 +120,7 @@ def build_parser() -> argparse.ArgumentParser:
                 leaf.add_argument("--region", required=True, help="Region file")
                 leaf.add_argument("--snapshot", required=True, help="Snapshot folder")
                 leaf.add_argument("--out", required=True, help="Output directory")
+                leaf.add_argument("--claims", help="Claims file, for verdicts")
             if (name, sub) == ("snapshot", "fetch"):
                 leaf.add_argument("region", help="Region file")
                 leaf.add_argument("--out", required=True, help="Output directory")
@@ -295,10 +296,10 @@ def region_corridor(route: str, region_id: str, like: str, out: str) -> int:
     return 0
 
 
-def route_figures_command(route: str, region: str, snapshot: str, out: str) -> int:
+def route_figures_command(route: str, region: str, snapshot: str, out: str, claims) -> int:
     try:
-        target = write_route_figures(route, load_region(region), snapshot, out)
-    except (RouteError, ConfigError, OSError) as error:
+        target = write_route_figures(route, load_region(region), snapshot, out, claims)
+    except (RouteError, ClaimError, ConfigError, OSError) as error:
         print(error, file=sys.stderr)
         return 1
     print(target)
@@ -377,7 +378,7 @@ def main(argv: list[str] | None = None) -> int:
     if (args.command, getattr(args, "subcommand", None)) == ("region", "corridor"):
         return region_corridor(args.route, args.id, args.like, args.out)
     if (args.command, getattr(args, "subcommand", None)) == ("route", "figures"):
-        return route_figures_command(args.route, args.region, args.snapshot, args.out)
+        return route_figures_command(args.route, args.region, args.snapshot, args.out, args.claims)
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "fetch"):
         return snapshot_fetch(args.region, args.out, args.endpoint)
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "verify"):
