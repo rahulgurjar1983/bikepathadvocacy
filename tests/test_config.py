@@ -209,3 +209,15 @@ def test_fr1_10_author_that_is_not_text_names_the_key(tmp_path):
     data["report"] = {"author": 7}
     with pytest.raises(ConfigError, match=r"report\.author"):
         load_region(write(tmp_path, data))
+
+
+def test_fr1_13_last_leg_defaults_to_200(tmp_path):
+    assert load_region(write(tmp_path, copy.deepcopy(GOOD))).access.last_leg_m == 200
+
+
+def test_fr1_13_last_leg_of_zero_loads(tmp_path):
+    assert load_region(write(tmp_path, changed(access__last_leg_m=0))).access.last_leg_m == 0
+
+
+def test_fr1_13_negative_last_leg_names_the_key(tmp_path):
+    fails(tmp_path, changed(access__last_leg_m=-1), "last_leg_m")
