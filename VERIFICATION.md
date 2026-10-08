@@ -799,3 +799,12 @@ sha256sum -c SHA256SUMS
 
 Expect: the focused tests pass, the report shows the route layer and right of reply, and every output digest checks.
 Artifact: `artifacts/V1.5/report/report.html`
+
+### V1.6
+
+```bash
+uv run pytest tests/test_propose_corridor.py -v
+```
+
+Expect: every corridor test passes: a rail-side path is made, scored and picked ahead of fixing the streets, no path is made without open land, near nodes or the least length, and the summary and report count the candidates made, picked and not picked.
+Artifact: `artifacts/V1.6/corridor-tests.txt`

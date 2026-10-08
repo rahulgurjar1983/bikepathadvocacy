@@ -11,7 +11,7 @@ import networkx as nx
 import shapely
 from pyproj import Transformer
 from shapely.geometry import LineString, MultiLineString, Point, mapping
-from shapely.ops import transform
+from shapely.ops import substring, transform, unary_union
 
 from bikeplan.access import (
     EdgeTable,
@@ -31,6 +31,29 @@ from bikeplan.width import check_links, fuse
 
 CORRIDOR_FIXES = tuple(fix for fix in FIXES if fix != "quietway")
 KINDS = ("corridor", "neighbourhood", "route")
+PROJECT_FIXES = (*FIXES, "new_path")
+SNAP_M = 60.0
+SIDE_M = 20.0
+OPEN_SHARE = 0.3
+MIN_PATH_M = 200.0
+MAX_PATH_M = 3000.0
+LINE_LABELS = {
+    ("railway", "rail"): "railway",
+    ("highway", "motorway"): "motorway",
+    ("waterway", "river"): "river",
+    ("waterway", "canal"): "canal",
+    ("leisure", "golf_course"): "golf course",
+}
+OPEN_LAND = {
+    "landuse": {"grass", "meadow", "farmland", "greenfield", "recreation_ground", "village_green"},
+    "natural": {"grassland", "scrub", "heath"},
+    "leisure": {"park", "golf_course", "common"},
+}
+
+
+class Corridors(NamedTuple):
+    lines: list
+    open_land: object
 
 
 class Planning(NamedTuple):
@@ -263,6 +286,104 @@ def route_fixes(
             if elements and length <= detour_max * results[index].within[home]:
                 fixes[elements] += values[(index, home)]
     return dict(fixes)
+
+
+def read_corridors(snapshot: str | Path, crs) -> Corridors | None:
+    path = Path(snapshot) / "corridors.json"
+    if not path.is_file():
+        return None
+    to_metres = Transformer.from_crs(4326, crs, always_xy=True)
+    lines = []
+    land = []
+    for item in json.loads(path.read_text())["elements"]:
+        points = [to_metres.transform(p["lon"], p["lat"]) for p in item.get("geometry", ())]
+        if len(points) < 2:
+            continue
+        tags = item["tags"]
+        for pair, label in LINE_LABELS.items():
+            if tags.get(pair[0]) == pair[1]:
+                lines.append((label, LineString(points)))
+        closed = len(points) >= 4 and points[0] == points[-1]
+        if closed and any(tags.get(key) in values for key, values in OPEN_LAND.items()):
+            land.append(shapely.Polygon(points).buffer(0))
+    return Corridors(lines, unary_union(land))
+
+
+def path_element(graph, geometry, label: str, name: str, segment: str) -> dict:
+    to_degrees = Transformer.from_crs(graph.graph["crs"], 4326, always_xy=True)
+    middle = geometry.interpolate(0.5, normalized=True)
+    lon, lat = to_degrees.transform(middle.x, middle.y)
+    return {
+        "kind": "segment",
+        "segment": segment,
+        "fix": "new_path",
+        "aaa_after": True,
+        "margin_m": None,
+        "score": 0.0,
+        "robust": "robust",
+        "km": geometry.length / 1000,
+        "length_m": geometry.length,
+        "street": f"new path beside {label}",
+        "width_source": None,
+        "width_confidence": None,
+        "before": [],
+        "after": [],
+        "check_links": check_links(lat, lon),
+        "counts": {"parking_spaces": 0, "lane_km": 0.0, "speed_km": 0.0},
+    }
+
+
+def add_corridor_paths(graph, planning: Planning, corridors: Corridors, metres: float) -> tuple:
+    graph = graph.copy()
+    edges = dict(planning.edges)
+    elements = dict(planning.elements)
+    names = []
+    nodes = sorted(
+        {n for u, v, d in graph.edges(data=True) if d["bike_ok"] for n in (u, v)}, key=repr
+    )
+    points = {node: Point(graph.nodes[node]["x"], graph.nodes[node]["y"]) for node in nodes}
+    for label, line in corridors.lines:
+        near = sorted(
+            (line.project(points[node]), repr(node), node)
+            for node in nodes
+            if line.distance(points[node]) <= SNAP_M
+        )
+        anchor = near[0] if near else None
+        for item in near[1:]:
+            gap = item[0] - anchor[0]
+            first, last = anchor[2], item[2]
+            if gap < MIN_PATH_M:
+                continue
+            behind, anchor = anchor, item
+            if gap > MAX_PATH_M:
+                continue
+            side = substring(line, behind[0], item[0]).buffer(SIDE_M)
+            if side.intersection(corridors.open_land).area < OPEN_SHARE * side.area:
+                continue
+            geometry = LineString(
+                [points[first], *substring(line, behind[0], item[0]).coords, points[last]]
+            )
+            segment = "corridor-" + project_id([label, repr(first), repr(last)])
+            name = f"segment:{segment}"
+            if name in elements:
+                continue
+            elements[name] = path_element(graph, geometry, label, name, segment)
+            names.append(name)
+            for start, end, shape in ((first, last, geometry), (last, first, geometry.reverse())):
+                graph.add_edge(
+                    start,
+                    end,
+                    "new",
+                    highway="cycleway",
+                    bike_ok=True,
+                    candidate=True,
+                    segment_id=segment,
+                    length_m=shape.length,
+                    geometry=shape,
+                )
+                cost = shape.length + metres * elements[name]["score"]
+                edges[(start, end, "new")] = {"cost": cost, "needs": (name,)}
+    return graph, Planning(edges, elements), names
 
 
 def segment_nodes(segment: dict) -> set:
@@ -568,7 +689,7 @@ def project_totals(elements: list[dict]) -> dict:
         if item["km"]:
             by_fix[item["fix"]] += item["km"]
     return {
-        "km_by_fix": {fix: round(by_fix[fix], 6) for fix in FIXES if fix in by_fix},
+        "km_by_fix": {fix: round(by_fix[fix], 6) for fix in PROJECT_FIXES if fix in by_fix},
         "parking_spaces": sum(item["parking_spaces"] for item in elements),
         "lane_km": round(sum(item["lane_km"] for item in elements), 6),
         "speed_km": round(sum(item["speed_km"] for item in elements), 6),
@@ -639,7 +760,7 @@ def csv_fields(kinds: list) -> list[str]:
         "speed_km",
         "signals",
         "refuges",
-        *(f"km_{fix}" for fix in FIXES),
+        *(f"km_{fix}" for fix in PROJECT_FIXES),
         *(f"people_{kind}" for kind in kinds),
     ]
 
@@ -659,7 +780,7 @@ def csv_row(record: dict, kinds: list) -> dict:
         "signals": totals["signals"],
         "refuges": totals["refuges"],
     }
-    for fix in FIXES:
+    for fix in PROJECT_FIXES:
         row[f"km_{fix}"] = totals["km_by_fix"].get(fix, 0.0)
     for kind in kinds:
         row[f"people_{kind}"] = record["people"][kind]
@@ -713,6 +834,18 @@ def write_propose(
     out = Path(out)
     kept, nodes, _, placed, resident, weights = scene(graph, region, snapshot)
     planning = planning_network(graph, profile, region)
+    big = big_projects(graph, planning, profile)
+    legs = last_legs(
+        graph, score_edges(graph, profile), sorted(resident.people), region.access.last_leg_m
+    )
+    corridors = read_corridors(snapshot, graph.graph["crs"])
+    made: list = []
+    if corridors is not None:
+        graph, planning, made = add_corridor_paths(
+            graph, planning, corridors, region.proposals.metres_per_point
+        )
+    if stats is not None:
+        stats["corridor_candidates"] = len(made)
     names = [
         place["name"] or place["type"]
         for place, node in zip(kept, nodes, strict=True)
@@ -728,14 +861,9 @@ def write_propose(
         region.access.reach_m,
         region.access.detour_max,
         names,
-        big_projects(graph, planning, profile),
+        big,
         stats,
-        last_legs(
-            graph,
-            score_edges(graph, profile),
-            sorted(resident.people),
-            region.access.last_leg_m,
-        ),
+        legs,
     )
     records = project_records(picked, planning)
     if sheets is not None:

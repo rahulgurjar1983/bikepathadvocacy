@@ -349,7 +349,15 @@ def reach(
 ) -> list[Reach]:
     table = table or edge_table(graph)
     columns = [table.index[source] for source in sources]
-    matrix = masked_matrix(table, allowed_mask(table, None))
+    mask = allowed_mask(table, None)
+    mask[
+        [
+            table.position[(u, v, k)]
+            for u, v, k, data in graph.edges(keys=True, data=True)
+            if data.get("candidate")
+        ]
+    ] = False
+    matrix = masked_matrix(table, mask)
     runs = dijkstra(matrix, directed=True, indices=columns, limit=reach_m)
     withins = [
         {table.nodes[n]: float(row[n]) for n in np.flatnonzero(np.isfinite(row))} for row in runs
