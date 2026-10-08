@@ -38,6 +38,7 @@ class Destination:
 class Access:
     reach_m: float
     detour_max: float
+    last_leg_m: int = 200
 
 
 @dataclass(frozen=True)
@@ -257,14 +258,19 @@ class Reader:
         return found
 
     def access(self, raw: Any) -> Access:
-        data = self.mapping(raw, "access", {"reach_m", "detour_max"}, {"reach_m", "detour_max"})
+        data = self.mapping(
+            raw, "access", {"reach_m", "detour_max", "last_leg_m"}, {"reach_m", "detour_max"}
+        )
         reach = self.number(data["reach_m"], "access.reach_m")
         detour = self.number(data["detour_max"], "access.detour_max")
         if reach <= 0:
             raise self.fail("access.reach_m", "must be above zero")
         if detour < 1.0:
             raise self.fail("access.detour_max", "must be at least 1.0")
-        return Access(reach, detour)
+        last_leg = self.whole(data.get("last_leg_m", 200), "access.last_leg_m")
+        if last_leg < 0:
+            raise self.fail("access.last_leg_m", "must be 0 or more")
+        return Access(reach, detour, last_leg)
 
     def proposals(self, raw: Any) -> Proposals:
         names = {f.name for f in dataclasses.fields(Proposals)}
