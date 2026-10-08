@@ -96,7 +96,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 - [x] **P8.4** Project records, `bikeplan propose`, fast updates and stable output (FR-8.6, FR-8.8, FR-8.9, FR-8.10); reopened on 2026-10-08 because its proof lowered `min_gain`; done once P8.6 passes with the shipped file
 - [x] **P8.7** The trade-off curve: picks carried past `min_gain`, three disruption scenarios and a recommended stop, in `frontier.json` (FR-8.13, FR-8.14)
 - [x] **R1.13** The report's "how much change" slider, scenario switch and access-against-disruption chart, driving the map and totals (FR-13.15)
-- [ ] **R1.14** Round every number the report shows as FR-9.2 says: people as whole numbers, disruption to 0.1. The pr98 report shows `5845.447969574286` people and a score of `298.330637` (FR-9.2, FR-13.15)
+- [x] **R1.14** Round every number the report shows as FR-9.2 says: people as whole numbers, disruption to 0.1. The pr98 report shows `5845.447969574286` people and a score of `298.330637` (FR-9.2, FR-13.15)
 - [ ] **P8.8** The recommended stop compares each pick with the best pick so far, and the curve runs to 150 picks; the report says when the cap was reached. In pr98 the stop sat at step 59 of 60 (FR-8.13, FR-8.14)
 
 ## Phase 9: Run, report and verify

@@ -1,0 +1,9 @@
+<td><code>750</code></td></tr></tbody></table></section><section id="sheets"
+data-total="people.aged_care">0<
+data-total="people.college">0<
+data-total="people.library">0<
+data-total="people.school">750<
+data-total="people.station">0<
+data-total="people.town_centre">0<
+data-total="people.university">0<
+data-total="score">100.0<
