@@ -53,7 +53,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 - [x] **P5.1** Lane-based and tag-based widths, with range checks (FR-5.1, FR-5.2, FR-5.7)
 - [x] **P5.2** Road reserve measured from parcels (FR-5.3, FR-5.4)
 - [x] **P5.3** Width fusion, check links and `bikeplan width summary` (FR-5.5, FR-5.6, FR-5.8)
-- [ ] **P11.1** NSW cadastre parcels and measured Bayside reserves (FR-10.1, FR-10.2, FR-10.8); moved up on 2026-10-08 so wide streets show their real width before projects are picked
+- [x] **P11.1** NSW cadastre parcels and measured Bayside reserves (FR-10.1, FR-10.2, FR-10.8); moved up on 2026-10-08 so wide streets show their real width before projects are picked
 
 ## Phase R: Public report (ships with every release)
 
