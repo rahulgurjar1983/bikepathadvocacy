@@ -106,7 +106,7 @@ class Figures:
 
     def add(self, label: str, expression: str, unit: str, method: str) -> dict:
         scope = {"t": self.figures, "v": self.verdicts}
-        value = round(eval(expression, {"len": len, "sum": sum}, scope), 3)  # noqa: S307
+        value = round(eval(expression, {"len": len, "sum": sum}, scope), 3)
         item = {
             "id": f"F{len(self.items) + 1}",
             "label": label,
