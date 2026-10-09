@@ -274,3 +274,68 @@ def test_fr15_4_planning_updates_keep_survey_options():
         graph, planning, Corridors([], GeometryCollection()), REGION.proposals.metres_per_point
     )
     assert extended.survey_options == planning.survey_options
+
+
+def test_fr15_4_model_fit_and_confirmed_picks_keep_distinct_choices():
+    from bikeplan.fit import segment_fit
+    from bikeplan.network import bike_segments
+
+    graph = line(
+        [
+            (
+                100,
+                {
+                    "highway": "tertiary",
+                    "lanes_total": 2,
+                    "lanes_dir": 1,
+                    "oneway": False,
+                    "parking:both": "yes",
+                    "bike_facility": "none",
+                    "speed_kmh": 50,
+                    "adt": 5000,
+                    "width_tag_m": 14.0,
+                },
+            )
+        ]
+    )
+    segment = next(iter(bike_segments(graph).values()))
+    model = segment_fit(segment, PROFILE, REGION.proposals.disruption_weights, confirmed_only=False)
+    confirmed = segment_fit(
+        segment, PROFILE, REGION.proposals.disruption_weights, confirmed_only=True
+    )
+    assert model["fix"] == "cycleway_in_spare"
+    assert model["confirmed"] is False
+    assert confirmed["fix"] == "cycleway_parking_one_side"
+    assert confirmed["confirmed"] is True
+
+
+def test_fr15_4_project_geometry_keeps_width_evidence_with_legacy_record_fields():
+    from bikeplan.propose import project_features, project_records
+
+    graph = line([(100, {**street("tertiary", 10.0, 2, "yes", 50, 5000), "width_tag_m": 10.0})])
+    planning = planning_network(graph, PROFILE, REGION)
+    picks = greedy_picks(
+        graph,
+        planning,
+        [("school", 1)],
+        {0: 10},
+        {"school": 1.0},
+        REGION.proposals,
+        REGION.access.reach_m,
+        REGION.access.detour_max,
+    )
+    record = project_records(picks, planning)[0]
+    properties = project_features(graph, planning, [record])[0]["properties"]
+    assert properties["model_margin"] == "robust"
+    assert properties["source_confidence"] == "medium"
+    assert properties["confirmed"]
+    assert properties["carriageway"]["observed"]
+    assert properties["usable_verge"]["width_m"] is None
+
+
+def test_fr15_4_survey_layer_ships_within_sealed_network_output():
+    _, outputs, files, _ = build_all(REGION, PROFILE, "tests/fixtures/test-grid/snapshot")
+    layer = json.loads(outputs["network.geojson"])["survey_options"]
+    assert layer["features"]
+    assert json.loads(files["map.json"])["survey_options"] == layer
+    assert "survey_options.geojson" not in outputs
