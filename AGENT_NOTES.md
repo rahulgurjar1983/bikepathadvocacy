@@ -18,6 +18,23 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Spec issues
 
+### Q1.5
+
+The old report test fixes the figure list at F1 through F13. The new
+people and type figures fail that check. The loop rule bars a weaker
+old test, and no row rule grants a change to this fixed list.
+
+Proof: run `bash artifacts/Q1.5/reproduce.sh`. On the fresh main commit
+in `artifacts/Q1.5/base-commit.txt`, the old test passes. Apply the saved
+source patch, with no test edits, and it fails at the exact-list check.
+See `artifacts/Q1.5/base-tests.txt` and
+`artifacts/Q1.5/changed-output-tests.txt`.
+
+The input fix needs to allow more figure IDs while keeping all old IDs,
+fields, hashes and recipe checks. Q1.5 stays open. Its source and new
+tests are saved on `loop/Q1.5-people`. No PR was sent. The full run was
+stopped once this clash was found; it is not proof of a real result.
+
 - `gates/tests/test_loop.py::test_fr0_13_usage_limit_turn_is_not_counted` times out after 60 seconds on `origin/main` too. Proof: `git checkout origin/main && uv run pytest gates/tests/test_loop.py -q -k usage_limit`. The pre-push hook still let the push through.
 - P10.1: resolved by the input proof-only gate path; run fresh proof before completion. Prior issue: fresh `origin/main` still has the base commit in `artifacts/P10.1/check.txt`. The grid tests pass there; see the command and result in `artifacts/P10.1/main-audit.txt`. The prior Bayside tests also passed on that base, so the red-green rule bars them. The old temp run files are now gone; the committed hashes are a past record, not a fresh byte check. Keep the row open and held until the operator fixes the rule and gate. Copy run proof out of pytest temp paths before a later test run clears them.
 
@@ -181,3 +198,10 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 - Q1.3: Save output hashes as records with `path` and `sha256` fields.
   A file name that starts with `access` can make the secret scan flag a
   plain hash. Keep the scanner strict and fix the proof writer.
+
+- Q1.5: Use Python set unions for home-node gains. The standard tool is
+  [set.union](https://docs.python.org/3/library/stdtypes.html#set.union).
+  Sum each node share once, before rounding. Keep a gain to a new place
+  distinct from a change in the count of people with any safe place of
+  that type. Read the fixed figure-list clash under Spec issues before
+  resuming this row.
