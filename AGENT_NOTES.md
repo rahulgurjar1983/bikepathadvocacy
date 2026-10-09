@@ -188,3 +188,27 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 - Native `details` keeps long tables folded with scripts off. The selected totals and stop method stay outside that fold for print. Fixed table layout and a zero minimum fieldset width keep the phone body within the screen.
 - Use a status region for package changes, per the [W3C status method](https://www.w3.org/WAI/WCAG21/Techniques/aria/ARIA22). The status includes the stable scenario ID and rank. Keep the rank in a figure link when the script updates it.
 - `uv run python artifacts/Q1.7/collect.py` builds a fresh test-grid report and checks keys, phone, desktop, print and scripts off. It does not prove the real region's community outcomes. C1.10 still owns that full report proof.
+
+### C1.1
+
+- Trip evidence is an optional `trip_evidence` block in snapshot
+  `places.json`: `entrances`, directed `links` and `movements`. A link
+  key is `edge`; a move has `incoming` and `outgoing` edge keys. Known
+  entrances need a node, stable ID, source and bike access. Missing
+  records stay unknown. Do not edit a real snapshot to gain a claim.
+- Source proof alone cannot pass a failed changed graph. Required
+  elements must be in the package. A strict return trip checks each
+  direction and each move. A forbidden move cannot join route groups.
+- Reuse the installed NetworkX path tools. Its
+  [Dijkstra tool](https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.shortest_paths.weighted.single_source_dijkstra.html)
+  gives paths and lengths. Edge states keep turn proof in those paths;
+  no new path solver or package is needed.
+- `uv run --frozen python artifacts/C1.1/collect.py` checks the fresh
+  real archive and saves package counts, hashes and gap samples. Empty
+  strict routes with unknown entrances prove honest limits, not field
+  safety or full coverage. School and resident totals have later rows.
+- Keep source stress scores from before corridor candidates are added.
+  New candidate edges have model work needs, not source road fields.
+  They cannot prove a confirmed link without source evidence. Report
+  file names use `code`; any project term in plain text needs its own
+  entry in the report glossary as well as this repo's glossary.

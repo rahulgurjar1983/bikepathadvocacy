@@ -29,6 +29,7 @@ from bikeplan.fit import FIXES, junction_fixes, segment_fit
 from bikeplan.fit import cross_section as fit_cross_section
 from bikeplan.network import bike_segments
 from bikeplan.stress import edge_aaa, own_lts, raise_for_crossings, score_edges
+from bikeplan.trips import complete_trips, snapshot_trip_inputs
 from bikeplan.width import check_links, fuse
 
 CORRIDOR_FIXES = tuple(fix for fix in FIXES if fix != "quietway")
@@ -1026,6 +1027,7 @@ def scenario_curve(
     names: list | None = None,
     legs=None,
     corridors: Corridors | None = None,
+    trip_inputs=None,
 ) -> dict:
     scaled = scaled_region(region, scenario)
     scaled = dataclasses.replace(
@@ -1038,6 +1040,40 @@ def scenario_curve(
     picks = curve_picks(picked, planning)
     stop = recommended_stop(picks, region.proposals.recommend_ratio)
     shapes = project_features(solved, planning, project_records(picked, planning))
+    packages = []
+    if trip_inputs is not None:
+        destinations, links, movements = trip_inputs
+        links = {
+            key: {
+                **links.get(key, {"status": "unknown"}),
+                "model_needs": planning.edges.get(key, {"needs": ["missing"]})["needs"],
+            }
+            for key in solved.edges(keys=True)
+        }
+        fixed = set()
+        projects = []
+        for rank in range(len(picked) + 1):
+            if rank:
+                fixed.update(picked[rank - 1]["elements"])
+                projects.append(picked[rank - 1]["id"])
+            packages.append(
+                {
+                    "package": {"scenario": scenario.id, "rank": rank},
+                    "project_ids": list(projects),
+                    "element_ids": sorted(fixed),
+                    **complete_trips(
+                        solved,
+                        people,
+                        destinations,
+                        links,
+                        movements,
+                        fixed,
+                        reach_m,
+                        detour_max,
+                        region.access.last_leg_m,
+                    ),
+                }
+            )
     return {
         "shapes": shapes,
         "id": scenario.id,
@@ -1050,6 +1086,7 @@ def scenario_curve(
         "truncated": stats["termination_reason"] == "project_cap",
         "cap_reached": stats["termination_reason"] == "project_cap",
         "picks": picks,
+        "trip_packages": packages,
     }
 
 
@@ -1102,9 +1139,8 @@ def write_propose(
 ) -> list[dict]:
     out = Path(out)
     kept, nodes, _, placed, resident, weights = scene(graph, region, snapshot)
-    legs = last_legs(
-        graph, score_edges(graph, profile), sorted(resident.people), region.access.last_leg_m
-    )
+    scores = score_edges(graph, profile)
+    legs = last_legs(graph, scores, sorted(resident.people), region.access.last_leg_m)
     corridors = read_corridors(snapshot, graph.graph["crs"])
     names = [
         place["name"] or place["type"]
@@ -1116,6 +1152,19 @@ def write_propose(
         graph, region, profile, placed, resident.people, weights, names, legs, corridors, stats
     )
     records = project_records(picked, planning)
+    trip_inputs = snapshot_trip_inputs(snapshot, kept, nodes, graph, scores, planning)
+    destinations, links, movements = trip_inputs
+    shortlist_trips = complete_trips(
+        graph,
+        resident.people,
+        destinations,
+        links,
+        movements,
+        {name for pick in picked for name in pick["elements"]},
+        region.access.reach_m,
+        region.access.detour_max,
+        region.access.last_leg_m,
+    )
     surveys = survey_layer(planning)
     if stats is not None:
         stats["survey_options"] = surveys
@@ -1132,6 +1181,7 @@ def write_propose(
     collection = {
         "type": "FeatureCollection",
         "features": project_features(graph, planning, records),
+        "trip_proof": {"package": "minimum-gain-shortlist", **shortlist_trips},
     }
     (out / "projects.geojson").write_text(json.dumps(collection))
     curves = [
@@ -1148,6 +1198,7 @@ def write_propose(
             names,
             legs,
             corridors,
+            trip_inputs,
         )
         for scenario in scenarios_for(region.proposals)
     ]
@@ -1160,6 +1211,14 @@ def write_propose(
             )
     frontier = {
         "scenarios": curves,
+        "trip_sources": {
+            "destinations": destinations,
+            "evidence": json.loads((Path(snapshot) / "places.json").read_text()).get(
+                "trip_evidence", {}
+            ),
+            "missing_link_status": "unknown",
+            "missing_movement_status": "unknown",
+        },
         "shapes": {
             "type": "FeatureCollection",
             "features": [shapes[key] for key in sorted(shapes)],

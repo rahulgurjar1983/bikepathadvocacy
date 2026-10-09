@@ -980,3 +980,26 @@ uv run python artifacts/Q1.7/collect.py
 Expect: The new cases pass. The fresh test-grid report opens with the selected proposal, space losses, gaps and council ask. The page order is proposal, map, options, area impacts, street plans, delivery and evidence. Phone and desktop views have no sideways scroll. Keys change the scenario and rank; a status names the choice. The print file shows that choice and the model method. With scripts off, the default proposal shows and the full curve table can be opened. The saved proof checks the report size and selected losses against the saved curve. Costs, school coverage and stages stay unknown. This proves page behaviour, not real school reach or the full community report.
 
 Artifact: `artifacts/Q1.7/browser-proof.json`, with fresh report files in `artifacts/Q1.7/report/`, screen views and `artifacts/Q1.7/selected.pdf`.
+
+### C1.1
+
+```bash
+uv run --frozen pytest tests/test_complete_trips.py -q --tb=short
+/usr/bin/time -v -o /tmp/c11-real-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-C1.1-ci-proof
+uv run --frozen python artifacts/C1.1/collect.py
+uv run --frozen bikeplan verify /tmp/bikeplan-C1.1-ci-proof
+```
+
+Expect: trip checks pass. Strict trips need sourced bike entrances,
+confirmed directed links and crossing moves, and valid return routes.
+Both directions meet the shipped reach and detour limits. Separate
+route groups stay separate; a join needs valid travel directions.
+Missing entrances, unknown links and later work stay in the gaps.
+Calm first legs stay a model-score claim, apart from strict trips.
+The fresh real proof records each curve package and its exact work set.
+Missing entrance evidence cannot prove a strict route. The saved samples
+show that limit. The verify command checks file structure; full route
+replay is a later row. No model witness proves field safety.
+
+Artifact: `artifacts/C1.1/manifest.json`, `artifacts/C1.1/trip-samples.json`
+and `artifacts/C1.1/time-full.txt`.

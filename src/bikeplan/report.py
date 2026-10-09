@@ -308,6 +308,7 @@ GLOSSARY = {
     "AAA": "All Ages and Abilities: a street that is safe for a child or an older rider.",
     "access": "how many needed places a home can reach by bike.",
     "bike": "a bicycle, including an electric bicycle.",
+    "claim": "a plan statement that route data can check.",
     "disruption": "what a change takes from people who drive or park today.",
     "Furth": "Peter Furth, who wrote the stress tables that I use.",
     "km": "a kilometre, which is one thousand metres.",

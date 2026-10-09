@@ -31,6 +31,7 @@ from bikeplan.report import (
 )
 from bikeplan.snapshot import verify_snapshot
 from bikeplan.stress import score_edges, stress_features, stress_summary
+from bikeplan.trips import trip_section
 from bikeplan.width import fuse
 
 FILES = [
@@ -182,6 +183,7 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
         places = read_json(base / "places.geojson")["features"]
         homes = read_json(base / "access_homes.geojson")["features"]
         shapes = read_json(base / "projects.geojson")["features"]
+        shortlist_trips = read_json(base / "projects.geojson")["trip_proof"]
         raw = read_json(base / "frontier.json")
     kinds = list(weights)
     before = access["score"]
@@ -206,6 +208,7 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
     network = collection(features)
     place_layer = collection(with_ids(places, lambda p: f"{p['osm_id']}:{p['type']}"))
     shape_layer = collection(with_ids(shapes, lambda properties: properties["id"]))
+    shape_layer["trip_proof"] = shortlist_trips
     payload = {
         "summary": canon(summary),
         "projects": canon(records),
@@ -231,7 +234,7 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
         region,
         figures,
         json.dumps(calendar_dates(map_payload), sort_keys=True) + "\n",
-        details(payload["summary"], canon(sheets), profile, payload),
+        details(payload["summary"], canon(sheets), profile, payload) + trip_section(frontier),
         page_scripts(payload),
         change_section(
             frontier,
