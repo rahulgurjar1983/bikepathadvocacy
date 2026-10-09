@@ -236,3 +236,48 @@ def test_fr15_5_assumptions_do_not_override_recorded_turning_conflicts():
     movement = next(item for item in score["movements"] if item["outgoing"] == [2, 5, 0])
     assert movement["status"] == "unknown"
     assert not score["confirmed_aaa"]
+
+
+def test_fr15_5_stress_export_does_not_count_unknown_paths_as_confirmed():
+    from shapely.geometry import box
+
+    from bikeplan.stress import stress_features, stress_summary
+
+    graph = path_graph(width=None)
+    graph.graph.update(crs="EPSG:32756", boundary=box(-10, -10, 110, 10))
+    graph[1][2][0]["length_m"] = 100.0
+    scores = score_edges(graph, PROFILE)
+    properties = stress_features(graph, scores)[0]["properties"]
+    assert properties["aaa"] is False
+    assert properties["model_aaa"] is True
+    assert properties["all_ages_status"] == "unknown"
+    assert stress_summary(graph, scores)["km_aaa"] == 0
+
+
+def test_fr15_5_public_map_rows_use_confirmed_links():
+    from shapely.geometry import box
+
+    from bikeplan.report import segment_rows
+
+    graph = path_graph(width=None)
+    graph.graph.update(crs="EPSG:32756", boundary=box(-10, -10, 110, 10))
+    graph[1][2][0]["length_m"] = 100.0
+    rows = segment_rows(graph, PROFILE, {})
+    assert rows[0][3] == 0
+
+
+def test_fr15_5_route_crossing_names_unverified_phase(tmp_path):
+    from bikeplan.config import load_region
+    from bikeplan.network import build
+    from bikeplan.review import route_figures
+    from bikeplan.route import read_route
+    from tests.route_helpers import REGION, SNAPSHOT, densify, lonlat, write_gpx_track
+
+    region = load_region(REGION)
+    graph = build(SNAPSHOT, region, PROFILE)
+    route = write_gpx_track(tmp_path / "route.gpx", lonlat(densify([(200, 600), (600, 600)])))
+    result = route_figures(graph, PROFILE, read_route(route))["total"]
+    crossing = result["crossings"][0]
+    assert crossing["all_ages_status"] == "unknown"
+    assert "phase" in crossing["safety_reason"]
+    assert result["km_aaa"] == 0
