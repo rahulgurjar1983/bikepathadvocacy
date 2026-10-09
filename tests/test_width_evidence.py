@@ -229,3 +229,32 @@ def test_fr15_4_project_sheet_names_margin_and_source_confidence_separately():
     assert "Source confidence" in markup
     assert record["elements"][0]["model_margin"] == "robust"
     assert record["elements"][0]["source_confidence"] == "medium"
+
+
+def test_fr15_4_report_uses_source_dates_without_build_timestamps():
+    from bikeplan.page import page_scripts
+    from bikeplan.propose import project_records
+    from bikeplan.report import leaks
+
+    data = {
+        **street("tertiary", 10.0, 2, "yes", 50, 5000),
+        "width_tag_m": 10.0,
+        "width_date": "2026-10-01T00:00:00Z",
+    }
+    graph = line([(100, data)])
+    planning = planning_network(graph, PROFILE, REGION)
+    picks = greedy_picks(
+        graph,
+        planning,
+        [("school", 1)],
+        {0: 10},
+        {"school": 1.0},
+        REGION.proposals,
+        REGION.access.reach_m,
+        REGION.access.detour_max,
+    )
+    records = project_records(picks, planning)
+    assert records[0]["elements"][0]["carriageway"]["date"] == data["width_date"]
+    markup = page_scripts({"projects": records, "summary": {}, "project_shapes": {}})
+    assert leaks(markup, []) == []
+    assert "2026-10-01" in markup
