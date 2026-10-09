@@ -1,0 +1,25 @@
+diff --git a/src/bikeplan/fit.py b/src/bikeplan/fit.py
+index 30f21c6..f917e7a 100644
+--- a/src/bikeplan/fit.py
++++ b/src/bikeplan/fit.py
+@@ -165,19 +165,7 @@ def road_diet_option(segment: dict, profile: Profile, spare, parked) -> dict:
+ 
+ 
+ def verge_option(segment: dict, profile: Profile) -> dict:
+-    reserve = segment.get("reserve_m")
+-    width = segment.get("width_m")
+-    if reserve is None:
+-        return blocked("verge_path", "road reserve unknown")
+-    if width is None:
+-        return blocked("verge_path", "width unknown")
+-    verge = (reserve - width) / 2
+-    path = profile.widths_m.shared_path
+-    for desirable in (True, False):
+-        needs = width_for(path, desirable) + VERGE_CLEARANCE_M
+-        if verge + EPSILON >= needs:
+-            break
+-    return verdict("verge_path", needs, verge, widths="desirable" if desirable else "minimum")
++    return blocked("verge_path", "usable verge and constraints unknown; needs_survey")
+ 
+ 
+ def fit_options(segment: dict, profile: Profile) -> list[dict]:

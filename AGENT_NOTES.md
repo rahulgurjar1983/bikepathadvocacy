@@ -22,6 +22,27 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 - P10.1: resolved by the input proof-only gate path; run fresh proof before completion. Prior issue: fresh `origin/main` still has the base commit in `artifacts/P10.1/check.txt`. The grid tests pass there; see the command and result in `artifacts/P10.1/main-audit.txt`. The prior Bayside tests also passed on that base, so the red-green rule bars them. The old temp run files are now gone; the committed hashes are a past record, not a fresh byte check. Keep the row open and held until the operator fixes the rule and gate. Copy run proof out of pytest temp paths before a later test run clears them.
 
 
+### Q1.3
+
+FR-15.4 needs a rule repair for old tests. Fresh main still demands a
+verge fit from reserve and road width alone, with no usable verge or
+site checks. The owner rule says "MUST NOT change tests to make them
+pass"; PROMPT.md says "Never weaken a test." Spec 15 says not to keep
+old behaviour just to preserve a test. These rules clash here.
+
+Proof: run `bash artifacts/Q1.3/reproduce.sh`. It checks a fresh worktree
+at the commit in `artifacts/Q1.3/base-commit.txt`. Base checks pass; a
+small probe that rejects unknown verge space makes those checks fail.
+The saved logs and patch are in `artifacts/Q1.3/`. The probe also shows
+that a valid parking fix remains. It is not the full row fix.
+
+Input ask: allow the loop to retire or replace old checks that demand
+the policy which spec 15 removes, with new failing checks for the new
+policy. Or update those old checks on main with sourced usable verge
+fixtures. This must also work with the red-green rule; adding field
+data to an old case can still pass on base. Q1.3 stays open.
+
+
 ## BLOCKED
 
 - P10.1: resolved by the input proof-only gate path. Prior operator ask: add a rule and gate path for proof rows whose real tests pass on base code. The loop cannot edit `PROMPT.md` or `gates/redgreen.py`. Fresh base proof is in `artifacts/P10.1/main-audit.txt`; the gate marks a passing result as fake. Once that input fix ships, clear the hold and run the saved Bayside tests. Do not change code just to make a test fail.
