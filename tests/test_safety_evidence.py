@@ -214,3 +214,24 @@ def test_fr15_5_public_page_qualifies_all_ages_status():
     assert "does not guarantee child safety" in visible
     assert "safe for a child to ride alone" not in visible
     assert "street that is safe for a child or an older rider" not in visible
+
+
+def test_fr15_5_assumptions_do_not_override_recorded_turning_conflicts():
+    graph = crossing_graph(signal=True)
+    graph.graph["safety_evidence"] = {
+        "movements": [
+            {
+                "incoming": [1, 2, 0],
+                "outgoing": [2, 5, 0],
+                "source": "test signal plan",
+                "date": "2026-10-01",
+                "protected_phase": True,
+                "turning_conflicts": "permitted",
+                "bicycle_access": True,
+            }
+        ]
+    }
+    score = score_edges(graph, PROFILE, assumptions=True)[1, 2, 0]
+    movement = next(item for item in score["movements"] if item["outgoing"] == [2, 5, 0])
+    assert movement["status"] == "unknown"
+    assert not score["confirmed_aaa"]
