@@ -120,3 +120,5 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 - P10.1 is a proof row now. Use the narrow path in PROMPT.md; keep the tool unchanged and save fresh full-region proof. Past hash lists are not fresh output files.
 - The release failure for PR 103 reused the requested tag while scanning old releases. FR-0.31 fixes this in the operator inputs and protects scripts/release.sh from loop edits. Never upload new assets to an old tag.
 - Per-attempt model logs are separate from usage.csv. The installed service pins IDs and effort. A provider limit is not a stalled task.
+
+- Q1.1: Keep frontier gains and costs at full precision through report JSON. Use gain divided by cost plus one for both ranking and the stop. A free pick has a finite ratio. A capped curve needs a note even if its stop is earlier; show notes for all capped scenarios. The figure method must match the page text. `uv run python artifacts/Q1.1/collect.py` checks the saved curves and writes the small proof from a fresh Bayside run.
