@@ -25,7 +25,7 @@ Tags: [reasoning] needs deep checks, with no larger model by default; [routine] 
 - [x] **S0.1** Gates: red-green, test retention, no comments, no source reads, reading level, secrets, spec coverage, verification, inputs, generic code, ledger (FR-0.2, FR-0.3, FR-0.4, FR-0.5, FR-0.6, FR-0.7, FR-0.8, FR-0.9, FR-0.10, FR-0.16, FR-0.17, FR-0.18)
 - [x] **S0.2** Ralph loop, row picker, lean agent turns, cost log, model escalation, quiet CI wait and PR shipping (FR-0.13, FR-0.14, FR-0.20, FR-0.21, FR-0.22, FR-0.23, FR-0.25)
 - [x] **S0.3** Git hooks and Telegram notes (FR-0.15, FR-0.19)
-- [ ] **S0.6** Operator: use the $20 plans well; medium Sonnet/Sol first, bounded high-effort retries, larger models only by opt-in (FR-0.32)
+- [x] **S0.6** Operator: use the $20 plans well; medium Sonnet/Sol first, bounded high-effort retries, larger models only by opt-in (FR-0.32)
 - [x] **S0.5** Operator inputs: proof gate, task model routing, bounded stalls, attempt logs and safe release tags (FR-0.27, FR-0.28, FR-0.29, FR-0.30, FR-0.31)
 - [x] **S0.4** 👤 Operator: prove the loop end to end on a real turn: it picks P0.1, opens a PR, CI passes and the PR merges itself (FR-0.13, FR-0.22, FR-0.23, FR-0.25)
 

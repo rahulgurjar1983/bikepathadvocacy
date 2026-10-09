@@ -1,0 +1,25 @@
+S0.6: models within the monthly plans
+
+Date: 2026-10-09
+Base: 57a7be969a20c5952cb1e7b0f8d7455a56de0fde
+
+Five new FR-0.32 cases failed before code changes.
+Command: uv run --frozen pytest gates/tests/test_loop.py -q --tb=short
+Result: 44 passed in 21.29s
+Command: bash -n loop.sh
+Result: pass
+
+Default: claude-sonnet-5-5 and gpt-6.1-sol, medium effort, all rows.
+Retry: same models, high effort, within the three-stall bound.
+Larger role choices: explicit RALPH_ALLOW_PREMIUM=1 and model overrides.
+Service: RALPH_ALLOW_PREMIUM=0, standard models in all roles.
+Stale Opus/Astra role overrides cannot bypass the default policy.
+Both installed CLIs use plan logins; no API billing mode change.
+Claude USD estimates do not show a charge to the monthly plan.
+An active turn keeps its current model; the new policy starts next turn.
+
+Sources checked:
+https://learn.chatgpt.com/docs/models
+https://help.openai.com/en/articles/20001516-managing-usage-with-gpt-6-astra-in-work-and-codex
+https://support.claude.com/en/articles/14552983-models-usage-and-limits-in-claude-code
+https://support.claude.com/en/articles/11145838-use-claude-code-with-your-pro-or-max-plan
