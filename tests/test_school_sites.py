@@ -79,7 +79,7 @@ def school_case():
             "destination_ids": ["site-2"],
         },
     ]
-    return site_coverage(sites + [sites[0]], before, after, people, {})
+    return site_coverage([*sites, sites[0]], before, after, people, {})
 
 
 def test_fr16_4_unique_sites_campuses_and_resident_unions():
@@ -309,3 +309,50 @@ def test_fr16_4_school_proof_keeps_entrances_dropped_by_score_dedup(tmp_path):
         next(item for item in destinations if item["id"] == "node/2")["entrances"][0]["name"]
         == "East Gate"
     )
+
+
+def test_fr16_4_a_known_entrance_without_a_trip_is_not_an_unknown_gate():
+    from bikeplan.schools import site_coverage
+
+    gate = {
+        "id": "gate",
+        "name": "North gate",
+        "node": 2,
+        "status": "confirmed",
+        "source": "test survey",
+        "bike_accessible": True,
+    }
+    site = {
+        "id": "a",
+        "type": "school",
+        "source": "test source",
+        "scope": "council",
+        "destination_ids": ["a"],
+        "model_nodes": [2],
+        "entrances": [gate],
+    }
+    trips = {"strict": [], "groups": [], "gaps": []}
+    result = site_coverage([site], trips, trips, {0: 100}, {})
+    assert result["unknown_sites"] == []
+    assert result["sites"][0]["entrances"] == [gate]
+    assert result["served"]["after"] == []
+
+
+def test_fr16_4_school_headline_uses_the_selected_coverage():
+    from bikeplan.schools import school_opening
+
+    frontier = {
+        "default": "shipped",
+        "scenarios": [
+            {
+                "id": "shipped",
+                "recommended_stop": 0,
+                "trip_packages": [{"school_coverage": school_case()}],
+            }
+        ],
+    }
+    text = school_opening(frontier)
+    assert 'data-school="before">1</a>' in text
+    assert 'data-school="after">2</a>' in text
+    assert 'data-school="new">1</a>' in text
+    assert "Coverage of mapped sites" in text
