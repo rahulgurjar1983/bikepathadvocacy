@@ -15,10 +15,7 @@ args = sys.argv[1:]
 with open(os.environ["GH_LOG"], "a") as handle:
     handle.write(json.dumps(args) + "\\n")
 if args[:2] == ["release", "view"]:
-    if "--json" in args:
-        print("index.html")
-    else:
-        sys.exit(1)
+    sys.exit(1)
 if args[:2] == ["release", "list"]:
     print("v-old")
 if args[:2] == ["release", "download"]:
@@ -126,5 +123,6 @@ def test_fr0_31_skips_past_releases_without_an_index(repo, tmp_path):
     )
     assert result.returncode == 0, result.stdout + result.stderr
     calls = [json.loads(line) for line in log.read_text().splitlines()]
-    assert not any(call[:3] == ["release", "download", "v-legacy"] for call in calls)
+    assert sum(call[:3] == ["release", "download", "v-legacy"] for call in calls) == 1
+    assert "has no index" in result.stdout
     assert any(call[:3] == ["release", "upload", "v-new"] for call in calls)
