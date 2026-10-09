@@ -58,6 +58,14 @@ These requirements amend specs 04 to 14 where named below. New rows cite both ID
 
 For each row, read only the named requirements, their acceptance cases and the specs it amends. Add small failing cases before code. Save one real proof with the exact command, config hash, snapshot hash and commit. Do not lower min_gain, narrow the input area or change a standard to make a result pass. The field audit may need a person, but all work independent of it must continue with uncertainty shown.
 
+### Legacy worked-case inputs
+
+For Q1.3 and Q1.4, older worked cases may lack source fields that these approved rules now require. The loop may add explicit toy evidence in fixture data, setup or helper builders, in a tests-only commit. Keep every old test function body, assertion and parameter case intact. Use separate new test functions for the new safety rules; each new case must fail on base.
+
+For Q1.3, this applies to the worked street inputs used by test_fit_options.py, test_fit_choice.py, test_fit_disruption.py and test_fit_separation.py. Keep their fit, width, traffic, choice and cost checks. State independent usable verge widths and site constraints for cases meant to have known space. Keep unknown and narrow cases as distinct input records. Do not compute a supposed observation from reserve minus assumed verges, assign known evidence to all streets, patch product results or label toy data as a real survey.
+
+An old test with the same body can pass on base after its input builder is enriched. FR-0.2 tests new or changed function bodies, not unchanged old cases; no gate exception is needed for this fixture-only path. If a test body or a real source observation must change, leave that case intact and report the exact remaining clash. Do not waive red-green, drop checks or restore the banned reserve-only proof.
+
 ## 5. Sources
 
 Use existing tools: pytest and its markers for checks, OSMnx and SciPy for the graph, Selenium for browser proof, and standard data formats for observations. Build on those tools rather than making new runners.
