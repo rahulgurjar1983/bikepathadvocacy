@@ -1,0 +1,8 @@
+{
+  "base_commit": "45ea37e9aa89e81aa4ad9b87cdab5fa67fbcdc4a",
+  "command": "uv run python artifacts/Q1.2/release_probe.py /tmp/bikepath-Q1.2-current-main",
+  "private_reviews_discovered": 1,
+  "private_report_uploaded": true,
+  "private_archive_uploaded": true,
+  "upload_tool": "fake gh; no network upload"
+}
