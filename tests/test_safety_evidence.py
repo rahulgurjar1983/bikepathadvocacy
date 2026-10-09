@@ -281,3 +281,76 @@ def test_fr15_5_route_crossing_names_unverified_phase(tmp_path):
     assert crossing["all_ages_status"] == "unknown"
     assert "phase" in crossing["safety_reason"]
     assert result["km_aaa"] == 0
+
+
+def test_fr15_5_sourced_street_observations_confirm_only_matching_values():
+    graph = path_graph()
+    graph[1][2][0].update(
+        bike_facility="none",
+        highway="residential",
+        lanes_total=2,
+        lanes_dir=1,
+        oneway=False,
+        speed_kmh=30,
+        speed_source="default",
+        adt=750,
+        adt_source="default",
+    )
+    graph.graph["safety_evidence"] = {
+        "streets": [
+            {
+                "edge": [1, 2, 0],
+                "source": "explicit toy traffic survey",
+                "date": "2026-10-01",
+                "speed_kmh": 30,
+                "adt": 750,
+            }
+        ]
+    }
+    assert score_edges(graph, PROFILE)[1, 2, 0]["confirmed_aaa"]
+    graph.graph["safety_evidence"]["streets"][0]["adt"] = 3000
+    assert not score_edges(graph, PROFILE)[1, 2, 0]["confirmed_aaa"]
+
+
+def test_fr15_5_planned_phase_is_not_existing_crossing_evidence():
+    from bikeplan.safety import movement_status
+
+    record = {
+        "stage": "proposed",
+        "source": "explicit toy signal design",
+        "date": "2026-10-01",
+        "protected_phase": True,
+        "turning_conflicts": "protected",
+        "bicycle_access": True,
+    }
+    status, reason = movement_status(record, {"signal": True, "refuge": False}, None, None)
+    assert status == "unknown"
+    assert "proposed" in reason
+
+
+def test_fr15_5_default_junction_pick_requires_sourced_proposed_movements():
+    from bikeplan.propose import Planning, confirmed_planning
+
+    graph = crossing_graph()
+    planning = Planning(
+        {(1, 2, 0): {"cost": 100, "needs": ("junction:2",)}},
+        {"junction:2": {"kind": "junction", "fix": "signals", "junction": 2}},
+    )
+    assert not confirmed_planning(graph, PROFILE, planning).edges
+    graph.graph["safety_evidence"] = {
+        "movements": [
+            {
+                "incoming": [1, 2, 0],
+                "outgoing": [2, 5, 0],
+                "stage": "proposed",
+                "fix": "signals",
+                "source": "explicit toy signal design",
+                "date": "2026-10-01",
+                "protected_phase": True,
+                "turning_conflicts": "protected",
+                "bicycle_access": True,
+            }
+        ]
+    }
+    assert (1, 2, 0) in confirmed_planning(graph, PROFILE, planning).edges
+    assert not score_edges(graph, PROFILE)[1, 2, 0]["confirmed_aaa"]
