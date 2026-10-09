@@ -317,9 +317,10 @@ main() {
     turn_log=".ralph/iter-${stamp}-$((i + 1)).log"
     row_id="${row%% *}"
     note="$row_id"
+    python3 -m gates.checkpoint install >>ralph.log 2>&1 || exit 2
     recovery="$(python3 -m gates.checkpoint pending "$row_id")" || exit 2
     if [ "$recovery" != "[]" ]; then
-      note+=$'\n'"Saved work for this row: $recovery. Resume its branch and run python3 -m gates.checkpoint restore before new edits or merging main. Keep the stash until this work ships."
+      note+=$'\n'"Saved work for this row: $recovery. Resume its branch and run python3 .ralph/checkpoint.py restore before new edits or merging main. Keep the stash until this work ships."
     fi
     prompt+=$'\n\n'"Work on this row only: ${row}. Follow PROMPT.md. The system turn note is its row ID."
     model="$base_model"

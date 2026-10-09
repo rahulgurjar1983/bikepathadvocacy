@@ -6,8 +6,6 @@ import sys
 import uuid
 from pathlib import Path
 
-from gates.inputs import is_input
-
 ROOT = Path(".ralph/checkpoints")
 FILES = {
     "README.md",
@@ -51,6 +49,8 @@ def pending(row: str) -> list[dict]:
 
 
 def save() -> dict | None:
+    from gates.inputs import is_input
+
     paths = dirty_paths()
     if not paths:
         return None
@@ -110,11 +110,16 @@ def restore() -> dict | None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("action", choices=["save", "restore", "pending"])
+    parser.add_argument("action", choices=["save", "restore", "pending", "install"])
     parser.add_argument("row", nargs="?")
     args = parser.parse_args(argv)
     try:
-        if args.action == "pending":
+        if args.action == "install":
+            launcher = Path(".ralph/checkpoint.py")
+            launcher.parent.mkdir(parents=True, exist_ok=True)
+            launcher.write_bytes(Path(__file__).read_bytes())
+            result = str(launcher)
+        elif args.action == "pending":
             if args.row is None:
                 parser.error("pending needs a row")
             result = pending(args.row)
