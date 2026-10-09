@@ -11,7 +11,7 @@ This is the master spec. It states the goals, the method, the data, and the rule
 
 ## 2. Solution
 
-`bikeplan` turns open data into a ranked list of bike path projects for any region. Each project says where to build, what to build, how much road space it takes from cars, and how many people it links to the places they need. Every number comes with a source and a command that rebuilds it.
+`bikeplan` turns open data into proposed bike links and community packages for a region. The public report leads with useful trips, places served, local impacts, money, delivery stages and the next council decision under spec 16. Ranked projects and their evidence explain how the package is built. Each project says where to build, what to build, how much road space it takes from cars, and how many people it links to the places they need. Every number comes with a source and a command that rebuilds it.
 
 Bayside Council in Sydney, NSW, Australia is the proof of concept. A second region in another country proves the method is generic.
 
@@ -54,7 +54,7 @@ The command line tool is `bikeplan`. The main commands are `bikeplan snapshot`, 
 
 ### 5.1 Safety
 
-Each street gets a Level of Traffic Stress (LTS) score from 1 to 4. LTS 1 is calm enough for a child. We use the Furth LTS tables, version 2.2 (May 2022), with speeds turned into km/h. Crossings of busy roads without signals use the Mineta crossing tables (Tables 7 and 8 of report 11-19). A hard crossing raises the score of the side street that meets it.
+Each street gets a Level of Traffic Stress (LTS) score from 1 to 4. LTS 1 is the calmest model class; it does not guarantee child safety. We use the Furth LTS tables, version 2.2 (May 2022), with speeds turned into km/h. Crossings of busy roads without signals use the Mineta crossing tables (Tables 7 and 8 of report 11-19). A hard crossing raises the score of the side street that meets it.
 
 The goal is AAA. A street counts as AAA when it is a path or a kerb-protected cycleway, or when it is LTS 1 and also meets the local limits for mixed traffic. In NSW those limits are 30 km/h or less and under 2,000 vehicles a day (TfNSW Cycleway Design Toolbox). Each region's profile sets its own limits.
 
@@ -164,9 +164,15 @@ A task is done only when all of these hold:
 | `specs/10-adapters-au.md` | Australian and NSW data adapters |
 | `specs/11-generic.md` | Command line, Docker, test regions and end-to-end runs |
 | `specs/12-validation.md` | Checks against the council plan, data quality and sensitivity |
+| `specs/13-public-report.md` | The public report and release figures |
+| `specs/14-review.md` | Review a route or plan |
+| `specs/15-review-improvements.md` | Trustworthy advice, validation and council use |
+| `specs/16-community-proposal.md` | Community outcomes, local impacts, options and delivery |
 
 Spec numbers come from `specs/REGISTRY.md`.
 
 ## Review repair plan
 
 Spec 15 defines the review fixes and their acceptance cases. It amends the named older rules. The loop takes the repair rows first, then finishes the adapter and validation rows. A model result is a planning estimate; all-ages status does not guarantee that a child can ride alone. Field gaps stay visible.
+
+Spec 16 defines the approved community report and its acceptance cases. Its examples are not real counts. Each named package must prove the trips, schools and space changes it claims. Unknown fit, funding and delivery dates stay visible. The loop builds the report rows before the remaining phases, while separate field evidence tasks stay open.

@@ -6,7 +6,7 @@ You are one turn of a build loop that runs on its own. Do one task well, save it
 
 1. `~/.claude/CLAUDE.md`: the owner's rules. They beat any default.
 2. `SPECIFICATION.md`: the master spec.
-3. Only the spec files your row cites (`specs/NN-*.md`). Review rows also read spec 15, including its acceptance table. Follow each amended rule there.
+3. Only the spec files your row cites (`specs/NN-*.md`). Review rows also read spec 15, including its acceptance table. Rows citing FR-16 read spec 16 and its acceptance cases; it governs the approved community report. Follow each amended rule.
 4. `PROGRESS.md`: the task list.
 5. `AGENT_NOTES.md`: tips and traps from past turns. Add to it.
 
@@ -32,6 +32,7 @@ You are one turn of a build loop that runs on its own. Do one task well, save it
 - **Fail hard.** If a tool or check cannot run, the step fails. Do not skip it, warn and go on, or fall back to a weaker check.
 - **Shipped settings.** Prove a row with the region files and profiles as they ship. Never change a threshold, a region file or a profile to get a result. If the shipped settings fail the row's purpose, leave the row open, write a spec issue and an `input_blocked` result, then stop.
 - **No outside contact.** Do not message people, send email or publish private routes. Record the missing ask in the repo.
+- **Community proposal.** For report work, follow spec 16 when cited: outcome and trade-offs first, one package across every view, then local works and delivery. The owner's 40 schools, 500 parking spaces and 20 roads were examples, never measured results or targets. Count school sites and resident access with their actual scope; do not invent pupil reach, field safety, costs, owners, consent or funded dates. Missing evidence stays visible and does not block truthful report code.
 - **Real outcomes.** Test what the code does, not what its source says. A test that reads source files, or passes without the code, is fake. The red-green gate will catch it.
 - **Offline runs.** Only `bikeplan snapshot` may use the network. Every other command reads the snapshot.
 - **Every number has a command.** Any number in a doc or report must come with a command that rebuilds it.
