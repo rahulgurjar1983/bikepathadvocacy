@@ -6,7 +6,7 @@ Marks: `[ ]` open, `[~]` started, `[x]` done. 🔒 waits on a sign-off. 👤 nee
 
 ## Review repairs: work these before the remaining phases
 
-Tags: [reasoning] needs deep checks; [routine] is a scoped build; [proof] only adds tests and proof, with no tool change. A row's spec lists its acceptance cases. Each row below reads spec 15 and the older specs named by its IDs.
+Tags: [reasoning] needs deep checks, with no larger model by default; [routine] is a scoped build; [proof] only adds tests and proof, with no tool change. A row's spec lists its acceptance cases. Each row below reads spec 15 and the older specs named by its IDs.
 
 - [ ] **Q1.1** [reasoning] Finite stop rule, exact gain data, correct explanation and curve-limit notice; rebuild Bayside with shipped weights (FR-15.1, FR-8.14)
 - [ ] **Q1.2** [routine] Enforce private route paths and release exclusion; the input branch adds the ignore rule now (FR-15.18, FR-14.12)
@@ -25,6 +25,7 @@ Tags: [reasoning] needs deep checks; [routine] is a scoped build; [proof] only a
 - [x] **S0.1** Gates: red-green, test retention, no comments, no source reads, reading level, secrets, spec coverage, verification, inputs, generic code, ledger (FR-0.2, FR-0.3, FR-0.4, FR-0.5, FR-0.6, FR-0.7, FR-0.8, FR-0.9, FR-0.10, FR-0.16, FR-0.17, FR-0.18)
 - [x] **S0.2** Ralph loop, row picker, lean agent turns, cost log, model escalation, quiet CI wait and PR shipping (FR-0.13, FR-0.14, FR-0.20, FR-0.21, FR-0.22, FR-0.23, FR-0.25)
 - [x] **S0.3** Git hooks and Telegram notes (FR-0.15, FR-0.19)
+- [ ] **S0.6** Operator: use the $20 plans well; medium Sonnet/Sol first, bounded high-effort retries, larger models only by opt-in (FR-0.32)
 - [x] **S0.5** Operator inputs: proof gate, task model routing, bounded stalls, attempt logs and safe release tags (FR-0.27, FR-0.28, FR-0.29, FR-0.30, FR-0.31)
 - [x] **S0.4** 👤 Operator: prove the loop end to end on a real turn: it picks P0.1, opens a PR, CI passes and the PR merges itself (FR-0.13, FR-0.22, FR-0.23, FR-0.25)
 
