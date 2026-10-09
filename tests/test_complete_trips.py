@@ -290,3 +290,19 @@ def test_fr16_3_snapshot_evidence_cannot_confirm_a_failed_changed_graph(tmp_path
     result = complete_trips(data[0], {0: 100}, destinations, links, movements, set(), 2680, 1.25)
     assert result["strict"] == []
     assert "later-link" in result["later_work"]
+
+
+def test_fr16_3_a_prohibited_movement_cannot_join_route_groups():
+    from bikeplan.trips import route_groups
+
+    witnesses = [
+        {"outbound": {"edges": [[0, 1, 0]]}, "return": {"edges": [[1, 0, 0]]}},
+        {"outbound": {"edges": [[1, 2, 0]]}, "return": {"edges": [[2, 1, 0]]}},
+    ]
+    movements = {
+        ((0, 1, 0), (1, 2, 0)): {"status": "confirmed", "legal": False},
+        ((2, 1, 0), (1, 0, 0)): {"status": "confirmed", "legal": True},
+    }
+    groups, joins = route_groups(witnesses, movements)
+    assert len(groups) == 2
+    assert joins == []
