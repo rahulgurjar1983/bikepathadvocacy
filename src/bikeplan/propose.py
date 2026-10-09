@@ -252,13 +252,19 @@ def confirmed_planning(graph, profile, planning: Planning) -> Planning:
             fixed["bicycle"] = "designated"
             fixed["bike_lane_width_m"] = profile.widths_m.one_way_cycleway.min.value
         changed.edges[u, v, k].update(fixed)
+    evidence = graph.graph.get("safety_evidence", {})
+    movements = []
+    for record in evidence.get("movements", []):
+        if record.get("stage") == "proposed":
+            node = record["incoming"][1]
+            element = planning.elements.get(f"junction:{node}")
+            if element is None or element["fix"] != record.get("fix"):
+                continue
+            record = {**record, "stage": "existing"}
+        movements.append(record)
+    changed.graph["safety_evidence"] = {**evidence, "movements": movements}
     scores = score_edges(changed, profile)
-    edges = {
-        key: item
-        for key, item in planning.edges.items()
-        if scores[key]["confirmed_aaa"]
-        and all(planning.elements[name]["kind"] != "junction" for name in item["needs"])
-    }
+    edges = {key: item for key, item in planning.edges.items() if scores[key]["confirmed_aaa"]}
     used = {name for item in edges.values() for name in item["needs"]}
     return Planning(
         edges,

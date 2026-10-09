@@ -41,6 +41,8 @@ def street_status(data, model_aaa, profile):
 
 
 def movement_status(record, flags, main, crossing_lts):
+    if record.get("stage") == "proposed":
+        return "unknown", "proposed crossing evidence is not an existing movement"
     sourced = has_record(record)
     if record.get("protected_phase") is True:
         if not sourced or record.get("bicycle_access") is not True:
@@ -82,10 +84,22 @@ def audit(
     records = {
         (tuple(item["incoming"]), tuple(item["outgoing"])): item
         for item in graph.graph.get("safety_evidence", {}).get("movements", [])
+        if item.get("stage") != "proposed"
+    }
+    streets = {
+        tuple(item["edge"]): item
+        for item in graph.graph.get("safety_evidence", {}).get("streets", [])
     }
     result = {}
     for key, model_aaa in model_scores.items():
-        status, reason = street_status(graph.edges[key], model_aaa, profile)
+        data = graph.edges[key]
+        record = streets.get(key, {})
+        if has_record(record) and all(
+            record.get(field) == data.get(field) and record.get(field) is not None
+            for field in ("speed_kmh", "adt")
+        ):
+            data = {**data, "speed_source": record["source"], "adt_source": record["source"]}
+        status, reason = street_status(data, model_aaa, profile)
         result[key] = {
             "all_ages_status": status,
             "confirmed_aaa": status == "confirmed",
