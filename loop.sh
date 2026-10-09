@@ -254,8 +254,11 @@ main() {
   fingerprint="$(cksum <"$self")"
 
   local i=0 idle=0 row status stamp turn_log note prompt agent_status secs rung rung_log
-  local model row_id before progress effort role codex_model codex_effort codex_skills
+  local model row_id before progress effort role codex_model codex_effort codex_skills recovery
   local limited_logs=()
+  if [ ! -f .ralph/checkpoint.py ]; then
+    python3 -m gates.checkpoint install >>ralph.log 2>&1 || exit 2
+  fi
   while [ "$i" -lt "$max" ]; do
     if [ -f STOP ]; then
       log "STOP file present; ending after $i turn(s)"
@@ -272,6 +275,10 @@ main() {
       if ! git fetch -q origin 2>>ralph.log; then
         log "git fetch failed; the loop stopped"
         exit 2
+      fi
+      if ! python3 .ralph/checkpoint.py save >>ralph.log 2>&1; then
+        log "cannot save unfinished loop work; the loop stopped"
+        exit 1
       fi
       if ! git checkout -q main 2>>ralph.log || ! git merge -q --ff-only origin/main 2>>ralph.log; then
         log "cannot return to an up-to-date main; commit or clear the work tree"
@@ -313,6 +320,11 @@ main() {
     turn_log=".ralph/iter-${stamp}-$((i + 1)).log"
     row_id="${row%% *}"
     note="$row_id"
+    python3 -m gates.checkpoint install >>ralph.log 2>&1 || exit 2
+    recovery="$(python3 -m gates.checkpoint pending "$row_id")" || exit 2
+    if [ "$recovery" != "[]" ]; then
+      note+=$'\n'"Saved work for this row: $recovery. Resume its branch and run python3 .ralph/checkpoint.py restore before new edits or merging main. Keep the stash until this work ships."
+    fi
     prompt+=$'\n\n'"Work on this row only: ${row}. Follow PROMPT.md. The system turn note is its row ID."
     model="$base_model"
     effort="$routine_effort"

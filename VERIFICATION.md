@@ -958,3 +958,14 @@ full safety proof is a later row.
 
 Artifact: `artifacts/Q1.3/manifest.json`, `artifacts/Q1.3/width-sample.json`,
 `artifacts/Q1.3/summary.json` and `artifacts/Q1.3/time-full.txt`.
+
+
+### S0.8
+
+```bash
+uv run --frozen pytest gates/tests/test_checkpoint.py gates/tests/test_loop.py -q --tb=short
+bash -n loop.sh
+```
+
+Expect: all 52 focused checks pass. Seven new cases fail on the base. Unfinished proof, staged tests and untracked fixtures survive a switch to main and restore on the exact branch and head. Inputs and other branches are never stashed. Changed heads keep the saved work intact. The row note names its saved branch. The local stash is kept; no feature is marked shipped by a checkpoint. CI runs the full suite before merge.
+Artifact: `artifacts/S0.8/check.txt`
