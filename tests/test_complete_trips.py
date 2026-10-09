@@ -317,3 +317,20 @@ def test_fr16_3_witnesses_name_the_selected_changed_graph_dependencies():
     after = trips(data, selected=("link-work",))
     assert len(after["strict"]) == 2
     assert after["strict"][0]["required_elements"] == ["link-work"]
+
+
+def test_fr16_3_candidate_links_keep_model_needs_without_source_stress(tmp_path):
+    data = town()
+    data[0].add_edge(0, 2, "new", bike_ok=True, candidate=True, length_m=150.0)
+    (tmp_path / "places.json").write_text(json.dumps({"trip_evidence": {}}))
+    planning = Planning(
+        {
+            **{key: {"needs": ()} for key in data[1]},
+            (0, 2, "new"): {"needs": ("candidate-work",)},
+        },
+        {},
+    )
+    scores = {key: {"aaa": True, "lts": 1} for key in data[1]}
+    _, links, _ = snapshot_trip_inputs(tmp_path, [], [], data[0], scores, planning)
+    assert links[(0, 2, "new")]["status"] == "unknown"
+    assert links[(0, 2, "new")]["model_needs"] == ("candidate-work",)
