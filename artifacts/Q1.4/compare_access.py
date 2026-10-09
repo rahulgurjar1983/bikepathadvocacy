@@ -40,7 +40,10 @@ proof = {
     "snapshot_hash": hashlib.sha256((snapshot / "manifest.json").read_bytes()).hexdigest(),
     "command": "uv run python artifacts/Q1.4/compare_access.py",
     "scope": "Fresh full Bayside report and access modes; model evidence, not field validation",
-    "full_command": "uv run bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out data/output/Q1.4/full",
+    "full_command": (
+        "uv run bikeplan run regions/au-nsw-bayside.yaml "
+        "--snapshot data/cache/au-nsw-bayside/2026-10-01 --out data/output/Q1.4/full"
+    ),
     "edge_status_counts": dict(
         sorted(Counter(item["all_ages_status"] for item in scores.values()).items())
     ),
