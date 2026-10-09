@@ -18,7 +18,7 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Spec issues
 
-### Q1.4 prior input proof
+### Q1.4 prior input proof (resolved)
 
 The fixture-only rule in spec 15 now lets the loop add toy evidence in
 fixture data or input builders. The old proof below predates that rule.
@@ -30,18 +30,6 @@ snapshot hashes. Rebuild the source audit with
 It shows that the grid has class traffic defaults and nearby signal tags,
 with no phase or turn records. Those tags alone cannot confirm a crossing.
 
-- Q1.4: Keep toy traffic records tied to exact edge values. Keep planned
-  phases apart from existing crossings. The grid input helper adds phase
-  proof only at its signal site and planned signal site, leaving both
-  unsignalised crossings without that proof. Old test bodies stay intact.
-- Q1.4: Stress exports, report maps and route figures use confirmed status.
-  The internal model AAA flag stays separate. An unknown turn can exclude
-  a whole edge; the current graph filter is conservative and does not
-  claim to prove every possible route movement.
-- Q1.4: Use the explicit access assumptions mode to compare class defaults
-  and unverified signal phases. Known turning conflicts stay unknown.
-  A proposed phase can support a matching junction fix but never the
-  existing network. Real source observations must stay unchanged.
 
 The confirmed filter keeps survey options when it filters planning links.
 The access assumptions flag names unverified signal phases and turn
@@ -220,3 +208,17 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   It is large. The full Bayside timing in `artifacts/Q1.4/time-full.txt`
   does not meet the time or memory goal on this host. Use the saved
   command to check those limits; do not cite this as performance proof.
+
+- Q1.4: Keep toy traffic records tied to exact edge values. Keep planned
+  phases apart from existing crossings. The grid input helper adds phase
+  proof only at its signal site and planned signal site, leaving both
+  unsignalised crossings without that proof. Old test bodies stay intact.
+- Q1.4: Stress exports, report maps and route figures use confirmed status.
+  The internal model AAA flag stays separate. An unknown turn can exclude
+  a whole edge; the current graph filter is conservative and does not
+  claim to prove every possible route movement.
+- Q1.4: Use the explicit access assumptions mode to compare class defaults
+  and unverified signal phases. Known turning conflicts stay unknown.
+  A proposed phase can support a matching junction fix but never the
+  existing network. Real source observations must stay unchanged.
+
