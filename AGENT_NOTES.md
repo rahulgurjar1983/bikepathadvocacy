@@ -18,6 +18,23 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Spec issues
 
+### Q1.2 fresh main proof
+
+The release gap still exists on fresh main. Run `git fetch origin`, then
+`git worktree add --detach /tmp/bikepath-Q1.2-20261010-main origin/main`.
+Run `uv run python artifacts/Q1.2/release_probe.py /tmp/bikepath-Q1.2-20261010-main`.
+The probe selects the private report and archive for upload. It uses
+made-up files and fake `gh`; nothing is sent. The base hash, command
+and result are in `artifacts/Q1.2/input-blocker.json`.
+
+The ignore check passes with the command in that file. The release
+script still follows a link from `routes/` into `data/private/` when
+`public: true` is set. The operator must fix resolved private path
+checks in `scripts/release.sh`, for both build and copy. The CLI cannot
+fix the copy path that skips it. FR-0.10 and FR-0.31 bar loop edits to
+that input. Keep Q1.2 open until the input is fixed.
+
+
 - Q1.2 fresh check: the ignore rule is in place, but the release gap remains on main after PR 110. Run `git fetch origin` and `git worktree add --detach /tmp/bikepath-Q1.2-20261009-main origin/main`, then `uv run python artifacts/Q1.2/release_probe.py /tmp/bikepath-Q1.2-20261009-main`. The probe finds the private review and selects its report and archive for upload through fake `gh`. No real upload occurs. The base hash and result are in `artifacts/Q1.2/input-blocker.json`. The operator must fix private path checks in `scripts/release.sh`, including the copy path, before this row can ship. Use resolved paths to catch links from `routes/` into `data/private/`. Keep Q1.2 open.
 
 - Q1.2: blocked by the release input on fresh `origin/main`. Run `git fetch origin` then `git worktree add --detach /tmp/bikepath-Q1.2-main origin/main`. Run `uv run python artifacts/Q1.2/release_probe.py /tmp/bikepath-Q1.2-main`. The probe uses the base release script and its test tools, with fake `gh`; it makes no upload. It puts a test review under `data/private/` and links it from `routes/`, with `public: true`. The result is `private_reviews_discovered: 1`, `private_report_uploaded: true` and `private_archive_uploaded: true`. These mean the script picks the private report and archive for upload. The CLI cannot fix discovery or the copy path that skips the CLI. The operator must fix `scripts/release.sh` to exclude resolved private paths and check route permission before reuse or build. FR-0.10 and FR-0.31 bar loop edits to that file. Keep this row open. This probe uses made-up files, not a person's route. Base: `git -C /tmp/bikepath-Q1.2-main rev-parse HEAD`.
