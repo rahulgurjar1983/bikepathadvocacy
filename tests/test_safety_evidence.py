@@ -174,9 +174,10 @@ def test_fr15_5_default_access_excludes_assumed_links_in_real_snapshot(tmp_path)
 
 
 def test_fr15_5_default_picks_exclude_a_path_with_no_width():
+    from shapely.geometry import box
+
     from bikeplan.config import load_region
     from bikeplan.propose import confirmed_planning, planning_network
-    from shapely.geometry import box
 
     graph = path_graph(width=None)
     graph.graph.update(crs="EPSG:32756", boundary=box(-10, -10, 110, 10))
