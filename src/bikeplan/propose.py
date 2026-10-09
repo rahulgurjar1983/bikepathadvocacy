@@ -1028,6 +1028,44 @@ def scenario_curve(
     }
 
 
+def survey_layer(planning: Planning) -> dict:
+    groups = {}
+    for item in planning.survey_options:
+        options = item["options"]
+        properties = {
+            "street": item["street"],
+            "fit_status": "needs_survey",
+            "fixes": sorted({option["fix"] for option in options}),
+            "survey_checks": sorted(
+                {check for option in options for check in option["survey_checks"]}
+            ),
+            "source_confidence": sorted({option["source_confidence"] for option in options}),
+            "model_margin": sorted({option["model_margin"] or "unknown" for option in options}),
+        }
+        key = json.dumps(properties, sort_keys=True)
+        group = groups.setdefault(key, {"properties": properties, "segments": [], "lines": []})
+        group["segments"].append(str(item["segment"]))
+        geometry = item["geometry"]
+        lines = (
+            [geometry["coordinates"]]
+            if geometry["type"] == "LineString"
+            else geometry["coordinates"]
+        )
+        group["lines"].extend(lines)
+    features = []
+    for key, group in sorted(groups.items()):
+        geometry = shapely.line_merge(MultiLineString(group["lines"]))
+        features.append(
+            {
+                "type": "Feature",
+                "id": "survey:" + project_id([key]),
+                "properties": group["properties"] | {"segments": sorted(group["segments"])},
+                "geometry": mapping(geometry),
+            }
+        )
+    return {"type": "FeatureCollection", "features": features}
+
+
 def write_propose(
     graph,
     region,
@@ -1053,18 +1091,7 @@ def write_propose(
         graph, region, profile, placed, resident.people, weights, names, legs, corridors, stats
     )
     records = project_records(picked, planning)
-    surveys = {
-        "type": "FeatureCollection",
-        "features": [
-            {
-                "type": "Feature",
-                "id": item["id"],
-                "geometry": item["geometry"],
-                "properties": {key: value for key, value in item.items() if key != "geometry"},
-            }
-            for item in planning.survey_options
-        ],
-    }
+    surveys = survey_layer(planning)
     if stats is not None:
         stats["survey_options"] = surveys
     if sheets is not None:

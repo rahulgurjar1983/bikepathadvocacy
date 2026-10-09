@@ -108,8 +108,14 @@ def network_features(graph, profile, weights) -> tuple[list[dict], dict]:
         properties["carriageway"] = found["carriageway"]
         properties["road_reserve"] = found["road_reserve"]
         properties["usable_verge"] = found["usable_verge"]
-        properties["fit"] = fit["status"] if fit else None
-        properties["fix"] = fit["fix"] if fit else None
+        properties["fit"] = (
+            "needs_survey"
+            if fit and fit["survey_options"] and not fit["confirmed"]
+            else fit["status"]
+            if fit
+            else None
+        )
+        properties["fix"] = fit["fix"] if fit and fit["confirmed"] else None
     return features, stress_summary(graph, scores)
 
 

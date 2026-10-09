@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return { className: "map-survey", color: "#a65b00", weight: 4, dashArray: "4 4" };
     },
     onEachFeature: function (feature, layer) {
-      layer.bindTooltip(describe(feature.properties.street + ": needs survey"), { sticky: true });
+      layer.bindTooltip(describe(feature.properties.street + ": needs survey; check " + feature.properties.survey_checks.join(", ")), { sticky: true });
     },
   });
   document.getElementById("layer-survey").addEventListener("change", function (event) {
