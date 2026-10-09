@@ -191,3 +191,17 @@ def test_fr15_4_survey_fixes_are_not_labelled_as_default_network_works():
     )
     assert features[0]["properties"]["fix"] is None
     assert features[0]["properties"]["fit"] == "needs_survey"
+
+
+def test_fr15_4_survey_layer_lists_checks_and_keeps_links_to_width_records():
+    _, outputs, _, _ = build_all(REGION, PROFILE, "tests/fixtures/test-grid/snapshot")
+    surveys = json.loads(outputs["survey_options.geojson"])["features"]
+    assert surveys
+    for feature in surveys:
+        properties = feature["properties"]
+        assert properties["segments"]
+        assert properties["fixes"]
+        assert set(CHECKS) <= set(properties["survey_checks"])
+        assert properties["source_confidence"]
+        assert properties["model_margin"]
+        assert properties["fit_status"] == "needs_survey"
