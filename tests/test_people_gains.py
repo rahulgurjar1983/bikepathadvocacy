@@ -73,3 +73,36 @@ def test_fr15_6_shared_population_unit_is_allocated_once():
     assert found["unique_people"] == pytest.approx(90)
     assert found["unique_people_by_type"] == pytest.approx({"school": 90, "station": 90})
     assert found["gains_by_type"] == pytest.approx(180)
+
+
+def test_fr15_6_report_tables_label_unique_people_and_type_gains():
+    from bikeplan.page import projects_section
+
+    picked, planning = picks()
+    records = project_records(picked, planning)
+    html = projects_section(records)
+    assert "Unique people" in html
+    assert "Gains counted by type" in html
+    assert "<code>30</code>" in html
+    assert "<code>60</code>" in html
+
+
+def test_fr15_6_route_review_keeps_all_three_measures(tmp_path):
+    from bikeplan.config import load_profile, load_region
+    from bikeplan.network import build
+    from bikeplan.review import route_figures
+    from bikeplan.route import read_route
+    from tests.route_helpers import REGION as PATH, SNAPSHOT, densify, lonlat, write_gpx_tracks
+
+    region = load_region(PATH)
+    profile = load_profile(region.profile, "profiles")
+    graph = build(SNAPSHOT, region, profile)
+    path = write_gpx_tracks(
+        tmp_path / "route.gpx", {"Spur": lonlat(densify([(200, 200), (600, 200)]))}
+    )
+    found = route_figures(graph, profile, read_route(path), region, SNAPSHOT)["total"]["access"]
+    measures = found["access_gains"]
+    assert measures["unique_people"] == pytest.approx(750)
+    assert measures["unique_people_by_type"]["school"] == pytest.approx(750)
+    assert measures["gains_by_type"] == pytest.approx(750)
+    assert found["ranked"]["access_gains"] == measures
