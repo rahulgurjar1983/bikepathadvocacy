@@ -300,9 +300,9 @@ def snapshot_trip_inputs(snapshot, kept, nodes, graph, scores, planning):
     supplied = {tuple(item["edge"]): item for item in raw.get("links", [])}
     links = {
         key: {
-            "status": "assumed" if scores[key]["aaa"] else "unknown",
+            "status": "assumed" if scores.get(key, {}).get("aaa", False) else "unknown",
             "reason": "No confirmed link evidence; stress is a model score.",
-            "lts": scores[key]["lts"],
+            "lts": scores.get(key, {}).get("lts", 1),
             "aaa": not planning.edges.get(key, {"needs": ["missing"]})["needs"],
             "model_needs": planning.edges.get(key, {"needs": ["missing"]})["needs"],
             **supplied.get(key, {}),
@@ -340,8 +340,8 @@ def trip_section(frontier):
         "are not one joined network. Calm first legs are model-score assumptions. "
         "Unknown entrance links and later works stay in the saved gaps. "
         "Route proof does not prove field safety.</p>"
-        "<p>Each curve package has its exact work set and route proof in frontier.json. "
-        "The old shortlist has its own trip proof in projects.geojson.</p>"
+        "<p>Each curve package has its exact work set and route proof in <code>frontier.json</code>. "
+        "The old shortlist has its own trip proof in <code>projects.geojson</code>.</p>"
         "<details><summary>Trip proof by package</summary><table><thead><tr>"
         "<th>Scenario</th><th>Rank</th><th>Strict return trips</th><th>Groups</th>"
         "<th>Gaps</th><th>Network claim</th></tr></thead><tbody>"

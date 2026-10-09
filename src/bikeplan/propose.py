@@ -1139,9 +1139,8 @@ def write_propose(
 ) -> list[dict]:
     out = Path(out)
     kept, nodes, _, placed, resident, weights = scene(graph, region, snapshot)
-    legs = last_legs(
-        graph, score_edges(graph, profile), sorted(resident.people), region.access.last_leg_m
-    )
+    scores = score_edges(graph, profile)
+    legs = last_legs(graph, scores, sorted(resident.people), region.access.last_leg_m)
     corridors = read_corridors(snapshot, graph.graph["crs"])
     names = [
         place["name"] or place["type"]
@@ -1153,9 +1152,7 @@ def write_propose(
         graph, region, profile, placed, resident.people, weights, names, legs, corridors, stats
     )
     records = project_records(picked, planning)
-    trip_inputs = snapshot_trip_inputs(
-        snapshot, kept, nodes, graph, score_edges(graph, profile), planning
-    )
+    trip_inputs = snapshot_trip_inputs(snapshot, kept, nodes, graph, scores, planning)
     destinations, links, movements = trip_inputs
     shortlist_trips = complete_trips(
         graph,
