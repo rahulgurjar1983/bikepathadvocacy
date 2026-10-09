@@ -34,23 +34,7 @@ rung_limited() {
 }
 
 reset_secs() {
-  local line clock zone target now secs
-  line="$(grep -ioE '(resets|try again at|available at)[^.]*' "$1" | tail -1)"
-  clock="$(printf '%s' "$line" | grep -oiE '[0-9]{1,2}(:[0-9]{2})?[[:space:]]*(am|pm)' | tail -1)"
-  zone="$(printf '%s' "$line" | grep -oE '\([A-Za-z_]+/[A-Za-z_]+\)' | tr -d '()' | tail -1)"
-  if [ -n "$clock" ]; then
-    target="$(TZ="${zone:-${TZ:-}}" date -d "$clock" +%s 2>/dev/null || true)"
-    now="$(date +%s)"
-    if [ -n "$target" ]; then
-      secs=$((target - now))
-      if [ "$secs" -lt 0 ]; then
-        secs=$((secs + 86400))
-      fi
-      echo $((secs + 60))
-      return
-    fi
-  fi
-  echo "$RALPH_BACKOFF_SECS"
+  python3 -m gates.providerwait --default "$RALPH_BACKOFF_SECS" "$@"
 }
 
 run_agent() {
@@ -271,6 +255,7 @@ main() {
 
   local i=0 idle=0 row status stamp turn_log note prompt agent_status secs rung rung_log
   local model row_id before progress effort role codex_model codex_effort codex_skills
+  local limited_logs=()
   while [ "$i" -lt "$max" ]; do
     if [ -f STOP ]; then
       log "STOP file present; ending after $i turn(s)"
@@ -368,6 +353,7 @@ main() {
     record_attempt "$row_id" claude "$model" "$effort" "$agent_status" "$turn_log" || exit 2
 
     if [ "$agent_status" -ne 0 ] && { is_limited "$turn_log" || provider_failed "$turn_log"; }; then
+      limited_logs=("$turn_log")
       for rung in ${rungs[@]+"${rungs[@]}"}; do
         if [ "$rung" = deepseek ] && [ "$role" = reasoning ]; then
           log "skipping third-party fallback for reasoning work"
@@ -397,6 +383,7 @@ main() {
           record_attempt "$row_id" "$rung" provider-default provider-default "$agent_status" "$rung_log" || exit 2
         fi
         if rung_limited "$rung" "$agent_status" "$rung_log"; then
+          limited_logs+=("$rung_log")
           continue
         fi
         i=$((i + 1))
@@ -413,11 +400,11 @@ main() {
         sleep "$pause"
         continue 2
       done
-      secs="$(reset_secs "$turn_log")"
+      secs="$(reset_secs "${limited_logs[@]}")" || exit 2
       if [ "$secs" -gt "$max_sleep" ]; then
         secs="$max_sleep"
       fi
-      log "usage limit hit; sleeping ${secs}s; this turn does not count"
+      log "usage limit hit; sleeping ${secs}s; this turn does not count; next retry $(date -u -d "+${secs} seconds" +%FT%TZ)"
       bounded_backoff "$secs"
       continue
     fi

@@ -39,14 +39,25 @@ fi
 last=""
 if [ "$changed" = 0 ]; then
   parent="$(git rev-parse HEAD^)"
+  prior_tags="$(gh release list --limit 100 --json tagName --jq '.[].tagName | select(startswith("v"))')"
   while read -r prior_tag; do
     [ -n "$prior_tag" ] || continue
-    gh release download "$prior_tag" --pattern index.html --dir "$work/index-$prior_tag"
+    if gh release download "$prior_tag" --pattern index.html --dir "$work/index-$prior_tag" 2>"$work/index-error"; then
+      :
+    else
+      status=$?
+      if [ "$(cat "$work/index-error")" = "no assets match the file pattern" ]; then
+        echo "release: $prior_tag has no index; skipping it"
+        continue
+      fi
+      cat "$work/index-error" >&2
+      exit "$status"
+    fi
     if grep -q "$parent" "$work/index-$prior_tag/index.html"; then
       last="$prior_tag"
       break
     fi
-  done < <(gh release list --limit 100 --json tagName --jq '.[].tagName | select(startswith("v"))')
+  done <<<"$prior_tags"
   if [ -n "$last" ]; then
     gh release download "$last" --dir "$work/last"
   fi
