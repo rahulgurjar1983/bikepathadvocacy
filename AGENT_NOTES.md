@@ -18,45 +18,39 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Spec issues
 
-### Q1.4 input proof
+### Q1.4 prior input proof
 
-The fresh main still has a grid rule that conflicts with the new safety rule.
-The proof was rerun after the community spec merge. The open input PR
-for fixture evidence has not merged, so it does not yet amend main.
-FR-11.3 in spec 11 says tests must assert each fact in its grid table. That
-includes a safe baseline and a signals-only pick. FR-15.5 says main access and
-picks use confirmed links. The grid has no traffic counts from a source and
-no record of a bike signal phase or turning conflicts. Its traffic is a class
-assumption and its signal is just a point tag. Those facts cannot prove the
-confirmed routes that the old grid table demands.
+The fixture-only rule in spec 15 now lets the loop add toy evidence in
+fixture data or input builders. The old proof below predates that rule.
+It is a past audit, not a current blocked result.
 
-Proof: `artifacts/Q1.4/input-proof.json` records the fresh main commit, config
-and snapshot hashes, the old required scores, and the missing evidence.
-Rebuild it with:
+`artifacts/Q1.4/input-proof.json` records the old main commit, config and
+snapshot hashes. Rebuild the source audit with
+`uv run python artifacts/Q1.4/check_inputs.py <worktree>`.
+It shows that the grid has class traffic defaults and nearby signal tags,
+with no phase or turn records. Those tags alone cannot confirm a crossing.
 
-```bash
-git fetch origin
-git worktree add --detach /tmp/bikeplan-q14-input-proof-current origin/main
-uv run python artifacts/Q1.4/check_inputs.py /tmp/bikeplan-q14-input-proof-current
-uv run --directory /tmp/bikeplan-q14-input-proof-current pytest tests/test_test_grid.py -q -k 'baseline_region_score_is_25 or side_streets_at_the_signals_are_lts_1_and_aaa'
-```
+The default wiring and public model wording are now saved on the branch.
+The focused cases pass, but the old grid access and pick checks still fail.
+Run `uv run pytest tests/test_safety_evidence.py tests/test_test_grid.py -q`;
+the saved result is `artifacts/Q1.4/integration-tests.txt`.
+Use the new fixture-only path to give each old known case explicit toy
+traffic, phase and turn evidence. Keep its old body and all its assertions.
+Do not change real observations or let a nearby signal prove a safe phase.
+The row stays open. No PR or full proof is claimed.
+Still check stress exports, report maps and route figures against confirmed
+status. Their legacy `aaa` field is still a model flag. Add evidence for
+planned crossing phases before allowing a junction fix in default picks.
+The edge filter is strict: an unknown turn can exclude an otherwise known
+movement on that edge. Check this limit before claiming a full route audit.
 
-The worktree path must be free before the add command. The saved test result
-is `artifacts/Q1.4/main-tests.txt`. The old checks pass on main; this does not
-prove confirmed safety. The input fix must amend FR-11.3 and the grid table,
-or give the grid sourced phase, turn and traffic evidence. If the old table
-is kept as a model case, name it as an assumptions case and add a distinct
-confirmed case. Do not keep the old default just to pass its tests.
-
-The branch has saved tests and a core movement audit. The focused core
-check passes; its log is `artifacts/Q1.4/core-tests.txt`. Rebuild it with
-`uv run pytest tests/test_safety_evidence.py -q -k 'not default_'`.
-Default access and
-pick tests are also saved and still red. The unshipped default wiring is
-saved locally in `.ralph/Q1.4-integration.patch`. Public text still needs its
-model qualifier. The row stays open; no PR was made and no shipped proof is
-claimed. After the input fix, test the whole default flow before marking it
-done. Nearby signal flags and legacy model AAA are not confirmed evidence.
+The confirmed filter keeps survey options when it filters planning links.
+The access assumptions flag names unverified signal phases and turn
+conflicts. It cannot override a recorded conflict. Missing path width
+stays unknown in both modes. Reuse pytest, SciPy and the existing graph;
+no new runner or package is needed. The
+[TfNSW toolbox](https://www.transport.nsw.gov.au/system/files/media/documents/2023/Cycleway-Design-Toolbox-Web.pdf)
+calls for bike signal time and protection from turning vehicles.
 
 
 - `gates/tests/test_loop.py::test_fr0_13_usage_limit_turn_is_not_counted` times out after 60 seconds on `origin/main` too. Proof: `git checkout origin/main && uv run pytest gates/tests/test_loop.py -q -k usage_limit`. The pre-push hook still let the push through.

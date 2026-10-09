@@ -1,0 +1,49 @@
+.....................FF                                                  [100%]
+=================================== FAILURES ===================================
+_________________ test_fr11_3_the_baseline_region_score_is_25 __________________
+
+snapshot = PosixPath('/tmp/pytest-of-oem/pytest-402/grid0/snapshot')
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-402/test_fr11_3_the_baseline_regio0')
+
+    def test_fr11_3_the_baseline_region_score_is_25(snapshot, tmp_path):
+        out = tmp_path / "access"
+        assert main(["access", REGION, "--snapshot", str(snapshot), "--out", str(out)]) == 0
+        summary = json.loads((out / "access_summary.json").read_text())
+>       assert summary["score"] == 25.0
+E       assert 0.0 == 25.0
+
+tests/test_test_grid.py:182: AssertionError
+----------------------------- Captured stdout call -----------------------------
+safety_scenario confirmed
+access_score 0.0
+school_safe_people 0
+college_safe_people 0
+university_safe_people 0
+aged_care_safe_people 0
+library_safe_people 0
+town_centre_safe_people 0
+station_safe_people 0
+_______ test_fr11_3_the_only_project_is_signals_at_the_junction_at_y_200 _______
+
+snapshot = PosixPath('/tmp/pytest-of-oem/pytest-402/grid0/snapshot')
+graph = <networkx.classes.multidigraph.MultiDiGraph object at 0x7d1f5e7ddb80>
+frame = (329044.9986281692, 6241846.001330093)
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-402/test_fr11_3_the_only_project_i0')
+
+    def test_fr11_3_the_only_project_is_signals_at_the_junction_at_y_200(
+        snapshot, graph, frame, tmp_path
+    ):
+        out = tmp_path / "propose"
+        assert main(["propose", REGION, "--snapshot", str(snapshot), "--out", str(out)]) == 0
+        projects = json.loads((out / "projects.json").read_text())
+>       assert len(projects) == 1
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+tests/test_test_grid.py:194: AssertionError
+----------------------------- Captured stdout call -----------------------------
+projects 0
+=========================== short test summary info ============================
+FAILED tests/test_test_grid.py::test_fr11_3_the_baseline_region_score_is_25
+FAILED tests/test_test_grid.py::test_fr11_3_the_only_project_is_signals_at_the_junction_at_y_200
+2 failed, 21 passed in 6.58s

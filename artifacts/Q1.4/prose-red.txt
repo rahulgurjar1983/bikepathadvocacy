@@ -1,0 +1,33 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+______________ test_fr15_5_public_page_qualifies_all_ages_status _______________
+
+    def test_fr15_5_public_page_qualifies_all_ages_status():
+        import json
+        from html.parser import HTMLParser
+    
+        from bikeplan.config import load_region
+        from bikeplan.report import figure_list, page, segments_text
+    
+        class Text(HTMLParser):
+            def __init__(self):
+                super().__init__()
+                self.parts = []
+    
+            def handle_data(self, data):
+                self.parts.append(data)
+    
+        region = load_region("regions/test-grid.yaml")
+        map_text = json.dumps({"segments": [], "projects": {}, "places": [], "boundary": {}})
+        figures = figure_list(segments_text([]), map_text)
+        rendered = page(region, figures, map_text, "", "")
+        parser = Text()
+        parser.feed(rendered)
+        visible = " ".join(parser.parts).lower()
+>       assert "meets the model's all-ages criteria" in visible
+E       assert "meets the model's all-ages criteria" in "bike paths in test grid (made-up region) body{max-width:48rem;margin:0 auto;padding:0 1rem;font-family:sans-serif;lin...python3 -c in a folder that holds the release files import json;print(len(json.load(open('map.json'))['segments'])) \n"
+
+tests/test_safety_evidence.py:213: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_safety_evidence.py::test_fr15_5_public_page_qualifies_all_ages_status
+1 failed, 9 deselected in 100.88s (0:01:40)

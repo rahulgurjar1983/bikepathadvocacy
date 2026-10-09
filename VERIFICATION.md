@@ -958,3 +958,22 @@ full safety proof is a later row.
 
 Artifact: `artifacts/Q1.3/manifest.json`, `artifacts/Q1.3/width-sample.json`,
 `artifacts/Q1.3/summary.json` and `artifacts/Q1.3/time-full.txt`.
+
+### Q1.4
+
+This is saved work, not full proof. The row stays open.
+
+```bash
+uv run pytest tests/test_safety_evidence.py tests/test_test_grid.py -q
+uv run python artifacts/Q1.4/compare_access.py
+```
+
+Expect: The new safety cases pass. The old grid score and signals-only
+pick checks still fail until their toy inputs have the required evidence.
+The fresh Bayside access files name the confirmed and assumptions modes.
+The latter lists its assumed signal phases and turn conflicts. These are
+model results, not field checks. This does not prove a full report or picks.
+
+Artifact: `artifacts/Q1.4/integration-tests.txt` records the focused checks.
+Artifact: `artifacts/Q1.4/access-comparison.json` records fresh access results,
+the build commit, config hash and snapshot hash.
