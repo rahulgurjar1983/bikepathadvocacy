@@ -166,7 +166,6 @@ def test_fr15_4_empty_default_picks_do_not_lower_minimum_gain():
 
 def test_fr15_4_snapshot_dates_follow_the_width_source(tmp_path):
     from bikeplan.network import build
-
     from tests.test_propose_command import snapshot
 
     graph = build(snapshot(tmp_path / "snapshot"), REGION, PROFILE)
