@@ -205,3 +205,28 @@ def test_fr15_4_survey_layer_lists_checks_and_keeps_links_to_width_records():
         assert properties["source_confidence"]
         assert properties["model_margin"]
         assert properties["fit_status"] == "needs_survey"
+
+
+def test_fr15_4_project_sheet_names_margin_and_source_confidence_separately():
+    from bikeplan.page import sheet
+    from bikeplan.propose import project_records
+
+    data = {**street("tertiary", 10.0, 2, "yes", 50, 5000), "width_tag_m": 10.0}
+    graph = line([(100, data)])
+    planning = planning_network(graph, PROFILE, REGION)
+    picks = greedy_picks(
+        graph,
+        planning,
+        [("school", 1)],
+        {0: 10},
+        {"school": 1.0},
+        REGION.proposals,
+        REGION.access.reach_m,
+        REGION.access.detour_max,
+    )
+    record = project_records(picks, planning)[0]
+    markup = sheet(record, [])
+    assert "Model margin" in markup
+    assert "Source confidence" in markup
+    assert record["elements"][0]["model_margin"] == "robust"
+    assert record["elements"][0]["source_confidence"] == "medium"
