@@ -155,8 +155,9 @@ def change_figures(frontier: dict, text: str) -> list[dict]:
             "label": "Projects up to the recommended stop",
             "value": stop,
             "unit": "projects",
-            "method": "I find the last project whose access gain for each point of disruption "
-            "is still a set share of my first project's. That project's rank is the stop.",
+            "method": "I divide each pick's gain by its cost plus one, using full precision. "
+            "I compare it with the best ratio so far, including this pick. The stop is the "
+            "last rank at least the set share of that best ratio, even after a weaker pick.",
             "recipe": PRELUDE.format(scenario=chosen["id"], expr="s['recommended_stop'] or 0"),
         }
     )
