@@ -5,8 +5,9 @@ import networkx as nx
 import pytest
 
 from bikeplan.config import load_profile, load_region
+from bikeplan.propose import Planning
 from bikeplan.run import build_all
-from bikeplan.trips import complete_trips
+from bikeplan.trips import complete_trips, snapshot_trip_inputs
 
 
 def town():
@@ -181,3 +182,111 @@ def test_fr16_3_every_saved_package_has_trip_proof_and_visible_limits():
             assert package["continuous_network"] is False
     assert "Complete trips and route groups" in outputs["report.html"].decode()
     assert "known bike entrance" in outputs["report.html"].decode()
+
+
+def test_fr16_3_a_missing_movement_is_a_gap_even_between_confirmed_links():
+    data = town()
+    data[2].pop(((0, 1, 0), (1, 2, 0)))
+    result = trips(data)
+    assert [item["destination"] for item in result["strict"]] == ["site-12"]
+    assert any(
+        movement["status"] == "unknown"
+        for gap in result["gaps"]
+        for movement in gap.get("movements", [])
+    )
+
+
+def test_fr16_3_joins_need_valid_movements_in_both_directions():
+    data = town()
+    graph, links, movements, destinations = data
+    for u, v in ((1, 20), (20, 21)):
+        for a, b in ((u, v), (v, u)):
+            graph.add_edge(a, b, 0, bike_ok=True, length_m=100.0, highway="residential")
+            links[(a, b, 0)] = {"status": "confirmed", "source": "test survey"}
+    for incoming, outgoing in (((1, 20, 0), (20, 21, 0)), ((21, 20, 0), (20, 1, 0))):
+        movements[incoming, outgoing] = {"status": "confirmed", "source": "test survey"}
+    destinations.append(
+        {
+            "id": "branch",
+            "entrances": [
+                {
+                    "id": "branch-gate",
+                    "node": 21,
+                    "status": "confirmed",
+                    "source": "test survey",
+                    "bike_accessible": True,
+                }
+            ],
+        }
+    )
+    people = {0: 10.0, 1: 10.0, 10: 10.0}
+    before = complete_trips(graph, people, destinations, links, movements, set(), 2680, 1.25)
+    assert len(before["groups"]) == 3
+    assert not any(join.get("movements") for join in before["joins"])
+    for incoming, outgoing in (((2, 1, 0), (1, 20, 0)), ((20, 1, 0), (1, 2, 0))):
+        movements[incoming, outgoing] = {"status": "confirmed", "source": "test survey"}
+    after = complete_trips(graph, people, destinations, links, movements, set(), 2680, 1.25)
+    assert len(after["groups"]) == 2
+    assert any(join.get("movements") for join in after["joins"])
+
+
+def test_fr16_3_prohibited_bike_turns_are_not_shortest_route_shortcuts():
+    data = town()
+    data[0].add_edge(0, 2, 1, bike_ok=True, length_m=10.0)
+    data[1][(0, 2, 1)] = {"status": "unsafe", "legal": False}
+    result = trips(data)
+    assert len(result["strict"]) == 2
+    assert result["strict"][0]["outbound"]["shortest_m"] == 200.0
+
+
+def test_fr16_3_zero_population_and_unknown_entrances_do_not_create_claims():
+    data = town()
+    result = complete_trips(data[0], {0: 0.0}, data[3], data[1], data[2], set(), 2680, 1.25)
+    assert result["strict"] == []
+    assert result["continuous_network"] is False
+    for place in data[3]:
+        place["entrances"] = []
+    result = trips(data, first_leg_m=200)
+    assert result["strict"] == []
+    assert result["first_leg_model"] is None
+    assert result["first_leg_status"] == "unknown_entrance_links"
+
+
+def test_fr16_3_witnesses_are_stable_with_reversed_input_order():
+    data = town()
+    expected = trips(data)
+    graph = nx.MultiDiGraph()
+    for u, v, key, attrs in reversed(list(data[0].edges(keys=True, data=True))):
+        graph.add_edge(u, v, key, **attrs)
+    actual = trips((graph, dict(reversed(list(data[1].items()))), data[2], data[3][::-1]))
+    assert actual == expected
+
+
+def test_fr16_3_snapshot_evidence_cannot_confirm_a_failed_changed_graph(tmp_path):
+    data = town()
+    raw = {
+        "trip_evidence": {
+            "entrances": [{**data[3][0]["entrances"][0], "destination": "site-2"}],
+            "links": [{"edge": list(key), **value} for key, value in data[1].items()],
+            "movements": [
+                {"incoming": list(i), "outgoing": list(o), **value}
+                for (i, o), value in data[2].items()
+            ],
+        }
+    }
+    (tmp_path / "places.json").write_text(json.dumps(raw))
+    planning = Planning({key: {"needs": ()} for key in data[1]}, {})
+    scores = {key: {"aaa": True, "lts": 1} for key in data[1]}
+    kept = [{"osm_id": "site-2", "name": "Test school"}]
+    destinations, links, movements = snapshot_trip_inputs(
+        tmp_path, kept, [2], data[0], scores, planning
+    )
+    result = complete_trips(data[0], {0: 100}, destinations, links, movements, set(), 2680, 1.25)
+    assert len(result["strict"]) == 1
+    planning = Planning({key: {"needs": ("later-link",)} for key in data[1]}, {})
+    destinations, links, movements = snapshot_trip_inputs(
+        tmp_path, kept, [2], data[0], scores, planning
+    )
+    result = complete_trips(data[0], {0: 100}, destinations, links, movements, set(), 2680, 1.25)
+    assert result["strict"] == []
+    assert "later-link" in result["later_work"]
