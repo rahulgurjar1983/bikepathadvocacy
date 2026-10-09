@@ -81,6 +81,9 @@ def loop_repo(repo, tmp_path):
             "RALPH_MAX_SLEEP_SECS": "0",
             "RALPH_NOTIFY_CMD": "true",
             "RALPH_ALLOW_PREMIUM": "1",
+            "RALPH_REASONING_MODEL": "opus",
+            "RALPH_ESCALATE_MODEL": "opus",
+            "RALPH_CODEX_REASONING_MODEL": "gpt-6-astra",
             "FAKE_STATE": str(state),
             "FAKE_NAME": "agent",
         }
@@ -666,3 +669,16 @@ def test_fr0_32_stalled_codex_retry_keeps_sol_at_high_effort(loop_repo, tmp_path
     args = (state / "codex.args").read_text().splitlines()
     assert flag_value(args, "--model") == "gpt-6.1-sol"
     assert 'model_reasoning_effort="high"' in args
+
+
+def test_fr0_32_premium_permission_alone_keeps_standard_defaults(loop_repo, tmp_path):
+    done = {"type": "turn.completed", "usage": {"input_tokens": 10, "output_tokens": 2}}
+    repo, env, state = codex_env(loop_repo, tmp_path, [done])
+    for key in ("RALPH_REASONING_MODEL", "RALPH_ESCALATE_MODEL", "RALPH_CODEX_REASONING_MODEL"):
+        env.pop(key)
+    repo.write("PROGRESS.md", "- [ ] **Q1.1** [reasoning] Work (FR-15.1)\n")
+    result = run_loop(repo, env, "1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert flag_value(args_of(state, 1), "--model") == "sonnet"
+    args = (state / "codex.args").read_text().splitlines()
+    assert flag_value(args, "--model") == "gpt-6.1-sol"
