@@ -149,3 +149,40 @@ def test_fr15_5_confirmed_and_assumptions_routes_differ():
     assert 1 not in confirmed[0].safe
     assert 1 in assumed[0].safe
     assert scores[1, 2, 0]["all_ages_status"] == "assumed"
+
+
+def test_fr15_5_default_access_excludes_assumed_links_in_real_snapshot(tmp_path):
+    import json
+
+    from bikeplan import main
+
+    region = "tests/fixtures/test-grid/region.yaml"
+    snapshot = "tests/fixtures/test-grid/snapshot"
+    confirmed = tmp_path / "confirmed"
+    assumed = tmp_path / "assumed"
+    assert main(["access", region, "--snapshot", snapshot, "--out", str(confirmed)]) == 0
+    assert (
+        main(["access", region, "--snapshot", snapshot, "--out", str(assumed), "--assumptions"])
+        == 0
+    )
+    baseline = json.loads((confirmed / "access_summary.json").read_text())
+    scenario = json.loads((assumed / "access_summary.json").read_text())
+    assert baseline["safety_scenario"] == "confirmed"
+    assert baseline["score"] == 0
+    assert scenario["safety_scenario"] == "assumptions"
+    assert scenario["score"] > baseline["score"]
+
+
+def test_fr15_5_default_picks_exclude_a_path_with_no_width():
+    from bikeplan.config import load_region
+    from bikeplan.propose import confirmed_planning, planning_network
+    from shapely.geometry import box
+
+    graph = path_graph(width=None)
+    graph.graph.update(crs="EPSG:32756", boundary=box(-10, -10, 110, 10))
+    graph[1][2][0]["length_m"] = 100.0
+    region = load_region("regions/test-grid.yaml")
+    model = planning_network(graph, PROFILE, region)
+    assert (1, 2, 0) in model.edges
+    confirmed = confirmed_planning(graph, PROFILE, model)
+    assert (1, 2, 0) not in confirmed.edges
