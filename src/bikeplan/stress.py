@@ -474,6 +474,8 @@ def stress_features(graph, scores: dict) -> list[dict]:
                     "length_m": round(data["length_m"], 2),
                     "bike_ok": data["bike_ok"],
                     **scores[(u, v, k)],
+                    "model_aaa": scores[(u, v, k)]["aaa"],
+                    "aaa": scores[(u, v, k)]["confirmed_aaa"],
                 },
             }
         )
@@ -488,7 +490,7 @@ def stress_summary(graph, scores: dict) -> dict:
     for segment in bike_segments(graph).values():
         keys, datas = zip(*segment["edges"], strict=True)
         lts = max(scores[key]["lts"] for key in keys)
-        aaa = all(scores[key]["aaa"] for key in keys)
+        aaa = all(scores[key]["confirmed_aaa"] for key in keys)
         km = segment["inside_m"] / 1000
         name = str(first(datas[0].get("highway")))
         for bucket in (total, by_class.setdefault(name, empty())):

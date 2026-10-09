@@ -107,7 +107,7 @@ def segment_rows(graph, profile: Profile, fixes: dict) -> list[list]:
                 str(segment_id),
                 f"{segment['inside_m']:.3f}",
                 max(scores[key]["lts"] for key in keys),
-                int(all(scores[key]["aaa"] for key in keys)),
+                int(all(scores[key]["confirmed_aaa"] for key in keys)),
                 found["width_source"] or "none",
                 fixes.get(segment_id) or "",
             ]
