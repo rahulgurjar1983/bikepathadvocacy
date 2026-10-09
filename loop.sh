@@ -256,6 +256,9 @@ main() {
   local i=0 idle=0 row status stamp turn_log note prompt agent_status secs rung rung_log
   local model row_id before progress effort role codex_model codex_effort codex_skills recovery
   local limited_logs=()
+  if [ ! -f .ralph/checkpoint.py ]; then
+    python3 -m gates.checkpoint install >>ralph.log 2>&1 || exit 2
+  fi
   while [ "$i" -lt "$max" ]; do
     if [ -f STOP ]; then
       log "STOP file present; ending after $i turn(s)"
@@ -273,7 +276,7 @@ main() {
         log "git fetch failed; the loop stopped"
         exit 2
       fi
-      if ! python3 -m gates.checkpoint save >>ralph.log 2>&1; then
+      if ! python3 .ralph/checkpoint.py save >>ralph.log 2>&1; then
         log "cannot save unfinished loop work; the loop stopped"
         exit 1
       fi

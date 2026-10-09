@@ -49,6 +49,7 @@ def pending(row: str) -> list[dict]:
 
 
 def save() -> dict | None:
+    sys.path.insert(0, str(Path.cwd()))
     from gates.inputs import is_input
 
     paths = dirty_paths()
