@@ -209,14 +209,16 @@ main() {
   local prompt_file="${RALPH_PROMPT_FILE:-PROMPT.md}"
   local pick_cmd="${RALPH_PICK_CMD:-uv run --frozen python -m gates.ledger pick}"
   local base_model="${RALPH_MODEL:-sonnet}"
-  local escalate_model="${RALPH_ESCALATE_MODEL:-opus}"
-  local reasoning_model="${RALPH_REASONING_MODEL:-opus}"
+  local escalate_model="${RALPH_ESCALATE_MODEL:-$base_model}"
+  local reasoning_model="${RALPH_REASONING_MODEL:-$base_model}"
   local routine_effort="${RALPH_ROUTINE_EFFORT:-medium}"
   local reasoning_effort="${RALPH_REASONING_EFFORT:-high}"
   local codex_routine="${RALPH_CODEX_ROUTINE_MODEL:-gpt-6.1-sol}"
-  local codex_reasoning="${RALPH_CODEX_REASONING_MODEL:-gpt-6-astra}"
+  local codex_reasoning="${RALPH_CODEX_REASONING_MODEL:-$codex_routine}"
   local codex_routine_effort="${RALPH_CODEX_ROUTINE_EFFORT:-medium}"
   local codex_reasoning_effort="${RALPH_CODEX_REASONING_EFFORT:-high}"
+  local premium_allowed="${RALPH_ALLOW_PREMIUM:-0}"
+  case "$premium_allowed" in 0 | 1) ;; *) log "RALPH_ALLOW_PREMIUM must be 0 or 1"; exit 2 ;; esac
   local max_stalls="${RALPH_MAX_STALLS:-3}"
   case "$max_stalls" in '' | 0 | *[!0-9]*) log "RALPH_MAX_STALLS must be positive"; exit 2 ;; esac
   local tools="${RALPH_TOOLS:-Bash,Read,Edit,Write,Glob,Grep,WebSearch,WebFetch}"
@@ -344,6 +346,16 @@ main() {
     if [ "$role" = reasoning ]; then
       codex_model="$codex_reasoning"
       codex_effort="$codex_reasoning_effort"
+    fi
+    if [ "$premium_allowed" != 1 ]; then
+      model="$base_model"
+      codex_model="$codex_routine"
+      effort="$routine_effort"
+      codex_effort="$codex_routine_effort"
+      if [ "$(cat .ralph/escalate 2>/dev/null)" = "$row_id" ]; then
+        effort="$reasoning_effort"
+        codex_effort="$codex_reasoning_effort"
+      fi
     fi
     rm -f .ralph/turn-result.json
     before="$(commit_count)"

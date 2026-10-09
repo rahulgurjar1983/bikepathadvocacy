@@ -60,7 +60,7 @@ Before stopping, write `.ralph/turn-result.json`. It is local state, not a track
 
 Use `shipped` only after the PR merged with green CI. Use `progress` for saved work, `no_progress` when stuck, or `waiting_ci` only after `scripts/wait-ci.sh` exits 3 for the named open PR. Use `input_blocked` or `human_blocked` with a non-empty `reason` and a path to your proof in `AGENT_NOTES.md`. Never claim that a row is done because a test, a proxy check or a past artifact passes.
 
-The runner routes `[reasoning]` rows to high effort and routine rows to medium effort. It chooses the model; do not launch more agents or model calls. Three stalled turns on unchanged inputs block that row until its inputs change. A real CI wait and a provider limit do not count as stalls. The next row may run while a blocked row stays open.
+The owner has $20 monthly Claude and ChatGPT plans. The runner starts every row on Sonnet or GPT-6.1 Sol at medium effort, including `[reasoning]` rows. That tag asks for deep checks, not a larger model. A stalled row retries the same models at high effort. Opus/Astra role choices need an explicit operator opt-in. Use the plan logins; do not buy credits or switch to API billing to keep going. If both providers hit their limits, wait for the reset. The CLI's USD estimate is not a bill against the monthly plan. The runner chooses the model; do not launch more agents or model calls. Three stalled turns on unchanged inputs block that row until its inputs change. A real CI wait and a provider limit do not count as stalls. The next row may run while a blocked row stays open.
 
 ## Token budget
 
