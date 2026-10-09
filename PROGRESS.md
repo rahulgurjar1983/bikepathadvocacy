@@ -29,14 +29,16 @@ The approved order is proposal and trade-offs, network map, options, neighbourho
 - [ ] **C1.3** [reasoning] Unique residents gaining useful complete trips; keep scope, first-leg assumptions, population proxies and missing groups explicit (FR-16.5, FR-15.6)
 - [ ] **C1.4** [reasoning] Actual route types, unique roads and works sections, named endpoints and precise before/after lane, parking and access changes (FR-16.6)
 - [ ] **C1.5** [reasoning] Parking before, removed, added, after and net by street; expose local losses, special uses and incomplete inventory (FR-16.7)
-- [ ] **C1.6** [reasoning] Neighbourhood benefits beside impacts; source boundaries, allocate physical works once, union residents and expose unallocated records (FR-16.8)
 - [ ] **Q2.4** [reasoning] Optional sourced proposal inputs, owners, approvals, cost bands, stage and next ask; hash and validate metadata, unknown is never zero or funded (FR-15.14, FR-16.10)
+- [ ] **C1.6** [reasoning] Neighbourhood benefits beside impacts; source boundaries, allocate physical works once, union residents and expose unallocated records (FR-16.8)
 - [ ] **C1.7** [reasoning] Baseline, useful first stage, parking-retention option and broader network; test goals, non-prefix stages, dependencies and actual trade-offs (FR-16.9)
 - [ ] **C1.8** [routine] Offline street search, map/list links and local plans with before/after works, impacts, alternatives, gaps and next decision; phone and print proof (FR-16.11, FR-15.3)
 - [ ] **C1.9** [reasoning] Independent headline recipes and full checks of routes, school sets, resident unions, local works, parking, stages and costs; tampering still fails after rehash (FR-16.12, FR-15.7, FR-15.8)
 - [ ] **C1.10** [reasoning] Fresh Bayside community report in the approved order, honest unknowns, selected-package agreement, browser/print proof, all recipes, full checks and a green public release (FR-16.13)
 
 ## Phase S: Scaffold (operator)
+
+- [x] **S0.7** Operator: wait for the first plan reset and skip old releases with no index; keep API failures strict (FR-0.13, FR-0.31)
 
 - [x] **S0.1** Gates: red-green, test retention, no comments, no source reads, reading level, secrets, spec coverage, verification, inputs, generic code, ledger (FR-0.2, FR-0.3, FR-0.4, FR-0.5, FR-0.6, FR-0.7, FR-0.8, FR-0.9, FR-0.10, FR-0.16, FR-0.17, FR-0.18)
 - [x] **S0.2** Ralph loop, row picker, lean agent turns, cost log, model escalation, quiet CI wait and PR shipping (FR-0.13, FR-0.14, FR-0.20, FR-0.21, FR-0.22, FR-0.23, FR-0.25)

@@ -60,7 +60,7 @@ Show the kinds of route the plan would build. A path along a verge may be shared
 
 For a row that cites `FR-16`, read its rule and cases here, plus the scope and shared data rules. Read the parts of spec 15 and older specs that the row names. Build each row with small tests that fail first, then code, fresh outputs and green CI. Parts owned by later rows may say not yet built.
 
-`Q1.6` owns the shared record. `Q1.7` owns the opening and page order. The `C1` rows add route, school, people, road and local proof, then choices and delivery. `Q2.4` comes before the options row to add sourced costs and the next ask. `C1.10` proves the real report as a whole.
+`Q1.6` owns the shared record. `Q1.7` owns the opening and page order. The `C1` rows add route, school, people, road and local proof, then choices and delivery. `Q2.4` comes before local area views and options to load their sources, costs and the next ask. `C1.10` proves the real report as a whole.
 
 A mock test cannot prove a real route, field check, grant or school gate. If a source is missing, build the way to read and check it, and show an honest unknown result. Keep the separate evidence task open. Do not wait for a person when the code and truthful report can be built without them.
 
