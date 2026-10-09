@@ -1,6 +1,7 @@
 import dataclasses
 import html
 import json
+from datetime import datetime
 from pathlib import Path
 
 from bikeplan.config import Num
@@ -351,9 +352,22 @@ def rebuild_section(summary: dict) -> str:
     )
 
 
+def calendar_dates(value, key=""):
+    if isinstance(value, dict):
+        return {name: calendar_dates(item, name) for name, item in value.items()}
+    if isinstance(value, list):
+        return [calendar_dates(item) for item in value]
+    if key == "date" and isinstance(value, str):
+        try:
+            return datetime.fromisoformat(value).date().isoformat()
+        except ValueError:
+            return value
+    return value
+
+
 def data_block(payload: dict) -> str:
     kept = {name: payload[name] for name in ("project_shapes", "projects", "summary")}
-    text = json.dumps(kept, sort_keys=True).replace("</", "<\\/")
+    text = json.dumps(calendar_dates(kept), sort_keys=True).replace("</", "<\\/")
     return f'<script type="application/json" id="page-data">{text}</script>'
 
 
