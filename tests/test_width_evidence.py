@@ -339,3 +339,29 @@ def test_fr15_4_survey_layer_ships_within_sealed_network_output():
     assert layer["features"]
     assert json.loads(files["map.json"])["survey_options"] == layer
     assert "survey_options.geojson" not in outputs
+
+
+def test_fr15_4_route_model_options_show_survey_needs_and_stay_out_of_default_picks(tmp_path):
+    from bikeplan.network import build
+    from bikeplan.review import route_figures
+    from bikeplan.review_report import Figures, fixes_section
+    from bikeplan.route import read_route
+    from tests.route_helpers import densify, edited_snapshot, lonlat, way_tags, write_gpx_tracks
+
+    def edit(xml):
+        return way_tags(xml.replace('<tag k="maxspeed" v="30"/>', "", 1), 2000, {"maxspeed": "50"})
+
+    folder = edited_snapshot(tmp_path, edit)
+    graph = build(folder, REGION, PROFILE)
+    path = write_gpx_tracks(tmp_path / "model.gpx", {"Up": lonlat(densify([(0, 0), (0, 600)]))})
+    found = route_figures(graph, PROFILE, read_route(path), REGION, folder)
+    fixes = found["total"]["fixes"]
+    assert fixes
+    assert all(item["fit_status"] == "needs_survey" for item in fixes)
+    assert all("carriageway width" in item["survey_checks"] for item in fixes)
+    assert all(item["source_confidence"] == "low" for item in fixes)
+    planning = planning_network(graph, PROFILE, REGION)
+    assert not {item["id"] for item in fixes} & planning.elements.keys()
+    markup = fixes_section(Figures(found, [], []))
+    assert "needs survey" in markup
+    assert "carriageway width" in markup
