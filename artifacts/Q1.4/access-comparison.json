@@ -1,9 +1,119 @@
 {
-  "build_commit": "018dfd5cefbdb580daec83f72fe3dfbffee3ae50",
+  "build_commit": "9e61a09b2cced8ec824e7acf7c86bf113b700889",
   "config_hash": "6b7cd7698f58145f6669419dd0e4fba0cd4378fab2e1430a32df0a772127b665",
   "snapshot_hash": "2eaf0b00832565765c42e07b48ad7c6117436194487f45931e348f6772964bba",
   "command": "uv run python artifacts/Q1.4/compare_access.py",
-  "scope": "Access comparison only; not full Q1.4 proof or field validation",
+  "scope": "Fresh full Bayside report and access modes; model evidence, not field validation",
+  "full_command": "uv run bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out data/output/Q1.4/full",
+  "edge_status_counts": {
+    "assumed": 11579,
+    "confirmed": 34,
+    "unknown": 177773
+  },
+  "movement_status_counts": {
+    "assumed": 495972,
+    "unknown": 191780
+  },
+  "output_hashes": [
+    {
+      "path": "access_homes.geojson",
+      "sha256": "64e5ee7d19083b024fdadaba43c37caa6ca5f72a1ce0ef2cf4123d7c914752ff"
+    },
+    {
+      "path": "frontier.json",
+      "sha256": "dd2411123865508c6fce3fe4929d0add88d7e7691247b981aba16354d2cc624d"
+    },
+    {
+      "path": "network.geojson",
+      "sha256": "956f6c9c40e9364bb9984f41f7b5294e28a4a3120d7b61af815011f4bd61ca6f"
+    },
+    {
+      "path": "outputs.sha256",
+      "sha256": "bf1b442762fe0861786d1a7ae69331f6192cf3e87213007795e14b3828c70852"
+    },
+    {
+      "path": "places.geojson",
+      "sha256": "b275748f27eb07121541c246e22a64058d21b81e39bff4d3d823ccffeaa23803"
+    },
+    {
+      "path": "projects.csv",
+      "sha256": "2c02b470a6e4d518829921a9b5f1843a420b4f4041a00d2a696b24c5c2094262"
+    },
+    {
+      "path": "projects.geojson",
+      "sha256": "a55b431e78049bb7fdc7330ffdf2c9f8e87712545ebba199445408d48694225a"
+    },
+    {
+      "path": "projects.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "report.html",
+      "sha256": "2b3fcb80f05e45f2aa63baebe3d5074fc3978f8b7226a0598dbd42116c41d473"
+    },
+    {
+      "path": "summary.json",
+      "sha256": "353c46925825d422a9cb7fdf891f141ee42823b0f244fa1a81f8920a3ac3cf72"
+    }
+  ],
+  "status_samples": [
+    {
+      "edge": [
+        15079385,
+        9971272835,
+        0
+      ],
+      "all_ages_status": "confirmed",
+      "safety_reason": "path width and bicycle access meet the model's all-ages criteria"
+    },
+    {
+      "edge": [
+        15079385,
+        4089375009,
+        0
+      ],
+      "all_ages_status": "confirmed",
+      "safety_reason": "path width and bicycle access meet the model's all-ages criteria"
+    },
+    {
+      "edge": [
+        624543,
+        18325410,
+        0
+      ],
+      "all_ages_status": "assumed",
+      "safety_reason": "meets the model's all-ages criteria with assumed speed or traffic"
+    },
+    {
+      "edge": [
+        624543,
+        13886605,
+        0
+      ],
+      "all_ages_status": "assumed",
+      "safety_reason": "meets the model's all-ages criteria with assumed speed or traffic"
+    },
+    {
+      "edge": [
+        324884,
+        1855186645,
+        0
+      ],
+      "all_ages_status": "unknown",
+      "safety_reason": "does not meet the model's all-ages criteria"
+    },
+    {
+      "edge": [
+        324884,
+        6417822329,
+        0
+      ],
+      "all_ages_status": "unknown",
+      "safety_reason": "does not meet the model's all-ages criteria"
+    }
+  ],
+  "network_status_check": "AAA exports equal confirmed status",
+  "public_prose_check": "Model criteria and child safety limits are shown",
   "summaries": {
     "confirmed": {
       "safety_scenario": "confirmed",

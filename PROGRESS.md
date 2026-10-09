@@ -11,7 +11,7 @@ Tags: [reasoning] needs deep checks, with no larger model by default; [routine] 
 - [x] **Q1.1** [reasoning] Finite stop rule, exact gain data, correct explanation and curve-limit notice; rebuild Bayside with shipped weights (FR-15.1, FR-8.14)
 - [ ] **Q1.2** [routine] Enforce private route paths and release exclusion; the input branch adds the ignore rule now (FR-15.18, FR-14.12)
 - [x] **Q1.3** [reasoning] Keep reserve, carriageway and usable verge apart; remove circular fit proof; split model margin from source confidence; allow an empty confirmed shortlist with explicit survey options when no eligible project gains enough (FR-15.4)
-- [ ] **Q1.4** [reasoning] Crossing movements and confirmed, assumed or unknown safety; no absolute child-safety claims (FR-15.5)
+- [x] **Q1.4** [reasoning] Crossing movements and confirmed, assumed or unknown safety; no absolute child-safety claims (FR-15.5)
 - [ ] **Q1.5** [reasoning] Count unique people and type gains separately in every output, including route reviews (FR-15.6)
 - [ ] **Q1.6** [reasoning] One package and versioned proposal record drive headline, map, totals, list, sheets and exports; allow explicit goal/stage identities and keep the old shortlist named (FR-15.2, FR-16.1)
 - [ ] **Q1.7** [routine] Community outcome and trade-offs first, with costs, stage, gaps and council ask; reorder sections, fold tables and test selection, phone, keyboard and print views (FR-15.3, FR-16.2)

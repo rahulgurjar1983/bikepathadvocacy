@@ -1,0 +1,8 @@
+{
+  "build_commit": "9e61a09b2cced8ec824e7acf7c86bf113b700889",
+  "command": "tar -czf data/output/Q1.4/full.tar.gz -C data/output/Q1.4/full .",
+  "asset": "full.tar.gz",
+  "sha256": "0fde61acb30e37704a084013d9b982d5639f978d4172864cd86fa97515651735",
+  "release": "https://github.com/rahulgurjar1983/bikepathadvocacy/releases/tag/proof-Q1.4-9e61a09",
+  "scope": "Fresh full Bayside outputs; safety proof, not performance or field validation"
+}

@@ -30,19 +30,18 @@ snapshot hashes. Rebuild the source audit with
 It shows that the grid has class traffic defaults and nearby signal tags,
 with no phase or turn records. Those tags alone cannot confirm a crossing.
 
-The default wiring and public model wording are now saved on the branch.
-The focused cases pass, but the old grid access and pick checks still fail.
-Run `uv run pytest tests/test_safety_evidence.py tests/test_test_grid.py -q`;
-the saved result is `artifacts/Q1.4/integration-tests.txt`.
-Use the new fixture-only path to give each old known case explicit toy
-traffic, phase and turn evidence. Keep its old body and all its assertions.
-Do not change real observations or let a nearby signal prove a safe phase.
-The row stays open. No PR or full proof is claimed.
-Still check stress exports, report maps and route figures against confirmed
-status. Their legacy `aaa` field is still a model flag. Add evidence for
-planned crossing phases before allowing a junction fix in default picks.
-The edge filter is strict: an unknown turn can exclude an otherwise known
-movement on that edge. Check this limit before claiming a full route audit.
+- Q1.4: Keep toy traffic records tied to exact edge values. Keep planned
+  phases apart from existing crossings. The grid input helper adds phase
+  proof only at its signal site and planned signal site, leaving both
+  unsignalised crossings without that proof. Old test bodies stay intact.
+- Q1.4: Stress exports, report maps and route figures use confirmed status.
+  The internal model AAA flag stays separate. An unknown turn can exclude
+  a whole edge; the current graph filter is conservative and does not
+  claim to prove every possible route movement.
+- Q1.4: Use the explicit access assumptions mode to compare class defaults
+  and unverified signal phases. Known turning conflicts stay unknown.
+  A proposed phase can support a matching junction fix but never the
+  existing network. Real source observations must stay unchanged.
 
 The confirmed filter keeps survey options when it filters planning links.
 The access assumptions flag names unverified signal phases and turn
@@ -216,3 +215,8 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 - Q1.3: Save output hashes as records with `path` and `sha256` fields.
   A file name that starts with `access` can make the secret scan flag a
   plain hash. Keep the scanner strict and fix the proof writer.
+
+- Q1.4: The full network export includes movement records on street edges.
+  It is large. The full Bayside timing in `artifacts/Q1.4/time-full.txt`
+  does not meet the time or memory goal on this host. Use the saved
+  command to check those limits; do not cite this as performance proof.

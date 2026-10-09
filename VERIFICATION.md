@@ -961,22 +961,30 @@ Artifact: `artifacts/Q1.3/manifest.json`, `artifacts/Q1.3/width-sample.json`,
 
 ### Q1.4
 
-This is saved work, not full proof. The row stays open.
-
 ```bash
 uv run pytest tests/test_safety_evidence.py tests/test_test_grid.py -q
+/usr/bin/time -v uv run bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out data/output/Q1.4/full
 uv run python artifacts/Q1.4/compare_access.py
 ```
 
-Expect: The new safety cases pass. The old grid score and signals-only
-pick checks still fail until their toy inputs have the required evidence.
-The fresh Bayside access files name the confirmed and assumptions modes.
-The latter lists its assumed signal phases and turn conflicts. These are
-model results, not field checks. This does not prove a full report or picks.
+Expect: All focused cases pass with the old grid checks intact. Signals on
+other approaches, missing refuge space and missing path evidence stay
+unknown. A sourced protected phase proves only its own movement. Proposed
+phases do not prove existing crossings. Default access and picks use
+confirmed links; the explicit access assumptions mode names its limits.
+Fresh Bayside exports match confirmed status. The public page states the
+model criteria and does not guarantee child safety. The proof saves source
+hashes, output hashes and status counts. Movement counts include each
+turn record on both street edges. These are model checks, not a field
+survey. Crossing audits conservatively filter whole edges when a
+usable turn lacks proof. This host run exceeds the time and memory goals;
+it is safety proof, not proof of the full-run limits.
 
-Artifact: `artifacts/Q1.4/integration-tests.txt` records the focused checks.
-Artifact: `artifacts/Q1.4/access-comparison.json` records fresh access results,
-the build commit, config hash and snapshot hash.
+Artifact: `artifacts/Q1.4/integration-tests.txt`,
+`artifacts/Q1.4/access-comparison.json`, `artifacts/Q1.4/run.log` and
+`artifacts/Q1.4/time-full.txt` and `artifacts/Q1.4/manifest.json`.
+The manifest links the full output archive and its hash.
+
 
 ### S0.8
 
