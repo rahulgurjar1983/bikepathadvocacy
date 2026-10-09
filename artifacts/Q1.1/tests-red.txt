@@ -1,0 +1,133 @@
+FFFFFFFFFFF                                                              [100%]
+=================================== FAILURES ===================================
+______ test_fr15_1_finite_ratios_include_the_current_pick[free-then-paid] ______
+
+values = [(1, 0), (10, 1)], ratio = 0.25, stop = 2
+
+>   ???
+E   AssertionError: assert 1 == 2
+E    +  where 1 = recommended_stop([{'rank': 1, 'gain': 1, 'cost': 0}, {'rank': 2, 'gain': 10, 'cost': 1}], 0.25)
+
+tests/test_finite_stop.py:28: AssertionError
+______ test_fr15_1_finite_ratios_include_the_current_pick[late-recovery] _______
+
+values = [(1, 0), (10, 1), (1, 1), (3, 1)], ratio = 0.25, stop = 4
+
+>   ???
+E   AssertionError: assert 1 == 4
+E    +  where 1 = recommended_stop([{'rank': 1, 'gain': 1, 'cost': 0}, {'rank': 2, 'gain': 10, 'cost': 1}, {'rank': 3, 'gain': 1, 'cost': 1}, {'rank': 4, 'gain': 3, 'cost': 1}], 0.25)
+
+tests/test_finite_stop.py:28: AssertionError
+_______ test_fr15_1_finite_ratios_include_the_current_pick[equal-ratios] _______
+
+values = [(2, 0), (4, 1)], ratio = 1.0, stop = 2
+
+>   ???
+E   AssertionError: assert 1 == 2
+E    +  where 1 = recommended_stop([{'rank': 1, 'gain': 2, 'cost': 0}, {'rank': 2, 'gain': 4, 'cost': 1}], 1.0)
+
+tests/test_finite_stop.py:28: AssertionError
+_______________ test_fr15_1_cap_is_separate_from_stop[people0-1] _______________
+
+people = {1: 100, 2: 1, 3: 1}, stop = 1
+
+    def test_fr15_1_cap_is_separate_from_stop(people, stop):
+        found = curve(star([(400, BUSY)] * 3), people, region_with(frontier_max_projects=2))
+        assert found["recommended_stop"] == stop
+        assert found["termination_reason"] == "project_cap"
+>       assert found["evaluated_projects"] == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'termination_reason'
+
+tests/test_finite_stop.py:35: KeyError
+_______________ test_fr15_1_cap_is_separate_from_stop[people1-2] _______________
+
+people = {1: 10, 2: 10, 3: 10}, stop = 2
+
+    def test_fr15_1_cap_is_separate_from_stop(people, stop):
+        found = curve(star([(400, BUSY)] * 3), people, region_with(frontier_max_projects=2))
+        assert found["recommended_stop"] == stop
+        assert found["termination_reason"] == "project_cap"
+>       assert found["evaluated_projects"] == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'termination_reason'
+
+tests/test_finite_stop.py:35: KeyError
+____________ test_fr15_1_positive_pool_exhaustion_keeps_stable_ties ____________
+
+    found = curve(star([(400, BUSY)] * 3), {1: 10, 2: 10, 3: 10})
+    assert found["termination_reason"] == "candidate_pool_exhausted"
+>   assert found["evaluated_projects"] == 3
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'termination_reason'
+
+tests/test_finite_stop.py:43: KeyError
+___________________ test_fr15_1_no_gain_is_not_an_empty_pool ___________________
+
+>   ???
+E   KeyError: 'termination_reason'
+
+tests/test_finite_stop.py:68: KeyError
+_______ test_fr8_14_positive_gains_survive_curve_and_report_json[1e-07] ________
+
+small = 1e-07
+
+    def test_fr8_14_positive_gains_survive_curve_and_report_json(small):
+        found = curve(star([(400, BUSY)] * 2), {1: 100, 2: small})
+        assert len(found["picks"]) == 2
+        expected = 100 * small / (100 + small)
+        assert found["picks"][1]["gain"] == pytest.approx(expected, rel=1e-14, abs=0)
+>       raw = {"scenarios": [found]}
+E       assert 0.0 == 9.99999999e-08 ± 1.0e-21
+E         
+E         comparison failed
+E         Obtained: 0.0
+E         Expected: 9.99999999e-08 ± 1.0e-21
+
+tests/test_finite_stop.py:76: AssertionError
+_______ test_fr8_14_positive_gains_survive_curve_and_report_json[1e-10] ________
+
+small = 1e-10
+
+    def test_fr8_14_positive_gains_survive_curve_and_report_json(small):
+        found = curve(star([(400, BUSY)] * 2), {1: 100, 2: small})
+        assert len(found["picks"]) == 2
+>       expected = 100 * small / (100 + small)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: assert 1 == 2
+E        +  where 1 = len([{'rank': 1, 'id': 'ca29bee2bd6bc098', 'kind': 'route', 'name': '0: unnamed tertiary', ...}])
+
+tests/test_finite_stop.py:74: AssertionError
+___________ test_fr15_1_report_explains_the_finite_best_so_far_rule ____________
+
+    section = report_section({1: 100, 2: 1, 3: 1})
+    text = re.sub("<[^>]+>", " ", section)
+    assert "cost plus one" in text
+>   assert "best ratio so far" in text
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: assert 'cost plus one' in '  How much change?  The slider opens at my recommended stop for the Weights as set scenario:  1 projects (F13) . I st...  Weights as set   0    0.0    0.0     Weights as set   1    94.0    98.0     Weights as set   2    188.0    99.0     '
+
+tests/test_finite_stop.py:92: AssertionError
+____________ test_fr8_14_report_discloses_cap_after_an_earlier_stop ____________
+
+    section = report_section({1: 100, 2: 1, 3: 1})
+    note = re.search(r'id="change-capped".*?</p>', section, re.S)
+    assert note is not None
+>   assert "cap" in note.group()
+    ^^^^^^^^^^^^^^^^^^^^^^^
+E   assert None is not None
+
+tests/test_finite_stop.py:103: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_finite_stop.py::test_fr15_1_finite_ratios_include_the_current_pick[free-then-paid]
+FAILED tests/test_finite_stop.py::test_fr15_1_finite_ratios_include_the_current_pick[late-recovery]
+FAILED tests/test_finite_stop.py::test_fr15_1_finite_ratios_include_the_current_pick[equal-ratios]
+FAILED tests/test_finite_stop.py::test_fr15_1_cap_is_separate_from_stop[people0-1]
+FAILED tests/test_finite_stop.py::test_fr15_1_cap_is_separate_from_stop[people1-2]
+FAILED tests/test_finite_stop.py::test_fr15_1_positive_pool_exhaustion_keeps_stable_ties
+FAILED tests/test_finite_stop.py::test_fr15_1_no_gain_is_not_an_empty_pool - ...
+FAILED tests/test_finite_stop.py::test_fr8_14_positive_gains_survive_curve_and_report_json[1e-07]
+FAILED tests/test_finite_stop.py::test_fr8_14_positive_gains_survive_curve_and_report_json[1e-10]
+FAILED tests/test_finite_stop.py::test_fr15_1_report_explains_the_finite_best_so_far_rule
+FAILED tests/test_finite_stop.py::test_fr8_14_report_discloses_cap_after_an_earlier_stop
+11 failed in 31.82s

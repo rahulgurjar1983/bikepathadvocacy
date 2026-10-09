@@ -1,0 +1,64 @@
+{
+  "command": "/usr/bin/time -v -o artifacts/Q1.1/time-full.txt uv run bikeplan propose regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.1-full",
+  "commit": "899cac0",
+  "report_commit": "65ef81cf86d2793163a6b5bbcc03168241b25fcc",
+  "config_and_snapshot_sha256": {
+    "regions/au-nsw-bayside.yaml": "b324303588064e489ddf116063e24218bf89dd5e1ac3dab8bd8d2aae57f2b2e0",
+    "profiles/au-nsw.yaml": "3089879011bff619b5df896b6a63677e7f1d9c50b24c50febf081cb6681e25cf",
+    "data/cache/au-nsw-bayside/2026-10-01/manifest.json": "2eaf0b00832565765c42e07b48ad7c6117436194487f45931e348f6772964bba"
+  },
+  "output_sha256": {
+    "frontier.json": "fe1757fdeba5ffd922f489484ac5cd2b374cc6ba91b607a24550ef41415d886c",
+    "projects.csv": "d109cf2285197c01e43a7a6a0be2f3ac6e8da72132559efaa4044c53eb99f199",
+    "projects.geojson": "ccc3a2009958b5d809f2a5f8ed0f7c7ee849351b85cfbfe0b61ff62a1340d4be",
+    "projects.json": "2d4c602b7f2312ea91e0540d7651e2b5c6cfba706a971b82e29db1ee62742afc"
+  },
+  "host": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "available_cpus": 4,
+  "run_state": "fresh outputs; no stage cache",
+  "wall_seconds": 2555.87,
+  "user_cpu_seconds": 2526.3,
+  "system_cpu_seconds": 7.08,
+  "peak_rss_kbytes": 1854736,
+  "scenarios": [
+    {
+      "id": "light",
+      "label": "Parking and lanes count half",
+      "scales": {
+        "parking_space": 0.5,
+        "lane_km": 0.5
+      },
+      "recommended_stop": 125,
+      "recommend_ratio": 0.25,
+      "termination_reason": "project_cap",
+      "evaluated_projects": 150,
+      "truncated": true,
+      "cap_reached": true
+    },
+    {
+      "id": "shipped",
+      "label": "Weights as set",
+      "scales": {},
+      "recommended_stop": 144,
+      "recommend_ratio": 0.25,
+      "termination_reason": "project_cap",
+      "evaluated_projects": 150,
+      "truncated": true,
+      "cap_reached": true
+    },
+    {
+      "id": "heavy",
+      "label": "Parking and lanes count four times",
+      "scales": {
+        "parking_space": 4.0,
+        "lane_km": 4.0
+      },
+      "recommended_stop": 145,
+      "recommend_ratio": 0.25,
+      "termination_reason": "project_cap",
+      "evaluated_projects": 150,
+      "truncated": true,
+      "cap_reached": true
+    }
+  ]
+}

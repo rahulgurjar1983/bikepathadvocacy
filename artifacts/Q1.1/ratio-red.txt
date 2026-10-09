@@ -1,0 +1,16 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+______________ test_fr15_1_ratio_links_to_the_stop_figure_method _______________
+
+    def test_fr15_1_ratio_links_to_the_stop_figure_method():
+        found = curve(star([(400, BUSY)] * 3), {1: 100, 2: 1, 3: 1})
+        data = frontier_data({"scenarios": [found]}, 0, ["school"], {})
+        figures = {item["id"]: item for item in change_figures(data, json.dumps(data))}
+        section = change_section(data, figures)
+>       assert '<a href="#F13">0.25</a>' in section
+E       assert '<a href="#F13">0.25</a>' in '<section id="change"><h2>How much change?</h2><p id="change-why">The slider opens at my recommended stop for the Weig...<td><a href="#F12">3</a></td><td><a href="#F12">282.0</a></td><td><a href="#F12">100.0</a></td></tr></table></section>'
+
+tests/test_finite_stop.py:124: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_finite_stop.py::test_fr15_1_ratio_links_to_the_stop_figure_method
+1 failed, 12 deselected in 4.09s

@@ -913,3 +913,16 @@ bash -n loop.sh
 
 Expect: all 44 loop tests pass. Five new cases fail before the change. All rows start on Sonnet/Sol at medium effort. Stale larger role choices are ignored. A stalled row raises effort on the same model. Opt-in alone does not choose a larger model. CI runs the full suite before merge.
 Artifact: `artifacts/S0.6/check.txt`
+
+### Q1.1
+
+```bash
+uv run pytest tests/test_finite_stop.py -q
+BUILD_COMMIT=$(git rev-parse HEAD)
+mkdir -p /tmp/bikeplan-Q1.1-full
+/usr/bin/time -v -o artifacts/Q1.1/time-full.txt uv run bikeplan propose regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.1-full > artifacts/Q1.1/run.log 2>&1
+uv run python artifacts/Q1.1/collect.py "$BUILD_COMMIT"
+```
+
+Expect: The tests pass. Each stop matches a fresh sum from the exact gains and costs: gain divided by cost plus one, checked against the best ratio so far. The saved curves name their end reason, count of picks and cut-short state. The report text explains the rule and shows each capped curve, even with an earlier stop. The full run uses the shipped weights. The saved run took 42:35.87 and used 1854736 kB at peak. The light, shipped and heavy stops are 125, 144 and 145; each curve has 150 picks and is cut short. The collector checks the time and memory bounds and saves the host details; this host run is not a CI runner proof.
+Artifact: `artifacts/Q1.1/manifest.json`, `artifacts/Q1.1/curve-data.json`, `artifacts/Q1.1/stop-section.html`, `artifacts/Q1.1/time-full.txt`, `artifacts/Q1.1/tests-green.txt`

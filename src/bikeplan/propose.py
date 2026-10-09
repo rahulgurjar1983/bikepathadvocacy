@@ -39,7 +39,6 @@ DEFAULT_SCENARIOS = (
     Scenario("shipped", "Weights as set", {}),
     Scenario("heavy", "Parking and lanes count four times", {"parking_space": 4.0, "lane_km": 4.0}),
 )
-MIN_FRONTIER_GAIN = 1e-9
 SNAP_M = 60.0
 SIDE_M = 20.0
 OPEN_SHARE = 0.3
@@ -590,6 +589,7 @@ def greedy_picks(
     picked: list[dict] = []
     safe_now = score_access(people, placed, results, weights)["safe_people"]
     km = 0.0
+    termination = "no_gain"
     while len(picked) < proposals.max_projects and km < proposals.budget_km:
         values = trip_values(people, placed, results, weights)
         found = route_fixes(
@@ -625,6 +625,9 @@ def greedy_picks(
             found,
             key=lambda elements: (-found[elements] / (costs[elements] + 1), project_id(elements)),
         )[: proposals.candidate_pool]
+        if not ranked:
+            termination = "candidate_pool_exhausted"
+            break
         best = None
         for elements in ranked:
             trial, redone = update_reach(
@@ -639,9 +642,9 @@ def greedy_picks(
                 legs,
             )
             gain = gain_between(people, placed, weights, counts, results, trial, redone)
-            if gain < proposals.min_gain:
+            if gain <= 0 or gain < proposals.min_gain:
                 continue
-            key = (round(-gain / (costs[elements] + 1), 9), project_id(elements))
+            key = (-gain / (costs[elements] + 1), project_id(elements))
             if best is None or key < best[0]:
                 best = (key, elements, gain)
         if best is None or best[2] < proposals.min_gain:
@@ -668,14 +671,18 @@ def greedy_picks(
                 "id": project_id(elements),
                 "kind": kinds[elements],
                 "elements": tuple(sorted(elements)),
-                "gain": round(gain, 6),
+                "gain": gain,
                 "cost": costs[elements],
-                "score_after": round(score, 6),
+                "score_after": score,
                 "place": labels[main],
                 "people": {kind: safe_after[kind] - safe_before[kind] for kind in weights},
             }
         )
         current = fixed_planning(graph, planning, fixed, proposals.metres_per_point)
+    else:
+        termination = "project_cap" if len(picked) >= proposals.max_projects else "budget_km"
+    if stats is not None:
+        stats["termination_reason"] = termination
     return picked
 
 
@@ -892,7 +899,7 @@ def scaled_region(region, scenario: Scenario, frontier: bool = True):
         changes.update(
             max_projects=region.proposals.frontier_max_projects,
             budget_km=float("inf"),
-            min_gain=MIN_FRONTIER_GAIN,
+            min_gain=0.0,
         )
     return dataclasses.replace(region, proposals=dataclasses.replace(region.proposals, **changes))
 
@@ -901,7 +908,7 @@ def recommended_stop(picks: list[dict], ratio: float) -> int | None:
     stop = None
     best = 0.0
     for item in picks:
-        per_point = item["gain"] / item["cost"] if item["cost"] else float("inf")
+        per_point = item["gain"] / (item["cost"] + 1)
         best = max(best, per_point)
         if per_point >= ratio * best:
             stop = item["rank"]
@@ -934,7 +941,7 @@ def curve_picks(picked: list[dict], planning: Planning) -> list[dict]:
                 "kind": record["kind"],
                 "name": record["name"],
                 "gain": record["gain"],
-                "cost": round(pick["cost"], 6),
+                "cost": pick["cost"],
                 "disruption": round(disruption, 6),
                 "parking_spaces": parking,
                 "lane_km": round(lane, 6),
@@ -967,8 +974,9 @@ def scenario_curve(
     scaled = dataclasses.replace(
         scaled, access=dataclasses.replace(scaled.access, reach_m=reach_m, detour_max=detour_max)
     )
+    stats = {}
     solved, planning, picked = solve(
-        graph, scaled, profile, placed, people, weights, names, legs, corridors
+        graph, scaled, profile, placed, people, weights, names, legs, corridors, stats
     )
     picks = curve_picks(picked, planning)
     stop = recommended_stop(picks, region.proposals.recommend_ratio)
@@ -979,8 +987,11 @@ def scenario_curve(
         "label": scenario.label,
         "scales": scenario.scales,
         "recommended_stop": stop,
-        "cap_reached": stop is not None
-        and stop == len(picks) == region.proposals.frontier_max_projects,
+        "recommend_ratio": region.proposals.recommend_ratio,
+        "termination_reason": stats["termination_reason"],
+        "evaluated_projects": len(picks),
+        "truncated": stats["termination_reason"] == "project_cap",
+        "cap_reached": stats["termination_reason"] == "project_cap",
         "picks": picks,
     }
 
