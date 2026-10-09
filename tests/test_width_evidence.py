@@ -164,10 +164,12 @@ def test_fr15_4_empty_default_picks_do_not_lower_minimum_gain():
     assert REGION.proposals.min_gain > 0
 
 
-def test_fr15_4_snapshot_dates_follow_the_width_source():
+def test_fr15_4_snapshot_dates_follow_the_width_source(tmp_path):
     from bikeplan.network import build
 
-    graph = build("tests/fixtures/test-grid/snapshot", REGION, PROFILE)
+    from tests.test_propose_command import snapshot
+
+    graph = build(snapshot(tmp_path), REGION, PROFILE)
     data = next(data for _, _, data in graph.edges(data=True) if data.get("width_tag_m"))
     found = fuse(data, PROFILE)
     assert found["carriageway"]["date"] == REGION.snapshot.osm_date
