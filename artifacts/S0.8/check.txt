@@ -1,0 +1,14 @@
+S0.8: local checks on 2026-10-10
+Command: uv run --frozen pytest gates/tests/test_checkpoint.py gates/tests/test_loop.py -q --tb=short
+Result: 51 passed in 41.55s
+Seven new cases fail on base; sync failed on the dirty proof file.
+The branch recovery case also failed without the retained launcher.
+The launcher restores an old branch without PYTHONPATH or new gate code.
+Live recovery: Q1.4 branch head d850d7250e1588dc4bc03692822f5ce86a84d8cd saved in local stash 325bab4a7e349d7aa067dd9e97ec4b50b7bca04e.
+All 14 dirty app/proof paths were saved; main checkout then succeeded.
+The service was stopped while it had no active model writer. It will resume after the input PR merges.
+This checkpoint is not a feature proof, a passing full suite, or a shipped safety fix.
+
+Retained launcher command: uv run --frozen pytest gates/tests/test_checkpoint.py::test_fr0_33_retained_launcher_saves_on_older_branch -q --tb=short
+Result: 1 passed in 2.54s. It failed without the launcher save fix.
+The fixture uses the shipped ignores so Python bytecode is not an input edit.

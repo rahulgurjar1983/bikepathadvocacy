@@ -977,3 +977,13 @@ model results, not field checks. This does not prove a full report or picks.
 Artifact: `artifacts/Q1.4/integration-tests.txt` records the focused checks.
 Artifact: `artifacts/Q1.4/access-comparison.json` records fresh access results,
 the build commit, config hash and snapshot hash.
+
+### S0.8
+
+```bash
+uv run --frozen pytest gates/tests/test_checkpoint.py gates/tests/test_loop.py -q --tb=short
+bash -n loop.sh
+```
+
+Expect: all 52 focused checks pass. Seven new cases fail on the base. Unfinished proof, staged tests and untracked fixtures survive a switch to main and restore on the exact branch and head. Inputs and other branches are never stashed. Changed heads keep the saved work intact. The row note names its saved branch. The local stash is kept; no feature is marked shipped by a checkpoint. CI runs the full suite before merge.
+Artifact: `artifacts/S0.8/check.txt`
