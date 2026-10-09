@@ -1,6 +1,7 @@
 import dataclasses
 import html
 import json
+from datetime import datetime
 from pathlib import Path
 
 from bikeplan.config import Num
@@ -253,9 +254,9 @@ def sheet(record: dict, features: list[dict]) -> str:
             item["id"],
             item["street"],
             item["fix"],
-            ROBUST_LABELS.get(item["robust"], item["robust"]),
+            ROBUST_LABELS.get(item.get("model_margin") or item["robust"], item["robust"]),
             item["width_source"] or "none",
-            item["width_confidence"] or "none",
+            item.get("source_confidence") or item["width_confidence"] or "none",
             item["length_m"],
         ]
         for item in record["elements"]
@@ -264,9 +265,9 @@ def sheet(record: dict, features: list[dict]) -> str:
         "Element",
         "Street",
         "Fix",
-        "Robustness",
+        "Model margin",
         "Width source",
-        "Width confidence",
+        "Width confidence / Source confidence",
         "Length m",
     ]
     people = [[kind, f"{count:.0f}"] for kind, count in sorted(record["people"].items())]
@@ -280,7 +281,7 @@ def sheet(record: dict, features: list[dict]) -> str:
             confidence = section["width_confidence"] or "none"
             drawings.append(
                 f"<h5><code>{html.escape(section['street'])}</code>; width source "
-                f"<code>{html.escape(source)}</code>, confidence "
+                f"<code>{html.escape(source)}</code>, source confidence "
                 f"<code>{html.escape(confidence)}</code></h5>"
                 + "".join(
                     cross_section(record["id"], element["id"], section, phase)
@@ -351,9 +352,22 @@ def rebuild_section(summary: dict) -> str:
     )
 
 
+def calendar_dates(value, key=""):
+    if isinstance(value, dict):
+        return {name: calendar_dates(item, name) for name, item in value.items()}
+    if isinstance(value, list):
+        return [calendar_dates(item) for item in value]
+    if key == "date" and isinstance(value, str):
+        try:
+            return datetime.fromisoformat(value).date().isoformat()
+        except ValueError:
+            return value
+    return value
+
+
 def data_block(payload: dict) -> str:
     kept = {name: payload[name] for name in ("project_shapes", "projects", "summary")}
-    text = json.dumps(kept, sort_keys=True).replace("</", "<\\/")
+    text = json.dumps(calendar_dates(kept), sort_keys=True).replace("</", "<\\/")
     return f'<script type="application/json" id="page-data">{text}</script>'
 
 

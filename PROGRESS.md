@@ -10,19 +10,15 @@ Tags: [reasoning] needs deep checks, with no larger model by default; [routine] 
 
 - [x] **Q1.1** [reasoning] Finite stop rule, exact gain data, correct explanation and curve-limit notice; rebuild Bayside with shipped weights (FR-15.1, FR-8.14)
 - [ ] **Q1.2** [routine] Enforce private route paths and release exclusion; the input branch adds the ignore rule now (FR-15.18, FR-14.12)
-- [ ] **Q1.3** [reasoning] Keep reserve, carriageway and usable verge apart; remove circular fit proof; split model margin from source confidence; allow an empty confirmed shortlist with explicit survey options when no eligible project gains enough (FR-15.4)
+- [x] **Q1.3** [reasoning] Keep reserve, carriageway and usable verge apart; remove circular fit proof; split model margin from source confidence; allow an empty confirmed shortlist with explicit survey options when no eligible project gains enough (FR-15.4)
 - [ ] **Q1.4** [reasoning] Crossing movements and confirmed, assumed or unknown safety; no absolute child-safety claims (FR-15.5)
 - [ ] **Q1.5** [reasoning] Count unique people and type gains separately in every output, including route reviews (FR-15.6)
 - [ ] **Q1.6** [reasoning] One package and versioned proposal record drive headline, map, totals, list, sheets and exports; allow explicit goal/stage identities and keep the old shortlist named (FR-15.2, FR-16.1)
 - [ ] **Q1.7** [routine] Community outcome and trade-offs first, with costs, stage, gaps and council ask; reorder sections, fold tables and test selection, phone, keyboard and print views (FR-15.3, FR-16.2)
-- [ ] **Q1.8** [reasoning] Recompute fixes, safety, margins, access and stop from inputs; reject tampered but rehashed outputs (FR-15.7)
-- [ ] **Q1.9** [reasoning] Public checks prove every part of each claim; plain Python recipes derive answers from raw data (FR-15.8)
-- [ ] **Q1.10** [reasoning] Check required snapshot adapters, effective dates and missing files; obtain complete inputs before switching the public manifest; publish a new immutable snapshot ID rather than overwrite a prior snapshot (FR-15.9)
-- [ ] **Q1.11** [reasoning] Reuse immutable graph and access work with versioned cache keys; cold and warm output bytes match; fast and full modes have labels (FR-15.16)
 
 ## Community proposal: before the remaining phases
 
-The approved order is proposal and trade-offs, network map, options, neighbourhood impacts, street plans, delivery, then evidence. Read spec 16. The example 40 schools, 500 parking spaces and 20 roads is not a target or a real result. Missing field data must stay visible; it does not block honest report features.
+The approved order is proposal and trade-offs, network map, options, neighbourhood impacts, street plans, delivery, then evidence. Read spec 16. The example 40 schools, 500 parking spaces and 20 roads is not a target or a real result. Missing field data must stay visible; it does not block honest report features. PR 111 shipped width rules only. A concept, confirmed shortlist and focused survey plan are distinct outputs. Do not turn all missing fields into the next council ask.
 
 - [ ] **C1.1** [reasoning] Prove complete directed trips to known entrances; show joined routes, separate groups, gaps and strict versus first-leg claims (FR-16.3)
 - [ ] **C1.2** [reasoning] Unique school-site coverage before, after and newly served; named entrances, source coverage and per-site resident reach, with no invented pupil count (FR-16.4)
@@ -30,13 +26,24 @@ The approved order is proposal and trade-offs, network map, options, neighbourho
 - [ ] **C1.4** [reasoning] Actual route types, unique roads and works sections, named endpoints and precise before/after lane, parking and access changes (FR-16.6)
 - [ ] **C1.5** [reasoning] Parking before, removed, added, after and net by street; expose local losses, special uses and incomplete inventory (FR-16.7)
 - [ ] **Q2.4** [reasoning] Optional sourced proposal inputs, owners, approvals, cost bands, stage and next ask; hash and validate metadata, unknown is never zero or funded (FR-15.14, FR-16.10)
+- [ ] **C1.0** [reasoning] Network concepts with archived assumptions, complete conditional trips, exact work sets and honest local impacts; keep the confirmed shortlist separate and disclose failed goals (FR-16.14, FR-16.1)
 - [ ] **C1.6** [reasoning] Neighbourhood benefits beside impacts; source boundaries, allocate physical works once, union residents and expose unallocated records (FR-16.8)
 - [ ] **C1.7** [reasoning] Baseline, useful first stage, parking-retention option and broader network; test goals, non-prefix stages, dependencies and actual trade-offs (FR-16.9)
+- [ ] **C1.12** [reasoning] Ranked surveys tied to selected routes, decisive checks, existing records and alternatives; keep the full missing-data layer separate and label council versus context scope (FR-16.15)
 - [ ] **C1.8** [routine] Offline street search, map/list links and local plans with before/after works, impacts, alternatives, gaps and next decision; phone and print proof (FR-16.11, FR-15.3)
 - [ ] **C1.9** [reasoning] Independent headline recipes and full checks of routes, school sets, resident unions, local works, parking, stages and costs; tampering still fails after rehash (FR-16.12, FR-15.7, FR-15.8)
+- [ ] **Q1.8** [reasoning] Recompute fixes, safety, margins, access and stop from inputs; reject tampered but rehashed outputs (FR-15.7)
+- [ ] **Q1.9** [reasoning] Public checks prove every part of each claim; plain Python recipes derive answers from raw data (FR-15.8)
 - [ ] **C1.10** [reasoning] Fresh Bayside community report in the approved order, honest unknowns, selected-package agreement, browser/print proof, all recipes, full checks and a green public release (FR-16.13)
 
+## Later data and run work
+
+- [ ] **Q1.10** [reasoning] Check required snapshot adapters, effective dates and missing files; obtain complete inputs before switching the public manifest; publish a new immutable snapshot ID rather than overwrite a prior snapshot (FR-15.9)
+- [ ] **Q1.11** [reasoning] Reuse immutable graph and access work with versioned cache keys; cold and warm output bytes match; fast and full modes have labels (FR-15.16)
+
 ## Phase S: Scaffold (operator)
+
+- [x] **S0.8** Operator: save unfinished loop work before main sync and restore the same branch without lost files or index state (FR-0.33)
 
 - [x] **S0.7** Operator: wait for the first plan reset and skip old releases with no index; keep API failures strict (FR-0.13, FR-0.31)
 
