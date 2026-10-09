@@ -969,3 +969,14 @@ bash -n loop.sh
 
 Expect: all 52 focused checks pass. Seven new cases fail on the base. Unfinished proof, staged tests and untracked fixtures survive a switch to main and restore on the exact branch and head. Inputs and other branches are never stashed. Changed heads keep the saved work intact. The row note names its saved branch. The local stash is kept; no feature is marked shipped by a checkpoint. CI runs the full suite before merge.
 Artifact: `artifacts/S0.8/check.txt`
+
+### Q1.7
+
+```sh
+uv run pytest -q tests/test_community_opening.py
+uv run python artifacts/Q1.7/collect.py
+```
+
+Expect: The new cases pass. The fresh test-grid report opens with the selected proposal, space losses, gaps and council ask. The page order is proposal, map, options, area impacts, street plans, delivery and evidence. Phone and desktop views have no sideways scroll. Keys change the scenario and rank; a status names the choice. The print file shows that choice and the model method. With scripts off, the default proposal shows and the full curve table can be opened. The saved proof checks the report size and selected losses against the saved curve. Costs, school coverage and stages stay unknown. This proves page behaviour, not real school reach or the full community report.
+
+Artifact: `artifacts/Q1.7/browser-proof.json`, with fresh report files in `artifacts/Q1.7/report/`, screen views and `artifacts/Q1.7/selected.pdf`.
