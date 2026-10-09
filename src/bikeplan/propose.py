@@ -67,19 +67,44 @@ class Corridors(NamedTuple):
 class Planning(NamedTuple):
     edges: dict
     elements: dict
+    survey_options: tuple = ()
 
 
 def street_name(data: dict) -> str:
     return str(data.get("name") or f"unnamed {data.get('highway', 'street')}")
 
 
-def segment_elements(graph, profile, weights) -> tuple[dict, set]:
+def segment_elements(
+    graph, profile, weights, surveys=None, confirmed_only=True
+) -> tuple[dict, set]:
     elements = {}
     missing = set()
     to_degrees = Transformer.from_crs(graph.graph["crs"], 4326, always_xy=True)
     for segment_id, segment in bike_segments(graph).items():
-        result = segment_fit(segment, profile, weights)
-        if result is None or result["status"] == "no_fit":
+        result = segment_fit(segment, profile, weights, confirmed_only)
+        if result is not None and result["survey_options"] and surveys is not None:
+            (u, v, _), data = segment["edges"][0]
+            line = data.get("geometry") or LineString(
+                [(graph.nodes[node]["x"], graph.nodes[node]["y"]) for node in (u, v)]
+            )
+            surveys.append(
+                {
+                    "id": f"survey:{segment_id}",
+                    "segment": segment_id,
+                    "street": street_name(data),
+                    "fit_status": "needs_survey",
+                    "geometry": mapping(transform(to_degrees.transform, line)),
+                    "options": result["survey_options"],
+                    "carriageway": result["carriageway"],
+                    "road_reserve": result["road_reserve"],
+                    "usable_verge": result["usable_verge"],
+                }
+            )
+        if (
+            result is None
+            or result["status"] == "no_fit"
+            or (confirmed_only and not result["confirmed"])
+        ):
             missing.add(segment_id)
         elif result["status"] == "fix":
             (u, v, _), first_edge = segment["edges"][0]
@@ -90,6 +115,12 @@ def segment_elements(graph, profile, weights) -> tuple[dict, set]:
             lon, lat = to_degrees.transform(point.x, point.y)
             chosen = next(item for item in result["candidates"] if item["fix"] == result["fix"])
             elements[f"segment:{segment_id}"] = {
+                "confirmed": chosen["confirmed"],
+                "model_margin": chosen["model_margin"],
+                "source_confidence": chosen["source_confidence"],
+                "carriageway": result["carriageway"],
+                "road_reserve": result["road_reserve"],
+                "usable_verge": result["usable_verge"],
                 "aaa_after": chosen["accepted"],
                 "margin_m": chosen["margin_m"],
                 "kind": "segment",
@@ -174,10 +205,11 @@ def crossing_needs(key: tuple, data: dict, junctions: dict) -> tuple:
     return found
 
 
-def planning_network(graph, profile, region) -> Planning:
+def planning_network(graph, profile, region, confirmed_only=True) -> Planning:
     weights = region.proposals.disruption_weights
     metres = region.proposals.metres_per_point
-    segments, missing = segment_elements(graph, profile, weights)
+    surveys = []
+    segments, missing = segment_elements(graph, profile, weights, surveys, confirmed_only)
     junctions = junction_elements(graph, profile, weights)
     own = {(u, v, k): own_lts(d, profile) for u, v, k, d in graph.edges(keys=True, data=True)}
     final, _ = raise_for_crossings(graph, own, profile)
@@ -205,7 +237,7 @@ def planning_network(graph, profile, region) -> Planning:
         edges[key] = {"cost": cost, "needs": needs}
         used.update(needs)
     elements = {name: item for name, item in {**segments, **junctions}.items() if name in used}
-    return Planning(edges, elements)
+    return Planning(edges, elements, tuple(surveys))
 
 
 def trip_values(people: dict, placed: list, results: list[Reach], weights: dict) -> dict:
@@ -391,7 +423,7 @@ def add_corridor_paths(graph, planning: Planning, corridors: Corridors, metres: 
                 )
                 cost = shape.length + metres * elements[name]["score"]
                 edges[(start, end, "new")] = {"cost": cost, "needs": (name,)}
-    return graph, Planning(edges, elements), names
+    return graph, Planning(edges, elements, planning.survey_options), names
 
 
 def segment_nodes(segment: dict) -> set:
@@ -476,7 +508,7 @@ def fixed_planning(graph, planning: Planning, fixed: set, metres: float) -> Plan
         saved = sum(edge_share(name, planning.elements[name], length, metres) for name in done)
         needs = tuple(name for name in item["needs"] if name not in fixed)
         edges[key] = {"cost": item["cost"] - saved, "needs": needs}
-    return Planning(edges, planning.elements)
+    return Planning(edges, planning.elements, planning.survey_options)
 
 
 def exact_score(people: dict, placed: list, results: list[Reach], weights: dict) -> float:
@@ -763,7 +795,21 @@ def project_sheet_records(records: list[dict], planning: Planning) -> list[dict]
         elements = []
         for item in record["elements"]:
             planned = planning.elements[item["id"]]
-            enriched = {**item, "check_links": planned["check_links"]}
+            enriched = {
+                **item,
+                "check_links": planned["check_links"],
+                **{
+                    key: planned.get(key)
+                    for key in (
+                        "confirmed",
+                        "model_margin",
+                        "source_confidence",
+                        "carriageway",
+                        "road_reserve",
+                        "usable_verge",
+                    )
+                },
+            }
             if planned["kind"] == "junction":
                 sections = planned["sections"]
                 enriched["sections"] = sections
@@ -863,6 +909,17 @@ def project_features(graph, planning: Planning, records: list[dict]) -> list[dic
                 **{key: item[key] for key in ("id", "street", "fix", "robust", "width_source")},
             }
             element = planning.elements[item["id"]]
+            properties |= {
+                key: element.get(key)
+                for key in (
+                    "confirmed",
+                    "model_margin",
+                    "source_confidence",
+                    "carriageway",
+                    "road_reserve",
+                    "usable_verge",
+                )
+            }
             geometry = element_geometry(graph, segments, element, to_degrees)
             features.append({"type": "Feature", "geometry": geometry, "properties": properties})
     return features
@@ -1018,6 +1075,44 @@ def scenario_curve(
     }
 
 
+def survey_layer(planning: Planning) -> dict:
+    groups = {}
+    for item in planning.survey_options:
+        options = item["options"]
+        properties = {
+            "street": item["street"],
+            "fit_status": "needs_survey",
+            "fixes": sorted({option["fix"] for option in options}),
+            "survey_checks": sorted(
+                {check for option in options for check in option["survey_checks"]}
+            ),
+            "source_confidence": sorted({option["source_confidence"] for option in options}),
+            "model_margin": sorted({option["model_margin"] or "unknown" for option in options}),
+        }
+        key = json.dumps(properties, sort_keys=True)
+        group = groups.setdefault(key, {"properties": properties, "segments": [], "lines": []})
+        group["segments"].append(str(item["segment"]))
+        geometry = item["geometry"]
+        lines = (
+            [geometry["coordinates"]]
+            if geometry["type"] == "LineString"
+            else geometry["coordinates"]
+        )
+        group["lines"].extend(lines)
+    features = []
+    for key, group in sorted(groups.items()):
+        geometry = shapely.line_merge(MultiLineString(group["lines"]))
+        features.append(
+            {
+                "type": "Feature",
+                "id": "survey:" + project_id([key]),
+                "properties": group["properties"] | {"segments": sorted(group["segments"])},
+                "geometry": mapping(geometry),
+            }
+        )
+    return {"type": "FeatureCollection", "features": features}
+
+
 def write_propose(
     graph,
     region,
@@ -1043,9 +1138,13 @@ def write_propose(
         graph, region, profile, placed, resident.people, weights, names, legs, corridors, stats
     )
     records = project_records(picked, planning)
+    surveys = survey_layer(planning)
+    if stats is not None:
+        stats["survey_options"] = surveys
     if sheets is not None:
         sheets.extend(project_sheet_records(records, planning))
     out.mkdir(parents=True, exist_ok=True)
+    (out / "survey_options.geojson").write_text(json.dumps(surveys, indent=2) + "\n")
     (out / "projects.json").write_text(json.dumps(records, indent=2) + "\n")
     kinds = list(weights)
     with (out / "projects.csv").open("w", newline="") as handle:

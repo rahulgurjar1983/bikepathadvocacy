@@ -1,0 +1,40 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+________ test_fr6_2_case_6_road_diet_barred_by_adt_and_verge_path_fits _________
+
+    def test_fr6_2_case_6_road_diet_barred_by_adt_and_verge_path_fits():
+        found = by_fix(6)
+        assert not found["road_diet"]["fits"]
+        assert found["road_diet"]["reason"] == "ADT 25000 is over 20000"
+        verge = found["verge_path"]
+>       assert verge["fits"]
+E       assert False
+
+tests/test_fit_options.py:121: AssertionError
+______ test_fr6_7_short_street_prefers_the_verge_path_to_parking_removal _______
+
+    def test_fr6_7_short_street_prefers_the_verge_path_to_parking_removal():
+        result = pick({**CASES[3], "reserve_m": 27.0, "length_m": 100.0})
+>       assert result["fix"] == "verge_path"
+E       AssertionError: assert 'cycleway_parking_one_side' == 'verge_path'
+E         
+E         - verge_path
+E         + cycleway_parking_one_side
+
+tests/test_fit_choice.py:43: AssertionError
+_____ test_fr6_11_least_disruptive_separated_fix_is_picked_among_separated _____
+
+    def test_fr6_11_least_disruptive_separated_fix_is_picked_among_separated():
+        result = pick({**CASES[3], "reserve_m": 27.0})
+>       assert result["fix"] == "verge_path"
+E       AssertionError: assert 'cycleway_parking_one_side' == 'verge_path'
+E         
+E         - verge_path
+E         + cycleway_parking_one_side
+
+tests/test_fit_separation.py:64: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_fit_options.py::test_fr6_2_case_6_road_diet_barred_by_adt_and_verge_path_fits
+FAILED tests/test_fit_choice.py::test_fr6_7_short_street_prefers_the_verge_path_to_parking_removal
+FAILED tests/test_fit_separation.py::test_fr6_11_least_disruptive_separated_fix_is_picked_among_separated
+3 failed in 1.76s

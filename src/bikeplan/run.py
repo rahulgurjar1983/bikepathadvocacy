@@ -11,7 +11,7 @@ from bikeplan.change import change_figures, change_scripts, change_section, fron
 from bikeplan.config import ConfigError, config_hash
 from bikeplan.fit import segment_fit
 from bikeplan.network import bike_segments, build
-from bikeplan.page import credits_for, details, page_scripts
+from bikeplan.page import calendar_dates, credits_for, details, page_scripts
 from bikeplan.propose import KINDS, csv_fields, csv_row, write_propose
 from bikeplan.report import (
     check_leaks,
@@ -90,7 +90,7 @@ def collection(features: list[dict], places: int = 7) -> dict:
 def network_features(graph, profile, weights) -> tuple[list[dict], dict]:
     scores = score_edges(graph, profile)
     fits = {
-        name: segment_fit(segment, profile, weights)
+        name: segment_fit(segment, profile, weights, confirmed_only=True)
         for name, segment in bike_segments(graph).items()
     }
     features = stress_features(graph, scores)
@@ -104,8 +104,17 @@ def network_features(graph, profile, weights) -> tuple[list[dict], dict]:
         properties["name"] = data.get("name")
         properties["width_m"] = found["width_m"]
         properties["width_source"] = found["width_source"]
-        properties["fit"] = fit["status"] if fit else None
-        properties["fix"] = fit["fix"] if fit else None
+        properties["carriageway"] = found["carriageway"]
+        properties["road_reserve"] = found["road_reserve"]
+        properties["usable_verge"] = found["usable_verge"]
+        properties["fit"] = (
+            "needs_survey"
+            if fit and fit["survey_options"] and not fit["confirmed"]
+            else fit["status"]
+            if fit
+            else None
+        )
+        properties["fix"] = fit["fix"] if fit and fit["confirmed"] else None
     return features, stress_summary(graph, scores)
 
 
@@ -188,6 +197,9 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
         "km_aaa": stress["km_aaa"],
         "candidates": stats["candidates"],
         "projects": len(records),
+        "shortlist_reason": ""
+        if records
+        else "No confirmed project gains enough at the set minimum gain.",
         "not_snapped": access["not_snapped"],
         "credits": credits_for(manifest),
         **project_summary(records, kinds, stats["corridor_candidates"]),
@@ -210,19 +222,27 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
     fixes = {item["properties"]["segment_id"]: item["properties"]["fix"] for item in features}
     rows = segment_rows(graph, profile, fixes)
     text = segments_text(rows)
-    map_text = (
-        json.dumps(map_data(graph, rows, Path(snapshot), payload["project_shapes"]), sort_keys=True)
-        + "\n"
-    )
+    surveys = canon(stats["survey_options"])
+    network["survey_options"] = surveys
+    map_payload = map_data(graph, rows, Path(snapshot), payload["project_shapes"])
+    map_payload["survey_options"] = surveys
+    map_text = json.dumps(map_payload, sort_keys=True) + "\n"
     figures = [*figure_list(text, map_text), *change_figures(frontier, frontier_bytes.decode())]
     page_text = page(
         region,
         figures,
-        map_text,
+        json.dumps(calendar_dates(map_payload), sort_keys=True) + "\n",
         details(payload["summary"], canon(sheets), profile, payload),
         page_scripts(payload),
         change_section(frontier, {item["id"]: item for item in figures}),
-        change_scripts(frontier),
+        change_scripts(calendar_dates(frontier)),
+    )
+    survey_note = "Survey options need site checks. They are kept out of the confirmed picks."
+    if summary["shortlist_reason"]:
+        survey_note = summary["shortlist_reason"] + " " + survey_note
+    page_text = page_text.replace(
+        '<div id="report-map-canvas"',
+        f'<p id="survey-note">{survey_note}</p><div id="report-map-canvas"',
     )
     outputs = {
         "access_homes.geojson": dump(

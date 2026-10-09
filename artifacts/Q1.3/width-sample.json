@@ -1,0 +1,46 @@
+{
+  "aaa": true,
+  "bike_ok": true,
+  "carriageway": {
+    "confidence": "low",
+    "date": "2026-10-08T02:56:12Z",
+    "high_m": 24.3,
+    "low_m": 21.3,
+    "observed": false,
+    "source": "reserve",
+    "width_m": 22.8
+  },
+  "fit": "aaa",
+  "fix": null,
+  "highway": "service",
+  "k": 0,
+  "length_m": 66.0,
+  "lts": 1,
+  "name": "Cook Avenue",
+  "osm_way": 305373720,
+  "reason": "mixed traffic, type A, 20 km/h (default), ADT 200 (default) -> LTS 1; AAA: 20 km/h is within 30 and ADT 200 is within 2000",
+  "road_reserve": {
+    "confidence": "low",
+    "date": "2026-10-08T02:56:12Z",
+    "high_m": 30.4,
+    "low_m": 29.3,
+    "observed": true,
+    "source": "NSW Cadastre, Lot layer, NSW Spatial Services",
+    "width_m": 29.8
+  },
+  "segment_id": "dced8d4c52689e15",
+  "u": 10015817028,
+  "usable_verge": {
+    "confidence": "unknown",
+    "constraints": {},
+    "date": null,
+    "high_m": null,
+    "low_m": null,
+    "observed": false,
+    "source": null,
+    "width_m": null
+  },
+  "v": 10053502991,
+  "width_m": 22.8,
+  "width_source": "reserve"
+}

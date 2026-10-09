@@ -441,10 +441,25 @@ def fixes_section(figures: Figures) -> str:
     ]
     del names
     lines = "".join(f"<li>{html.escape(item['label'])}: {link(item)}</li>" for item in found)
+    surveys = [
+        item
+        for item in figures.figures["total"]["fixes"]
+        if item.get("fit_status") == "needs_survey"
+    ]
+    survey_note = ""
+    if surveys:
+        checks = sorted({check for item in surveys for check in item["survey_checks"]})
+        survey_note = (
+            "<p>These model options need site checks and stay out of confirmed picks.</p><ul>"
+            + "".join(f"<li>{html.escape(item['street'])}: needs survey</li>" for item in surveys)
+            + "</ul><p>Check "
+            + html.escape(", ".join(checks))
+            + ".</p>"
+        )
     return (
         '<section id="fixes"><h2>What it would take to make the route safe for all ages</h2>'
         "<p>For each stretch that is not safe for all ages I choose the fix that disrupts "
-        f"people least and still fits.</p><ul>{lines}</ul></section>"
+        f"people least and fits the model width.</p>{survey_note}<ul>{lines}</ul></section>"
     )
 
 
