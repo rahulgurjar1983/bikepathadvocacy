@@ -103,3 +103,14 @@ def test_fr8_14_report_discloses_cap_after_an_earlier_stop():
     assert "cap" in note.group()
     assert "2" in note.group()
     assert "stop was still on its last project" not in note.group()
+
+
+def test_fr15_1_figure_method_matches_the_stop_rule():
+    found = curve(star([(400, BUSY)] * 3), {1: 100, 2: 1, 3: 1})
+    data = frontier_data({"scenarios": [found]}, 0, ["school"], {})
+    figure = next(item for item in change_figures(data, json.dumps(data)) if item["id"] == "F13")
+    assert "cost plus one" in figure["method"]
+    assert "best ratio so far" in figure["method"]
+    assert "including this pick" in figure["method"]
+    assert "full precision" in figure["method"]
+    assert "first project" not in figure["method"]
