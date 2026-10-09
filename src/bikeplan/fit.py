@@ -424,7 +424,13 @@ def candidate(item: dict, segment: dict, edges: list[dict], profile: Profile, we
     }
 
 
-def choose(segment: dict, profile: Profile, weights, edges: list[dict] | None = None) -> dict:
+def choose(
+    segment: dict,
+    profile: Profile,
+    weights,
+    edges: list[dict] | None = None,
+    confirmed_only: bool = True,
+) -> dict:
     edges = edges or [segment]
     before = cross_section(segment, profile)
     result = {"status": "aaa", "fix": None, "score": None, "reasons": [], "candidates": []}
@@ -442,9 +448,14 @@ def choose(segment: dict, profile: Profile, weights, edges: list[dict] | None = 
     if not accepted:
         reasons = [item["rejected"] or item["reason"] for item in found]
         return result | {"status": "no_fit", "reasons": reasons}
-    confirmed = [item for item in accepted if item["confirmed"]]
-    if confirmed:
-        accepted = confirmed
+    if confirmed_only:
+        accepted = [item for item in accepted if item["confirmed"]]
+        if not accepted:
+            return result | {
+                "status": "no_fit",
+                "confirmed": False,
+                "reasons": [item["reason"] for item in found],
+            }
     separated = [item for item in accepted if item["fix"] != "quietway"]
     if profile.fit.prefer_separation.value and separated:
         accepted = separated
@@ -510,14 +521,16 @@ def junction_fixes(graph, profile: Profile) -> list[dict]:
     return found
 
 
-def segment_fit(segment: dict, profile: Profile, weights) -> dict | None:
+def segment_fit(
+    segment: dict, profile: Profile, weights, confirmed_only: bool = False
+) -> dict | None:
     edges = [data for _, data in segment["edges"]]
     first_edge = edges[0]
     if not has_traffic(first_edge):
         return None
     fused = fuse(first_edge, profile)
     data = {**first_edge, **fused, "length_m": segment["inside_m"]}
-    result = choose(data, profile, weights, edges)
+    result = choose(data, profile, weights, edges, confirmed_only)
     robust = None
     if result["status"] == "fix":
         robust = next(item for item in result["candidates"] if item["fix"] == result["fix"])[

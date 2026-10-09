@@ -11,7 +11,7 @@ from bikeplan.change import change_figures, change_scripts, change_section, fron
 from bikeplan.config import ConfigError, config_hash
 from bikeplan.fit import segment_fit
 from bikeplan.network import bike_segments, build
-from bikeplan.page import credits_for, details, page_scripts
+from bikeplan.page import calendar_dates, credits_for, details, page_scripts
 from bikeplan.propose import KINDS, csv_fields, csv_row, write_propose
 from bikeplan.report import (
     check_leaks,
@@ -35,7 +35,6 @@ FILES = [
     "projects.json",
     "report.html",
     "summary.json",
-    "survey_options.geojson",
 ]
 SCORE_KEYS = {"gain", "score", "score_after", "before", "after"}
 KM_PARENTS = {"km_by_fix", "km_by_lts"}
@@ -91,7 +90,7 @@ def collection(features: list[dict], places: int = 7) -> dict:
 def network_features(graph, profile, weights) -> tuple[list[dict], dict]:
     scores = score_edges(graph, profile)
     fits = {
-        name: segment_fit(segment, profile, weights)
+        name: segment_fit(segment, profile, weights, confirmed_only=True)
         for name, segment in bike_segments(graph).items()
     }
     features = stress_features(graph, scores)
@@ -215,6 +214,7 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
     rows = segment_rows(graph, profile, fixes)
     text = segments_text(rows)
     surveys = canon(stats["survey_options"])
+    network["survey_options"] = surveys
     map_payload = map_data(graph, rows, Path(snapshot), payload["project_shapes"])
     map_payload["survey_options"] = surveys
     map_text = json.dumps(map_payload, sort_keys=True) + "\n"
@@ -222,16 +222,19 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
     page_text = page(
         region,
         figures,
-        map_text,
+        json.dumps(calendar_dates(map_payload), sort_keys=True) + "\n",
         details(payload["summary"], canon(sheets), profile, payload),
         page_scripts(payload),
         change_section(frontier, {item["id"]: item for item in figures}),
-        change_scripts(frontier),
+        change_scripts(calendar_dates(frontier)),
     )
     survey_note = "Survey options need site checks. They are kept out of the confirmed picks."
     if summary["shortlist_reason"]:
         survey_note = summary["shortlist_reason"] + " " + survey_note
-    page_text = page_text.replace('<p id="proposed-note">', f'<p id="proposed-note">{survey_note} ')
+    page_text = page_text.replace(
+        '<div id="report-map-canvas"',
+        f'<p id="survey-note">{survey_note}</p><div id="report-map-canvas"',
+    )
     outputs = {
         "access_homes.geojson": dump(
             collection(with_ids(homes, lambda properties: str(properties["node"])))
@@ -244,7 +247,6 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
         "projects.json": dump(records),
         "report.html": page_text.encode(),
         "summary.json": dump(summary),
-        "survey_options.geojson": dump(surveys),
     }
     files = {
         "figures.json": (json.dumps(figures, indent=2, sort_keys=True) + "\n").encode(),

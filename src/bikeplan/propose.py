@@ -73,12 +73,14 @@ def street_name(data: dict) -> str:
     return str(data.get("name") or f"unnamed {data.get('highway', 'street')}")
 
 
-def segment_elements(graph, profile, weights, surveys=None) -> tuple[dict, set]:
+def segment_elements(
+    graph, profile, weights, surveys=None, confirmed_only=True
+) -> tuple[dict, set]:
     elements = {}
     missing = set()
     to_degrees = Transformer.from_crs(graph.graph["crs"], 4326, always_xy=True)
     for segment_id, segment in bike_segments(graph).items():
-        result = segment_fit(segment, profile, weights)
+        result = segment_fit(segment, profile, weights, confirmed_only)
         if result is not None and result["survey_options"] and surveys is not None:
             (u, v, _), data = segment["edges"][0]
             line = data.get("geometry") or LineString(
@@ -97,7 +99,11 @@ def segment_elements(graph, profile, weights, surveys=None) -> tuple[dict, set]:
                     "usable_verge": result["usable_verge"],
                 }
             )
-        if result is None or result["status"] == "no_fit" or not result["confirmed"]:
+        if (
+            result is None
+            or result["status"] == "no_fit"
+            or (confirmed_only and not result["confirmed"])
+        ):
             missing.add(segment_id)
         elif result["status"] == "fix":
             (u, v, _), first_edge = segment["edges"][0]
@@ -198,11 +204,11 @@ def crossing_needs(key: tuple, data: dict, junctions: dict) -> tuple:
     return found
 
 
-def planning_network(graph, profile, region) -> Planning:
+def planning_network(graph, profile, region, confirmed_only=True) -> Planning:
     weights = region.proposals.disruption_weights
     metres = region.proposals.metres_per_point
     surveys = []
-    segments, missing = segment_elements(graph, profile, weights, surveys)
+    segments, missing = segment_elements(graph, profile, weights, surveys, confirmed_only)
     junctions = junction_elements(graph, profile, weights)
     own = {(u, v, k): own_lts(d, profile) for u, v, k, d in graph.edges(keys=True, data=True)}
     final, _ = raise_for_crossings(graph, own, profile)
@@ -716,12 +722,6 @@ def element_record(name: str, element: dict) -> dict:
     junction = element["kind"] == "junction"
     counts = {} if junction else element["counts"]
     result = {
-        "confirmed": element.get("confirmed"),
-        "model_margin": element.get("model_margin"),
-        "source_confidence": element.get("source_confidence"),
-        "carriageway": element.get("carriageway"),
-        "road_reserve": element.get("road_reserve"),
-        "usable_verge": element.get("usable_verge"),
         "id": name,
         "street": element["street"],
         "length_m": 0.0 if junction else round(element["length_m"], 1),
@@ -782,7 +782,21 @@ def project_sheet_records(records: list[dict], planning: Planning) -> list[dict]
         elements = []
         for item in record["elements"]:
             planned = planning.elements[item["id"]]
-            enriched = {**item, "check_links": planned["check_links"]}
+            enriched = {
+                **item,
+                "check_links": planned["check_links"],
+                **{
+                    key: planned.get(key)
+                    for key in (
+                        "confirmed",
+                        "model_margin",
+                        "source_confidence",
+                        "carriageway",
+                        "road_reserve",
+                        "usable_verge",
+                    )
+                },
+            }
             if planned["kind"] == "junction":
                 sections = planned["sections"]
                 enriched["sections"] = sections
@@ -874,6 +888,17 @@ def project_features(graph, planning: Planning, records: list[dict]) -> list[dic
                 **{key: item[key] for key in ("id", "street", "fix", "robust", "width_source")},
             }
             element = planning.elements[item["id"]]
+            properties |= {
+                key: element.get(key)
+                for key in (
+                    "confirmed",
+                    "model_margin",
+                    "source_confidence",
+                    "carriageway",
+                    "road_reserve",
+                    "usable_verge",
+                )
+            }
             geometry = element_geometry(graph, segments, element, to_degrees)
             features.append({"type": "Feature", "geometry": geometry, "properties": properties})
     return features
