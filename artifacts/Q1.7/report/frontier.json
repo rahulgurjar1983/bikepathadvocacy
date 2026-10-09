@@ -1,0 +1,231 @@
+{
+  "baseline": 25.0,
+  "default": "shipped",
+  "scenarios": [
+    {
+      "cap_reached": false,
+      "evaluated_projects": 1,
+      "id": "light",
+      "label": "Parking and lanes count half",
+      "picks": [
+        {
+          "cost": 0.0,
+          "disruption": 0.0,
+          "gain": 0.0,
+          "id": null,
+          "kind": null,
+          "km_by_fix": {},
+          "lane_km": 0.0,
+          "name": "No change",
+          "parking_spaces": 0,
+          "people": {
+            "aged_care": 0,
+            "college": 0,
+            "library": 0,
+            "school": 0,
+            "station": 0,
+            "town_centre": 0,
+            "university": 0
+          },
+          "rank": 0,
+          "refuges": 0,
+          "score": 25.0,
+          "signals": 0,
+          "speed_km": 0.0
+        },
+        {
+          "cost": 15.0,
+          "disruption": 15.0,
+          "gain": 75.0,
+          "id": "8f21dad1cfe48684",
+          "kind": "route",
+          "km_by_fix": {},
+          "lane_km": 0.0,
+          "name": "Grid School: unnamed residential",
+          "parking_spaces": 0,
+          "people": {
+            "aged_care": 0,
+            "college": 0,
+            "library": 0,
+            "school": 750.0,
+            "station": 0,
+            "town_centre": 0,
+            "university": 0
+          },
+          "rank": 1,
+          "refuges": 0,
+          "score": 100.0,
+          "signals": 1,
+          "speed_km": 0.0
+        }
+      ],
+      "recommend_ratio": 0.25,
+      "recommended_stop": 1,
+      "scales": {
+        "lane_km": 0.5,
+        "parking_space": 0.5
+      },
+      "termination_reason": "candidate_pool_exhausted",
+      "truncated": false
+    },
+    {
+      "cap_reached": false,
+      "evaluated_projects": 1,
+      "id": "shipped",
+      "label": "Weights as set",
+      "picks": [
+        {
+          "cost": 0.0,
+          "disruption": 0.0,
+          "gain": 0.0,
+          "id": null,
+          "kind": null,
+          "km_by_fix": {},
+          "lane_km": 0.0,
+          "name": "No change",
+          "parking_spaces": 0,
+          "people": {
+            "aged_care": 0,
+            "college": 0,
+            "library": 0,
+            "school": 0,
+            "station": 0,
+            "town_centre": 0,
+            "university": 0
+          },
+          "rank": 0,
+          "refuges": 0,
+          "score": 25.0,
+          "signals": 0,
+          "speed_km": 0.0
+        },
+        {
+          "cost": 15.0,
+          "disruption": 15.0,
+          "gain": 75.0,
+          "id": "8f21dad1cfe48684",
+          "kind": "route",
+          "km_by_fix": {},
+          "lane_km": 0.0,
+          "name": "Grid School: unnamed residential",
+          "parking_spaces": 0,
+          "people": {
+            "aged_care": 0,
+            "college": 0,
+            "library": 0,
+            "school": 750.0,
+            "station": 0,
+            "town_centre": 0,
+            "university": 0
+          },
+          "rank": 1,
+          "refuges": 0,
+          "score": 100.0,
+          "signals": 1,
+          "speed_km": 0.0
+        }
+      ],
+      "recommend_ratio": 0.25,
+      "recommended_stop": 1,
+      "scales": {},
+      "termination_reason": "candidate_pool_exhausted",
+      "truncated": false
+    },
+    {
+      "cap_reached": false,
+      "evaluated_projects": 1,
+      "id": "heavy",
+      "label": "Parking and lanes count four times",
+      "picks": [
+        {
+          "cost": 0.0,
+          "disruption": 0.0,
+          "gain": 0.0,
+          "id": null,
+          "kind": null,
+          "km_by_fix": {},
+          "lane_km": 0.0,
+          "name": "No change",
+          "parking_spaces": 0,
+          "people": {
+            "aged_care": 0,
+            "college": 0,
+            "library": 0,
+            "school": 0,
+            "station": 0,
+            "town_centre": 0,
+            "university": 0
+          },
+          "rank": 0,
+          "refuges": 0,
+          "score": 25.0,
+          "signals": 0,
+          "speed_km": 0.0
+        },
+        {
+          "cost": 15.0,
+          "disruption": 15.0,
+          "gain": 75.0,
+          "id": "8f21dad1cfe48684",
+          "kind": "route",
+          "km_by_fix": {},
+          "lane_km": 0.0,
+          "name": "Grid School: unnamed residential",
+          "parking_spaces": 0,
+          "people": {
+            "aged_care": 0,
+            "college": 0,
+            "library": 0,
+            "school": 750.0,
+            "station": 0,
+            "town_centre": 0,
+            "university": 0
+          },
+          "rank": 1,
+          "refuges": 0,
+          "score": 100.0,
+          "signals": 1,
+          "speed_km": 0.0
+        }
+      ],
+      "recommend_ratio": 0.25,
+      "recommended_stop": 1,
+      "scales": {
+        "lane_km": 4.0,
+        "parking_space": 4.0
+      },
+      "termination_reason": "candidate_pool_exhausted",
+      "truncated": false
+    }
+  ],
+  "shapes": {
+    "features": [
+      {
+        "geometry": {
+          "coordinates": [
+            151.15436,
+            -33.94826
+          ],
+          "type": "Point"
+        },
+        "id": "8f21dad1cfe48684:junction:1010",
+        "properties": {
+          "carriageway": null,
+          "confirmed": null,
+          "fix": "signals",
+          "id": "junction:1010",
+          "model_margin": null,
+          "project": "8f21dad1cfe48684",
+          "road_reserve": null,
+          "robust": "robust",
+          "source_confidence": null,
+          "street": "unnamed residential",
+          "usable_verge": null,
+          "width_source": null
+        },
+        "type": "Feature"
+      }
+    ],
+    "type": "FeatureCollection"
+  }
+}

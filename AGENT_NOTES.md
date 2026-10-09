@@ -181,3 +181,10 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 - Q1.3: Save output hashes as records with `path` and `sha256` fields.
   A file name that starts with `access` can make the secret scan flag a
   plain hash. Keep the scanner strict and fix the proof writer.
+
+### Q1.7
+
+- The opening uses the curve choice while Q1.6's shared record is pending. Keep costs, strict trips, school coverage and stages unknown until their source blocks exist. The old shortlist sheets are separate evidence, not the selected curve's local plans.
+- Native `details` keeps long tables folded with scripts off. The selected totals and stop method stay outside that fold for print. Fixed table layout and a zero minimum fieldset width keep the phone body within the screen.
+- Use a status region for package changes, per the [W3C status method](https://www.w3.org/WAI/WCAG21/Techniques/aria/ARIA22). The status includes the stable scenario ID and rank. Keep the rank in a figure link when the script updates it.
+- `uv run python artifacts/Q1.7/collect.py` builds a fresh test-grid report and checks keys, phone, desktop, print and scripts off. It does not prove the real region's community outcomes. C1.10 still owns that full report proof.
