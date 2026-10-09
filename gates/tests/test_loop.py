@@ -654,3 +654,15 @@ def test_fr0_32_stall_raises_effort_on_the_same_model(loop_repo):
     assert flag_value(args_of(state, 2), "--model") == "sonnet"
     assert flag_value(args_of(state, 1), "--effort") == "medium"
     assert flag_value(args_of(state, 2), "--effort") == "high"
+
+
+def test_fr0_32_stalled_codex_retry_keeps_sol_at_high_effort(loop_repo, tmp_path):
+    done = {"type": "turn.completed", "usage": {"input_tokens": 10, "output_tokens": 2}}
+    repo, env, state = codex_env(loop_repo, tmp_path, [done])
+    env.pop("RALPH_ALLOW_PREMIUM")
+    repo.write(".ralph/escalate", "P0.2\n")
+    result = run_loop(repo, env, "1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    args = (state / "codex.args").read_text().splitlines()
+    assert flag_value(args, "--model") == "gpt-6.1-sol"
+    assert 'model_reasoning_effort="high"' in args
