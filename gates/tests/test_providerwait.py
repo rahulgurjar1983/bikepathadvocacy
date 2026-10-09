@@ -1,7 +1,6 @@
 import datetime
 
 import pytest
-from gates.providerwait import retry_seconds
 
 
 @pytest.mark.parametrize(
@@ -14,6 +13,8 @@ from gates.providerwait import retry_seconds
     ],
 )
 def test_fr0_13_reset_date_clock_and_zone(tmp_path, message, expected):
+    from gates.providerwait import retry_seconds
+
     log = tmp_path / "provider.log"
     log.write_text(message)
     now = datetime.datetime(2026, 10, 9, 4, 4, tzinfo=datetime.UTC)
@@ -21,6 +22,8 @@ def test_fr0_13_reset_date_clock_and_zone(tmp_path, message, expected):
 
 
 def test_fr0_13_unknown_provider_uses_bounded_probe(tmp_path):
+    from gates.providerwait import retry_seconds
+
     weekly = tmp_path / "weekly.log"
     weekly.write_text("usage limit; resets Oct 12, 3pm (Australia/Sydney)")
     unknown = tmp_path / "unknown.log"
