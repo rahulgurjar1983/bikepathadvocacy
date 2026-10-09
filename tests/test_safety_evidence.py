@@ -186,3 +186,31 @@ def test_fr15_5_default_picks_exclude_a_path_with_no_width():
     assert (1, 2, 0) in model.edges
     confirmed = confirmed_planning(graph, PROFILE, model)
     assert (1, 2, 0) not in confirmed.edges
+
+
+def test_fr15_5_public_page_qualifies_all_ages_status():
+    import json
+    from html.parser import HTMLParser
+
+    from bikeplan.config import load_region
+    from bikeplan.report import figure_list, page, segments_text
+
+    class Text(HTMLParser):
+        def __init__(self):
+            super().__init__()
+            self.parts = []
+
+        def handle_data(self, data):
+            self.parts.append(data)
+
+    region = load_region("regions/test-grid.yaml")
+    map_text = json.dumps({"segments": [], "projects": {}, "places": [], "boundary": {}})
+    figures = figure_list(segments_text([]), map_text)
+    rendered = page(region, figures, map_text, "", "")
+    parser = Text()
+    parser.feed(rendered)
+    visible = " ".join(parser.parts).lower()
+    assert "meets the model's all-ages criteria" in visible
+    assert "does not guarantee child safety" in visible
+    assert "safe for a child to ride alone" not in visible
+    assert "street that is safe for a child or an older rider" not in visible
