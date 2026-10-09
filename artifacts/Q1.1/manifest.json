@@ -1,6 +1,7 @@
 {
   "command": "/usr/bin/time -v -o artifacts/Q1.1/time-full.txt uv run bikeplan propose regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.1-full",
-  "commit": "899cac035efb9eed28c6d9a55beabba2dd32d9ec",
+  "commit": "899cac0",
+  "report_commit": "65ef81cf86d2793163a6b5bbcc03168241b25fcc",
   "config_and_snapshot_sha256": {
     "regions/au-nsw-bayside.yaml": "b324303588064e489ddf116063e24218bf89dd5e1ac3dab8bd8d2aae57f2b2e0",
     "profiles/au-nsw.yaml": "3089879011bff619b5df896b6a63677e7f1d9c50b24c50febf081cb6681e25cf",

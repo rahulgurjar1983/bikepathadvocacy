@@ -3,6 +3,7 @@ import json
 import os
 import platform
 import subprocess
+import sys
 from pathlib import Path
 
 from bikeplan.change import change_figures, change_section, frontier_data
@@ -63,7 +64,8 @@ manifest = {
         "regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 "
         "--out /tmp/bikeplan-Q1.1-full"
     ),
-    "commit": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
+    "commit": sys.argv[1],
+    "report_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
     "config_and_snapshot_sha256": {
         str(path): hashlib.sha256(path.read_bytes()).hexdigest() for path in files
     },
