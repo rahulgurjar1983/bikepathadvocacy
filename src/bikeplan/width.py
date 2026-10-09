@@ -171,6 +171,24 @@ def estimates(
     return kept, dropped
 
 
+def width_record(
+    width=None, low=None, high=None, source=None, date=None, confidence="unknown", observed=False
+) -> dict:
+    return {
+        "width_m": width,
+        "low_m": low,
+        "high_m": high,
+        "source": source,
+        "date": date,
+        "confidence": confidence,
+        "observed": observed,
+    }
+
+
+def usable_verge(data: dict) -> dict:
+    return width_record() | {"constraints": {}} | (data.get("usable_verge") or {})
+
+
 def fuse(
     data: dict, profile: Profile, reserve_m: float | None = None, spread_m: float = 0.0
 ) -> dict:
@@ -180,7 +198,32 @@ def fuse(
     found_reserve = None if reserve_m is None else Reserve(reserve_m, spread_m, 0)
     kept, dropped = estimates(data, profile, found_reserve)
     best = kept[0] if kept else None
+    date = data.get("width_date")
+    if best and best.source == "reserve":
+        date = data.get("reserve_date")
+    carriageway = width_record(
+        best.width_m if best else None,
+        best.low_m if best else None,
+        best.high_m if best else None,
+        best.source if best else None,
+        date,
+        best.confidence if best else "unknown",
+        bool(best and best.source not in ("lanes", "reserve")),
+    )
+    road_reserve = width_record(
+        reserve_m,
+        None if reserve_m is None else reserve_m - spread_m / 2,
+        None if reserve_m is None else reserve_m + spread_m / 2,
+        data.get("reserve_source", "parcel boundaries") if reserve_m is not None else None,
+        data.get("reserve_date"),
+        "low" if reserve_m is not None else "unknown",
+        reserve_m is not None,
+    )
     return {
+        "carriageway": carriageway,
+        "road_reserve": road_reserve,
+        "usable_verge": usable_verge(data),
+        "width_date": date,
         "width_m": best.width_m if best else None,
         "width_low_m": best.low_m if best else None,
         "width_high_m": best.high_m if best else None,

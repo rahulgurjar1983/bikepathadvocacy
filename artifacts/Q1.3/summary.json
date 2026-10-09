@@ -1,0 +1,77 @@
+{
+  "candidates": 2,
+  "code_version": "0.1.0",
+  "config_hash": "6b7cd7698f58145f6669419dd0e4fba0cd4378fab2e1430a32df0a772127b665",
+  "corridor_candidates": {
+    "made": 0,
+    "not_picked": 0,
+    "picked": 0
+  },
+  "credits": [
+    {
+      "attribution": "Kontur Population dataset, Kontur Inc.",
+      "licence": "CC BY 4.0",
+      "line": "Kontur Population dataset, Kontur Inc., CC BY 4.0",
+      "source": "Kontur Population via the Humanitarian Data Exchange"
+    },
+    {
+      "attribution": "\u00a9 OpenStreetMap contributors",
+      "licence": "ODbL 1.0",
+      "line": "\u00a9 OpenStreetMap contributors, ODbL 1.0",
+      "source": "OpenStreetMap contributors"
+    },
+    {
+      "attribution": "\u00a9 OpenStreetMap contributors",
+      "licence": "ODbL 1.0",
+      "line": "\u00a9 OpenStreetMap contributors, ODbL 1.0",
+      "source": "OpenStreetMap via Overpass"
+    },
+    {
+      "attribution": "\u00a9 State of New South Wales (NSW Spatial Services), NSW Cadastre",
+      "licence": "CC BY 4.0",
+      "line": "\u00a9 State of New South Wales (NSW Spatial Services), NSW Cadastre, CC BY 4.0",
+      "source": "NSW Cadastre, Lot layer, NSW Spatial Services"
+    }
+  ],
+  "disruption": {
+    "lane_km": 0.0,
+    "parking_spaces": 0,
+    "refuges": 0,
+    "signals": 1,
+    "speed_km": 0.0
+  },
+  "km_aaa": 135.891,
+  "km_by_fix": {},
+  "km_by_lts": {
+    "1": 153.619,
+    "2": 265.721,
+    "3": 93.973,
+    "4": 77.786
+  },
+  "not_snapped": {
+    "people": 8.0,
+    "places": 0
+  },
+  "projects": 1,
+  "projects_by_kind": {
+    "corridor": 0,
+    "neighbourhood": 1,
+    "route": 0
+  },
+  "region": "au-nsw-bayside",
+  "safe_people_gain": {
+    "aged_care": 0.0,
+    "college": 1104.9641025641026,
+    "library": 0.0,
+    "school": 0.0,
+    "station": 0.0,
+    "town_centre": 0.0,
+    "university": 0
+  },
+  "score": {
+    "after": 0.7,
+    "before": 0.6
+  },
+  "shortlist_reason": "",
+  "snapshot": "2026-10-01"
+}

@@ -926,3 +926,35 @@ uv run python artifacts/Q1.1/collect.py "$BUILD_COMMIT"
 
 Expect: The tests pass. Each stop matches a fresh sum from the exact gains and costs: gain divided by cost plus one, checked against the best ratio so far. The saved curves name their end reason, count of picks and cut-short state. The report text explains the rule and shows each capped curve, even with an earlier stop. The full run uses the shipped weights. The saved run took 42:35.87 and used 1854736 kB at peak. The light, shipped and heavy stops are 125, 144 and 145; each curve has 150 picks and is cut short. The collector checks the time and memory bounds and saves the host details; this host run is not a CI runner proof.
 Artifact: `artifacts/Q1.1/manifest.json`, `artifacts/Q1.1/curve-data.json`, `artifacts/Q1.1/stop-section.html`, `artifacts/Q1.1/time-full.txt`, `artifacts/Q1.1/tests-green.txt`
+
+
+### S0.7
+
+```bash
+uv run --frozen pytest gates/tests/test_providerwait.py gates/tests/test_loop.py gates/tests/test_release_tag.py -q --tb=short
+bash -n loop.sh scripts/release.sh
+```
+
+Expect: all 53 focused tests pass. New tests fail on the base. A dated weekly reset keeps its date and zone. A sooner Codex reset wins over that date. A missing reset gets a bounded retry. Limited calls do not count as turns. Old releases with no index are skipped; a missing parent rebuilds. API and download errors still fail. CI runs the full suite before merge.
+Artifact: `artifacts/S0.7/check.txt`
+
+
+### Q1.3
+
+```bash
+uv run pytest tests/test_width_evidence.py tests/test_fit_options.py tests/test_fit_choice.py tests/test_fit_disruption.py tests/test_fit_separation.py -q
+/usr/bin/time -v -o /tmp/q13-real-time.txt uv run bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.3-full
+uv run bikeplan verify /tmp/bikeplan-Q1.3-full
+uv run python artifacts/Q1.3/collect.py
+```
+
+Expect: the width checks pass. Reserve, carriageway and usable verge
+stay distinct. The real run keeps unproven fixes in the survey layer,
+with site checks, and out of default picks. A confirmed shortlist may
+be empty; its reason stays visible. The report fits the size limit.
+The collector checks these claims and saves hashes, a width sample,
+the summary and run time. The verify command checks file structure;
+full safety proof is a later row.
+
+Artifact: `artifacts/Q1.3/manifest.json`, `artifacts/Q1.3/width-sample.json`,
+`artifacts/Q1.3/summary.json` and `artifacts/Q1.3/time-full.txt`.

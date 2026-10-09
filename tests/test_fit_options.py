@@ -10,6 +10,9 @@ def street(highway, width, lanes, parking, speed, adt, reserve=None, oneway=Fals
     return {
         "highway": highway,
         "width_m": width,
+        "width_source": "test-only measured carriageway",
+        "width_confidence": "high",
+        "width_date": "2026-10-01",
         "lanes_total": lanes,
         "lanes_dir": lanes if oneway else lanes // 2,
         "oneway": oneway,
@@ -29,6 +32,30 @@ CASES = {
     5: street("primary", 13.0, 4, "no", 60, 15000),
     6: street("primary", 13.0, 4, "no", 60, 25000, reserve=27.0),
 }
+
+
+TOY_VERGE = {
+    "width_m": 7.0,
+    "low_m": 7.0,
+    "high_m": 7.5,
+    "source": "test-only usable verge observation",
+    "date": "2026-10-01",
+    "confidence": "high",
+    "constraints": dict.fromkeys(
+        (
+            "footpath space",
+            "trees",
+            "utilities",
+            "drainage",
+            "driveways",
+            "bus stops",
+            "narrow points",
+        ),
+        "clear",
+    ),
+}
+CASES[3]["usable_verge"] = TOY_VERGE
+CASES[6]["usable_verge"] = TOY_VERGE
 
 
 def by_fix(case):

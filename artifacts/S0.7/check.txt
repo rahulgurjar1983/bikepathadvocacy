@@ -1,0 +1,13 @@
+S0.7 local checks on 2026-10-09
+Command: uv run --frozen pytest gates/tests/test_providerwait.py gates/tests/test_loop.py gates/tests/test_release_tag.py -q --tb=short
+Result: 53 passed in 20.85s
+Base proof: earliest-reset case chose 21600 seconds instead of 240 to 360.
+Base proof: legacy release scan failed with no assets match the file pattern.
+Base proof: five date and default cases could not import the new helper.
+Live evidence: 2026-10-09T04:04:07Z loop chose a 21600-second wait.
+Claude result: weekly limit, resets Oct 12, 3pm (Australia/Sydney).
+Codex error: usage limit, try again at 5:05 PM.
+Release run: https://github.com/rahulgurjar1983/bikepathadvocacy/actions/runs/37878132608
+Release failure: no assets match the file pattern at 2026-10-09T03:38:22Z.
+Legacy tag: v2026.10.07 has report.html, not index.html.
+This proves runner and release rules, not new report features or renewed plan quota.

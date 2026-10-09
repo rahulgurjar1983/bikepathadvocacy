@@ -361,6 +361,17 @@ def build(snapshot: str | Path, region: Region, profile: Profile) -> nx.MultiDiG
     graph.graph["points"] = points
     graph.graph["gates"] = gates
     graph.graph["boundary"] = boundary_polygon(folder / "boundary.geojson", crs)
+    manifest_path = folder / "manifest.json"
+    manifest = json.loads(manifest_path.read_text()) if manifest_path.is_file() else {}
+    osm_date = manifest.get("osm_date", region.snapshot.osm_date)
+    parcel_entry = next(
+        (entry for entry in manifest.get("files", []) if entry["path"] == "parcels.gpkg"), {}
+    )
+    for _, _, data in graph.edges(data=True):
+        if data.get("width_tag_m") is not None:
+            data["width_date"] = osm_date
+        data["reserve_date"] = parcel_entry.get("effective_date", parcel_entry.get("retrieved_at"))
+        data["reserve_source"] = parcel_entry.get("source", "parcel boundaries")
     if (folder / "parcels.gpkg").is_file():
         from bikeplan.width import set_reserves
 
