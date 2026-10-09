@@ -157,7 +157,8 @@ def change_figures(frontier: dict, text: str) -> list[dict]:
             "unit": "projects",
             "method": "I divide each pick's gain by its cost plus one, using full precision. "
             "I compare it with the best ratio so far, including this pick. The stop is the "
-            "last rank at least the set share of that best ratio, even after a weaker pick.",
+            f"last rank at least {chosen['recommend_ratio']} times that best ratio, "
+            "even after a weaker pick.",
             "recipe": PRELUDE.format(scenario=chosen["id"], expr="s['recommended_stop'] or 0"),
         }
     )
@@ -320,7 +321,8 @@ def change_section(frontier: dict, by_id: dict) -> str:
         f"{html.escape(chosen['label'])} scenario: {link(by_id['F13'])}. I stop there because "
         "I divide each pick's gain by its cost plus one. I compare that ratio with the "
         "best ratio so far, including this pick. I mark the last rank whose ratio is at least "
-        f"<code>{chosen['recommend_ratio']}</code> times that best ratio. I use full precision, "
+        f'<a href="#F13">{chosen["recommend_ratio"]}</a> times that best ratio. '
+        "I use full precision, "
         "before rounding the values shown here. A later pick can meet the rule again. "
         "The fixes up to that stop change "
         f"{link(by_id['F11'])} of street. Move the slider to see the cost of doing less or "
