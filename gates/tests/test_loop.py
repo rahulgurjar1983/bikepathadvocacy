@@ -80,6 +80,7 @@ def loop_repo(repo, tmp_path):
             "RALPH_BACKOFF_SECS": "0",
             "RALPH_MAX_SLEEP_SECS": "0",
             "RALPH_NOTIFY_CMD": "true",
+            "RALPH_ALLOW_PREMIUM": "1",
             "FAKE_STATE": str(state),
             "FAKE_NAME": "agent",
         }
@@ -614,3 +615,42 @@ def test_fr0_29_known_input_blocker_advances_and_logs_its_reason(loop_repo):
     second = run_loop(repo, env, "1")
     assert second.returncode == 0, second.stdout + second.stderr
     assert "P0.3" in args_of(state, 2)
+
+
+def test_fr0_32_subscription_default_uses_standard_models_medium(loop_repo, tmp_path):
+    done = {"type": "turn.completed", "usage": {"input_tokens": 10, "output_tokens": 2}}
+    repo, env, state = codex_env(loop_repo, tmp_path, [done])
+    env.pop("RALPH_ALLOW_PREMIUM")
+    repo.write("PROGRESS.md", "- [ ] **Q1.1** [reasoning] Work (FR-15.1)\n")
+    result = run_loop(repo, env, "1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert flag_value(args_of(state, 1), "--model") == "sonnet"
+    assert flag_value(args_of(state, 1), "--effort") == "medium"
+    args = (state / "codex.args").read_text().splitlines()
+    assert flag_value(args, "--model") == "gpt-6.1-sol"
+    assert 'model_reasoning_effort="medium"' in args
+
+
+def test_fr0_32_old_role_overrides_do_not_enable_premium_models(loop_repo, tmp_path):
+    done = {"type": "turn.completed", "usage": {"input_tokens": 10, "output_tokens": 2}}
+    repo, env, state = codex_env(loop_repo, tmp_path, [done])
+    env["RALPH_ALLOW_PREMIUM"] = "0"
+    env["RALPH_REASONING_MODEL"] = "claude-opus-5-5"
+    env["RALPH_CODEX_REASONING_MODEL"] = "gpt-6-astra"
+    repo.write("PROGRESS.md", "- [ ] **Q1.1** [reasoning] Work (FR-15.1)\n")
+    result = run_loop(repo, env, "1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert flag_value(args_of(state, 1), "--model") == "sonnet"
+    args = (state / "codex.args").read_text().splitlines()
+    assert flag_value(args, "--model") == "gpt-6.1-sol"
+
+
+def test_fr0_32_stall_raises_effort_on_the_same_model(loop_repo):
+    repo, env, state = loop_repo
+    env.pop("RALPH_ALLOW_PREMIUM")
+    result = run_loop(repo, env, "2")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert flag_value(args_of(state, 1), "--model") == "sonnet"
+    assert flag_value(args_of(state, 2), "--model") == "sonnet"
+    assert flag_value(args_of(state, 1), "--effort") == "medium"
+    assert flag_value(args_of(state, 2), "--effort") == "high"
