@@ -114,3 +114,12 @@ def test_fr15_1_figure_method_matches_the_stop_rule():
     assert "including this pick" in figure["method"]
     assert "full precision" in figure["method"]
     assert "first project" not in figure["method"]
+
+
+def test_fr15_1_ratio_links_to_the_stop_figure_method():
+    found = curve(star([(400, BUSY)] * 3), {1: 100, 2: 1, 3: 1})
+    data = frontier_data({"scenarios": [found]}, 0, ["school"], {})
+    figures = {item["id"]: item for item in change_figures(data, json.dumps(data))}
+    section = change_section(data, figures)
+    assert '<a href="#F13">0.25</a>' in section
+    assert "0.25" in figures["F13"]["method"]
