@@ -42,6 +42,11 @@ policy. Or update those old checks on main with sourced usable verge
 fixtures. This must also work with the red-green rule; adding field
 data to an old case can still pass on base. Q1.3 stays open.
 
+Fresh main check: `bash artifacts/Q1.3/reproduce.sh` still shows the
+same clash after the community report input merge. The base commit is
+in `artifacts/Q1.3/base-commit.txt`; the fresh log is
+`artifacts/Q1.3/fresh-main-audit.txt`. No source or test was changed.
+
 
 ## BLOCKED
 

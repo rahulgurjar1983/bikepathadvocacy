@@ -18,3 +18,6 @@ those inputs alone. The probe keeps a valid parking fix instead.
 Proof files: `base-commit.txt`, `base-tests.txt`, `survey-probe.patch`
 and `survey-probe-tests.txt` in this folder. The command above rebuilds
 the test counts and results. No shipped source or test was changed.
+
+Fresh main log: `fresh-main-audit.txt`. The base commit file now names
+the fresh main checked by the command above.
