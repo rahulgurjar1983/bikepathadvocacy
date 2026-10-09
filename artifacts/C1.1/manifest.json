@@ -1,6 +1,6 @@
 {
-  "build_commit": "f9996647b4ee94374e5356293eeb6ba12d22107f",
-  "command": "/usr/bin/time -v -o /tmp/c11-real-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-C1.1-proof",
+  "build_commit": "ff811569bb9da13ed56929791d7eb3c49b98d692",
+  "command": "/usr/bin/time -v -o /tmp/c11-real-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-C1.1-ci-proof",
   "inputs": [
     {
       "path": "regions/au-nsw-bayside.yaml",
@@ -31,7 +31,7 @@
     },
     {
       "path": "outputs.sha256",
-      "sha256": "71464f2c13b2297b452914f0cc5445c789b98b0a130606f6183ff069c77cd33b"
+      "sha256": "fa2b61ac047eea7775c26af144d92aebdd11fae1a4c1af7c1808b6da33d9715a"
     },
     {
       "path": "places.geojson",
@@ -51,7 +51,7 @@
     },
     {
       "path": "report.html",
-      "sha256": "7afed560230f5fa6b76aa48c042c6ef14164be6de030d422765e51a3a528e52a"
+      "sha256": "d06397d6148cea66e09806f5098399e4d3906a4f399ec724ed917e1729a4d846"
     },
     {
       "path": "summary.json",

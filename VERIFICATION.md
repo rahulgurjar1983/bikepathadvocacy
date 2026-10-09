@@ -985,9 +985,9 @@ Artifact: `artifacts/Q1.7/browser-proof.json`, with fresh report files in `artif
 
 ```bash
 uv run --frozen pytest tests/test_complete_trips.py -q --tb=short
-/usr/bin/time -v -o /tmp/c11-real-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-C1.1-proof
+/usr/bin/time -v -o /tmp/c11-real-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-C1.1-ci-proof
 uv run --frozen python artifacts/C1.1/collect.py
-uv run --frozen bikeplan verify /tmp/bikeplan-C1.1-proof
+uv run --frozen bikeplan verify /tmp/bikeplan-C1.1-ci-proof
 ```
 
 Expect: trip checks pass. Strict trips need sourced bike entrances,

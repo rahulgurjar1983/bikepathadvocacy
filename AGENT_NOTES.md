@@ -207,3 +207,8 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   real archive and saves package counts, hashes and gap samples. Empty
   strict routes with unknown entrances prove honest limits, not field
   safety or full coverage. School and resident totals have later rows.
+- Keep source stress scores from before corridor candidates are added.
+  New candidate edges have model work needs, not source road fields.
+  They cannot prove a confirmed link without source evidence. Report
+  file names use `code`; any project term in plain text needs its own
+  entry in the report glossary as well as this repo's glossary.

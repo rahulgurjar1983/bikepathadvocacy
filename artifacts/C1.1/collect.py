@@ -3,7 +3,7 @@ import json
 import subprocess
 from pathlib import Path
 
-out = Path("/tmp/bikeplan-C1.1-proof")
+out = Path("/tmp/bikeplan-C1.1-ci-proof")
 proof = Path("artifacts/C1.1")
 frontier = json.loads((out / "frontier.json").read_text())
 shortlist = json.loads((out / "projects.geojson").read_text())["trip_proof"]
@@ -68,7 +68,7 @@ manifest = {
     "command": (
         "/usr/bin/time -v -o /tmp/c11-real-time.txt uv run --frozen bikeplan run "
         "regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 "
-        "--out /tmp/bikeplan-C1.1-proof"
+        "--out /tmp/bikeplan-C1.1-ci-proof"
     ),
     "inputs": [
         {"path": str(p), "sha256": hashlib.sha256(p.read_bytes()).hexdigest()} for p in inputs
