@@ -18,6 +18,7 @@ Every step that spends model tokens must show its value in numbers, or it goes.
 
 ## Review work
 
+- Read spec 16 when a row cites FR-16: community outcome and trade-offs, local works, delivery and honest unknowns. It amends the older report rules. The owner's example counts are never targets.
 - Read spec 15 for a review row. It amends the earlier rules it names. Its case table states what tests and real proof must show.
 - Feature rows keep tests first, with each new test failing on base. Only a pre-authorised `[proof]` row may pass on base through FR-0.27. Never invent a code change to make a proof test fail.
 - Follow the proof steps and turn result schema in `PROMPT.md`. Keep a blocked row open and name the exact missing input. Do not repeat the same failed plan.
