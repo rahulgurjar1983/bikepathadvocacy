@@ -306,3 +306,14 @@ def test_fr16_3_a_prohibited_movement_cannot_join_route_groups():
     groups, joins = route_groups(witnesses, movements)
     assert len(groups) == 2
     assert joins == []
+
+
+def test_fr16_3_witnesses_name_the_selected_changed_graph_dependencies():
+    data = town()
+    for key in ((0, 1, 0), (1, 0, 0)):
+        data[1][key]["model_needs"] = ["link-work"]
+    before = trips(data)
+    assert [item["destination"] for item in before["strict"]] == ["site-12"]
+    after = trips(data, selected=("link-work",))
+    assert len(after["strict"]) == 2
+    assert after["strict"][0]["required_elements"] == ["link-work"]
