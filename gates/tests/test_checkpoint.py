@@ -70,3 +70,34 @@ def test_fr0_33_restore_refuses_a_changed_branch(repo):
     assert pending("Q1.4") == [checkpoint]
     assert (repo.path / "README.md").read_text() == "baseline\n"
     assert repo.git("cat-file", "-t", checkpoint["stash"]) == "commit"
+
+
+def test_fr0_33_retained_launcher_saves_on_older_branch(repo):
+    import os
+    import shutil
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    from gates.checkpoint import main
+
+    source = Path(__file__).resolve().parents[1]
+    for name in ("__init__.py", "inputs.py", "common.py"):
+        target = repo.path / "gates" / name
+        target.parent.mkdir(exist_ok=True)
+        shutil.copy(source / name, target)
+    repo.write("README.md", "main\n")
+    repo.commit("old branch tooling")
+    assert main(["install"]) == 0
+    repo.branch("loop/Q1.4-old")
+    repo.write("README.md", "unfinished\n")
+    result = subprocess.run(
+        [sys.executable, ".ralph/checkpoint.py", "save"],
+        cwd=repo.path,
+        env={key: value for key, value in os.environ.items() if key != "PYTHONPATH"},
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert (repo.path / "README.md").read_text() == "main\n"
+    assert len(list((repo.path / ".ralph/checkpoints").glob("*.json"))) == 1
