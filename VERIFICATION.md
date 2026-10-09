@@ -967,5 +967,5 @@ uv run --frozen pytest gates/tests/test_checkpoint.py gates/tests/test_loop.py -
 bash -n loop.sh
 ```
 
-Expect: all 51 focused checks pass. Six new cases fail on the base. Unfinished proof, staged tests and untracked fixtures survive a switch to main and restore on the exact branch and head. Inputs and other branches are never stashed. Changed heads keep the saved work intact. The row note names its saved branch. The local stash is kept; no feature is marked shipped by a checkpoint. CI runs the full suite before merge.
+Expect: all 52 focused checks pass. Seven new cases fail on the base. Unfinished proof, staged tests and untracked fixtures survive a switch to main and restore on the exact branch and head. Inputs and other branches are never stashed. Changed heads keep the saved work intact. The row note names its saved branch. The local stash is kept; no feature is marked shipped by a checkpoint. CI runs the full suite before merge.
 Artifact: `artifacts/S0.8/check.txt`
