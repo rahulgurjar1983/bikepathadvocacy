@@ -98,6 +98,7 @@ def route_groups(witnesses, movements):
                 for outgoing in sorted(edge_sets[b], key=str)
                 if incoming[1] == outgoing[0]
                 and movements.get((incoming, outgoing), {}).get("status") == "confirmed"
+                and movements.get((incoming, outgoing), {}).get("legal") is not False
             ]
             backward = [
                 (incoming, outgoing)
@@ -105,6 +106,7 @@ def route_groups(witnesses, movements):
                 for outgoing in sorted(edge_sets[a], key=str)
                 if incoming[1] == outgoing[0]
                 and movements.get((incoming, outgoing), {}).get("status") == "confirmed"
+                and movements.get((incoming, outgoing), {}).get("legal") is not False
             ]
             if not forward or not backward:
                 continue
