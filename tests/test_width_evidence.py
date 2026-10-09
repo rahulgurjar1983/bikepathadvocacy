@@ -258,3 +258,19 @@ def test_fr15_4_report_uses_source_dates_without_build_timestamps():
     markup = page_scripts({"projects": records, "summary": {}, "project_shapes": {}})
     assert leaks(markup, []) == []
     assert "2026-10-01" in markup
+
+
+def test_fr15_4_planning_updates_keep_survey_options():
+    from shapely.geometry import GeometryCollection
+
+    from bikeplan.propose import Corridors, add_corridor_paths, fixed_planning
+
+    graph = line([(100, {**busy(), "width_tag_m": None})])
+    planning = planning_network(graph, PROFILE, REGION)
+    assert planning.survey_options
+    updated = fixed_planning(graph, planning, set(), REGION.proposals.metres_per_point)
+    assert updated.survey_options == planning.survey_options
+    _, extended, _ = add_corridor_paths(
+        graph, planning, Corridors([], GeometryCollection()), REGION.proposals.metres_per_point
+    )
+    assert extended.survey_options == planning.survey_options
