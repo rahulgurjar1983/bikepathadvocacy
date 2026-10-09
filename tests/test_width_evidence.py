@@ -180,7 +180,12 @@ def test_fr15_4_snapshot_dates_follow_the_width_source(tmp_path):
 def test_fr15_4_survey_fixes_are_not_labelled_as_default_network_works():
     from bikeplan.run import network_features
 
-    data = {**busy(), "speed_source": "test-only posted speed", "width_tag_m": None}
+    data = {
+        **busy(),
+        "speed_source": "test-only posted speed",
+        "adt_source": "default",
+        "width_tag_m": None,
+    }
     features, _ = network_features(
         line([(100, data)]), PROFILE, REGION.proposals.disruption_weights
     )
