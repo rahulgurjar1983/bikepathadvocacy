@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from bikeplan.report import SOURCES, link
+from bikeplan.schools import school_opening
 
 ASSETS = Path(__file__).parent / "assets"
 PRELUDE = (
@@ -105,6 +106,7 @@ def frontier_data(raw: dict, before: float, kinds: list, shapes: dict) -> dict:
         "scenarios": scenarios,
         "shapes": shapes,
         "trip_sources": raw.get("trip_sources", {}),
+        "school_sources": raw.get("school_sources", {}),
     }
 
 
@@ -288,7 +290,24 @@ def chart_section(frontier: dict) -> str:
 
 
 def change_scripts(frontier: dict) -> str:
-    data = json.dumps(frontier, sort_keys=True).replace("</", "<\\/")
+    display = {
+        key: value
+        for key, value in frontier.items()
+        if key not in {"trip_sources", "school_sources"}
+    }
+    display["scenarios"] = [
+        {
+            **curve,
+            "trip_packages": [
+                {"school_coverage": package["school_coverage"]}
+                if "school_coverage" in package
+                else {}
+                for package in curve.get("trip_packages", [])
+            ],
+        }
+        for curve in frontier["scenarios"]
+    ]
+    data = json.dumps(display, sort_keys=True, separators=(",", ":")).replace("</", "<\\/")
     return (
         f'<script type="application/json" id="change-data">{data}</script>'
         f"<script>{(ASSETS / 'change.js').read_text()}</script>"
@@ -331,11 +350,11 @@ def proposal_opening(frontier: dict) -> str:
         f'<p id="package-status" role="status" aria-live="polite" aria-atomic="true">'
         f'{html.escape(status)}<a href="#F13">{rank}</a></p>'
         f'<p id="proposal-state">{state}</p>'
-        "<p>I checked the modelled route choices. Useful complete trips and school sites served "
-        "before, after and newly served are unknown. "
-        "Entrance links and return trips still need proof. "
-        "Schools, stations and other places are model goals, not a proved joined network.</p>"
-        "<p>Modelled route works are in the "
+        "<p>I checked the modelled route choices. Useful complete trips depend on entrance "
+        "links and proved return trips. Schools, stations and other places are model goals, "
+        "not a proved joined network.</p>"
+        + school_opening(frontier)
+        + "<p>Modelled route works are in the "
         '<a href="#change-totals">selected model totals</a>. '
         "Crossing works, existing links retained and remaining route gaps still need checks. "
         "I keep these limits beside the lasting space changes.</p>"

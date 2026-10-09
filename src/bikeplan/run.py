@@ -29,6 +29,7 @@ from bikeplan.report import (
     segment_rows,
     segments_text,
 )
+from bikeplan.schools import school_figures, school_section
 from bikeplan.snapshot import verify_snapshot
 from bikeplan.stress import score_edges, stress_features, stress_summary
 from bikeplan.trips import trip_section
@@ -230,11 +231,14 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
     map_payload["survey_options"] = surveys
     map_text = json.dumps(map_payload, sort_keys=True) + "\n"
     figures = [*figure_list(text, map_text), *change_figures(frontier, frontier_bytes.decode())]
+    figures.extend(school_figures(frontier, frontier_bytes.decode()))
     page_text = page(
         region,
         figures,
         json.dumps(calendar_dates(map_payload), sort_keys=True) + "\n",
-        details(payload["summary"], canon(sheets), profile, payload) + trip_section(frontier),
+        details(payload["summary"], canon(sheets), profile, payload)
+        + trip_section(frontier)
+        + school_section(frontier),
         page_scripts(payload),
         change_section(
             frontier,

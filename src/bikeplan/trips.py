@@ -6,6 +6,7 @@ from pathlib import Path
 import networkx as nx
 
 from bikeplan.access import last_legs, reach
+from bikeplan.schools import snapshot_school_inputs
 
 
 def evidence(record, selected):
@@ -297,6 +298,25 @@ def snapshot_trip_inputs(snapshot, kept, nodes, graph, scores, planning):
         }
         for place, node in zip(kept, nodes, strict=True)
     ]
+    if "crs" in graph.graph and "boundary" in graph.graph:
+        sites, _ = snapshot_school_inputs(snapshot, graph, {})
+        existing = {item["id"] for item in destinations}
+        for site in sites:
+            for key in site["destination_ids"]:
+                if key not in existing:
+                    destinations.append(
+                        {
+                            "id": key,
+                            "name": site["name"],
+                            "model_node": None,
+                            "entrances": [e for e in entrances if e["destination"] == key],
+                        }
+                    )
+                    existing.add(key)
+    for destination in destinations:
+        destination["entrances"] = sorted(
+            {item["id"]: item for item in destination["entrances"]}.values(), key=lambda e: e["id"]
+        )
     supplied = {tuple(item["edge"]): item for item in raw.get("links", [])}
     links = {
         key: {

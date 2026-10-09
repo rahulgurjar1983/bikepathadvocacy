@@ -73,6 +73,36 @@ window.addEventListener("load", function () {
     for (const cell of document.querySelectorAll("#change-totals [data-total]")) {
       cell.textContent = value(pick, cell.dataset.total).toFixed(places(cell.dataset.total));
     }
+    const school = chosen.trip_packages && chosen.trip_packages[step];
+    if (school && school.school_coverage) {
+      const coverage = school.school_coverage;
+      document.getElementById("school-sites").dataset.package = current + ":" + step;
+      for (const key of ["before", "after", "new"]) {
+        document.getElementById("school-" + key).textContent = String(coverage.served[key].length);
+      }
+      for (const cell of document.querySelectorAll("[data-school]")) {
+        cell.textContent = String(coverage.served[cell.dataset.school].length);
+      }
+      const rows = document.getElementById("school-rows");
+      rows.replaceChildren();
+      for (const site of coverage.sites) {
+        const row = document.createElement("tr");
+        const gates = site.entrances.map(function (gate) {
+          return (gate.name || gate.id) + " (" + gate.id + "; " + gate.source + ")";
+        }).join("; ") || "Unknown entrance link";
+        const values = [site.name || "Unknown name", site.id, site.source, gates,
+          site.resident_reach.before, site.resident_reach.after, site.resident_reach.new,
+          site.groups.after.join("; ") || site.reason];
+        for (const value of values) {
+          const cell = document.createElement("td");
+          const code = document.createElement("code");
+          code.textContent = String(value);
+          cell.appendChild(code);
+          row.appendChild(cell);
+        }
+        rows.appendChild(row);
+      }
+    }
     const point = document.getElementById("curve-" + current).getAttribute("points").split(" ")[step].split(",");
     dot.setAttribute("cx", point[0]);
     dot.setAttribute("cy", point[1]);
