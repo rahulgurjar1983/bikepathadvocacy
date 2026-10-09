@@ -721,3 +721,27 @@ def test_fr0_13_waits_for_the_first_provider_reset(loop_repo, tmp_path):
     seconds = int(waits[0].split("sleeping ")[1].split("s;")[0])
     assert 240 <= seconds <= 360
     assert "loop finished after 0 turn(s)" in result.stdout
+
+
+def test_fr0_33_sync_saves_dirty_loop_work(loop_repo, tmp_path):
+    repo, env, state = loop_repo
+    remote = tmp_path / "origin.git"
+    subprocess.run(["git", "init", "--bare", "-q", str(remote)], check=True)
+    repo.git("remote", "add", "origin", str(remote))
+    repo.write("artifacts/P0.2/proof.txt", "main proof\n")
+    repo.commit("main proof")
+    repo.git("push", "-q", "origin", "main")
+    repo.branch("loop/P0.2-resume")
+    repo.write("artifacts/P0.2/proof.txt", "branch proof\n")
+    repo.commit("branch proof")
+    repo.write("artifacts/P0.2/proof.txt", "unfinished proof\n")
+    env["RALPH_SKIP_SYNC"] = "0"
+    result = run_loop(repo, env, "1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert count(state) == 1
+    assert repo.git("branch", "--show-current") == "main"
+    assert (repo.path / "artifacts/P0.2/proof.txt").read_text() == "main proof\n"
+    assert "loop/P0.2-resume" in "\n".join(args_of(state, 1))
+    manifests = list((repo.path / ".ralph/checkpoints").glob("*.json"))
+    assert len(manifests) == 1
+    assert json.loads(manifests[0].read_text())["branch"] == "loop/P0.2-resume"
