@@ -24,6 +24,9 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ### Q1.3
 
+The fixture-only rule in spec 15 resolves this prior clash. The old
+proof below records why that rule was needed.
+
 FR-15.4 needs a rule repair for old tests. Fresh main still demands a
 verge fit from reserve and road width alone, with no usable verge or
 site checks. The owner rule says "MUST NOT change tests to make them
@@ -150,3 +153,21 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 - Q1.1: Keep frontier gains and costs at full precision through report JSON. Use gain divided by cost plus one for both ranking and the stop. A free pick has a finite ratio. A capped curve needs a note even if its stop is earlier; show notes for all capped scenarios. The figure method must match the page text. `uv run python artifacts/Q1.1/collect.py <build-commit>` checks the saved curves and writes the small proof from a fresh Bayside run.
 
 - Q1.1: Link the ratio to the stop figure and put its exact value in that figure's method. A bare ratio in page prose fails the report number rule. After a text-only fix, keep the curve build commit and save the new report commit when the collector renders the saved real curves again.
+
+
+- Q1.3: Use independent `usable_verge` records with source, date, range
+  and named site checks. Reserve space can cap a width but cannot prove
+  it. A lower bound must fit before a verge option is confirmed. Model
+  margin and source confidence are separate fields. The layer groups
+  like survey options and keeps segment IDs for the width records.
+- Q1.3: The toy fit cases add known space only where a worked case needs
+  it. The reserve cap still rejects the narrow case; it does not supply
+  usable space. Keep each old test body and its checks intact.
+- Q1.3: Reuse Shapely for the survey layer and pytest for proof. The
+  [TfNSW toolbox](https://www.transport.nsw.gov.au/system/files/media/documents/2023/Cycleway-Design-Toolbox-Web.pdf)
+  treats trees, utilities and other site limits as part of usable path
+  space. No new tool or data fetch is needed for offline fits.
+
+- Q1.3: Keep full source dates in width records. The public page uses
+  calendar dates for that evidence, so it passes the rule against run
+  time stamps. Keep the leak check strict; do not drop source dates.

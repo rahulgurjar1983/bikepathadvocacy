@@ -1,23 +1,21 @@
-# Verge fit rule clash
+# Width and survey proof
 
-Run from the repo root:
+Run from the repo root with the shipped snapshot:
 
 ```bash
-bash artifacts/Q1.3/reproduce.sh
+/usr/bin/time -v -o /tmp/q13-real-time.txt uv run bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.3-full
+uv run bikeplan verify /tmp/bikeplan-Q1.3-full
+uv run python artifacts/Q1.3/collect.py
 ```
 
-Expect: the tests pass on the saved main commit. They fail after the
-probe stops treating unknown verge space as a fit. The command fails
-hard if the base tests or tools fail, or the probe does not fail tests.
+Expect: default picks have known usable space. Unknown verge space
+stays in a survey layer with site checks. The layer links to the
+street width records. An empty shortlist states why it is empty.
 
-The probe is a small change in a fresh worktree. It is not a full fix.
-The cases have a reserve width but no observed usable verge or checks
-for site constraints. The old tests demand a verge fit and choice from
-those inputs alone. The probe keeps a valid parking fix instead.
+The collector saves `manifest.json`, `width-sample.json`, `summary.json`
+and `time-full.txt`. The manifest holds input and output hashes and
+the build commit. Run the command above to rebuild every count.
 
-Proof files: `base-commit.txt`, `base-tests.txt`, `survey-probe.patch`
-and `survey-probe-tests.txt` in this folder. The command above rebuilds
-the test counts and results. No shipped source or test was changed.
-
-Fresh main log: `fresh-main-audit.txt`. The base commit file now names
-the fresh main checked by the command above.
+The prior rule-clash proof stays in this folder as a past record.
+Spec 15 now allows explicit toy evidence in those old fit fixtures.
+`reproduce.sh` replays the old probe; it is not proof of the new tool.
