@@ -138,7 +138,7 @@ def test_fr15_4_empty_shortlist_retains_survey_layer_and_reason():
     assert (
         summary["shortlist_reason"] == "No confirmed project gains enough at the set minimum gain."
     )
-    surveys = json.loads(outputs["survey_options.geojson"])
+    surveys = json.loads(outputs["network.geojson"])["survey_options"]
     assert surveys["features"]
     assert json.loads(files["map.json"])["survey_options"] == surveys
     assert b'id="layer-survey"' in outputs["report.html"]
@@ -194,7 +194,7 @@ def test_fr15_4_survey_fixes_are_not_labelled_as_default_network_works():
 
 def test_fr15_4_survey_layer_lists_checks_and_keeps_links_to_width_records():
     _, outputs, _, _ = build_all(REGION, PROFILE, "tests/fixtures/test-grid/snapshot")
-    surveys = json.loads(outputs["survey_options.geojson"])["features"]
+    surveys = json.loads(outputs["network.geojson"])["survey_options"]["features"]
     assert surveys
     for feature in surveys:
         properties = feature["properties"]
@@ -233,7 +233,7 @@ def test_fr15_4_project_sheet_names_margin_and_source_confidence_separately():
 
 def test_fr15_4_report_uses_source_dates_without_build_timestamps():
     from bikeplan.page import page_scripts
-    from bikeplan.propose import project_records
+    from bikeplan.propose import project_records, project_sheet_records
     from bikeplan.report import leaks
 
     data = {
@@ -253,7 +253,7 @@ def test_fr15_4_report_uses_source_dates_without_build_timestamps():
         REGION.access.reach_m,
         REGION.access.detour_max,
     )
-    records = project_records(picks, planning)
+    records = project_sheet_records(project_records(picks, planning), planning)
     assert records[0]["elements"][0]["carriageway"]["date"] == data["width_date"]
     markup = page_scripts({"projects": records, "summary": {}, "project_shapes": {}})
     assert leaks(markup, []) == []
