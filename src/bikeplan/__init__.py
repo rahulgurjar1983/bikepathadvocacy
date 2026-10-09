@@ -81,6 +81,7 @@ def build_parser() -> argparse.ArgumentParser:
     access.add_argument("region", help="Region file")
     access.add_argument("--snapshot", required=True, help="Snapshot folder")
     access.add_argument("--out", required=True, help="Output directory")
+    access.add_argument("--assumptions", action="store_true", help="Include assumed all-ages links")
     propose = commands.add_parser("propose", help=LEAVES["propose"], description=LEAVES["propose"])
     propose.add_argument("region", help="Region file")
     propose.add_argument("--snapshot", required=True, help="Snapshot folder")
@@ -225,14 +226,17 @@ def stress(path: str, snapshot: str, out: str) -> int:
     return 0
 
 
-def access(path: str, snapshot: str, out: str) -> int:
+def access(path: str, snapshot: str, out: str, assumptions: bool = False) -> int:
     try:
         region = load_region(path)
         profile = load_profile(region.profile)
-        summary = write_access(build(snapshot, region, profile), region, profile, snapshot, out)
+        summary = write_access(
+            build(snapshot, region, profile), region, profile, snapshot, out, assumptions
+        )
     except (ConfigError, OSError) as error:
         print(error, file=sys.stderr)
         return 1
+    print(f"safety_scenario {summary['safety_scenario']}")
     print(f"access_score {summary['score']}")
     for kind, people in summary["safe_people"].items():
         print(f"{kind}_safe_people {people:.0f}")
@@ -375,7 +379,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "stress":
         return stress(args.region, args.snapshot, args.out)
     if args.command == "access":
-        return access(args.region, args.snapshot, args.out)
+        return access(args.region, args.snapshot, args.out, args.assumptions)
     if args.command == "propose":
         return propose(args.region, args.snapshot, args.out)
     if args.command == "run":

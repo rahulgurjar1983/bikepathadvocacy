@@ -424,7 +424,7 @@ def edge_reason(data: dict, profile: Profile, own: int, final: int, crossing) ->
     return "; ".join(parts)
 
 
-def score_edges(graph, profile: Profile) -> dict:
+def score_edges(graph, profile: Profile, assumptions: bool = False) -> dict:
     own = {(u, v, k): own_lts(d, profile) for u, v, k, d in graph.edges(keys=True, data=True)}
     final, crossings = raise_for_crossings(graph, own, profile)
     evidence = audit(
@@ -436,6 +436,7 @@ def score_edges(graph, profile: Profile) -> dict:
         junction_legs,
         main_street,
         crossing_lts,
+        assumptions,
     )
     return {
         key: {

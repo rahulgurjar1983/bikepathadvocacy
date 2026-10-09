@@ -14,7 +14,7 @@ from shapely.geometry import Point, Polygon
 
 from bikeplan.network import boundary_centre, utm_crs
 from bikeplan.snapshot import gpkg_rings
-from bikeplan.stress import score_edges
+from bikeplan.stress import eligible_links, score_edges
 
 DUPLICATE_RADIUS_M = 50.0
 SHOP_JOIN_M = 150.0
@@ -289,7 +289,14 @@ def with_legs(runs: np.ndarray, legs: coo_array) -> np.ndarray:
     return out
 
 
-def last_legs(graph, scores: dict, homes: list, leg_m: float, table: EdgeTable | None = None):
+def last_legs(
+    graph,
+    scores: dict,
+    homes: list,
+    leg_m: float,
+    table: EdgeTable | None = None,
+    assumptions: bool = False,
+):
     if not leg_m or not homes:
         return None
     table = table or edge_table(graph)
@@ -297,7 +304,11 @@ def last_legs(graph, scores: dict, homes: list, leg_m: float, table: EdgeTable |
     allowed = {
         key
         for key, item in scores.items()
-        if item["lts"] <= 2 and key[0] not in hot and highways(graph.edges[key]) & LEG_HIGHWAYS
+        if item["lts"] <= 2
+        and item.get("all_ages_status", "confirmed")
+        in ({"confirmed", "assumed"} if assumptions else {"confirmed"})
+        and key[0] not in hot
+        and highways(graph.edges[key]) & LEG_HIGHWAYS
     }
     matrix = masked_matrix(table, allowed_mask(table, allowed)).T.tocsr()
     sources = np.array([table.index[node] for node in homes])
@@ -426,14 +437,18 @@ def scene(graph, region, snapshot: str | Path) -> Scene:
     return Scene(kept, nodes, missed, placed, resident, weights)
 
 
-def write_access(graph, region, profile, snapshot: str | Path, out: str | Path) -> dict:
+def write_access(
+    graph, region, profile, snapshot: str | Path, out: str | Path, assumptions: bool = False
+) -> dict:
     out = Path(out)
     to_degrees = Transformer.from_crs(graph.graph["crs"], 4326, always_xy=True)
     kept, nodes, missed, placed, resident, weights = scene(graph, region, snapshot)
-    edge_scores = score_edges(graph, profile)
-    aaa = {key for key, item in edge_scores.items() if item["aaa"]}
+    edge_scores = score_edges(graph, profile, assumptions)
+    aaa = eligible_links(edge_scores, assumptions)
     table = edge_table(graph)
-    legs = last_legs(graph, edge_scores, sorted(resident.people), region.access.last_leg_m, table)
+    legs = last_legs(
+        graph, edge_scores, sorted(resident.people), region.access.last_leg_m, table, assumptions
+    )
     results = reach(
         graph,
         [node for _, node in placed],
@@ -467,6 +482,12 @@ def write_access(graph, region, profile, snapshot: str | Path, out: str | Path) 
         collection = {"type": "FeatureCollection", "features": features}
         (out / f"{name}.geojson").write_text(json.dumps(collection))
     summary = {
+        "safety_scenario": "assumptions" if assumptions else "confirmed",
+        "safety_assumptions": (
+            ["class traffic and speed defaults", "unverified signal phases and turning conflicts"]
+            if assumptions
+            else []
+        ),
         "score": scored["score"],
         "types": scored["types"],
         "safe_people": scored["safe_people"],

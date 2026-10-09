@@ -71,7 +71,7 @@ FIGURES = [
     ),
     (
         "F2",
-        "Street that is safe for a child to ride alone (AAA)",
+        "Street that meets the model's all-ages criteria (AAA)",
         "spec 04",
         "I score each edge for stress and keep the segments where every edge is AAA.",
         "r['aaa'] == '1'",
@@ -305,7 +305,10 @@ STYLE = (
 )
 GLOSSARY = {
     "ADT": "average daily traffic: how many motor vehicles use a street in a day.",
-    "AAA": "All Ages and Abilities: a street that is safe for a child or an older rider.",
+    "AAA": (
+        "All Ages and Abilities: meets the model's all-ages criteria. "
+        "This does not guarantee child safety."
+    ),
     "access": "how many needed places a home can reach by bike.",
     "bike": "a bicycle, including an electric bicycle.",
     "disruption": "what a change takes from people who drive or park today.",
@@ -435,7 +438,7 @@ def page(
         f"{author}"
         f'<section id="opening"><h2>What the data shows</h2>'
         f"<p>I checked {link(by_id['F1'])} of street that a bike may use. "
-        f"{link(by_id['F2'])} of it is safe for a child to ride alone. "
+        f"{link(by_id['F2'])} of it meets the model's all-ages criteria. "
         f"For {link(by_id['F3'])} I have no width.</p>"
         f"<p>I ask council to measure the street where I have no width. "
         "Please read the appendix to check every number.</p></section>"

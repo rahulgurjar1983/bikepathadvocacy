@@ -34,7 +34,8 @@ METHOD = [
     "The tool reads one snapshot of OpenStreetMap and the other open data named under credits. "
     "It makes no network call.",
     "It builds the street network and gives every street a stress level from 1 to 4 by the "
-    "Furth tables. A street is safe for all ages when it meets the AAA rules of the profile.",
+    "Furth tables. AAA means it meets the model's all-ages criteria. "
+    "This does not guarantee child safety.",
     "It estimates the width of each street from lane tags, width tags and the land reserve, and "
     "keeps the best source. It then tests six fixes against that width.",
     "It measures access: for each home it checks which places a person can reach on safe "

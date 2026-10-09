@@ -68,7 +68,17 @@ def movement_status(record, flags, main, crossing_lts):
     return "assumed", "crossing meets the model's limits; turning conflicts assumed clear"
 
 
-def audit(graph, profile, model_scores, own, flags, junction_legs, main_street, crossing_lts):
+def audit(
+    graph,
+    profile,
+    model_scores,
+    own,
+    flags,
+    junction_legs,
+    main_street,
+    crossing_lts,
+    assumptions=False,
+):
     records = {
         (tuple(item["incoming"]), tuple(item["outgoing"])): item
         for item in graph.graph.get("safety_evidence", {}).get("movements", [])
@@ -93,6 +103,9 @@ def audit(graph, profile, model_scores, own, flags, junction_legs, main_street, 
                     continue
                 record = records.get((incoming, outgoing), {})
                 status, reason = movement_status(record, flags[node], main, crossing_lts)
+                if assumptions and flags[node]["signal"] and not record:
+                    status = "assumed"
+                    reason = "signal phase and protected turning conflicts assumed, not verified"
                 movement = {
                     "incoming": list(incoming),
                     "outgoing": list(outgoing),

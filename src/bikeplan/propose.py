@@ -25,7 +25,7 @@ from bikeplan.access import (
     score_access,
 )
 from bikeplan.config import Scenario
-from bikeplan.fit import FIXES, junction_fixes, segment_fit
+from bikeplan.fit import FIXES, fixed_edge, junction_fixes, segment_fit
 from bikeplan.fit import cross_section as fit_cross_section
 from bikeplan.network import bike_segments
 from bikeplan.stress import edge_aaa, own_lts, raise_for_crossings, score_edges
@@ -237,6 +237,34 @@ def planning_network(graph, profile, region, confirmed_only=True) -> Planning:
         used.update(needs)
     elements = {name: item for name, item in {**segments, **junctions}.items() if name in used}
     return Planning(edges, elements, tuple(surveys))
+
+
+def confirmed_planning(graph, profile, planning: Planning) -> Planning:
+    changed = graph.copy()
+    for u, v, k, data in changed.edges(keys=True, data=True):
+        item = planning.elements.get(f"segment:{data['segment_id']}")
+        if item is None or item["fix"] == "verge_path":
+            continue
+        fixed = fixed_edge(data, item["fix"], profile)
+        if item["fix"] == "quietway":
+            fixed["speed_source"] = "assumed"
+        else:
+            fixed["bicycle"] = "designated"
+            fixed["bike_lane_width_m"] = profile.widths_m.one_way_cycleway.min.value
+        changed.edges[u, v, k].update(fixed)
+    scores = score_edges(changed, profile)
+    edges = {
+        key: item
+        for key, item in planning.edges.items()
+        if scores[key]["confirmed_aaa"]
+        and all(planning.elements[name]["kind"] != "junction" for name in item["needs"])
+    }
+    used = {name for item in edges.values() for name in item["needs"]}
+    return Planning(
+        edges,
+        {name: item for name, item in planning.elements.items() if name in used},
+        planning.survey_options,
+    )
 
 
 def trip_values(people: dict, placed: list, results: list[Reach], weights: dict) -> dict:
@@ -915,11 +943,14 @@ def solve(
     legs=None,
     corridors: Corridors | None = None,
     stats: dict | None = None,
+    confirmed: bool = False,
 ):
     planning = planning_network(graph, profile, region)
+    if confirmed:
+        planning = confirmed_planning(graph, profile, planning)
     big = big_projects(graph, planning, profile)
     made: list = []
-    if corridors is not None:
+    if corridors is not None and not confirmed:
         graph, planning, made = add_corridor_paths(
             graph, planning, corridors, region.proposals.metres_per_point
         )
@@ -1026,6 +1057,7 @@ def scenario_curve(
     names: list | None = None,
     legs=None,
     corridors: Corridors | None = None,
+    confirmed: bool = False,
 ) -> dict:
     scaled = scaled_region(region, scenario)
     scaled = dataclasses.replace(
@@ -1033,7 +1065,7 @@ def scenario_curve(
     )
     stats = {}
     solved, planning, picked = solve(
-        graph, scaled, profile, placed, people, weights, names, legs, corridors, stats
+        graph, scaled, profile, placed, people, weights, names, legs, corridors, stats, confirmed
     )
     picks = curve_picks(picked, planning)
     stop = recommended_stop(picks, region.proposals.recommend_ratio)
@@ -1042,6 +1074,7 @@ def scenario_curve(
         "shapes": shapes,
         "id": scenario.id,
         "label": scenario.label,
+        "safety_scenario": "confirmed" if confirmed else "model assumptions",
         "scales": scenario.scales,
         "recommended_stop": stop,
         "recommend_ratio": region.proposals.recommend_ratio,
@@ -1113,7 +1146,17 @@ def write_propose(
     ]
     shipped_graph = graph
     graph, planning, picked = solve(
-        graph, region, profile, placed, resident.people, weights, names, legs, corridors, stats
+        graph,
+        region,
+        profile,
+        placed,
+        resident.people,
+        weights,
+        names,
+        legs,
+        corridors,
+        stats,
+        True,
     )
     records = project_records(picked, planning)
     surveys = survey_layer(planning)
@@ -1148,6 +1191,7 @@ def write_propose(
             names,
             legs,
             corridors,
+            True,
         )
         for scenario in scenarios_for(region.proposals)
     ]
