@@ -9,6 +9,7 @@ from pyproj import Transformer
 
 from bikeplan.config import Profile
 from bikeplan.network import FOOT_PATHS, bike_segments, first, parking_on_side, road_class
+from bikeplan.safety import audit
 
 SPEED_TOPS_KMH = [37.82, 45.87, 53.91, 61.96, 70.01, 78.05]
 MINOR_CLASSES = {"residential", "living_street", "service", "unclassified"}
@@ -426,8 +427,19 @@ def edge_reason(data: dict, profile: Profile, own: int, final: int, crossing) ->
 def score_edges(graph, profile: Profile) -> dict:
     own = {(u, v, k): own_lts(d, profile) for u, v, k, d in graph.edges(keys=True, data=True)}
     final, crossings = raise_for_crossings(graph, own, profile)
+    evidence = audit(
+        graph,
+        profile,
+        {key: edge_aaa(graph.edges[key], own[key], profile) for key in own},
+        own,
+        junction_points(graph),
+        junction_legs,
+        main_street,
+        crossing_lts,
+    )
     return {
         key: {
+            **evidence[key],
             "lts": final[key],
             "aaa": edge_aaa(data, final[key], profile),
             "reason": edge_reason(data, profile, own[key], final[key], crossings.get(key)),
@@ -493,3 +505,8 @@ def write_stress(graph, profile: Profile, out) -> dict:
     summary = stress_summary(graph, scores)
     (out / "stress_summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     return summary
+
+
+def eligible_links(scores: dict, assumptions: bool = False) -> set:
+    states = {"confirmed", "assumed"} if assumptions else {"confirmed"}
+    return {key for key, item in scores.items() if item["all_ages_status"] in states}
