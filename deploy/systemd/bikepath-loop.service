@@ -18,12 +18,13 @@ RestartSec=120
 Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
 Environment=RALPH_FALLBACK_BIN=%h/.local/bin/codex
 Environment=RALPH_MODEL=claude-sonnet-5-5
-Environment=RALPH_REASONING_MODEL=claude-opus-5-5
-Environment=RALPH_ESCALATE_MODEL=claude-opus-5-5
+Environment=RALPH_REASONING_MODEL=claude-sonnet-5-5
+Environment=RALPH_ESCALATE_MODEL=claude-sonnet-5-5
+Environment=RALPH_ALLOW_PREMIUM=0
 Environment=RALPH_ROUTINE_EFFORT=medium
 Environment=RALPH_REASONING_EFFORT=high
 Environment=RALPH_CODEX_ROUTINE_MODEL=gpt-6.1-sol
-Environment=RALPH_CODEX_REASONING_MODEL=gpt-6-astra
+Environment=RALPH_CODEX_REASONING_MODEL=gpt-6.1-sol
 Environment=RALPH_CODEX_ROUTINE_EFFORT=medium
 Environment=RALPH_CODEX_REASONING_EFFORT=high
 Environment=RALPH_MAX_STALLS=3

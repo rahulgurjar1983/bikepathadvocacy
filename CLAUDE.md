@@ -21,4 +21,4 @@ Every step that spends model tokens must show its value in numbers, or it goes.
 - Read spec 15 for a review row. It amends the earlier rules it names. Its case table states what tests and real proof must show.
 - Feature rows keep tests first, with each new test failing on base. Only a pre-authorised `[proof]` row may pass on base through FR-0.27. Never invent a code change to make a proof test fail.
 - Follow the proof steps and turn result schema in `PROMPT.md`. Keep a blocked row open and name the exact missing input. Do not repeat the same failed plan.
-- The service pins model IDs and effort by row type. Per-attempt costs and tokens go to `.ralph/model-usage.jsonl`; keep using `.ralph/usage.csv` for turn totals. Gates and real outputs judge the work, regardless of model.
+- The service starts on Sonnet/GPT-6.1 Sol at medium effort within the owner's $20 plans. A stalled turn raises effort on the same models. Opus/Astra need an explicit operator opt-in. Per-attempt costs and tokens go to `.ralph/model-usage.jsonl`; keep using `.ralph/usage.csv` for turn totals. Gates and real outputs judge the work, regardless of model.

@@ -902,3 +902,14 @@ git check-ignore data/private/probe.gpx
 
 Expect: all focused tests pass. Proof needs a prior row tag, exact base, case IDs and passing cases on both trees. Model and effort reach each CLI. Three stalls advance the row; a CI wait does not. A known blocker logs its reason. Reuse uploads to the new tag only. Private paths are ignored. CI runs every test before this row merges.
 Artifact: `artifacts/S0.5/check.txt`
+
+
+### S0.6
+
+```bash
+uv run --frozen pytest gates/tests/test_loop.py -q --tb=short
+bash -n loop.sh
+```
+
+Expect: all 44 loop tests pass. Five new cases fail before the change. All rows start on Sonnet/Sol at medium effort. Stale larger role choices are ignored. A stalled row raises effort on the same model. Opt-in alone does not choose a larger model. CI runs the full suite before merge.
+Artifact: `artifacts/S0.6/check.txt`
