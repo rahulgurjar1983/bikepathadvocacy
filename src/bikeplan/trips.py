@@ -236,7 +236,7 @@ def complete_trips(
                         name
                         for route in proof.values()
                         for record in [*route["links"], *route["movements"]]
-                        for name in record.get("needs", ())
+                        for name in [*record.get("needs", ()), *record.get("model_needs", ())]
                     }
                     witnesses.append(
                         {
