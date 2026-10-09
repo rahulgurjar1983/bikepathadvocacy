@@ -18,6 +18,45 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Spec issues
 
+### Q1.4 input proof
+
+The fresh main still has a grid rule that conflicts with the new safety rule.
+FR-11.3 in spec 11 says tests must assert each fact in its grid table. That
+includes a safe baseline and a signals-only pick. FR-15.5 says main access and
+picks use confirmed links. The grid has no traffic counts from a source and
+no record of a bike signal phase or turning conflicts. Its traffic is a class
+assumption and its signal is just a point tag. Those facts cannot prove the
+confirmed routes that the old grid table demands.
+
+Proof: `artifacts/Q1.4/input-proof.json` records the fresh main commit, config
+and snapshot hashes, the old required scores, and the missing evidence.
+Rebuild it with:
+
+```bash
+git fetch origin
+git worktree add --detach /tmp/bikeplan-q14-input-proof origin/main
+uv run python artifacts/Q1.4/check_inputs.py /tmp/bikeplan-q14-input-proof
+uv run --directory /tmp/bikeplan-q14-input-proof pytest tests/test_test_grid.py -q -k 'baseline_region_score_is_25 or side_streets_at_the_signals_are_lts_1_and_aaa'
+```
+
+The worktree path must be free before the add command. The saved test result
+is `artifacts/Q1.4/main-tests.txt`. The old checks pass on main; this does not
+prove confirmed safety. The input fix must amend FR-11.3 and the grid table,
+or give the grid sourced phase, turn and traffic evidence. If the old table
+is kept as a model case, name it as an assumptions case and add a distinct
+confirmed case. Do not keep the old default just to pass its tests.
+
+The branch has saved tests and a core movement audit. The focused core
+check passes; its log is `artifacts/Q1.4/core-tests.txt`. Rebuild it with
+`uv run pytest tests/test_safety_evidence.py -q -k 'not default_'`.
+Default access and
+pick tests are also saved and still red. The unshipped default wiring is
+saved locally in `.ralph/Q1.4-integration.patch`. Public text still needs its
+model qualifier. The row stays open; no PR was made and no shipped proof is
+claimed. After the input fix, test the whole default flow before marking it
+done. Nearby signal flags and legacy model AAA are not confirmed evidence.
+
+
 - `gates/tests/test_loop.py::test_fr0_13_usage_limit_turn_is_not_counted` times out after 60 seconds on `origin/main` too. Proof: `git checkout origin/main && uv run pytest gates/tests/test_loop.py -q -k usage_limit`. The pre-push hook still let the push through.
 - P10.1: resolved by the input proof-only gate path; run fresh proof before completion. Prior issue: fresh `origin/main` still has the base commit in `artifacts/P10.1/check.txt`. The grid tests pass there; see the command and result in `artifacts/P10.1/main-audit.txt`. The prior Bayside tests also passed on that base, so the red-green rule bars them. The old temp run files are now gone; the committed hashes are a past record, not a fresh byte check. Keep the row open and held until the operator fixes the rule and gate. Copy run proof out of pytest temp paths before a later test run clears them.
 
