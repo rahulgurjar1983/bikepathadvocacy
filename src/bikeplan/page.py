@@ -86,12 +86,31 @@ def table(head: list[str], rows: list[list]) -> str:
     return f"<table><thead><tr>{top}</tr></thead><tbody>{body}</tbody></table>"
 
 
+def gains_table(measures: dict | None) -> str:
+    if measures is None:
+        return "<p>Unique people counts are unknown for this older output.</p>"
+    rows = [
+        ["Unique people gaining a safe destination", f"{measures['unique_people']:.0f}"],
+        ["Gains counted by type", f"{measures['gains_by_type']:.0f}"],
+    ]
+    by_type = [
+        [kind, f"{count:.0f}"] for kind, count in sorted(measures["unique_people_by_type"].items())
+    ]
+    return (
+        table(["Measure", "People"], rows)
+        + "<p>Unique people by type count each person once for that type. Gains counted by type "
+        "count a person again for each type gained. People are population estimates, "
+        "not households. "
+        "Node shares from each population unit are counted once.</p>"
+        + table(["Place type", "People"], by_type)
+    )
+
+
 def summary_section(summary: dict) -> str:
     score = summary["score"]
     fixes = summary["km_by_fix"]
     fix_rows = [[name, f"{km:.3f}"] for name, km in sorted(fixes.items())] or [["none", "0.000"]]
     disruption = [[label, summary["disruption"][key]] for key, label in DISRUPTION_LABELS]
-    people = [[kind, f"{count:.0f}"] for kind, count in sorted(summary["safe_people_gain"].items())]
     by_kind = [[kind, count] for kind, count in sorted(summary["projects_by_kind"].items())]
     corridors = summary["corridor_candidates"]
     corridor_rows = [
@@ -110,7 +129,7 @@ def summary_section(summary: dict) -> str:
         "<h3>Disruption</h3>"
         f"{table(['Item', 'Total'], disruption)}"
         "<h3>People who gain safe reach, by place type</h3>"
-        f"{table(['Place type', 'People'], people)}</section>"
+        f"{gains_table(summary.get('access_gains'))}</section>"
     )
 
 
@@ -121,11 +140,16 @@ def projects_section(records: list[dict]) -> str:
             record["name"],
             f"{record['gain']:.1f}",
             f"{record['score_after']:.1f}",
-            f"{sum(record['people'].values()):.0f}",
+            f"{record['totals']['access_gains']['unique_people']:.0f}"
+            if "access_gains" in record["totals"]
+            else "unknown",
+            f"{record['totals']['access_gains']['gains_by_type']:.0f}"
+            if "access_gains" in record["totals"]
+            else "unknown",
         ]
         for record in records
     ]
-    head = ["Rank", "Project", "Gain", "Score after", "People gaining safe reach"]
+    head = ["Rank", "Project", "Gain", "Score after", "Unique people", "Gains counted by type"]
     return f'<section id="projects"><h2>Projects, ranked</h2>{table(head, rows)}</section>'
 
 
@@ -269,7 +293,6 @@ def sheet(record: dict, features: list[dict]) -> str:
         "Width confidence",
         "Length m",
     ]
-    people = [[kind, f"{count:.0f}"] for kind, count in sorted(record["people"].items())]
     disruption = [[label, record["totals"][key]] for key, label in DISRUPTION_LABELS]
     fixes = [[fix, km] for fix, km in sorted(record["totals"]["km_by_fix"].items())]
     drawings = []
@@ -298,7 +321,7 @@ def sheet(record: dict, features: list[dict]) -> str:
         f"<h4>Disruption totals</h4>{table(['Item', 'Total'], disruption)}"
         f"<h4>Kilometres by fix</h4>{table(['Fix', 'km'], fixes or [['none', 0.0]])}"
         f"<h4>Street cross-sections</h4>{sections}{links}"
-        f"{table(['Place type', 'People'], people)}</article>"
+        f"{gains_table(record['totals'].get('access_gains'))}</article>"
     )
 
 

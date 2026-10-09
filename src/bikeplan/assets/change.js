@@ -20,13 +20,13 @@ window.addEventListener("load", function () {
   }
 
   function places(key) {
-    if (key.startsWith("people.")) return 0;
+    if (key === "unique_people" || key === "gains_by_type" || key.startsWith("people.")) return 0;
     if (key.startsWith("km.")) return 3;
     return { score: 1, disruption: 1, parking_spaces: 0, lane_km: 3, speed_km: 3 }[key];
   }
 
   function value(pick, key) {
-    if (key.startsWith("people.")) return pick.people[key.slice(7)];
+    if (key.startsWith("people.")) return pick.unique_people_by_type[key.slice(7)];
     if (key.startsWith("km.")) return pick.km_by_fix[key.slice(3)] || 0;
     return pick[key];
   }
@@ -56,8 +56,9 @@ window.addEventListener("load", function () {
     const chosen = scenario();
     const pick = chosen.picks[step];
     draw(chosen, step);
-    for (const cell of document.querySelectorAll("#change-totals [data-total]")) {
-      cell.textContent = value(pick, cell.dataset.total).toFixed(places(cell.dataset.total));
+    for (const cell of document.querySelectorAll("#change-totals [data-total], #change-totals [data-measure]")) {
+      const key = cell.dataset.measure || cell.dataset.total;
+      cell.textContent = value(pick, key).toFixed(places(key));
     }
     const point = document.getElementById("curve-" + current).getAttribute("points").split(" ")[step].split(",");
     dot.setAttribute("cx", point[0]);

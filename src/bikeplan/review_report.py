@@ -398,8 +398,8 @@ def fixes_section(figures: Figures) -> str:
             "I add the streets where no fix fits.",
         ),
         (
-            "People who gain a safe way to a needed place",
-            "t['total']['access']['homes_gaining_safe_reach']",
+            "Unique people gaining a safe destination",
+            "t['total']['access']['access_gains']['unique_people']",
             "people",
             "I make the whole route safe for all ages and count the people who gain a safe way.",
         ),
@@ -416,6 +416,24 @@ def fixes_section(figures: Figures) -> str:
             "I take ranked projects in order while they fit the route length.",
         ),
     ]
+    items.append(
+        (
+            "Gains counted by type",
+            "t['total']['access']['access_gains']['gains_by_type']",
+            "people",
+            "I count each person once per type gained. People are estimates, not households.",
+        )
+    )
+    for kind in sorted(figures.figures["total"]["access"]["access_gains"]["unique_people_by_type"]):
+        items.append(
+            (
+                f"Unique people by type: {kind.replace('_', ' ')}",
+                f"t['total']['access']['access_gains']['unique_people_by_type'][{kind!r}]",
+                "people",
+                "I count the union of home nodes gaining a destination of this type. "
+                "Each node's people share counts once.",
+            )
+        )
     found = [figures.add(*item) for item in items]
     names = [
         "I would take",

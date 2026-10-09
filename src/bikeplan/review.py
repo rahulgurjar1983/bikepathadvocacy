@@ -10,7 +10,15 @@ from shapely.geometry import LineString, Point
 from shapely.ops import substring
 from shapely.strtree import STRtree
 
-from bikeplan.access import edge_table, last_legs, reach, safe_reach, scene, score_access
+from bikeplan.access import (
+    edge_table,
+    last_legs,
+    people_gains,
+    reach,
+    safe_reach,
+    scene,
+    score_access,
+)
 from bikeplan.config import Grade, Profile, Region, load_profile
 from bikeplan.network import build, first
 from bikeplan.propose import Planning, planning_network, write_propose
@@ -394,6 +402,15 @@ def ranked_like(records: list[dict], route_km: float, kinds: list) -> dict:
         chosen.append(record)
         km += length
     return {
+        "access_gains": (
+            chosen[-1]["totals"].get("package_access_gains")
+            if chosen
+            else {
+                "unique_people": 0,
+                "unique_people_by_type": dict.fromkeys(kinds, 0),
+                "gains_by_type": 0,
+            }
+        ),
         "projects": len(chosen),
         "km": round(km, 4),
         "safe_people_gain": {kind: sum(r["people"][kind] for r in chosen) for kind in kinds},
@@ -431,6 +448,7 @@ def access_value(graph, profile, region: Region, snapshot, scores, pairs, route_
         records = write_propose(graph, region, profile, snapshot, scratch)
     return {
         "safe_people_gain": {kind: safe_after[kind] - safe_before[kind] for kind in weights},
+        "access_gains": people_gains(resident.people, placed, before, after, list(weights)),
         "homes_gaining_safe_reach": people,
         "gain_per_km": round(people / route_km, 2) if route_km else 0.0,
         "ranked": ranked_like(records, route_km, list(weights)),
