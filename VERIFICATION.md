@@ -937,3 +937,24 @@ bash -n loop.sh scripts/release.sh
 
 Expect: all 53 focused tests pass. New tests fail on the base. A dated weekly reset keeps its date and zone. A sooner Codex reset wins over that date. A missing reset gets a bounded retry. Limited calls do not count as turns. Old releases with no index are skipped; a missing parent rebuilds. API and download errors still fail. CI runs the full suite before merge.
 Artifact: `artifacts/S0.7/check.txt`
+
+
+### Q1.3
+
+```bash
+uv run pytest tests/test_width_evidence.py tests/test_fit_options.py tests/test_fit_choice.py tests/test_fit_disruption.py tests/test_fit_separation.py -q
+/usr/bin/time -v -o /tmp/q13-real-time.txt uv run bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.3-full
+uv run bikeplan verify /tmp/bikeplan-Q1.3-full
+uv run python artifacts/Q1.3/collect.py
+```
+
+Expect: the width checks pass. Reserve, carriageway and usable verge
+stay distinct. The real run keeps unproven fixes in the survey layer,
+with site checks, and out of default picks. A confirmed shortlist may
+be empty; its reason stays visible. The report fits the size limit.
+The collector checks these claims and saves hashes, a width sample,
+the summary and run time. The verify command checks file structure;
+full safety proof is a later row.
+
+Artifact: `artifacts/Q1.3/manifest.json`, `artifacts/Q1.3/width-sample.json`,
+`artifacts/Q1.3/summary.json` and `artifacts/Q1.3/time-full.txt`.

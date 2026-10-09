@@ -206,6 +206,18 @@ def route_fixes(graph, planning: Planning, scores, keys, place) -> tuple[list, l
                 "id": name,
                 "fix": element["fix"],
                 "street": element["street"],
+                "fit_status": "confirmed" if element["confirmed"] else "needs_survey",
+                "source_confidence": element["source_confidence"],
+                "model_margin": element["model_margin"],
+                "survey_checks": sorted(
+                    {
+                        check
+                        for option in planning.survey_options
+                        if option["segment"] == element["segment"]
+                        for item in option["options"]
+                        for check in item["survey_checks"]
+                    }
+                ),
                 "length_m": round(metres, 2),
                 "parking_spaces": round(counts["parking_spaces"] * share, 2),
                 "lane_km": round(counts["lane_km"] * share, 4),
@@ -450,7 +462,7 @@ def route_figures(
     gates = graph.graph.get("gates", [])
     tree = STRtree([Point(g["x"], g["y"]) for g in gates])
     to_lonlat = Transformer.from_crs(graph.graph["crs"], 4326, always_xy=True)
-    planning = planning_network(graph, profile, region) if region else None
+    planning = planning_network(graph, profile, region, confirmed_only=False) if region else None
     found = [
         section_figures(graph, scores, flags, gates, tree, to_lonlat, s, profile.grade, planning)
         for s in sections

@@ -1,0 +1,56 @@
+{
+  "command": "/usr/bin/time -v -o /tmp/q13-real-time.txt uv run bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.3-full",
+  "commit": "14791aec4f785984a1fbd37aaf26ea8b5fd9e153",
+  "confirmed_projects": 1,
+  "inputs_sha256": {
+    "data/cache/au-nsw-bayside/2026-10-01/manifest.json": "2eaf0b00832565765c42e07b48ad7c6117436194487f45931e348f6772964bba",
+    "profiles/au-nsw.yaml": "3089879011bff619b5df896b6a63677e7f1d9c50b24c50febf081cb6681e25cf",
+    "regions/au-nsw-bayside.yaml": "b324303588064e489ddf116063e24218bf89dd5e1ac3dab8bd8d2aae57f2b2e0"
+  },
+  "outputs_sha256": [
+    {
+      "path": "access_homes.geojson",
+      "sha256": "45b6a74df5efb30c1a2d4cc92453a4d100a5b47959db76504d34976c282a23c0"
+    },
+    {
+      "path": "frontier.json",
+      "sha256": "94e1b3136d7bbbd7595179f32cea300a61e0ed3eef812657a78c233ffedab12b"
+    },
+    {
+      "path": "network.geojson",
+      "sha256": "ba342a505818555809ad75cecd1de1498784613b1aea4cfaa19446f07f16fa42"
+    },
+    {
+      "path": "outputs.sha256",
+      "sha256": "25d92edfe044df2caecbdb07018fba387d901bc945d04b8cd8b3f90d9afd0f24"
+    },
+    {
+      "path": "places.geojson",
+      "sha256": "b275748f27eb07121541c246e22a64058d21b81e39bff4d3d823ccffeaa23803"
+    },
+    {
+      "path": "projects.csv",
+      "sha256": "69a447a786ccdf72f74d85204c7639b70c4fd6dcf95355ad0e3a47f99b019ec9"
+    },
+    {
+      "path": "projects.geojson",
+      "sha256": "4fc97d28bbd91d39d0b60b3d5eab912b4e4c49b89baa7b2f69a6cdeb227a08ec"
+    },
+    {
+      "path": "projects.json",
+      "sha256": "ff4b2a80b661de8c383ae6856e9db5bb5c1de8ef71bbb2d26ae5c491a05c412a"
+    },
+    {
+      "path": "report.html",
+      "sha256": "45093d46c531739dce0ffc369111d21aa5014db12db8b85dc0b86d094edbf7b3"
+    },
+    {
+      "path": "summary.json",
+      "sha256": "4201d6231a40d06946028da9d283b06afff9e0e89d389bb8ccf4ca20e8ba9287"
+    }
+  ],
+  "report_bytes": 7653016,
+  "row": "Q1.3",
+  "shortlist_reason": "",
+  "survey_segments": 33485
+}
