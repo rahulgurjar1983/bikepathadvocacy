@@ -1,10 +1,10 @@
 {
   "base_commit": "4d35ded7685d5c8c5d6c9cbe4370f02abd902af0",
-  "command": "uv run python artifacts/Q1.2/release_probe.py /tmp/bikepath-Q1.2-20261010-turn-main",
+  "command": "uv run python artifacts/Q1.2/release_probe.py /tmp/bikepath-Q1.2-20261010-current-main",
   "private_reviews_discovered": 1,
   "private_report_uploaded": true,
   "private_archive_uploaded": true,
-  "ignore_command": "git -C /tmp/bikepath-Q1.2-20261010-turn-main check-ignore data/private/probe.gpx",
+  "ignore_command": "git -C /tmp/bikepath-Q1.2-20261010-current-main check-ignore data/private/probe.gpx",
   "ignore_result": "data/private/probe.gpx",
   "upload_tool": "fake gh; no network upload"
 }

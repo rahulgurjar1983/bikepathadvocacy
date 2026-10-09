@@ -21,9 +21,9 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 ### Q1.2 fresh main proof
 
 The release gap still exists on fresh main. This turn checked the same
-base as the prior proof; no input fix has shipped. Run `git fetch origin`, then
-`git worktree add --detach /tmp/bikepath-Q1.2-20261010-turn-main origin/main`.
-Run `uv run python artifacts/Q1.2/release_probe.py /tmp/bikepath-Q1.2-20261010-turn-main`.
+base as the prior proof after a fresh fetch; no input fix has shipped. Run `git fetch origin`, then
+`git worktree add --detach /tmp/bikepath-Q1.2-20261010-current-main origin/main`.
+Run `uv run python artifacts/Q1.2/release_probe.py /tmp/bikepath-Q1.2-20261010-current-main`.
 The probe selects the private report and archive for upload. It uses
 made-up files and fake `gh`; nothing is sent. The base hash, command
 and result are in `artifacts/Q1.2/input-blocker.json`.
