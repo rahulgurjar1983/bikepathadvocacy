@@ -1,4 +1,5 @@
 import json
+import shutil
 
 from bikeplan.config import load_profile, load_region
 from bikeplan.network import build
@@ -54,3 +55,10 @@ def add_grid_safety_inputs(folder):
     (folder / "safety_evidence.json").write_text(
         json.dumps({"streets": streets, "movements": movements})
     )
+
+
+def unverified_snapshot(folder):
+    snapshot = folder / "unverified-snapshot"
+    shutil.copytree("tests/fixtures/test-grid/snapshot", snapshot)
+    (snapshot / "safety_evidence.json").unlink()
+    return snapshot

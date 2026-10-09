@@ -3,6 +3,7 @@ import pytest
 
 from bikeplan.config import load_profile
 from bikeplan.stress import score_edges
+from tests.grid_safety_inputs import unverified_snapshot
 
 PROFILE = load_profile("au-nsw")
 
@@ -157,7 +158,7 @@ def test_fr15_5_default_access_excludes_assumed_links_in_real_snapshot(tmp_path)
     from bikeplan import main
 
     region = "tests/fixtures/test-grid/region.yaml"
-    snapshot = "tests/fixtures/test-grid/snapshot"
+    snapshot = str(unverified_snapshot(tmp_path))
     confirmed = tmp_path / "confirmed"
     assumed = tmp_path / "assumed"
     assert main(["access", region, "--snapshot", snapshot, "--out", str(confirmed)]) == 0
@@ -271,10 +272,10 @@ def test_fr15_5_route_crossing_names_unverified_phase(tmp_path):
     from bikeplan.network import build
     from bikeplan.review import route_figures
     from bikeplan.route import read_route
-    from tests.route_helpers import REGION, SNAPSHOT, densify, lonlat, write_gpx_track
+    from tests.route_helpers import REGION, densify, lonlat, write_gpx_track
 
     region = load_region(REGION)
-    graph = build(SNAPSHOT, region, PROFILE)
+    graph = build(unverified_snapshot(tmp_path), region, PROFILE)
     route = write_gpx_track(tmp_path / "route.gpx", lonlat(densify([(200, 600), (600, 600)])))
     result = route_figures(graph, PROFILE, read_route(route))["total"]
     crossing = result["crossings"][0]
