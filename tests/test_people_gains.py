@@ -2,7 +2,7 @@ import pytest
 
 from bikeplan.access import Reach, homes
 from bikeplan.change import STEP_FIGURES
-from bikeplan.propose import curve_picks, csv_row, greedy_picks, planning_network, project_records
+from bikeplan.propose import csv_row, curve_picks, greedy_picks, planning_network, project_records
 from bikeplan.review import ranked_like
 from bikeplan.run import project_summary
 from tests.test_propose_network import BUSY, PROFILE, REGION
@@ -60,8 +60,9 @@ def test_fr15_6_packages_records_curves_exports_and_review_use_same_measures():
 
 
 def test_fr15_6_shared_population_unit_is_allocated_once():
-    from bikeplan.access import people_gains
     from shapely.geometry import box
+
+    from bikeplan.access import people_gains
 
     graph = star([(400, BUSY), (800, BUSY)])
     area = box(-2000, -2000, 2000, 2000)
@@ -92,7 +93,8 @@ def test_fr15_6_route_review_keeps_all_three_measures(tmp_path):
     from bikeplan.network import build
     from bikeplan.review import route_figures
     from bikeplan.route import read_route
-    from tests.route_helpers import REGION as PATH, SNAPSHOT, densify, lonlat, write_gpx_tracks
+    from tests.route_helpers import REGION as PATH
+    from tests.route_helpers import SNAPSHOT, densify, lonlat, write_gpx_tracks
 
     region = load_region(PATH)
     profile = load_profile(region.profile, "profiles")
