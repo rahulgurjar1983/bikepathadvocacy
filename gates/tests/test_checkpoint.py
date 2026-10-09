@@ -86,6 +86,7 @@ def test_fr0_33_retained_launcher_saves_on_older_branch(repo):
         target = repo.path / "gates" / name
         target.parent.mkdir(exist_ok=True)
         shutil.copy(source / name, target)
+    shutil.copy(source.parent / ".gitignore", repo.path / ".gitignore")
     repo.write("README.md", "main\n")
     repo.commit("old branch tooling")
     assert main(["install"]) == 0
