@@ -1,0 +1,37 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____________ test_fr13_1_writes_every_file_and_sha256sums_matches _____________
+
+output = PosixPath('/tmp/pytest-of-oem/pytest-433/out0')
+
+    def test_fr13_1_writes_every_file_and_sha256sums_matches(output):
+        for name in [*FILES, "SHA256SUMS"]:
+            assert (output / name).is_file()
+        lines = (output / "SHA256SUMS").read_text().splitlines()
+>       assert [line.split("  ")[1] for line in lines] == sorted(FILES)
+E       AssertionError: assert ['figures.jso...segments.csv'] == ['figures.jso...segments.csv']
+E         
+E         At index 3 diff: 'proposal.json' != 'report.html'
+E         Left contains one more item: 'segments.csv'
+E         Use -v to get more diff
+
+tests/test_report.py:46: AssertionError
+---------------------------- Captured stdout setup -----------------------------
+F1 5.2 km
+F2 3.0 km
+F3 0.0 km
+F4 12 pieces
+F5 100.0 points
+F6 15.0 points
+F7 0 spaces
+F8 0.0 km
+F9 0.0 km
+F10 750.0 people
+F11 0 km
+F12 6 steps
+F13 1 projects
+=========================== short test summary info ============================
+FAILED tests/test_report.py::test_fr13_1_writes_every_file_and_sha256sums_matches
+1 failed in 2.02s
+Uninstalled 1 package in 0.39ms
+Installed 1 package in 29ms

@@ -1,0 +1,41 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____________ test_fr16_1_proposal_record_is_in_the_report_hash_list ____________
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-431/test_fr16_1_proposal_record_is0')
+
+    def test_fr16_1_proposal_record_is_in_the_report_hash_list(tmp_path):
+        assert main(
+            [
+                "report",
+                "tests/fixtures/test-grid/region.yaml",
+                "--snapshot",
+                "tests/fixtures/test-grid/snapshot",
+                "--out",
+                str(tmp_path),
+            ]
+        ) == 0
+        record = tmp_path / "proposal.json"
+>       assert record.is_file()
+E       AssertionError: assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('/tmp/pytest-of-oem/pytest-431/test_fr16_1_proposal_record_is0/proposal.json').is_file
+
+tests/test_q16_archive_probe.py:19: AssertionError
+----------------------------- Captured stdout call -----------------------------
+F1 5.2 km
+F2 3.0 km
+F3 0.0 km
+F4 12 pieces
+F5 100.0 points
+F6 15.0 points
+F7 0 spaces
+F8 0.0 km
+F9 0.0 km
+F10 750.0 people
+F11 0 km
+F12 6 steps
+F13 1 projects
+=========================== short test summary info ============================
+FAILED tests/test_q16_archive_probe.py::test_fr16_1_proposal_record_is_in_the_report_hash_list
+1 failed in 2.39s

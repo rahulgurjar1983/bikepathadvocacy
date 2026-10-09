@@ -18,6 +18,28 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Spec issues
 
+### Q1.6
+
+The old report hash check bars the new proposal file. FR-16.1 needs
+`proposal.json` in each report archive. FR-13.1 keeps hashes for the
+report data files. The check at `tests/test_report.py:46` demands the
+exact old file list, which has no proposal record. The loop cannot
+change old checks to force a pass.
+
+Proof: `uv run python artifacts/Q1.6/reproduce.py` uses a fresh main
+worktree at the commit in `artifacts/Q1.6/base-commit.txt`. The old
+check passes on base; the new archive check fails. A small code probe
+adds the new file through the real report writer and hash list. The
+new check then passes, but the old check fails at the exact file list.
+Logs, the probe patch and its result are in `artifacts/Q1.6/`. This
+tests the archive contract, not the full row or a real region.
+
+Input ask: update the old report file list on main to include
+`proposal.json`, keeping the digest checks. Or give the loop a narrow
+rule to amend this old archive contract. Do not omit the new file from
+hash checks to keep the old list green. Q1.6 stays open. No product
+code, old test or input was changed by this turn.
+
 - `gates/tests/test_loop.py::test_fr0_13_usage_limit_turn_is_not_counted` times out after 60 seconds on `origin/main` too. Proof: `git checkout origin/main && uv run pytest gates/tests/test_loop.py -q -k usage_limit`. The pre-push hook still let the push through.
 - P10.1: resolved by the input proof-only gate path; run fresh proof before completion. Prior issue: fresh `origin/main` still has the base commit in `artifacts/P10.1/check.txt`. The grid tests pass there; see the command and result in `artifacts/P10.1/main-audit.txt`. The prior Bayside tests also passed on that base, so the red-green rule bars them. The old temp run files are now gone; the committed hashes are a past record, not a fresh byte check. Keep the row open and held until the operator fixes the rule and gate. Copy run proof out of pytest temp paths before a later test run clears them.
 

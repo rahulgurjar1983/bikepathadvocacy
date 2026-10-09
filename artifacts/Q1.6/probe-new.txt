@@ -1,0 +1,4 @@
+.                                                                        [100%]
+1 passed in 2.12s
+Uninstalled 1 package in 41ms
+Installed 1 package in 3ms

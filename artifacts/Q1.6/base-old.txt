@@ -1,0 +1,6 @@
+.                                                                        [100%]
+1 passed in 6.06s
+   Building bikeplan @ file:///tmp/bikeplan-q16-proof-ttl7q2bp/main
+      Built bikeplan @ file:///tmp/bikeplan-q16-proof-ttl7q2bp/main
+Uninstalled 1 package in 1.89s
+Installed 1 package in 1.11s

@@ -1,0 +1,9 @@
+{
+  "base_commit": "4d35ded7685d5c8c5d6c9cbe4370f02abd902af0",
+  "base_new": "failed: proposal.json is absent",
+  "base_old": "passed",
+  "command": "uv run python artifacts/Q1.6/reproduce.py",
+  "probe_new": "passed",
+  "probe_old": "failed: exact legacy hash list rejects proposal.json",
+  "scope": "archive contract probe; not a Q1.6 feature or real-region proof"
+}
