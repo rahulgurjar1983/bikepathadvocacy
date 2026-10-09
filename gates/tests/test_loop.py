@@ -745,3 +745,13 @@ def test_fr0_33_sync_saves_dirty_loop_work(loop_repo, tmp_path):
     manifests = list((repo.path / ".ralph/checkpoints").glob("*.json"))
     assert len(manifests) == 1
     assert json.loads(manifests[0].read_text())["branch"] == "loop/P0.2-resume"
+    repo.git("checkout", "loop/P0.2-resume")
+    restored = subprocess.run(
+        [sys.executable, ".ralph/checkpoint.py", "restore"],
+        cwd=repo.path,
+        env={key: value for key, value in env.items() if key != "PYTHONPATH"},
+        capture_output=True,
+        text=True,
+    )
+    assert restored.returncode == 0, restored.stdout + restored.stderr
+    assert (repo.path / "artifacts/P0.2/proof.txt").read_text() == "unfinished proof\n"
