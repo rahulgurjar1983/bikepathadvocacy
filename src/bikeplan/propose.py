@@ -416,7 +416,7 @@ def add_corridor_paths(graph, planning: Planning, corridors: Corridors, metres: 
                 )
                 cost = shape.length + metres * elements[name]["score"]
                 edges[(start, end, "new")] = {"cost": cost, "needs": (name,)}
-    return graph, Planning(edges, elements), names
+    return graph, Planning(edges, elements, planning.survey_options), names
 
 
 def segment_nodes(segment: dict) -> set:
@@ -501,7 +501,7 @@ def fixed_planning(graph, planning: Planning, fixed: set, metres: float) -> Plan
         saved = sum(edge_share(name, planning.elements[name], length, metres) for name in done)
         needs = tuple(name for name in item["needs"] if name not in fixed)
         edges[key] = {"cost": item["cost"] - saved, "needs": needs}
-    return Planning(edges, planning.elements)
+    return Planning(edges, planning.elements, planning.survey_options)
 
 
 def exact_score(people: dict, placed: list, results: list[Reach], weights: dict) -> float:
