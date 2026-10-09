@@ -47,9 +47,9 @@ proof = {
     "signals": signals,
     "movement_evidence_present": False,
     "way_adt_evidence_present": False,
-    "command": "uv run python artifacts/Q1.4/check_inputs.py /tmp/bikeplan-q14-input-proof",
+    "command": f"uv run python artifacts/Q1.4/check_inputs.py {root}",
     "test_command": (
-        "uv run --directory /tmp/bikeplan-q14-input-proof pytest tests/test_test_grid.py -q "
+        f"uv run --directory {root} pytest tests/test_test_grid.py -q "
         "-k 'baseline_region_score_is_25 or side_streets_at_the_signals_are_lts_1_and_aaa'"
     ),
 }

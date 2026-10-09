@@ -21,6 +21,8 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 ### Q1.4 input proof
 
 The fresh main still has a grid rule that conflicts with the new safety rule.
+The proof was rerun after the community spec merge. The open input PR
+for fixture evidence has not merged, so it does not yet amend main.
 FR-11.3 in spec 11 says tests must assert each fact in its grid table. That
 includes a safe baseline and a signals-only pick. FR-15.5 says main access and
 picks use confirmed links. The grid has no traffic counts from a source and
@@ -34,9 +36,9 @@ Rebuild it with:
 
 ```bash
 git fetch origin
-git worktree add --detach /tmp/bikeplan-q14-input-proof origin/main
-uv run python artifacts/Q1.4/check_inputs.py /tmp/bikeplan-q14-input-proof
-uv run --directory /tmp/bikeplan-q14-input-proof pytest tests/test_test_grid.py -q -k 'baseline_region_score_is_25 or side_streets_at_the_signals_are_lts_1_and_aaa'
+git worktree add --detach /tmp/bikeplan-q14-input-proof-current origin/main
+uv run python artifacts/Q1.4/check_inputs.py /tmp/bikeplan-q14-input-proof-current
+uv run --directory /tmp/bikeplan-q14-input-proof-current pytest tests/test_test_grid.py -q -k 'baseline_region_score_is_25 or side_streets_at_the_signals_are_lts_1_and_aaa'
 ```
 
 The worktree path must be free before the add command. The saved test result
