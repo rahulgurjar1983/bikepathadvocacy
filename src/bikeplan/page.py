@@ -253,9 +253,9 @@ def sheet(record: dict, features: list[dict]) -> str:
             item["id"],
             item["street"],
             item["fix"],
-            ROBUST_LABELS.get(item["robust"], item["robust"]),
+            ROBUST_LABELS.get(item.get("model_margin") or item["robust"], item["robust"]),
             item["width_source"] or "none",
-            item["width_confidence"] or "none",
+            item.get("source_confidence") or item["width_confidence"] or "none",
             item["length_m"],
         ]
         for item in record["elements"]
@@ -264,9 +264,9 @@ def sheet(record: dict, features: list[dict]) -> str:
         "Element",
         "Street",
         "Fix",
-        "Robustness",
+        "Model margin",
         "Width source",
-        "Width confidence",
+        "Width confidence / Source confidence",
         "Length m",
     ]
     people = [[kind, f"{count:.0f}"] for kind, count in sorted(record["people"].items())]
@@ -280,7 +280,7 @@ def sheet(record: dict, features: list[dict]) -> str:
             confidence = section["width_confidence"] or "none"
             drawings.append(
                 f"<h5><code>{html.escape(section['street'])}</code>; width source "
-                f"<code>{html.escape(source)}</code>, confidence "
+                f"<code>{html.escape(source)}</code>, source confidence "
                 f"<code>{html.escape(confidence)}</code></h5>"
                 + "".join(
                     cross_section(record["id"], element["id"], section, phase)
