@@ -66,19 +66,38 @@ class Corridors(NamedTuple):
 class Planning(NamedTuple):
     edges: dict
     elements: dict
+    survey_options: tuple = ()
 
 
 def street_name(data: dict) -> str:
     return str(data.get("name") or f"unnamed {data.get('highway', 'street')}")
 
 
-def segment_elements(graph, profile, weights) -> tuple[dict, set]:
+def segment_elements(graph, profile, weights, surveys=None) -> tuple[dict, set]:
     elements = {}
     missing = set()
     to_degrees = Transformer.from_crs(graph.graph["crs"], 4326, always_xy=True)
     for segment_id, segment in bike_segments(graph).items():
         result = segment_fit(segment, profile, weights)
-        if result is None or result["status"] == "no_fit":
+        if result is not None and result["survey_options"] and surveys is not None:
+            (u, v, _), data = segment["edges"][0]
+            line = data.get("geometry") or LineString(
+                [(graph.nodes[node]["x"], graph.nodes[node]["y"]) for node in (u, v)]
+            )
+            surveys.append(
+                {
+                    "id": f"survey:{segment_id}",
+                    "segment": segment_id,
+                    "street": street_name(data),
+                    "fit_status": "needs_survey",
+                    "geometry": mapping(transform(to_degrees.transform, line)),
+                    "options": result["survey_options"],
+                    "carriageway": result["carriageway"],
+                    "road_reserve": result["road_reserve"],
+                    "usable_verge": result["usable_verge"],
+                }
+            )
+        if result is None or result["status"] == "no_fit" or not result["confirmed"]:
             missing.add(segment_id)
         elif result["status"] == "fix":
             (u, v, _), first_edge = segment["edges"][0]
@@ -89,6 +108,12 @@ def segment_elements(graph, profile, weights) -> tuple[dict, set]:
             lon, lat = to_degrees.transform(point.x, point.y)
             chosen = next(item for item in result["candidates"] if item["fix"] == result["fix"])
             elements[f"segment:{segment_id}"] = {
+                "confirmed": chosen["confirmed"],
+                "model_margin": chosen["model_margin"],
+                "source_confidence": chosen["source_confidence"],
+                "carriageway": result["carriageway"],
+                "road_reserve": result["road_reserve"],
+                "usable_verge": result["usable_verge"],
                 "aaa_after": chosen["accepted"],
                 "margin_m": chosen["margin_m"],
                 "kind": "segment",
@@ -176,7 +201,8 @@ def crossing_needs(key: tuple, data: dict, junctions: dict) -> tuple:
 def planning_network(graph, profile, region) -> Planning:
     weights = region.proposals.disruption_weights
     metres = region.proposals.metres_per_point
-    segments, missing = segment_elements(graph, profile, weights)
+    surveys = []
+    segments, missing = segment_elements(graph, profile, weights, surveys)
     junctions = junction_elements(graph, profile, weights)
     own = {(u, v, k): own_lts(d, profile) for u, v, k, d in graph.edges(keys=True, data=True)}
     final, _ = raise_for_crossings(graph, own, profile)
@@ -204,7 +230,7 @@ def planning_network(graph, profile, region) -> Planning:
         edges[key] = {"cost": cost, "needs": needs}
         used.update(needs)
     elements = {name: item for name, item in {**segments, **junctions}.items() if name in used}
-    return Planning(edges, elements)
+    return Planning(edges, elements, tuple(surveys))
 
 
 def trip_values(people: dict, placed: list, results: list[Reach], weights: dict) -> dict:
@@ -690,6 +716,12 @@ def element_record(name: str, element: dict) -> dict:
     junction = element["kind"] == "junction"
     counts = {} if junction else element["counts"]
     result = {
+        "confirmed": element.get("confirmed"),
+        "model_margin": element.get("model_margin"),
+        "source_confidence": element.get("source_confidence"),
+        "carriageway": element.get("carriageway"),
+        "road_reserve": element.get("road_reserve"),
+        "usable_verge": element.get("usable_verge"),
         "id": name,
         "street": element["street"],
         "length_m": 0.0 if junction else round(element["length_m"], 1),
@@ -1021,9 +1053,24 @@ def write_propose(
         graph, region, profile, placed, resident.people, weights, names, legs, corridors, stats
     )
     records = project_records(picked, planning)
+    surveys = {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "id": item["id"],
+                "geometry": item["geometry"],
+                "properties": {key: value for key, value in item.items() if key != "geometry"},
+            }
+            for item in planning.survey_options
+        ],
+    }
+    if stats is not None:
+        stats["survey_options"] = surveys
     if sheets is not None:
         sheets.extend(project_sheet_records(records, planning))
     out.mkdir(parents=True, exist_ok=True)
+    (out / "survey_options.geojson").write_text(json.dumps(surveys, indent=2) + "\n")
     (out / "projects.json").write_text(json.dumps(records, indent=2) + "\n")
     kinds = list(weights)
     with (out / "projects.csv").open("w", newline="") as handle:

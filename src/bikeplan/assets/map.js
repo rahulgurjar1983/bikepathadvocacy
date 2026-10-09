@@ -76,6 +76,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const placeLayers = { schools: placeLayer("school", "#f2c200"), stations: placeLayer("station", "#ffffff") };
 
+  const surveys = L.geoJSON(data.survey_options || { type: "FeatureCollection", features: [] }, {
+    style: function () {
+      return { className: "map-survey", color: "#a65b00", weight: 4, dashArray: "4 4" };
+    },
+    onEachFeature: function (feature, layer) {
+      layer.bindTooltip(describe(feature.properties.street + ": needs survey"), { sticky: true });
+    },
+  });
+  document.getElementById("layer-survey").addEventListener("change", function (event) {
+    if (event.target.checked) surveys.addTo(map);
+    else surveys.remove();
+  });
   const proposed = L.layerGroup();
   if (data.projects) {
     for (const feature of data.projects.features) {

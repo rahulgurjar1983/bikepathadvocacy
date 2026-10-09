@@ -359,6 +359,7 @@ def map_section(by_id: dict, proposed_ready: bool) -> str:
         '<label><input type="checkbox" id="layer-stations"> Stations (white dots)</label>'
         '<label><input type="checkbox" id="layer-schools"> Schools (yellow dots)</label>'
         f'<label><input type="checkbox" id="layer-proposed"{disabled}> Proposed changes</label>'
+        '<label><input type="checkbox" id="layer-survey"> Survey options</label>'
         f'<p id="proposed-note">{note}</p></fieldset>'
         '<div id="report-map-canvas" role="region" aria-label="Map of the streets"></div>'
         "</section></section>"

@@ -35,6 +35,7 @@ FILES = [
     "projects.json",
     "report.html",
     "summary.json",
+    "survey_options.geojson",
 ]
 SCORE_KEYS = {"gain", "score", "score_after", "before", "after"}
 KM_PARENTS = {"km_by_fix", "km_by_lts"}
@@ -104,6 +105,9 @@ def network_features(graph, profile, weights) -> tuple[list[dict], dict]:
         properties["name"] = data.get("name")
         properties["width_m"] = found["width_m"]
         properties["width_source"] = found["width_source"]
+        properties["carriageway"] = found["carriageway"]
+        properties["road_reserve"] = found["road_reserve"]
+        properties["usable_verge"] = found["usable_verge"]
         properties["fit"] = fit["status"] if fit else None
         properties["fix"] = fit["fix"] if fit else None
     return features, stress_summary(graph, scores)
@@ -179,6 +183,9 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
         "km_aaa": stress["km_aaa"],
         "candidates": stats["candidates"],
         "projects": len(records),
+        "shortlist_reason": ""
+        if records
+        else "No confirmed project gains enough at the set minimum gain.",
         "not_snapped": access["not_snapped"],
         "credits": credits_for(manifest),
         **project_summary(records, kinds, stats["corridor_candidates"]),
@@ -201,10 +208,10 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
     fixes = {item["properties"]["segment_id"]: item["properties"]["fix"] for item in features}
     rows = segment_rows(graph, profile, fixes)
     text = segments_text(rows)
-    map_text = (
-        json.dumps(map_data(graph, rows, Path(snapshot), payload["project_shapes"]), sort_keys=True)
-        + "\n"
-    )
+    surveys = canon(stats["survey_options"])
+    map_payload = map_data(graph, rows, Path(snapshot), payload["project_shapes"])
+    map_payload["survey_options"] = surveys
+    map_text = json.dumps(map_payload, sort_keys=True) + "\n"
     figures = [*figure_list(text, map_text), *change_figures(frontier, frontier_bytes.decode())]
     page_text = page(
         region,
@@ -215,6 +222,10 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
         change_section(frontier, {item["id"]: item for item in figures}),
         change_scripts(frontier),
     )
+    survey_note = "Survey options need site checks. They are kept out of the confirmed picks."
+    if summary["shortlist_reason"]:
+        survey_note = summary["shortlist_reason"] + " " + survey_note
+    page_text = page_text.replace('<p id="proposed-note">', f'<p id="proposed-note">{survey_note} ')
     outputs = {
         "access_homes.geojson": dump(
             collection(with_ids(homes, lambda properties: str(properties["node"])))
@@ -227,6 +238,7 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
         "projects.json": dump(records),
         "report.html": page_text.encode(),
         "summary.json": dump(summary),
+        "survey_options.geojson": dump(surveys),
     }
     files = {
         "figures.json": (json.dumps(figures, indent=2, sort_keys=True) + "\n").encode(),

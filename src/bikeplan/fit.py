@@ -11,10 +11,19 @@ from bikeplan.stress import (
     main_street,
     own_lts,
 )
-from bikeplan.width import PAINTED_LANE_M, SIDES, fuse
+from bikeplan.width import PAINTED_LANE_M, SIDES, fuse, usable_verge
 
 QUIET_CLASSES = ("living_street", "service", "residential", "unclassified")
 VERGE_CLEARANCE_M = 0.5
+SURVEY_CHECKS = (
+    "footpath space",
+    "trees",
+    "utilities",
+    "drainage",
+    "driveways",
+    "bus stops",
+    "narrow points",
+)
 EPSILON = 1e-9
 FIXES = (
     "quietway",
@@ -171,7 +180,10 @@ def verge_option(segment: dict, profile: Profile) -> dict:
         return blocked("verge_path", "road reserve unknown")
     if width is None:
         return blocked("verge_path", "width unknown")
-    verge = (reserve - width) / 2
+    observed = usable_verge(segment)
+    if observed["width_m"] is None:
+        return blocked("verge_path", "usable verge unknown; needs survey")
+    verge = min(observed["width_m"], max(0.0, (reserve - width) / 2))
     path = profile.widths_m.shared_path
     for desirable in (True, False):
         needs = width_for(path, desirable) + VERGE_CLEARANCE_M
@@ -282,6 +294,43 @@ def options(segment: dict, profile: Profile) -> list[dict]:
             item["robust"] = "robust"
         else:
             item["robust"] = "check on site"
+        verge = item["fix"] == "verge_path"
+        evidence = usable_verge(segment) if verge else segment.get("carriageway", {})
+        confidence = evidence.get("confidence", segment.get("width_confidence", "unknown"))
+        source = evidence.get("source", segment.get("width_source"))
+        checks = []
+        if verge:
+            checks = [
+                name for name in SURVEY_CHECKS if evidence["constraints"].get(name) != "clear"
+            ]
+            lower = evidence.get("low_m")
+            if lower is None or evidence.get("width_m") is None:
+                checks = list(SURVEY_CHECKS)
+            margin = None if lower is None or item["needs_m"] is None else lower - item["needs_m"]
+            robust = item["fits"] and margin is not None and margin >= -EPSILON
+            item["robust"] = "robust" if robust else "check on site" if item["fits"] else None
+            confirmed = robust and not checks and bool(source and evidence.get("date"))
+            item["usable_margin_low_m"] = margin
+        elif item["fix"] == "quietway":
+            confirmed = item["fits"] and segment.get("adt_source") != "default"
+            if not confirmed and item["fits"]:
+                checks = ["traffic count"]
+        else:
+            observed = evidence.get("observed", source not in (None, "lanes", "reserve"))
+            confirmed = item["fits"] and item["robust"] == "robust" and observed
+            if not confirmed and (item["fits"] or item["reason"] == "width unknown"):
+                checks = ["carriageway width", "narrow points"]
+        unknown_verge = verge and (
+            evidence["width_m"] is None or checks or (not confirmed and item["fits"])
+        )
+        survey = bool(checks) or unknown_verge
+        item |= {
+            "model_margin": item["robust"],
+            "source_confidence": confidence,
+            "confirmed": bool(confirmed),
+            "survey_checks": checks,
+            "fit_status": "confirmed" if confirmed else "needs_survey" if survey else "no_fit",
+        }
         item["disruption"] = disruption_counts(item["fix"], segment, profile)
     return found
 
@@ -379,6 +428,7 @@ def choose(segment: dict, profile: Profile, weights, edges: list[dict] | None = 
     edges = edges or [segment]
     before = cross_section(segment, profile)
     result = {"status": "aaa", "fix": None, "score": None, "reasons": [], "candidates": []}
+    result |= {"confirmed": True, "survey_options": []}
     result |= {"needs_speed_approval": False, "speed_approval_body": None}
     result |= {"before": before, "after": before}
     if already_aaa(edges, profile):
@@ -387,10 +437,14 @@ def choose(segment: dict, profile: Profile, weights, edges: list[dict] | None = 
         candidate(item, segment, edges, profile, weights) for item in options(segment, profile)
     ]
     result["candidates"] = found
+    result["survey_options"] = [item for item in found if item["fit_status"] == "needs_survey"]
     accepted = [item for item in found if item["accepted"]]
     if not accepted:
         reasons = [item["rejected"] or item["reason"] for item in found]
         return result | {"status": "no_fit", "reasons": reasons}
+    confirmed = [item for item in accepted if item["confirmed"]]
+    if confirmed:
+        accepted = confirmed
     separated = [item for item in accepted if item["fix"] != "quietway"]
     if profile.fit.prefer_separation.value and separated:
         accepted = separated
@@ -400,6 +454,7 @@ def choose(segment: dict, profile: Profile, weights, edges: list[dict] | None = 
         "needs_speed_approval": approval,
         "speed_approval_body": profile.fit.speed_approval_body.value if approval else None,
         "status": "fix",
+        "confirmed": best["confirmed"],
         "fix": best["fix"],
         "score": best["score"],
         "after": after_strips(segment, best, profile),
@@ -470,6 +525,9 @@ def segment_fit(segment: dict, profile: Profile, weights) -> dict | None:
         ]
     return {
         **result,
+        "carriageway": fused["carriageway"],
+        "road_reserve": fused["road_reserve"],
+        "usable_verge": fused["usable_verge"],
         "km": segment["inside_m"] / 1000,
         "robust": robust,
         "width_source": fused["width_source"],
