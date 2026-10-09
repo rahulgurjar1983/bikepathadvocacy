@@ -18,6 +18,40 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Spec issues
 
+### Q1.4 literal score inputs
+
+- Q1.4: Open input clash in the two literal score cases in
+  `tests/test_network_clip.py`. Each case writes scores inside its test
+  body with `lts` and `aaa`, but no `confirmed_aaa` field. The approved
+  fixture-only path requires every old body and assertion to stay intact.
+  These inputs have no score builder to enrich. Do not treat a model AAA
+  flag as confirmed just to pass an old check.
+
+Fresh main proof: `git fetch origin` then
+`git worktree add --detach /tmp/q14-score-input-proof origin/main`.
+The fresh main commit is `4d35ded7685d5c8c5d6c9cbe4370f02abd902af0`.
+Run from that worktree:
+
+```bash
+PYTHONPATH=/tmp/q14-score-input-proof/src:/tmp/q14-score-input-proof /home/oem/claude/bikepathadvocacy/.venv/bin/python -m pytest tests/test_network_clip.py -q -k 'segment_takes_the_higher or segment_is_aaa'
+```
+
+The exact cases pass on main. The same cases fail on this branch with
+`KeyError: 'confirmed_aaa'`. Logs: `artifacts/Q1.4/score-input-main.txt`
+and `artifacts/Q1.4/score-input-head.txt`. From this branch, rebuild with:
+
+```bash
+uv run pytest tests/test_network_clip.py -q -k 'segment_takes_the_higher or segment_is_aaa'
+```
+
+Input ask: enrich those literal scores on main, or move them into a
+fixture builder on main, with explicit confirmed status. Keep their old
+assertions. The row stays open. The test-only grid evidence is saved;
+`artifacts/Q1.4/legacy-tests.txt` records the affected checks that pass.
+CI also found missing corridor candidate counts after the confirmed
+filter; that code work remains. Do not claim a clean full suite or ship.
+
+
 ### Q1.4 prior input proof (resolved)
 
 The fixture-only rule in spec 15 now lets the loop add toy evidence in

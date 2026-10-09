@@ -961,6 +961,9 @@ Artifact: `artifacts/Q1.3/manifest.json`, `artifacts/Q1.3/width-sample.json`,
 
 ### Q1.4
 
+Saved work. The row stays open due to the literal score input clash in
+`AGENT_NOTES.md`. CI has not passed; no full-suite proof is claimed.
+
 ```bash
 uv run pytest tests/test_safety_evidence.py tests/test_test_grid.py -q
 /usr/bin/time -v uv run bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out data/output/Q1.4/full
@@ -980,7 +983,9 @@ survey. Crossing audits conservatively filter whole edges when a
 usable turn lacks proof. This host run exceeds the time and memory goals;
 it is safety proof, not proof of the full-run limits.
 
-Artifact: `artifacts/Q1.4/integration-tests.txt`,
+Artifact: `artifacts/Q1.4/score-input-main.txt`,
+`artifacts/Q1.4/score-input-head.txt`, `artifacts/Q1.4/legacy-tests.txt`,
+`artifacts/Q1.4/integration-tests.txt`,
 `artifacts/Q1.4/access-comparison.json`, `artifacts/Q1.4/run.log` and
 `artifacts/Q1.4/time-full.txt` and `artifacts/Q1.4/manifest.json`.
 The manifest links the full output archive and its hash.
