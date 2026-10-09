@@ -1,6 +1,6 @@
 {
   "command": "/usr/bin/time -v -o /tmp/q13-real-time.txt uv run bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.3-full",
-  "commit": "af9f6cc249241e16358f21b773e0c38829a8253c",
+  "commit": "14791aec4f785984a1fbd37aaf26ea8b5fd9e153",
   "confirmed_projects": 1,
   "inputs_sha256": {
     "data/cache/au-nsw-bayside/2026-10-01/manifest.json": "2eaf0b00832565765c42e07b48ad7c6117436194487f45931e348f6772964bba",
@@ -14,15 +14,15 @@
     },
     {
       "path": "frontier.json",
-      "sha256": "4622adc5b46f60d28a90aa5c11d776a8dca369b404d4e69ea93b78cef638f3ba"
+      "sha256": "94e1b3136d7bbbd7595179f32cea300a61e0ed3eef812657a78c233ffedab12b"
     },
     {
       "path": "network.geojson",
-      "sha256": "db5b5d2447b4bc4bd6dff0376ec72b2887f2697cf373e723341b297d50935b1e"
+      "sha256": "ba342a505818555809ad75cecd1de1498784613b1aea4cfaa19446f07f16fa42"
     },
     {
       "path": "outputs.sha256",
-      "sha256": "82e1f91e0ca62245fb0a0a58959494568501a8f09b7778007833a7ffe61b0e87"
+      "sha256": "25d92edfe044df2caecbdb07018fba387d901bc945d04b8cd8b3f90d9afd0f24"
     },
     {
       "path": "places.geojson",
@@ -34,26 +34,22 @@
     },
     {
       "path": "projects.geojson",
-      "sha256": "998df84ee009d37bc67ba6da6ef26776a72555cb93037845d40dde18b8d99a76"
+      "sha256": "4fc97d28bbd91d39d0b60b3d5eab912b4e4c49b89baa7b2f69a6cdeb227a08ec"
     },
     {
       "path": "projects.json",
-      "sha256": "6b52aa6aad46511040603d7948ee664e7ec765713a57f8d96eb17cbb83a61fb4"
+      "sha256": "ff4b2a80b661de8c383ae6856e9db5bb5c1de8ef71bbb2d26ae5c491a05c412a"
     },
     {
       "path": "report.html",
-      "sha256": "8d16ea351313bc8e5ff76b3a531d6f593db6f8d669dbf4170657866520d7a3dd"
+      "sha256": "45093d46c531739dce0ffc369111d21aa5014db12db8b85dc0b86d094edbf7b3"
     },
     {
       "path": "summary.json",
       "sha256": "4201d6231a40d06946028da9d283b06afff9e0e89d389bb8ccf4ca20e8ba9287"
-    },
-    {
-      "path": "survey_options.geojson",
-      "sha256": "b8cb564f69f8989c7d159a23fb08cbc69a989bfbb29e2179cfc1aba72b69531d"
     }
   ],
-  "report_bytes": 7652727,
+  "report_bytes": 7653016,
   "row": "Q1.3",
   "shortlist_reason": "",
   "survey_segments": 33485

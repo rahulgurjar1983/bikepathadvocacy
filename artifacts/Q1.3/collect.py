@@ -7,13 +7,18 @@ out = Path("/tmp/bikeplan-Q1.3-full")
 proof = Path("artifacts/Q1.3")
 summary = json.loads((out / "summary.json").read_text())
 projects = json.loads((out / "projects.json").read_text())
-surveys = json.loads((out / "survey_options.geojson").read_text())
 network = json.loads((out / "network.geojson").read_text())
+surveys = network["survey_options"]
+evidence = {
+    feature["properties"]["id"]: feature["properties"]
+    for feature in json.loads((out / "projects.geojson").read_text())["features"]
+}
 assert summary["projects"] == len(projects)
 assert surveys["features"]
 assert all(feature["properties"]["fit_status"] == "needs_survey" for feature in surveys["features"])
 for project in projects:
-    for element in project["elements"]:
+    for record in project["elements"]:
+        element = evidence[record["id"]]
         if element["carriageway"] is not None:
             assert element["confirmed"]
             assert element["carriageway"]["observed"] or element["fix"] == "quietway"

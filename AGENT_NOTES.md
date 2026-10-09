@@ -171,3 +171,13 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 - Q1.3: Keep full source dates in width records. The public page uses
   calendar dates for that evidence, so it passes the rule against run
   time stamps. Keep the leak check strict; do not drop source dates.
+
+- Q1.3: Keep the core file list and project record fields stable. Width
+  evidence lives on project geometry and the survey layer lives inside
+  the hashed network file. The report map has a separate survey note.
+- Q1.3: A fit summary shows model choices. Default planning uses only
+  confirmed choices. Route model options keep their disruption estimates
+  but list survey needs in the data and page; they are not default picks.
+- Q1.3: Save output hashes as records with `path` and `sha256` fields.
+  A file name that starts with `access` can make the secret scan flag a
+  plain hash. Keep the scanner strict and fix the proof writer.

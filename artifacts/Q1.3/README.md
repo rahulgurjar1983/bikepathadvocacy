@@ -9,8 +9,8 @@ uv run python artifacts/Q1.3/collect.py
 ```
 
 Expect: default picks have known usable space. Unknown verge space
-stays in a survey layer with site checks. The layer links to the
-street width records. An empty shortlist states why it is empty.
+stays in a survey layer with site checks. The layer lives in the hashed network file and links to street width
+records. Selected project geometry keeps its own width evidence. An empty shortlist states why it is empty.
 
 The collector saves `manifest.json`, `width-sample.json`, `summary.json`
 and `time-full.txt`. The manifest holds input and output hashes and
