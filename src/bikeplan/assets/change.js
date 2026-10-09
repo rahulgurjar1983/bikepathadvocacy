@@ -56,6 +56,20 @@ window.addEventListener("load", function () {
     const chosen = scenario();
     const pick = chosen.picks[step];
     draw(chosen, step);
+    const opening = document.getElementById("opening");
+    opening.dataset.package = current + ":" + step;
+    const rankLink = document.createElement("a");
+    rankLink.href = "#F13";
+    rankLink.textContent = String(step);
+    document.getElementById("package-status").replaceChildren(
+      document.createTextNode(chosen.label + " (" + current + ") proposal, rank "), rankLink
+    );
+    document.getElementById("proposal-state").textContent = step === 0
+      ? "No new works are selected."
+      : "I propose the modelled works in this selection.";
+    for (const cell of document.querySelectorAll("[data-opening]")) {
+      cell.textContent = value(pick, cell.dataset.opening).toFixed(places(cell.dataset.opening));
+    }
     for (const cell of document.querySelectorAll("#change-totals [data-total]")) {
       cell.textContent = value(pick, cell.dataset.total).toFixed(places(cell.dataset.total));
     }

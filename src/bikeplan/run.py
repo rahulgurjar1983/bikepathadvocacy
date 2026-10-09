@@ -7,13 +7,21 @@ from importlib.metadata import version
 from pathlib import Path
 
 from bikeplan.access import write_access
-from bikeplan.change import change_figures, change_scripts, change_section, frontier_data
+from bikeplan.change import (
+    change_figures,
+    change_scripts,
+    change_section,
+    frontier_data,
+    proposal_opening,
+)
 from bikeplan.config import ConfigError, config_hash
 from bikeplan.fit import segment_fit
 from bikeplan.network import bike_segments, build
 from bikeplan.page import calendar_dates, credits_for, details, page_scripts
 from bikeplan.propose import KINDS, csv_fields, csv_row, write_propose
 from bikeplan.report import (
+    KEEP,
+    chart,
     check_leaks,
     figure_list,
     map_data,
@@ -225,8 +233,15 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
         json.dumps(calendar_dates(map_payload), sort_keys=True) + "\n",
         details(payload["summary"], canon(sheets), profile, payload),
         page_scripts(payload),
-        change_section(frontier, {item["id"]: item for item in figures}),
+        change_section(
+            frontier,
+            {item["id"]: item for item in figures},
+            chart([item for item in figures if item["id"] in KEEP])
+            .replace('<section id="chart">', '<div id="chart">')
+            .replace("</section>", "</div>"),
+        ),
         change_scripts(calendar_dates(frontier)),
+        proposal_opening(frontier),
     )
     survey_note = "Survey options need site checks. They are kept out of the confirmed picks."
     if summary["shortlist_reason"]:
