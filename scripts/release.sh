@@ -39,14 +39,19 @@ fi
 last=""
 if [ "$changed" = 0 ]; then
   parent="$(git rev-parse HEAD^)"
+  prior_tags="$(gh release list --limit 100 --json tagName --jq '.[].tagName | select(startswith("v"))')"
   while read -r prior_tag; do
     [ -n "$prior_tag" ] || continue
+    index_asset="$(gh release view "$prior_tag" --json assets --jq '.assets[] | select(.name == "index.html") | .name')"
+    if [ -z "$index_asset" ]; then
+      continue
+    fi
     gh release download "$prior_tag" --pattern index.html --dir "$work/index-$prior_tag"
     if grep -q "$parent" "$work/index-$prior_tag/index.html"; then
       last="$prior_tag"
       break
     fi
-  done < <(gh release list --limit 100 --json tagName --jq '.[].tagName | select(startswith("v"))')
+  done <<<"$prior_tags"
   if [ -n "$last" ]; then
     gh release download "$last" --dir "$work/last"
   fi
