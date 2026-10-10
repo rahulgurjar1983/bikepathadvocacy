@@ -24,6 +24,8 @@ def private_review(tmp_path, monkeypatch):
     reply.write_text("{}\n")
     metadata = folder / "review.yaml"
     metadata.write_text("public: false\n")
+    (tmp_path / "profiles").symlink_to(ROOT / "profiles", target_is_directory=True)
+    (tmp_path / "tests").symlink_to(ROOT / "tests", target_is_directory=True)
     monkeypatch.chdir(tmp_path)
     args = [
         "review",
