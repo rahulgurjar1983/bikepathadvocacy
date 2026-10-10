@@ -21,7 +21,7 @@ Tags: [reasoning] needs deep checks, with no larger model by default; [routine] 
 The approved order is proposal and trade-offs, network map, options, neighbourhood impacts, street plans, delivery, then evidence. Read spec 16. The example 40 schools, 500 parking spaces and 20 roads is not a target or a real result. Missing field data must stay visible; it does not block honest report features. PR 111 shipped width rules only. A concept, confirmed shortlist and focused survey plan are distinct outputs. Do not turn all missing fields into the next council ask.
 
 - [x] **C1.1** [reasoning] Prove complete directed trips to known entrances; show joined routes, separate groups, gaps and strict versus first-leg claims (FR-16.3)
-- [x] **C1.2** [reasoning] Unique school-site coverage before, after and newly served; named entrances, source coverage and per-site resident reach, with no invented pupil count (FR-16.4)
+- [ ] **C1.2** [reasoning] Unique school-site coverage before, after and newly served; named entrances, source coverage and per-site resident reach, with no invented pupil count (FR-16.4)
 - [ ] **C1.3** [reasoning] Unique residents gaining useful complete trips; keep scope, first-leg assumptions, population proxies and missing groups explicit (FR-16.5, FR-15.6)
 - [ ] **C1.4** [reasoning] Actual route types, unique roads and works sections, named endpoints and precise before/after lane, parking and access changes (FR-16.6)
 - [ ] **C1.5** [reasoning] Parking before, removed, added, after and net by street; expose local losses, special uses and incomplete inventory (FR-16.7)

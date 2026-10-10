@@ -1,0 +1,80 @@
+test	Run scripts/test.sh	2026-10-10T00:25:53.6490265Z gates/providerwait.py                          79     25    68%   26-33, 46-47, 62-65, 69-71, 75-76, 92-97, 101
+test	Run scripts/test.sh	2026-10-10T00:25:53.6490891Z gates/readability.py                          151      7    95%   11-12, 70, 191, 206-207, 224
+test	Run scripts/test.sh	2026-10-10T00:25:53.6491717Z gates/redgreen.py                             297     35    88%   98-99, 113-115, 124, 183, 189, 201, 237, 253, 281, 287, 289, 292, 297, 300, 306, 326-336, 340, 355-359, 370-371, 388, 409, 414, 447-448, 452
+test	Run scripts/test.sh	2026-10-10T00:25:53.6492529Z gates/retention.py                             56      5    91%   38, 41, 57-58, 73
+test	Run scripts/test.sh	2026-10-10T00:25:53.6498158Z gates/speccov.py                               72      3    96%   32, 75, 90
+test	Run scripts/test.sh	2026-10-10T00:25:53.6498963Z gates/srcgrep.py                               57      5    91%   13, 47-49, 72
+test	Run scripts/test.sh	2026-10-10T00:25:53.6499471Z gates/verifydoc.py                             74      2    97%   59, 88
+test	Run scripts/test.sh	2026-10-10T00:25:53.6500143Z src/bikeplan/__init__.py                      326     34    90%   151-164, 187-189, 202-204, 219-221, 342-344, 358-360, 367-369, 392, 411
+test	Run scripts/test.sh	2026-10-10T00:25:53.6500831Z src/bikeplan/access.py                        293      2    99%   170, 294
+test	Run scripts/test.sh	2026-10-10T00:25:53.6501376Z src/bikeplan/adapters/copernicus_glo30.py      40      1    98%   53
+test	Run scripts/test.sh	2026-10-10T00:25:53.6501914Z src/bikeplan/adapters/nsw_cadastre.py          49      1    98%   68
+test	Run scripts/test.sh	2026-10-10T00:25:53.6503077Z src/bikeplan/checks.py                        183      3    98%   119, 121, 213
+test	Run scripts/test.sh	2026-10-10T00:25:53.6503951Z src/bikeplan/config.py                        305      7    98%   236, 256, 264, 322, 380, 404, 434
+test	Run scripts/test.sh	2026-10-10T00:25:53.6504847Z src/bikeplan/fit.py                           335      5    99%   159, 161, 182, 350, 530
+test	Run scripts/test.sh	2026-10-10T00:25:53.6505552Z src/bikeplan/network.py                       279      1    99%   133
+test	Run scripts/test.sh	2026-10-10T00:25:53.6506074Z src/bikeplan/page.py                          157      6    96%   141-144, 363-364
+test	Run scripts/test.sh	2026-10-10T00:25:53.6506675Z src/bikeplan/propose.py                       627     15    98%   165-170, 236, 257, 342, 400, 410, 585, 640-641, 809
+test	Run scripts/test.sh	2026-10-10T00:25:53.6507310Z src/bikeplan/report.py                        156      5    97%   128, 152, 158, 207, 474
+test	Run scripts/test.sh	2026-10-10T00:25:53.6507914Z src/bikeplan/review.py                        268      8    97%   103, 113, 341, 405, 515, 523, 548-549
+test	Run scripts/test.sh	2026-10-10T00:25:53.6508751Z src/bikeplan/review_report.py                 154      1    99%   166
+test	Run scripts/test.sh	2026-10-10T00:25:53.6509304Z src/bikeplan/route.py                         158      9    94%   87-89, 110, 121, 198-201
+test	Run scripts/test.sh	2026-10-10T00:25:53.6509915Z src/bikeplan/schools.py                       122      9    93%   69, 76, 78, 98, 133-134, 244-251, 318
+test	Run scripts/test.sh	2026-10-10T00:25:53.6510636Z src/bikeplan/snapshot.py                      386     32    92%   185, 226-231, 237, 272, 277, 361, 364, 375-381, 383, 401, 407, 442, 445, 448, 529, 569-571, 597, 653, 657, 671
+test	Run scripts/test.sh	2026-10-10T00:25:53.6511276Z src/bikeplan/stress.py                        285      4    99%   111, 189, 258, 366
+test	Run scripts/test.sh	2026-10-10T00:25:53.6511726Z src/bikeplan/trips.py                         152      1    99%   134
+test	Run scripts/test.sh	2026-10-10T00:25:53.6512164Z src/bikeplan/verify.py                         77      2    97%   20, 118
+test	Run scripts/test.sh	2026-10-10T00:25:53.6512599Z src/bikeplan/width.py                         154      2    99%   67, 95
+test	Run scripts/test.sh	2026-10-10T00:25:53.6513014Z -------------------------------------------------------------------------
+test	Run scripts/test.sh	2026-10-10T00:25:53.6513425Z TOTAL                                        6072    349    94%
+test	Run scripts/test.sh	2026-10-10T00:25:53.6513639Z 
+test	Run scripts/test.sh	2026-10-10T00:25:53.6513775Z 6 files skipped due to complete coverage.
+test	Run scripts/test.sh	2026-10-10T00:25:53.9524901Z Required test coverage of 80% reached. Total coverage: 94.25%
+test	Run scripts/test.sh	2026-10-10T00:25:53.9525421Z =========================== short test summary info ============================
+test	Run scripts/test.sh	2026-10-10T00:25:53.9526197Z FAILED tests/test_report.py::test_fr13_1_figures_are_sorted_with_every_field - AssertionError: assert ['F1', 'F2', ...5', 'F6', ...] == ['F1', 'F2', ...5', 'F6', ...]
+test	Run scripts/test.sh	2026-10-10T00:25:53.9527459Z   
+test	Run scripts/test.sh	2026-10-10T00:25:53.9527709Z   Left contains one more item: 'F14'
+test	Run scripts/test.sh	2026-10-10T00:25:53.9527993Z   
+test	Run scripts/test.sh	2026-10-10T00:25:53.9528198Z   Full diff:
+test	Run scripts/test.sh	2026-10-10T00:25:53.9528654Z     [
+test	Run scripts/test.sh	2026-10-10T00:25:53.9528880Z         'F1',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9529096Z         'F2',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9529304Z         'F3',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9529514Z         'F4',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9529725Z         'F5',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9529965Z         'F6',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9530173Z         'F7',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9530380Z         'F8',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9530584Z         'F9',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9530804Z         'F10',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9531013Z         'F11',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9531220Z         'F12',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9531423Z         'F13',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9531634Z   +     'F14',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9531862Z     ]
+test	Run scripts/test.sh	2026-10-10T00:25:53.9533927Z FAILED tests/test_report.py::test_fr13_1_each_recipe_prints_its_value_from_the_release_files - ValueError: could not convert string to float: '{"after": [], "before": [], "new": [], "total_known_sites": 1, "unknown_sites": ["node/3000"], "unsnapped_sites": [], "sites": [{"destination_ids": ["node/3000"], "entrances": [], "groups": {"after": [], "before": []}, "id": "node/3000", "institution_id": null, "model_nodes": [1015], "name": "Grid School", "origins": {"after": [], "before": [], "new": []}, "reason": "No complete confirmed trip from a positive-population origin.", "resident_reach": {"after": 0, "before": 0, "new": 0}, "scope": "council", "source": "OpenStreetMap node/3000", "status": "unproved", "type": "school"}]}\n'
+test	Run scripts/test.sh	2026-10-10T00:25:53.9536591Z FAILED tests/test_report.py::test_fr13_2_the_figure_links_hold_the_numbers_and_resolve_to_one_entry - AssertionError: assert ['F1', 'F10',...', 'F14', ...] == ['F1', 'F10',...3', 'F2', ...]
+test	Run scripts/test.sh	2026-10-10T00:25:53.9537273Z   
+test	Run scripts/test.sh	2026-10-10T00:25:53.9537490Z   At index 5 diff: 'F14' != 'F2'
+test	Run scripts/test.sh	2026-10-10T00:25:53.9537806Z   Left contains one more item: 'F9'
+test	Run scripts/test.sh	2026-10-10T00:25:53.9538084Z   
+test	Run scripts/test.sh	2026-10-10T00:25:53.9538280Z   Full diff:
+test	Run scripts/test.sh	2026-10-10T00:25:53.9538592Z     [
+test	Run scripts/test.sh	2026-10-10T00:25:53.9538808Z         'F1',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9539019Z         'F10',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9539226Z         'F11',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9539432Z         'F12',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9539639Z         'F13',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9539869Z   +     'F14',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9540078Z         'F2',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9540290Z         'F3',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9540509Z         'F4',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9540740Z         'F5',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9540951Z         'F6',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9541156Z         'F7',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9541366Z         'F8',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9541573Z         'F9',
+test	Run scripts/test.sh	2026-10-10T00:25:53.9541791Z     ]
+test	Run scripts/test.sh	2026-10-10T00:25:53.9543842Z FAILED tests/test_report.py::test_fr13_3_the_recipe_shown_in_the_report_prints_the_value_in_a_clean_folder - ValueError: could not convert string to float: '{"after": [], "before": [], "new": [], "total_known_sites": 1, "unknown_sites": ["node/3000"], "unsnapped_sites": [], "sites": [{"destination_ids": ["node/3000"], "entrances": [], "groups": {"after": [], "before": []}, "id": "node/3000", "institution_id": null, "model_nodes": [1015], "name": "Grid School", "origins": {"after": [], "before": [], "new": []}, "reason": "No complete confirmed trip from a positive-population origin.", "resident_reach": {"after": 0, "before": 0, "new": 0}, "scope": "council", "source": "OpenStreetMap node/3000", "status": "unproved", "type": "school"}]}\n'
+test	Run scripts/test.sh	2026-10-10T00:25:53.9546046Z ================== 4 failed, 1092 passed in 186.80s (0:03:06) ==================
+test	Run scripts/test.sh	2026-10-10T00:25:54.6948800Z ##[error]Process completed with exit code 1.

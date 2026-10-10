@@ -18,6 +18,36 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Spec issues
 
+### C1.2: closed figure list
+
+Fresh main still pins both the report figure file and its links to
+exactly F1 through F13. A new school measure needs its own ID; spec 16
+forbids using an old ID for a new measure. The tests reject F14 even
+when all old IDs and fields stay intact. I have not changed those tests.
+
+Proof: the fresh main commit is in
+`artifacts/C1.2/input-audit/base-commit.txt`. In a detached worktree,
+the two pinned-list tests pass on that commit. With this branch's source
+patch, both fail on the added school figure. The tests and inputs are
+unchanged. Commands and logs are in `artifacts/C1.2/input-audit/`.
+
+CI also found that the new school recipe emits a full JSON record,
+while the old figure recipe rule expects one number. That recipe
+contract needs a fix too; the saved school sets and counts are valid,
+but this branch is not a green release. Do not claim the row is done.
+
+Input ask: allow the figure list and link tests to keep all old figure
+IDs and fields while admitting new unique IDs for new measures. Keep
+the numeric recipe rule. State a test repair path for the new school
+recipe check, with its full site proof kept apart from the scalar count.
+Keep the existing measures and recipe checks intact.
+
+C1.2 stays open. Its code and fresh real proof are saved on
+`loop/C1.2-school-sites`. PR 116 failed CI and is closed until this
+contract is fixed. The prior real proof checks mapped sites and unknown
+gates; it does not prove pupil reach or a complete school source list.
+
+
 - `gates/tests/test_loop.py::test_fr0_13_usage_limit_turn_is_not_counted` times out after 60 seconds on `origin/main` too. Proof: `git checkout origin/main && uv run pytest gates/tests/test_loop.py -q -k usage_limit`. The pre-push hook still let the push through.
 - P10.1: resolved by the input proof-only gate path; run fresh proof before completion. Prior issue: fresh `origin/main` still has the base commit in `artifacts/P10.1/check.txt`. The grid tests pass there; see the command and result in `artifacts/P10.1/main-audit.txt`. The prior Bayside tests also passed on that base, so the red-green rule bars them. The old temp run files are now gone; the committed hashes are a past record, not a fresh byte check. Keep the row open and held until the operator fixes the rule and gate. Copy run proof out of pytest temp paths before a later test run clears them.
 

@@ -1006,6 +1006,8 @@ and `artifacts/C1.1/time-full.txt`.
 
 ### C1.2
 
+Status: open. The fresh school proof passes, but CI rejects the new figure ID and its recipe form. The input proof and repair ask are under Spec issues in AGENT_NOTES.md. This is saved work, not a green release.
+
 ```bash
 uv run --frozen pytest tests/test_school_sites.py -q
 /usr/bin/time -v -o /tmp/c12-real-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-C1.2-proof
