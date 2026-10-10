@@ -19,6 +19,7 @@ from bikeplan.access import (
     Reach,
     edge_table,
     last_legs,
+    people_gains,
     reach,
     safe_reach,
     scene,
@@ -651,6 +652,7 @@ def greedy_picks(
 
     now = aaa_after(set())
     results = reach(graph, sources, reach_m, detour_max, now, table, legs)
+    baseline_results = results
     counts = reach_counts(placed, results)
     score = exact_score(people, placed, results, weights)
     current = fixed_planning(graph, planning, fixed, proposals.metres_per_point)
@@ -743,6 +745,10 @@ def greedy_picks(
                 "cost": costs[elements],
                 "score_after": score,
                 "place": labels[main],
+                "access_gains": people_gains(people, placed, before, results, list(weights)),
+                "package_access_gains": people_gains(
+                    people, placed, baseline_results, results, list(weights)
+                ),
                 "people": {kind: safe_after[kind] - safe_before[kind] for kind in weights},
             }
         )
@@ -803,7 +809,14 @@ def project_records(picked: list[dict], planning: Planning) -> list[dict]:
                 "kind": pick["kind"],
                 "name": f"{pick['place']}: {', '.join(streets)}",
                 "elements": elements,
-                "totals": project_totals(elements),
+                "totals": {
+                    **project_totals(elements),
+                    **{
+                        key: pick[key]
+                        for key in ("access_gains", "package_access_gains")
+                        if key in pick
+                    },
+                },
                 "gain": pick["gain"],
                 "score_after": pick["score_after"],
                 "people": pick["people"],
@@ -869,6 +882,9 @@ def csv_fields(kinds: list) -> list[str]:
         "refuges",
         *(f"km_{fix}" for fix in PROJECT_FIXES),
         *(f"people_{kind}" for kind in kinds),
+        "unique_people",
+        "gains_by_type",
+        *(f"unique_people_{kind}" for kind in kinds),
     ]
 
 
@@ -891,6 +907,11 @@ def csv_row(record: dict, kinds: list) -> dict:
         row[f"km_{fix}"] = totals["km_by_fix"].get(fix, 0.0)
     for kind in kinds:
         row[f"people_{kind}"] = record["people"][kind]
+    measures = totals.get("access_gains", {})
+    row["unique_people"] = measures.get("unique_people")
+    row["gains_by_type"] = measures.get("gains_by_type")
+    for kind in kinds:
+        row[f"unique_people_{kind}"] = measures.get("unique_people_by_type", {}).get(kind)
     return row
 
 
@@ -1049,6 +1070,7 @@ def curve_picks(picked: list[dict], planning: Planning) -> list[dict]:
                 "km_by_fix": {fix: round(by_fix[fix], 6) for fix in PROJECT_FIXES if fix in by_fix},
                 "score": record["score_after"],
                 "people": dict(people),
+                **totals.get("package_access_gains", {}),
             }
         )
     return found

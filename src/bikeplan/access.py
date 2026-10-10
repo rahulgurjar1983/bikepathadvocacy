@@ -406,6 +406,23 @@ def reach(
     return safe_reach(table, withins, sources, reach_m, detour_max, aaa, legs)
 
 
+def people_gains(
+    people: dict, placed: list, before: list[Reach], after: list[Reach], kinds: list
+) -> dict:
+    nodes = {kind: set() for kind in kinds}
+    for (kind, _), was, now in zip(placed, before, after, strict=True):
+        nodes[kind].update(now.safe - was.safe)
+    counts = {
+        kind: sum(people.get(node, 0) for node in sorted(found)) for kind, found in nodes.items()
+    }
+    union = set().union(*nodes.values())
+    return {
+        "unique_people": sum(people.get(node, 0) for node in sorted(union)),
+        "unique_people_by_type": counts,
+        "gains_by_type": sum(counts.values()),
+    }
+
+
 def score_access(people: dict, placed: list, results: list[Reach], weights: dict) -> dict:
     counts: dict = defaultdict(lambda: defaultdict(lambda: [0, 0]))
     for (kind, _), found in zip(placed, results, strict=True):

@@ -153,6 +153,15 @@ def project_summary(records: list[dict], kinds: list, made: int = 0) -> dict:
         "projects_by_kind": {
             kind: sum(record["kind"] == kind for record in records) for kind in KINDS
         },
+        "access_gains": (
+            records[-1]["totals"].get("package_access_gains")
+            if records
+            else {
+                "unique_people": 0,
+                "unique_people_by_type": dict.fromkeys(kinds, 0),
+                "gains_by_type": 0,
+            }
+        ),
         "safe_people_gain": {
             kind: sum(record["people"][kind] for record in records) for kind in kinds
         },
@@ -242,6 +251,7 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
         *change_figures(frontier, frontier_bytes.decode()),
         *works_figures(frontier, frontier_bytes.decode()),
     ]
+    figures.sort(key=lambda item: int(item["id"][1:]))
     works_page = works_section(frontier)
     works_body, _, works_data = works_page.partition("<script")
     page_text = page(

@@ -18,6 +18,22 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Spec issues
 
+### Q1.5 prior figure block (resolved)
+
+The old report test fixes the figure list at F1 through F13. The new
+people and type figures fail that check. The loop rule bars a weaker
+old test, and no row rule grants a change to this fixed list.
+
+Proof: run `bash artifacts/Q1.5/reproduce.sh`. On the fresh main commit
+in `artifacts/Q1.5/base-commit.txt`, the old test passes. Apply the saved
+source patch, with no test edits, and it fails at the exact-list check.
+See `artifacts/Q1.5/base-tests.txt` and
+`artifacts/Q1.5/changed-output-tests.txt`.
+
+The input fix needs to allow more figure IDs while keeping all old IDs,
+fields, hashes and recipe checks. Q1.5 stays open. Its source and new
+tests are saved on `loop/Q1.5-people`. No PR was sent. The full run was
+stopped once this clash was found; it is not proof of a real result.
 ### Q1.4 literal score inputs (resolved)
 
 Spec 15 now permits the old score as a labelled model measure. The old
@@ -467,6 +483,12 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   A file name that starts with `access` can make the secret scan flag a
   plain hash. Keep the scanner strict and fix the proof writer.
 
+- Q1.5: Use Python set unions for home-node gains. The standard tool is
+  [set.union](https://docs.python.org/3/library/stdtypes.html#set.union).
+  Sum each node share once, before rounding. Keep a gain to a new place
+  distinct from a change in the count of people with any safe place of
+  that type. Read the fixed figure-list clash under Spec issues before
+  resuming this row.
 - Q1.4: The full network export includes movement records on street edges.
   It is large. The full Bayside timing in `artifacts/Q1.4/time-full.txt`
   exceeds the memory goal on this host. Use the saved
@@ -606,3 +628,27 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   Read `km_confirmed_aaa` for confirmed distance, never the old model total.
   The new cases and unchanged old score cases pass in
   `artifacts/Q1.4/resume-tests.txt`.
+
+### Q1.5 resumed
+
+- The prior figure block is resolved by FR-0.35. Keep the works figure
+  and give the people measures their own IDs. Sort all figures by ID
+  before writing the file. The new exact-list tests retain every old
+  figure and every field, recipe and link check.
+- Package gains use the baseline node union. A project's own gain uses
+  the prior pick's reach. Do not add project totals or type totals to
+  claim unique people. A node may gain a new school even when it could
+  already reach another school.
+- The offline slider reads the unique type union, not the old net change
+  in safe reach. Keep the legacy fields for their old claims and use the
+  same new measure names in summaries, sheets, exports and reviews.
+- `uv run --frozen python artifacts/Q1.5/collect.py` uses the shipped
+  test-grid region for fresh full-mode worked-case proof. It rebuilds
+  unions without the new count helper. The saved scope excludes real
+  region and field claims. Use gpxpy for the made-up route; test helper
+  imports depend on pytest's import mode and do not work in a plain run.
+
+- Q1.5 sheet repair: the old sheet test checks each saved total in full.
+  Keep its body intact. Fold the exact project and package count records
+  below the plain tables, so readers can check or reuse node-share counts
+  that the display rounds. Sort record keys to match the saved JSON.

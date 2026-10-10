@@ -43,10 +43,10 @@ STEP_FIGURES = [
     ),
     (
         "F10",
-        "People who gain safe reach at the recommended stop",
+        "Unique people gaining a safe destination at the recommended stop",
         "people",
-        "round(sum(p['people'].values()),3)",
-        lambda p: round(sum(p["people"].values()), 3),
+        "p['unique_people']",
+        lambda p: p["unique_people"],
     ),
     (
         "F11",
@@ -59,7 +59,10 @@ STEP_FIGURES = [
 METHOD = (
     "I take the projects in the order I picked them, and add up what each one costs and gains. "
     "The shown step is the recommended stop of the {label} scenario. The recipe reads that step "
-    "from frontier.json; change the rank in it to check any other step."
+    "from frontier.json; change the rank in it to check any other step. Unique people count the "
+    "union of home nodes gaining a safe destination. Unique people by type use a union for each "
+    "type. Gains counted by type sum those type counts and can count a person again. People are "
+    "population estimates, not households; each node holds a share of its population unit."
 )
 ROWS = [
     ("Access score", "score", "F5"),
@@ -67,6 +70,8 @@ ROWS = [
     ("Parking spaces taken", "parking_spaces", "F7"),
     ("Traffic-lane km taken", "lane_km", "F8"),
     ("Speed-change km", "speed_km", "F9"),
+    ("Unique people gaining a safe destination", "unique_people", "F10"),
+    ("Gains counted by type", "gains_by_type", "F15"),
 ]
 STROKES = ("#1b5e8a", "#2e7d32", "#8a5a00", "#7b2cbf", "#a33")
 DASHES = ("", "8 4", "2 4", "10 4 2 4", "6 2")
@@ -96,6 +101,9 @@ def frontier_data(raw: dict, before: float, kinds: list, shapes: dict) -> dict:
         "km_by_fix": {},
         "score": before,
         "people": dict.fromkeys(kinds, 0),
+        "unique_people": 0,
+        "unique_people_by_type": dict.fromkeys(kinds, 0),
+        "gains_by_type": 0,
     }
     scenarios = [{**item, "picks": [baseline, *item["picks"]]} for item in raw["scenarios"]]
     default = next((item for item in scenarios if item["id"] == "shipped"), scenarios[0])
@@ -135,6 +143,28 @@ def change_figures(frontier: dict, text: str) -> list[dict]:
         }
         for figure_id, label, unit, expr, value in STEP_FIGURES
     ]
+    measures = [("F15", "Gains counted by type", "p['gains_by_type']", pick["gains_by_type"])]
+    measures += [
+        (
+            f"F{16 + index}",
+            f"Unique people by type: {kind.replace('_', ' ')}",
+            f"p['unique_people_by_type'][{kind!r}]",
+            count,
+        )
+        for index, (kind, count) in enumerate(sorted(pick["unique_people_by_type"].items()))
+    ]
+    figures += [
+        {
+            **base,
+            "id": figure_id,
+            "label": label,
+            "value": value,
+            "unit": "people",
+            "method": method,
+            "recipe": PRELUDE.format(scenario=chosen["id"], expr=expr),
+        }
+        for figure_id, label, expr, value in measures
+    ]
     steps = sum(len(item["picks"]) for item in frontier["scenarios"])
     figures.append(
         {
@@ -170,7 +200,7 @@ PLACES = {"score": 1, "disruption": 1, "parking_spaces": 0, "lane_km": 3, "speed
 
 
 def places(key: str) -> int:
-    if key.startswith("people."):
+    if key in ("unique_people", "gains_by_type") or key.startswith("people."):
         return 0
     if key.startswith("km."):
         return 3
@@ -195,8 +225,13 @@ def fix_names(frontier: dict) -> list[str]:
 def total_rows(frontier: dict, pick: dict) -> str:
     rows = [(label, key, figure, pick[key]) for label, key, figure in ROWS]
     rows += [
-        (f"People gaining safe reach: {kind.replace('_', ' ')}", f"people.{kind}", "F10", count)
-        for kind, count in sorted(pick["people"].items())
+        (
+            f"Unique people by type: {kind.replace('_', ' ')}",
+            f"people.{kind}",
+            f"F{16 + index}",
+            count,
+        )
+        for index, (kind, count) in enumerate(sorted(pick["unique_people_by_type"].items()))
     ]
     rows += [
         (
@@ -209,7 +244,9 @@ def total_rows(frontier: dict, pick: dict) -> str:
     ]
     return "".join(
         f'<tr><th scope="row">{html.escape(label)}</th>'
-        f'<td><a href="#{figure}" data-total="{html.escape(key, quote=True)}">'
+        f'<td><a href="#{figure}" '
+        f"{'data-measure' if key in ('unique_people', 'gains_by_type') else 'data-total'}="
+        f'"{html.escape(key, quote=True)}">'
         f"{number(value, key)}</a></td></tr>"
         for label, key, figure, value in rows
     )
