@@ -212,7 +212,9 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
     shape_layer["trip_proof"] = shortlist_trips
     page_shapes = shape_layer | {
         "trip_proof": {
-            key: value for key, value in shortlist_trips.items() if key != "works_catalog"
+            key: value
+            for key, value in shortlist_trips.items()
+            if key not in ("works_catalog", "population_sources")
         }
     }
     payload = {
