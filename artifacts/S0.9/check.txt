@@ -19,3 +19,11 @@ Command: systemd-analyze --user verify deploy/systemd/bikepath-loop.service
 Result: passed.
 
 These checks prove runner behaviour and input contracts. They do not mark any app row or field evidence complete. Full app tests run in CI before merge.
+
+CI found one copied-script import failure: 1117 passed, one failed; coverage 93.11%.
+The script now checks resolved paths with stdlib code in its own process.
+Five public/private cases fail before that fix; all now publish public inputs and exclude private links without importable project modules.
+Command: uv run --frozen pytest gates/tests/test_publicreview.py tests/test_release.py::test_fr13_7_uploads_a_public_review_and_leaves_a_private_one_out -q --tb=short
+Result: 7 passed in 4.75s.
+Command: uv run --frozen pytest tests/test_release.py gates/tests/test_release_tag.py -q --tb=short
+Result: 16 passed in 20.41s.
