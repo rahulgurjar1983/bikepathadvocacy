@@ -1,0 +1,73 @@
+FFFFF..                                                                  [100%]
+=================================== FAILURES ===================================
+_________ test_fr16_7_local_loss_survives_net_gain_and_shared_elements _________
+
+    def test_fr16_7_local_loss_survives_net_gain_and_shared_elements():
+        graph, elements = case()
+        elements["segment:a"]["parking_evidence"] = supplied(
+            [bay(str(i)) for i in range(10)], [str(i) for i in range(5)]
+        )
+        elements["segment:c"]["parking_evidence"] = supplied(
+            [bay("old")], added=[bay(f"new{i}") for i in range(7)]
+        )
+        catalog, works = build(graph, elements, ["segment:a", "segment:a", "segment:c"])
+>       totals = works["parking_spaces"]
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'parking_spaces'
+
+tests/test_parking_ledger.py:36: KeyError
+_____ test_fr16_7_unknown_inventory_keeps_loss_and_names_missing_locations _____
+
+    def test_fr16_7_unknown_inventory_keeps_loss_and_names_missing_locations():
+        graph, elements = case()
+        elements["segment:a"].update(fix="cycleway_parking_one_side", counts={"parking_spaces": 5})
+        elements["segment:c"]["parking_evidence"] = supplied([bay("known")])
+        catalog, works = build(graph, elements, ["segment:a", "segment:c"])
+>       row = catalog["segment:a"]["parking_spaces"]
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'parking_spaces'
+
+tests/test_parking_ledger.py:52: KeyError
+_ test_fr16_7_special_uses_overlap_without_inflating_capacity_or_inventing_occupancy _
+
+    def test_fr16_7_special_uses_overlap_without_inflating_capacity_or_inventing_occupancy():
+        graph, elements = case()
+        shared = bay("shared", "accessible", "loading", "short_stay", "school_drop_off")
+        elements["segment:a"]["parking_evidence"] = supplied(
+            [shared, shared, bay("regular"), bay("rack", "bike_parking")], ["shared"]
+        )
+        catalog, works = build(graph, elements, ["segment:a"])
+>       row = catalog["segment:a"]["parking_spaces"]
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'parking_spaces'
+
+tests/test_parking_ledger.py:71: KeyError
+_______________ test_fr16_7_changed_total_and_bad_inventory_fail _______________
+
+    def test_fr16_7_changed_total_and_bad_inventory_fail():
+>       from bikeplan.parking import verify_parking
+E       ModuleNotFoundError: No module named 'bikeplan.parking'
+
+tests/test_parking_ledger.py:81: ModuleNotFoundError
+____ test_fr16_7_pipeline_archives_and_displays_the_selected_parking_ledger ____
+
+    def test_fr16_7_pipeline_archives_and_displays_the_selected_parking_ledger():
+        _, outputs, _, figures = build_all(
+            load_region("tests/fixtures/test-grid/region.yaml"),
+            load_profile("au-nsw"),
+            Path("tests/fixtures/test-grid/snapshot"),
+        )
+        frontier = json.loads(outputs["frontier.json"])
+        for curve in frontier["scenarios"]:
+            for package in curve["trip_packages"]:
+>               assert "parking_spaces" in package["works"]
+E               AssertionError: assert 'parking_spaces' in {'crossing_upgrades': [], 'distinct_sections': 0, 'element_ids': [], 'evidence_status': 'modelled', ...}
+
+tests/test_parking_ledger.py:104: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_parking_ledger.py::test_fr16_7_local_loss_survives_net_gain_and_shared_elements
+FAILED tests/test_parking_ledger.py::test_fr16_7_unknown_inventory_keeps_loss_and_names_missing_locations
+FAILED tests/test_parking_ledger.py::test_fr16_7_special_uses_overlap_without_inflating_capacity_or_inventing_occupancy
+FAILED tests/test_parking_ledger.py::test_fr16_7_changed_total_and_bad_inventory_fail
+FAILED tests/test_parking_ledger.py::test_fr16_7_pipeline_archives_and_displays_the_selected_parking_ledger
+5 failed, 2 passed in 2.35s

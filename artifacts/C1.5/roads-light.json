@@ -1,0 +1,854 @@
+{
+  "package": {
+    "rank": 0,
+    "scenario": "light"
+  },
+  "parking_spaces": {
+    "added": {
+      "evidence_status": "derived",
+      "known_element_ids": [],
+      "known_subtotal": 0,
+      "method": "Sum disjoint physical link values; special uses are not added again.",
+      "missing_element_ids": [],
+      "reason": null,
+      "scope": "Selected physical works links and crossings; each work counted once.",
+      "source": "Works catalog parking records",
+      "unit": "vehicle spaces",
+      "value": 0
+    },
+    "after": {
+      "evidence_status": "derived",
+      "known_element_ids": [],
+      "known_subtotal": 0,
+      "method": "Sum disjoint physical link values; special uses are not added again.",
+      "missing_element_ids": [],
+      "reason": null,
+      "scope": "Selected physical works links and crossings; each work counted once.",
+      "source": "Works catalog parking records",
+      "unit": "vehicle spaces",
+      "value": 0
+    },
+    "before": {
+      "evidence_status": "derived",
+      "known_element_ids": [],
+      "known_subtotal": 0,
+      "method": "Sum disjoint physical link values; special uses are not added again.",
+      "missing_element_ids": [],
+      "reason": null,
+      "scope": "Selected physical works links and crossings; each work counted once.",
+      "source": "Works catalog parking records",
+      "unit": "vehicle spaces",
+      "value": 0
+    },
+    "net": {
+      "evidence_status": "derived",
+      "known_element_ids": [],
+      "known_subtotal": 0,
+      "method": "Sum disjoint physical link values; special uses are not added again.",
+      "missing_element_ids": [],
+      "reason": null,
+      "scope": "Selected physical works links and crossings; each work counted once.",
+      "source": "Works catalog parking records",
+      "unit": "vehicle spaces",
+      "value": 0
+    },
+    "removed": {
+      "evidence_status": "derived",
+      "known_element_ids": [],
+      "known_subtotal": 0,
+      "method": "Sum disjoint physical link values; special uses are not added again.",
+      "missing_element_ids": [],
+      "reason": null,
+      "scope": "Selected physical works links and crossings; each work counted once.",
+      "source": "Works catalog parking records",
+      "unit": "vehicle spaces",
+      "value": 0
+    },
+    "special_uses": {
+      "accessible": {
+        "added": {
+          "evidence_status": "derived",
+          "known_element_ids": [],
+          "known_subtotal": 0,
+          "method": "Sum disjoint physical link values; special uses are not added again.",
+          "missing_element_ids": [],
+          "reason": null,
+          "scope": "Selected physical works links and crossings; each work counted once.",
+          "source": "Works catalog parking records",
+          "unit": "vehicle spaces",
+          "value": 0
+        },
+        "after": {
+          "evidence_status": "derived",
+          "known_element_ids": [],
+          "known_subtotal": 0,
+          "method": "Sum disjoint physical link values; special uses are not added again.",
+          "missing_element_ids": [],
+          "reason": null,
+          "scope": "Selected physical works links and crossings; each work counted once.",
+          "source": "Works catalog parking records",
+          "unit": "vehicle spaces",
+          "value": 0
+        },
+        "before": {
+          "evidence_status": "derived",
+          "known_element_ids": [],
+          "known_subtotal": 0,
+          "method": "Sum disjoint physical link values; special uses are not added again.",
+          "missing_element_ids": [],
+          "reason": null,
+          "scope": "Selected physical works links and crossings; each work counted once.",
+          "source": "Works catalog parking records",
+          "unit": "vehicle spaces",
+          "value": 0
+        },
+        "net": {
+          "evidence_status": "derived",
+          "known_element_ids": [],
+          "known_subtotal": 0,
+          "method": "Sum disjoint physical link values; special uses are not added again.",
+          "missing_element_ids": [],
+          "reason": null,
+          "scope": "Selected physical works links and crossings; each work counted once.",
+          "source": "Works catalog parking records",
+          "unit": "vehicle spaces",
+          "value": 0
+        },
+        "removed": {
+          "evidence_status": "derived",
+          "known_element_ids": [],
+          "known_subtotal": 0,
+          "method": "Sum disjoint physical link values; special uses are not added again.",
+          "missing_element_ids": [],
+          "reason": null,
+          "scope": "Selected physical works links and crossings; each work counted once.",
+          "source": "Works catalog parking records",
+          "unit": "vehicle spaces",
+          "value": 0
+        }
+      },
+      "bike_parking": {
+        "added": {
+          "evidence_status": "derived",
+          "known_element_ids": [],
+          "known_subtotal": 0,
+          "method": "Sum disjoint physical link values; special uses are not added again.",
+          "missing_element_ids": [],
+          "reason": null,
+          "scope": "Selected physical works links and crossings; each work counted once.",
+          "source": "Works catalog parking records",
+          "unit": "bike spaces",
+          "value": 0
+        },
+        "after": {
+          "evidence_status": "derived",
+          "known_element_ids": [],
+          "known_subtotal": 0,
+          "method": "Sum disjoint physical link values; special uses are not added again.",
+          "missing_element_ids": [],
+          "reason": null,
+          "scope": "Selected physical works links and crossings; each work counted once.",
+          "source": "Works catalog parking records",
+          "unit": "bike spaces",
+          "value": 0
+        },
+        "before": {
+          "evidence_status": "derived",
+          "known_element_ids": [],
+          "known_subtotal": 0,
+          "method": "Sum disjoint physical link values; special uses are not added again.",
+          "missing_element_ids": [],
+          "reason": null,
+          "scope": "Selected physical works links and crossings; each work counted once.",
+          "source": "Works catalog parking records",
+          "unit": "bike spaces",
+          "value": 0
+        },
+        "net": {
+          "evidence_status": "derived",
+          "known_element_ids": [],
+          "known_subtotal": 0,
+          "method": "Sum disjoint physical link values; special uses are not added again.",
+          "missing_element_ids": [],
+          "reason": null,
+          "scope": "Selected physical works links and crossings; each work counted once.",
+          "source": "Works catalog parking records",
+          "unit": "bike spaces",
+          "value": 0
+        },
+        "removed": {
+          "evidence_status": "derived",
+          "known_element_ids": [],
+          "known_subtotal": 0,
+          "method": "Sum disjoint physical link values; special uses are not added again.",
+          "missing_element_ids": [],
+          "reason": null,
+          "scope": "Selected physical works links and crossings; each work counted once.",
+          "source": "Works catalog parking records",
+          "unit": "bike spaces",
+          "value": 0
+        }
+      },
+      "loading": {
+        "added": {
+          "evidence_status": "derived",
+          "known_element_ids": [],
+          "known_subtotal": 0,
+          "method": "Sum disjoint physical link values; special uses are not added again.",
+          "missing_element_ids": [],
+          "reason": null,
+          "scope": "Selected physical works links and crossings; each work counted once.",
+          "source": "Works catalog parking records",
+          "unit": "vehicle spaces",
+          "value": 0
+        },
+        "after": {
+          "evidence_status": "derived",
+          "known_element_ids": [],
+          "known_subtotal": 0,
+          "method": "Sum disjoint physical link values; special uses are not added again.",
+          "missing_element_ids": [],
+          "reason": null,
+          "scope": "Selected physical works links and crossings; each work counted once.",
+          "source": "Works catalog parking records",
+          "unit": "vehicle spaces",
+          "value": 0
+        },
+        "before": {
+          "evidence_status": "derived",
+          "known_element_ids": [],
+          "known_subtotal": 0,
+          "method": "Sum disjoint physical link values; special uses are not added again.",
+          "missing_element_ids": [],
+          "reason": null,
+          "scope": "Selected physical works links and crossings; each work counted once.",
+          "source": "Works catalog parking records",
+          "unit": "vehicle spaces",
+          "value": 0
+        },
+        "net": {
+          "evidence_status": "derived",
+          "known_element_ids": [],
+          "known_subtotal": 0,
+          "method": "Sum disjoint physical link values; special uses are not added again.",
+          "missing_element_ids": [],
+          "reason": null,
+          "scope": "Selected physical works links and crossings; each work counted once.",
+          "source": "Works catalog parking records",
+          "unit": "vehicle spaces",
+          "value": 0
+        },
+        "removed": {
+          "evidence_status": "derived",
+          "known_element_ids": [],
+          "known_subtotal": 0,
+          "method": "Sum disjoint physical link values; special uses are not added again.",
+          "missing_element_ids": [],
+          "reason": null,
+          "scope": "Selected physical works links and crossings; each work counted once.",
+          "source": "Works catalog parking records",
+          "unit": "vehicle spaces",
+          "value": 0
+        }
+      },
+      "school_drop_off": {
+        "added": {
+          "evidence_status": "derived",
+          "known_element_ids": [],
+          "known_subtotal": 0,
+          "method": "Sum disjoint physical link values; special uses are not added again.",
+          "missing_element_ids": [],
+          "reason": null,
+          "scope": "Selected physical works links and crossings; each work counted once.",
+          "source": "Works catalog parking records",
+          "unit": "vehicle spaces",
+          "value": 0
+        },
+        "after": {
+          "evidence_status": "derived",
+          "known_element_ids": [],
+          "known_subtotal": 0,
+          "method": "Sum disjoint physical link values; special uses are not added again.",
+          "missing_element_ids": [],
+          "reason": null,
+          "scope": "Selected physical works links and crossings; each work counted once.",
+          "source": "Works catalog parking records",
+          "unit": "vehicle spaces",
+          "value": 0
+        },
+        "before": {
+          "evidence_status": "derived",
+          "known_element_ids": [],
+          "known_subtotal": 0,
+          "method": "Sum disjoint physical link values; special uses are not added again.",
+          "missing_element_ids": [],
+          "reason": null,
+          "scope": "Selected physical works links and crossings; each work counted once.",
+          "source": "Works catalog parking records",
+          "unit": "vehicle spaces",
+          "value": 0
+        },
+        "net": {
+          "evidence_status": "derived",
+          "known_element_ids": [],
+          "known_subtotal": 0,
+          "method": "Sum disjoint physical link values; special uses are not added again.",
+          "missing_element_ids": [],
+          "reason": null,
+          "scope": "Selected physical works links and crossings; each work counted once.",
+          "source": "Works catalog parking records",
+          "unit": "vehicle spaces",
+          "value": 0
+        },
+        "removed": {
+          "evidence_status": "derived",
+          "known_element_ids": [],
+          "known_subtotal": 0,
+          "method": "Sum disjoint physical link values; special uses are not added again.",
+          "missing_element_ids": [],
+          "reason": null,
+          "scope": "Selected physical works links and crossings; each work counted once.",
+          "source": "Works catalog parking records",
+          "unit": "vehicle spaces",
+          "value": 0
+        }
+      },
+      "short_stay": {
+        "added": {
+          "evidence_status": "derived",
+          "known_element_ids": [],
+          "known_subtotal": 0,
+          "method": "Sum disjoint physical link values; special uses are not added again.",
+          "missing_element_ids": [],
+          "reason": null,
+          "scope": "Selected physical works links and crossings; each work counted once.",
+          "source": "Works catalog parking records",
+          "unit": "vehicle spaces",
+          "value": 0
+        },
+        "after": {
+          "evidence_status": "derived",
+          "known_element_ids": [],
+          "known_subtotal": 0,
+          "method": "Sum disjoint physical link values; special uses are not added again.",
+          "missing_element_ids": [],
+          "reason": null,
+          "scope": "Selected physical works links and crossings; each work counted once.",
+          "source": "Works catalog parking records",
+          "unit": "vehicle spaces",
+          "value": 0
+        },
+        "before": {
+          "evidence_status": "derived",
+          "known_element_ids": [],
+          "known_subtotal": 0,
+          "method": "Sum disjoint physical link values; special uses are not added again.",
+          "missing_element_ids": [],
+          "reason": null,
+          "scope": "Selected physical works links and crossings; each work counted once.",
+          "source": "Works catalog parking records",
+          "unit": "vehicle spaces",
+          "value": 0
+        },
+        "net": {
+          "evidence_status": "derived",
+          "known_element_ids": [],
+          "known_subtotal": 0,
+          "method": "Sum disjoint physical link values; special uses are not added again.",
+          "missing_element_ids": [],
+          "reason": null,
+          "scope": "Selected physical works links and crossings; each work counted once.",
+          "source": "Works catalog parking records",
+          "unit": "vehicle spaces",
+          "value": 0
+        },
+        "removed": {
+          "evidence_status": "derived",
+          "known_element_ids": [],
+          "known_subtotal": 0,
+          "method": "Sum disjoint physical link values; special uses are not added again.",
+          "missing_element_ids": [],
+          "reason": null,
+          "scope": "Selected physical works links and crossings; each work counted once.",
+          "source": "Works catalog parking records",
+          "unit": "vehicle spaces",
+          "value": 0
+        }
+      }
+    }
+  },
+  "sample_scope": "Unselected model designs; these are not confirmed package works.",
+  "sections": [],
+  "unselected_model_road_samples": [
+    {
+      "endpoints": [
+        {
+          "id": "5846283330",
+          "name": "Sir Joseph Banks Street",
+          "name_gap": false,
+          "x": 333824.8556379196,
+          "y": 6241692.099966643
+        },
+        {
+          "id": "5846283329",
+          "name": null,
+          "name_gap": true,
+          "x": 333747.92301918153,
+          "y": 6241718.428152533
+        }
+      ],
+      "fix": "cycleway_parking_one_side",
+      "id": "segment:607259807e6f5cf8",
+      "length_m": 81.31298296183986,
+      "name": "Hannon Street",
+      "parking_spaces": {
+        "added": 0,
+        "after": null,
+        "before": null,
+        "date": null,
+        "evidence_status": "modelled",
+        "inventory": null,
+        "method": "Loss uses the fit estimate: length times removed sides divided by profile bay length, reduced by its driveway share. No parking addition is designed by these treatments. Capacity is not inferred from parking sides.",
+        "model_inputs": {
+          "counts": {
+            "lane_km": 0.0,
+            "new_speed_kmh": null,
+            "old_speed_kmh": null,
+            "parking_spaces": 9,
+            "path_km": 0.0,
+            "speed_km": 0.0,
+            "vehicle_km": 0.0
+          },
+          "fix": "cycleway_parking_one_side",
+          "kind": "segment"
+        },
+        "net": -9,
+        "occupancy": {
+          "reason": "No sourced observation or explicit model.",
+          "value": null
+        },
+        "reason": "No complete bay inventory or survey date; special uses are unknown.",
+        "removed": 9,
+        "source": "Saved fit parking-space counts and selected treatment",
+        "special_uses": {
+          "accessible": {
+            "added": null,
+            "after": null,
+            "before": null,
+            "net": null,
+            "removed": null
+          },
+          "bike_parking": {
+            "added": null,
+            "after": null,
+            "before": null,
+            "net": null,
+            "removed": null
+          },
+          "loading": {
+            "added": null,
+            "after": null,
+            "before": null,
+            "net": null,
+            "removed": null
+          },
+          "school_drop_off": {
+            "added": null,
+            "after": null,
+            "before": null,
+            "net": null,
+            "removed": null
+          },
+          "short_stay": {
+            "added": null,
+            "after": null,
+            "before": null,
+            "net": null,
+            "removed": null
+          }
+        },
+        "spillover": {
+          "reason": "No sourced observation or explicit model.",
+          "value": null
+        }
+      },
+      "road_id": "road:4b84af47a2d5f3af"
+    },
+    {
+      "endpoints": [
+        {
+          "id": "7450810878",
+          "name": null,
+          "name_gap": true,
+          "x": 332268.97913328465,
+          "y": 6246633.092612098
+        },
+        {
+          "id": "1843918600",
+          "name": null,
+          "name_gap": true,
+          "x": 332195.5600415309,
+          "y": 6246643.908822179
+        }
+      ],
+      "fix": "cycleway_in_spare",
+      "id": "segment:55b482acae582641",
+      "length_m": 0.0,
+      "name": "Sydney Park Road",
+      "parking_spaces": {
+        "added": 0,
+        "after": null,
+        "before": null,
+        "date": null,
+        "evidence_status": "modelled",
+        "inventory": null,
+        "method": "Loss uses the fit estimate: length times removed sides divided by profile bay length, reduced by its driveway share. No parking addition is designed by these treatments. Capacity is not inferred from parking sides.",
+        "model_inputs": {
+          "counts": {
+            "lane_km": 0.0,
+            "new_speed_kmh": null,
+            "old_speed_kmh": null,
+            "parking_spaces": 0,
+            "path_km": 0.0,
+            "speed_km": 0.0,
+            "vehicle_km": 0.0
+          },
+          "fix": "cycleway_in_spare",
+          "kind": "segment"
+        },
+        "net": 0,
+        "occupancy": {
+          "reason": "No sourced observation or explicit model.",
+          "value": null
+        },
+        "reason": "No complete bay inventory or survey date; special uses are unknown.",
+        "removed": 0,
+        "source": "Saved fit parking-space counts and selected treatment",
+        "special_uses": {
+          "accessible": {
+            "added": null,
+            "after": null,
+            "before": null,
+            "net": null,
+            "removed": null
+          },
+          "bike_parking": {
+            "added": null,
+            "after": null,
+            "before": null,
+            "net": null,
+            "removed": null
+          },
+          "loading": {
+            "added": null,
+            "after": null,
+            "before": null,
+            "net": null,
+            "removed": null
+          },
+          "school_drop_off": {
+            "added": null,
+            "after": null,
+            "before": null,
+            "net": null,
+            "removed": null
+          },
+          "short_stay": {
+            "added": null,
+            "after": null,
+            "before": null,
+            "net": null,
+            "removed": null
+          }
+        },
+        "spillover": {
+          "reason": "No sourced observation or explicit model.",
+          "value": null
+        }
+      },
+      "road_id": "road:017d8558a95f96cd"
+    },
+    {
+      "endpoints": [
+        {
+          "id": "1762592266",
+          "name": "Dart Thru Lane",
+          "name_gap": false,
+          "x": 324995.1352484339,
+          "y": 6247852.545267411
+        },
+        {
+          "id": "9413297636",
+          "name": null,
+          "name_gap": true,
+          "x": 324998.25027401926,
+          "y": 6247869.254289521
+        }
+      ],
+      "fix": "cycleway_parking_both_sides",
+      "id": "segment:75f491577d5f3a08",
+      "length_m": 0.0,
+      "name": "Seymour Street",
+      "parking_spaces": {
+        "added": 0,
+        "after": null,
+        "before": null,
+        "date": null,
+        "evidence_status": "modelled",
+        "inventory": null,
+        "method": "Loss uses the fit estimate: length times removed sides divided by profile bay length, reduced by its driveway share. No parking addition is designed by these treatments. Capacity is not inferred from parking sides.",
+        "model_inputs": {
+          "counts": {
+            "lane_km": 0.0,
+            "new_speed_kmh": null,
+            "old_speed_kmh": null,
+            "parking_spaces": 0,
+            "path_km": 0.0,
+            "speed_km": 0.0,
+            "vehicle_km": 0.0
+          },
+          "fix": "cycleway_parking_both_sides",
+          "kind": "segment"
+        },
+        "net": 0,
+        "occupancy": {
+          "reason": "No sourced observation or explicit model.",
+          "value": null
+        },
+        "reason": "No complete bay inventory or survey date; special uses are unknown.",
+        "removed": 0,
+        "source": "Saved fit parking-space counts and selected treatment",
+        "special_uses": {
+          "accessible": {
+            "added": null,
+            "after": null,
+            "before": null,
+            "net": null,
+            "removed": null
+          },
+          "bike_parking": {
+            "added": null,
+            "after": null,
+            "before": null,
+            "net": null,
+            "removed": null
+          },
+          "loading": {
+            "added": null,
+            "after": null,
+            "before": null,
+            "net": null,
+            "removed": null
+          },
+          "school_drop_off": {
+            "added": null,
+            "after": null,
+            "before": null,
+            "net": null,
+            "removed": null
+          },
+          "short_stay": {
+            "added": null,
+            "after": null,
+            "before": null,
+            "net": null,
+            "removed": null
+          }
+        },
+        "spillover": {
+          "reason": "No sourced observation or explicit model.",
+          "value": null
+        }
+      },
+      "road_id": "road:6ad5283b035fd070"
+    },
+    {
+      "endpoints": [
+        {
+          "id": "1832386624",
+          "name": null,
+          "name_gap": true,
+          "x": 329874.99417009205,
+          "y": 6246059.371706328
+        },
+        {
+          "id": "5652934505",
+          "name": null,
+          "name_gap": true,
+          "x": 329838.6018645044,
+          "y": 6246078.8205050435
+        }
+      ],
+      "fix": "cycleway_parking_one_side",
+      "id": "segment:7ccb4aadf1a9e0ba",
+      "length_m": 0.0,
+      "name": "Marrickville Road",
+      "parking_spaces": {
+        "added": 0,
+        "after": null,
+        "before": null,
+        "date": null,
+        "evidence_status": "modelled",
+        "inventory": null,
+        "method": "Loss uses the fit estimate: length times removed sides divided by profile bay length, reduced by its driveway share. No parking addition is designed by these treatments. Capacity is not inferred from parking sides.",
+        "model_inputs": {
+          "counts": {
+            "lane_km": 0.0,
+            "new_speed_kmh": null,
+            "old_speed_kmh": null,
+            "parking_spaces": 0,
+            "path_km": 0.0,
+            "speed_km": 0.0,
+            "vehicle_km": 0.0
+          },
+          "fix": "cycleway_parking_one_side",
+          "kind": "segment"
+        },
+        "net": 0,
+        "occupancy": {
+          "reason": "No sourced observation or explicit model.",
+          "value": null
+        },
+        "reason": "No complete bay inventory or survey date; special uses are unknown.",
+        "removed": 0,
+        "source": "Saved fit parking-space counts and selected treatment",
+        "special_uses": {
+          "accessible": {
+            "added": null,
+            "after": null,
+            "before": null,
+            "net": null,
+            "removed": null
+          },
+          "bike_parking": {
+            "added": null,
+            "after": null,
+            "before": null,
+            "net": null,
+            "removed": null
+          },
+          "loading": {
+            "added": null,
+            "after": null,
+            "before": null,
+            "net": null,
+            "removed": null
+          },
+          "school_drop_off": {
+            "added": null,
+            "after": null,
+            "before": null,
+            "net": null,
+            "removed": null
+          },
+          "short_stay": {
+            "added": null,
+            "after": null,
+            "before": null,
+            "net": null,
+            "removed": null
+          }
+        },
+        "spillover": {
+          "reason": "No sourced observation or explicit model.",
+          "value": null
+        }
+      },
+      "road_id": "road:8155a93baa54e300"
+    },
+    {
+      "endpoints": [
+        {
+          "id": "1837847953",
+          "name": null,
+          "name_gap": true,
+          "x": 329826.59438536945,
+          "y": 6245744.705314345
+        },
+        {
+          "id": "1838825441",
+          "name": null,
+          "name_gap": true,
+          "x": 329817.0032360796,
+          "y": 6245741.105459331
+        }
+      ],
+      "fix": "cycleway_in_spare",
+      "id": "segment:be1df0ebfa5ea16a",
+      "length_m": 0.0,
+      "name": "Meeks Road",
+      "parking_spaces": {
+        "added": 0,
+        "after": null,
+        "before": null,
+        "date": null,
+        "evidence_status": "modelled",
+        "inventory": null,
+        "method": "Loss uses the fit estimate: length times removed sides divided by profile bay length, reduced by its driveway share. No parking addition is designed by these treatments. Capacity is not inferred from parking sides.",
+        "model_inputs": {
+          "counts": {
+            "lane_km": 0.0,
+            "new_speed_kmh": null,
+            "old_speed_kmh": null,
+            "parking_spaces": 0,
+            "path_km": 0.0,
+            "speed_km": 0.0,
+            "vehicle_km": 0.0
+          },
+          "fix": "cycleway_in_spare",
+          "kind": "segment"
+        },
+        "net": 0,
+        "occupancy": {
+          "reason": "No sourced observation or explicit model.",
+          "value": null
+        },
+        "reason": "No complete bay inventory or survey date; special uses are unknown.",
+        "removed": 0,
+        "source": "Saved fit parking-space counts and selected treatment",
+        "special_uses": {
+          "accessible": {
+            "added": null,
+            "after": null,
+            "before": null,
+            "net": null,
+            "removed": null
+          },
+          "bike_parking": {
+            "added": null,
+            "after": null,
+            "before": null,
+            "net": null,
+            "removed": null
+          },
+          "loading": {
+            "added": null,
+            "after": null,
+            "before": null,
+            "net": null,
+            "removed": null
+          },
+          "school_drop_off": {
+            "added": null,
+            "after": null,
+            "before": null,
+            "net": null,
+            "removed": null
+          },
+          "short_stay": {
+            "added": null,
+            "after": null,
+            "before": null,
+            "net": null,
+            "removed": null
+          }
+        },
+        "spillover": {
+          "reason": "No sourced observation or explicit model.",
+          "value": null
+        }
+      },
+      "road_id": "road:e3d83f7cd0599644"
+    }
+  ]
+}
