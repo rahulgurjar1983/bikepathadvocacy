@@ -13,18 +13,21 @@ def state_path():
 def input_hash(row):
     from gates.ledger import load
 
-    rows, problems = load()
+    root = Path(os.environ.get("RALPH_CONTROL_DIR", "."))
+    rows, problems = load(root / "PROGRESS.md")
     if problems:
         raise ValueError("; ".join(problems))
     chosen = next(item for item in rows if item.ident == row)
-    files = {Path(name) for name in ("SPECIFICATION.md", "PROMPT.md", "CLAUDE.md", "loop.sh")}
+    files = {root / name for name in ("SPECIFICATION.md", "PROMPT.md", "CLAUDE.md", "loop.sh")}
+    for pattern in ("gates/*.py", "scripts/*.sh", "scripts/lib/*.sh", ".github/workflows/*"):
+        files.update(root.glob(pattern))
     for ident in chosen.spec_ids:
         match = re.match(r"FR-(\d+)\.", ident)
         if match:
-            files.update(Path("specs").glob(f"{int(match[1]):02d}-*.md"))
+            files.update((root / "specs").glob(f"{int(match[1]):02d}-*.md"))
     digest = hashlib.sha256(chosen.title.encode())
     for path in sorted(files):
-        digest.update(str(path).encode())
+        digest.update(str(path.relative_to(root)).encode())
         digest.update(path.read_bytes() if path.exists() else b"missing")
     return digest.hexdigest()
 
@@ -95,10 +98,14 @@ def finish(row, progress, max_stalls):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("row")
-    parser.add_argument("progress", choices=("yes", "no"))
-    parser.add_argument("max_stalls", type=int)
+    parser.add_argument("progress", choices=("yes", "no"), nargs="?")
+    parser.add_argument("max_stalls", type=int, nargs="?")
+    parser.add_argument("--reason", action="store_true")
     args = parser.parse_args()
-    if args.max_stalls < 1:
+    if args.reason:
+        print(read_state()[args.row]["reason"])
+        return
+    if args.progress is None or args.max_stalls is None or args.max_stalls < 1:
         parser.error("max_stalls must be positive")
     try:
         finish(args.row, args.progress, args.max_stalls)
