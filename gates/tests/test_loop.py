@@ -755,3 +755,103 @@ def test_fr0_33_sync_saves_dirty_loop_work(loop_repo, tmp_path):
     )
     assert restored.returncode == 0, restored.stdout + restored.stderr
     assert (repo.path / "artifacts/P0.2/proof.txt").read_text() == "unfinished proof\n"
+
+
+def test_fr0_36_sync_failure_retries_before_spending_a_turn(loop_repo, tmp_path):
+    repo, env, state = loop_repo
+    remote = tmp_path / "origin.git"
+    subprocess.run(["git", "init", "--bare", "-q", str(remote)], check=True)
+    repo.git("remote", "add", "origin", str(remote))
+    repo.git("push", "-q", "origin", "main")
+    binaries = tmp_path / "bin"
+    binaries.mkdir()
+    original = shutil.which("git")
+    wrapper = binaries / "git"
+    wrapper.write_text(
+        "#!/usr/bin/env bash\n"
+        'if [ "$1" = fetch ]; then\n'
+        '  n=$(( $(cat "$FETCH_COUNT" 2>/dev/null || echo 0) + 1 ))\n'
+        '  echo "$n" > "$FETCH_COUNT"\n'
+        '  if [ "$n" = 1 ]; then echo transient >&2; exit 1; fi\n'
+        "fi\n"
+        f'exec "{original}" "$@"\n'
+    )
+    wrapper.chmod(0o755)
+    env.update(
+        PATH=f"{binaries}{os.pathsep}{env['PATH']}",
+        FETCH_COUNT=str(tmp_path / "fetch-count"),
+        RALPH_SKIP_SYNC="0",
+        RALPH_RETRY_SECS="0",
+    )
+    result = run_loop(repo, env, "1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert (tmp_path / "fetch-count").read_text().strip() == "2"
+    assert count(state) == 1
+    assert "sync failed; retrying" in result.stdout
+
+
+def test_fr0_36_controller_runs_when_model_switches_to_old_loop(loop_repo, tmp_path):
+    repo, env, state = loop_repo
+    shutil.copytree(
+        ROOT / "gates", repo.path / "gates", ignore=shutil.ignore_patterns("tests", "__pycache__")
+    )
+    shutil.copy(ROOT / ".gitignore", repo.path / ".gitignore")
+    repo.commit("controller inputs")
+    repo.branch("loop/P0.2-old")
+    repo.write("loop.sh", "#!/usr/bin/env bash\nexit 98\n")
+    repo.delete("gates/loopstate.py")
+    repo.delete("gates/checkpoint.py")
+    repo.commit("older task branch")
+    repo.git("checkout", "main")
+    remote = tmp_path / "origin.git"
+    subprocess.run(["git", "init", "--bare", "-q", str(remote)], check=True)
+    repo.git("remote", "add", "origin", str(remote))
+    repo.git("push", "-q", "origin", "main")
+    control = tmp_path / "controller"
+    repo.git("worktree", "add", "--detach", str(control), "main")
+    env.update(
+        RALPH_CONTROL_DIR=str(control),
+        RALPH_WORK_DIR=str(repo.path),
+        RALPH_SKIP_SYNC="0",
+        FAKE_RUN="git checkout -q loop/P0.2-old; mkdir -p artifacts/P0.2; echo saved > artifacts/P0.2/proof.txt",
+    )
+    result = subprocess.run(
+        ["bash", str(control / "loop.sh"), "2"],
+        cwd=repo.path,
+        env=env,
+        capture_output=True,
+        text=True,
+        timeout=60,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert count(state) == 2
+    assert (control / "gates/loopstate.py").exists()
+    records = list((repo.path / ".ralph/checkpoints").glob("*.json"))
+    assert len(records) == 1
+    record = json.loads(records[0].read_text())
+    assert record["branch"] == "loop/P0.2-old"
+    assert repo.git("show", record["stash"] + "^3:artifacts/P0.2/proof.txt") == "saved"
+
+
+def test_fr0_36_second_runner_cannot_launch_a_model(loop_repo):
+    repo, env, state = loop_repo
+    env["FAKE_SLEEP"] = "2"
+    first = subprocess.Popen(
+        ["bash", "loop.sh", "1"],
+        cwd=repo.path,
+        env=env,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+    try:
+        deadline = time.monotonic() + 20
+        while count(state) == 0 and time.monotonic() < deadline:
+            time.sleep(0.05)
+        assert count(state) == 1
+        second = run_loop(repo, env, "1")
+        assert second.returncode == 73
+        assert "already running" in second.stdout
+        assert count(state) == 1
+    finally:
+        first.communicate(timeout=30)
