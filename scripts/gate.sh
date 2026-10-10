@@ -36,6 +36,7 @@ case "$mode" in
     step "${py[@]}" -m gates.inputs --base "$base"
     step "${py[@]}" -m gates.redgreen mixed "$base"
     step "${py[@]}" -m gates.retention --base "$base"
+    step "${py[@]}" -m gates.contracts --base "$base"
     step scripts/secretscan.sh "$base"
     step "${py[@]}" -m gates.redgreen red "$base"
     ;;

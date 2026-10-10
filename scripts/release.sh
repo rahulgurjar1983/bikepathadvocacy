@@ -128,6 +128,21 @@ for review in routes/*/review.yaml; do
   [ -f "$review" ] || continue
   grep -q '^public: *true *$' "$review" || continue
   folder="$(dirname "$review")"
+  references=()
+  for key in region route claims reply; do
+    value="$(field "$key" "$review")"
+    [ -z "$value" ] || references+=("$folder/$value")
+  done
+  if python3 -m gates.publicreview "$review" "${references[@]}"; then
+    :
+  else
+    status=$?
+    if [ "$status" = 3 ]; then
+      echo "release: private review excluded"
+      continue
+    fi
+    exit "$status"
+  fi
   id="$(basename "$folder")"
   region="$folder/$(field region "$review")"
   if ! published "$region"; then
