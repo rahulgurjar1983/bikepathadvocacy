@@ -367,7 +367,9 @@ def calendar_dates(value, key=""):
 
 def data_block(payload: dict) -> str:
     kept = {name: payload[name] for name in ("project_shapes", "projects", "summary")}
-    text = json.dumps(calendar_dates(kept), sort_keys=True).replace("</", "<\\/")
+    text = json.dumps(calendar_dates(kept), sort_keys=True, separators=(",", ":")).replace(
+        "</", "<\\/"
+    )
     return f'<script type="application/json" id="page-data">{text}</script>'
 
 

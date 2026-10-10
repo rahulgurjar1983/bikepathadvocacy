@@ -368,7 +368,9 @@ def map_section(by_id: dict, proposed_ready: bool) -> str:
 
 
 def map_scripts(map_text: str, data_script: str) -> str:
-    safe = map_text.replace("</", "<\\/")
+    safe = json.dumps(json.loads(map_text), sort_keys=True, separators=(",", ":")).replace(
+        "</", "<\\/"
+    )
     return (
         f"<style>{(ASSETS / 'leaflet.css').read_text()}</style>"
         f"<script>{(ASSETS / 'leaflet.js').read_text()}</script>"
