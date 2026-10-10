@@ -138,8 +138,8 @@ def test_fr15_6_sheets_retain_exact_counts_for_checking():
     found = unescape(sheet(record, []))
     assert "<details><summary>Exact people counts to check and reuse</summary>" in found
     assert (
-        "{'gains_by_type': 0.8, 'unique_people': 0.4, 'unique_people_by_type': {'school': 0.4, 'station': 0.4}}"
-        in found
+        "{'gains_by_type': 0.8, 'unique_people': 0.4, "
+        "'unique_people_by_type': {'school': 0.4, 'station': 0.4}}" in found
     )
     assert "Unique people gaining a safe destination" in found
     assert "Gains counted by type" in found
