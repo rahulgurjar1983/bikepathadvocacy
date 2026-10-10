@@ -1049,3 +1049,16 @@ The file check is structural; full source replay belongs to a later row.
 
 Artifact: `artifacts/C1.4/manifest.json`, `artifacts/C1.4/plans-shipped.json`
 and `artifacts/C1.4/time-full.txt`.
+
+### S0.9
+
+```bash
+uv run --frozen pytest gates/tests/test_loop.py gates/tests/test_checkpoint.py gates/tests/test_scheduler.py gates/tests/test_contracts.py gates/tests/test_runnerstatus.py gates/tests/test_publicreview.py gates/tests/test_ledger.py gates/tests/test_release_tag.py gates/tests/test_inputs.py -q --tb=short
+systemd-analyze --user verify deploy/systemd/bikepath-loop.service
+python3 .ralph/control/gates/control.py gates.scheduler status
+bash .ralph/control/scripts/loop-status.sh /home/oem/claude/bikepathadvocacy
+```
+
+Expect: all focused checks pass. The new cases fail on base. An open PR keeps its owner, a blocked or pending PR spends no model turn, and unrelated row blocks are repaired with a full backup. Old task files cannot replace the service code. Sync failures retry in service mode; a second runner cannot launch a model. Heartbeats keep the reason and retry time, and Codex gets its prompt. Exact figure and file contracts may grow without lost checks. Private links are excluded, while missing public files still fail. After green CI and install, the service is active with a live heartbeat and the owning row or a stated wait. Full app checks run in CI. No app feature is marked done by this operator row.
+
+Artifact: `artifacts/S0.9/check.txt`
