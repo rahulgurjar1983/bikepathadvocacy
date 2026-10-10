@@ -18,39 +18,14 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Spec issues
 
-### Q1.4 literal score inputs
+### Q1.4 literal score inputs (resolved)
 
-- Q1.4: Open input clash in the two literal score cases in
-  `tests/test_network_clip.py`. Each case writes scores inside its test
-  body with `lts` and `aaa`, but no `confirmed_aaa` field. The approved
-  fixture-only path requires every old body and assertion to stay intact.
-  These inputs have no score builder to enrich. Do not treat a model AAA
-  flag as confirmed just to pass an old check.
-
-Fresh main proof: `git fetch origin` then
-`git worktree add --detach /tmp/q14-score-input-proof origin/main`.
-The fresh main commit is `4d35ded7685d5c8c5d6c9cbe4370f02abd902af0`.
-Run from that worktree:
-
-```bash
-PYTHONPATH=/tmp/q14-score-input-proof/src:/tmp/q14-score-input-proof /home/oem/claude/bikepathadvocacy/.venv/bin/python -m pytest tests/test_network_clip.py -q -k 'segment_takes_the_higher or segment_is_aaa'
-```
-
-The exact cases pass on main. The same cases fail on this branch with
-`KeyError: 'confirmed_aaa'`. Logs: `artifacts/Q1.4/score-input-main.txt`
-and `artifacts/Q1.4/score-input-head.txt`. From this branch, rebuild with:
-
-```bash
-uv run pytest tests/test_network_clip.py -q -k 'segment_takes_the_higher or segment_is_aaa'
-```
-
-Input ask: enrich those literal scores on main, or move them into a
-fixture builder on main, with explicit confirmed status. Keep their old
-assertions. The row stays open. The test-only grid evidence is saved;
-`artifacts/Q1.4/legacy-tests.txt` records the affected checks that pass.
-CI also found missing corridor candidate counts after the confirmed
-filter; that code work remains. Do not claim a clean full suite or ship.
-
+Spec 15 now permits the old score as a labelled model measure. The old
+literal score tests stay intact. `stress_summary` labels model-only
+inputs and keeps their old distance. It also reports confirmed distance
+on its own; missing proof gives no confirmed distance. Scores from the
+full evidence audit still use confirmed distance for the main total.
+Run `uv run pytest tests/test_safety_evidence.py tests/test_network_clip.py -q`.
 
 ### Q1.4 prior input proof (resolved)
 
@@ -494,7 +469,7 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 
 - Q1.4: The full network export includes movement records on street edges.
   It is large. The full Bayside timing in `artifacts/Q1.4/time-full.txt`
-  does not meet the time or memory goal on this host. Use the saved
+  exceeds the memory goal on this host. Use the saved
   command to check those limits; do not cite this as performance proof.
 
 - Q1.4: Keep toy traffic records tied to exact edge values. Keep planned
@@ -623,3 +598,11 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   profiles and test data. An error for a missing profile does not
   prove that private paths were rejected. A link escape test needs a
   real target folder, so a broken link cannot mask the missing guard.
+
+- Q1.4: Count corridor candidates before the confirmed filter. Keep their
+  model graph apart from the confirmed graph when their proof is missing.
+  The count describes options made, not works proven safe.
+- Q1.4: A model-only stress summary has `safety_scenario: model`.
+  Read `km_confirmed_aaa` for confirmed distance, never the old model total.
+  The new cases and unchanged old score cases pass in
+  `artifacts/Q1.4/resume-tests.txt`.

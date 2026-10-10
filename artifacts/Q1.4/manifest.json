@@ -1,8 +1,8 @@
 {
-  "build_commit": "9e61a09b2cced8ec824e7acf7c86bf113b700889",
-  "command": "tar -czf data/output/Q1.4/full.tar.gz -C data/output/Q1.4/full .",
-  "asset": "full.tar.gz",
-  "sha256": "0fde61acb30e37704a084013d9b982d5639f978d4172864cd86fa97515651735",
-  "release": "https://github.com/rahulgurjar1983/bikepathadvocacy/releases/tag/proof-Q1.4-9e61a09",
+  "build_commit": "39420a8fa1ca08a92859e0b21effcd793a2cb1da",
+  "command": "tar -czf data/output/Q1.4/resume-full.tar.gz -C data/output/Q1.4/resume-full .",
+  "asset": "resume-full.tar.gz",
+  "sha256": "cae0d36e18af4e9dcc1bb74e9cd6a1589ec5cca3902e5a22ffafea5d6241cf7b",
+  "release": "https://github.com/rahulgurjar1983/bikepathadvocacy/releases/tag/proof-Q1.4-39420a8",
   "scope": "Fresh full Bayside outputs; safety proof, not performance or field validation"
 }

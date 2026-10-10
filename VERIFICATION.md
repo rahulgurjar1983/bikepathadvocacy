@@ -961,33 +961,34 @@ Artifact: `artifacts/Q1.3/manifest.json`, `artifacts/Q1.3/width-sample.json`,
 
 ### Q1.4
 
-Saved work. The row stays open due to the literal score input clash in
-`AGENT_NOTES.md`. CI has not passed; no full-suite proof is claimed.
-
 ```bash
-uv run pytest tests/test_safety_evidence.py tests/test_test_grid.py -q
-/usr/bin/time -v uv run bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out data/output/Q1.4/full
+uv run pytest tests/test_safety_evidence.py tests/test_network_clip.py tests/test_test_grid.py tests/test_propose_corridor.py tests/test_route_figures.py -q
+/usr/bin/time -v -o artifacts/Q1.4/time-full.txt uv run bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out data/output/Q1.4/resume-full
 uv run python artifacts/Q1.4/compare_access.py
+uv run bikeplan verify data/output/Q1.4/resume-full
 ```
 
-Expect: All focused cases pass with the old grid checks intact. Signals on
-other approaches, missing refuge space and missing path evidence stay
-unknown. A sourced protected phase proves only its own movement. Proposed
-phases do not prove existing crossings. Default access and picks use
-confirmed links; the explicit access assumptions mode names its limits.
-Fresh Bayside exports match confirmed status. The public page states the
-model criteria and does not guarantee child safety. The proof saves source
-hashes, output hashes and status counts. Movement counts include each
-turn record on both street edges. These are model checks, not a field
-survey. Crossing audits conservatively filter whole edges when a
-usable turn lacks proof. This host run exceeds the time and memory goals;
-it is safety proof, not proof of the full-run limits.
+Expect: The focused cases pass with old checks intact. A nearby signal,
+missing refuge space or missing path evidence cannot confirm a link.
+A sourced protected phase proves only its own movement. Proposed phases
+do not prove existing crossings. Main access and picks use confirmed
+links; the explicit assumptions mode names its limits. Model-only score
+inputs keep the old distance with a model label and no confirmed distance.
+Corridor candidate counts stay visible without proving their safety.
+Fresh Bayside exports match confirmed status. Public prose states model
+criteria and does not guarantee child safety. The proof saves source and
+output hashes and status counts. Movement counts include each turn on both
+street edges. These are model checks, not a field survey. The crossing
+filter can exclude whole edges when a usable turn lacks proof.
+The timing record measures this host and exceeds the memory goal.
+It does not prove CI run limits. The verify command checks file structure;
+full source replay belongs to a later row.
 
-Artifact: `artifacts/Q1.4/score-input-main.txt`,
-`artifacts/Q1.4/score-input-head.txt`, `artifacts/Q1.4/legacy-tests.txt`,
-`artifacts/Q1.4/integration-tests.txt`,
-`artifacts/Q1.4/access-comparison.json`, `artifacts/Q1.4/run.log` and
-`artifacts/Q1.4/time-full.txt` and `artifacts/Q1.4/manifest.json`.
+Artifact: `artifacts/Q1.4/resume-tests.txt`,
+`artifacts/Q1.4/model-summary-red.txt`, `artifacts/Q1.4/corridor-count-red.txt`,
+`artifacts/Q1.4/access-comparison.json`,
+`artifacts/Q1.4/time-full.txt`, `artifacts/Q1.4/verify.txt` and
+`artifacts/Q1.4/manifest.json`.
 The manifest links the full output archive and its hash.
 
 

@@ -20,7 +20,7 @@ with tempfile.TemporaryDirectory(prefix="q14-access-") as folder:
         for name, assumptions in [("confirmed", False), ("assumptions", True)]
     }
 scores = score_edges(graph, profile)
-out = Path("data/output/Q1.4/full")
+out = Path("data/output/Q1.4/resume-full")
 features = json.loads((out / "network.geojson").read_text())["features"]
 status_features = [
     item["properties"] for item in features if "all_ages_status" in item["properties"]
@@ -42,7 +42,7 @@ proof = {
     "scope": "Fresh full Bayside report and access modes; model evidence, not field validation",
     "full_command": (
         "uv run bikeplan run regions/au-nsw-bayside.yaml "
-        "--snapshot data/cache/au-nsw-bayside/2026-10-01 --out data/output/Q1.4/full"
+        "--snapshot data/cache/au-nsw-bayside/2026-10-01 --out data/output/Q1.4/resume-full"
     ),
     "edge_status_counts": dict(
         sorted(Counter(item["all_ages_status"] for item in scores.values()).items())

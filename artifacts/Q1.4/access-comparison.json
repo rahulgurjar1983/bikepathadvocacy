@@ -1,10 +1,10 @@
 {
-  "build_commit": "9e61a09b2cced8ec824e7acf7c86bf113b700889",
+  "build_commit": "39420a8fa1ca08a92859e0b21effcd793a2cb1da",
   "config_hash": "6b7cd7698f58145f6669419dd0e4fba0cd4378fab2e1430a32df0a772127b665",
   "snapshot_hash": "2eaf0b00832565765c42e07b48ad7c6117436194487f45931e348f6772964bba",
   "command": "uv run python artifacts/Q1.4/compare_access.py",
   "scope": "Fresh full Bayside report and access modes; model evidence, not field validation",
-  "full_command": "uv run bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out data/output/Q1.4/full",
+  "full_command": "uv run bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out data/output/Q1.4/resume-full",
   "edge_status_counts": {
     "assumed": 11579,
     "confirmed": 34,
@@ -21,7 +21,7 @@
     },
     {
       "path": "frontier.json",
-      "sha256": "dd2411123865508c6fce3fe4929d0add88d7e7691247b981aba16354d2cc624d"
+      "sha256": "7319f9dadfc337d6eea8a49eab6374d00014c6f2cec91b07723a54a585ee0f86"
     },
     {
       "path": "network.geojson",
@@ -29,7 +29,7 @@
     },
     {
       "path": "outputs.sha256",
-      "sha256": "bf1b442762fe0861786d1a7ae69331f6192cf3e87213007795e14b3828c70852"
+      "sha256": "56da5ac040e2b15abfb970538837bfe352986f67e046b5c5580360081f7627a6"
     },
     {
       "path": "places.geojson",
@@ -41,7 +41,7 @@
     },
     {
       "path": "projects.geojson",
-      "sha256": "a55b431e78049bb7fdc7330ffdf2c9f8e87712545ebba199445408d48694225a"
+      "sha256": "4e2d8899f0147228f24e65b9b76f22b6f94ae3ae9265490eb8e2b087bcce03d8"
     },
     {
       "path": "projects.json",
@@ -49,7 +49,7 @@
     },
     {
       "path": "report.html",
-      "sha256": "2b3fcb80f05e45f2aa63baebe3d5074fc3978f8b7226a0598dbd42116c41d473"
+      "sha256": "21d9cc87391ab03ea3b0b380f6f4786577ec120669d34285284424ead9da76b4"
     },
     {
       "path": "summary.json",
