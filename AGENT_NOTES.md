@@ -18,6 +18,18 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Spec issues
 
+### Q2.6 open PR input block
+
+Q2.6 cannot start while PR 118 stays open. This turn ran
+`bash artifacts/C1.4/reproduce-input.sh` on fresh main. Both base
+checks pass; both feature checks fail on F14. The base and logs are
+in `artifacts/C1.4/input-base-commit.txt`,
+`artifacts/C1.4/input-base-tests.txt` and
+`artifacts/C1.4/input-feature-tests.txt`.
+CI proof: `gh run view 38026752269 --log-failed | tail -n 80`.
+The input owner must align the old exact figure list checks with the
+new figure rule. Keep Q2.6 and C1.4 open until that repair ships.
+
 ### Q2.5 open PR input block
 
 Q2.5 cannot start while PR 118 stays open. This turn ran
