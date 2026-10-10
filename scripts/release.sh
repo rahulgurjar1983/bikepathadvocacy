@@ -2,7 +2,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 tag="${1:?usage: release.sh <tag>}"
-for tool in gh tar gzip sha256sum git; do
+for tool in gh tar gzip sha256sum git python3; do
   if ! command -v "$tool" >/dev/null 2>&1; then
     echo "release: $tool is required" >&2
     exit 2
@@ -133,7 +133,23 @@ for review in routes/*/review.yaml; do
     value="$(field "$key" "$review")"
     [ -z "$value" ] || references+=("$folder/$value")
   done
-  if python3 -m gates.publicreview "$review" "${references[@]}"; then
+  if python3 - "$review" "${references[@]}" <<'PY'
+import sys
+from pathlib import Path
+
+try:
+    root = Path.cwd().resolve()
+    private = (root / "data/private").resolve()
+    paths = [Path(path).resolve() for path in sys.argv[1:]]
+    if any(not path.is_relative_to(root) or path.is_relative_to(private) for path in paths):
+        raise SystemExit(3)
+    if any(not path.is_file() for path in paths):
+        raise ValueError("public review input is missing or is not a file")
+except (OSError, ValueError) as error:
+    print(f"publicreview: {error}", file=sys.stderr)
+    raise SystemExit(1)
+PY
+  then
     :
   else
     status=$?
