@@ -74,3 +74,16 @@ def test_fr0_31_loop_cannot_change_release_plumbing(repo, capsys):
     repo.commit("touch release input")
     assert inputs.main(["--base", base]) == 1
     assert "scripts/release.sh" in capsys.readouterr().out
+
+
+def test_fr0_36_loop_cannot_change_service_install_or_status_tools(repo):
+    from gates.inputs import main
+
+    repo.write("scripts/install-loop-service.sh", "install service\n")
+    repo.write("scripts/loop-status.sh", "show status\n")
+    base = repo.commit("operator tools")
+    repo.branch("loop/P0.2-work")
+    repo.write("scripts/install-loop-service.sh", "changed service\n")
+    repo.write("scripts/loop-status.sh", "changed status\n")
+    repo.commit("unauthorised edits")
+    assert main(["--base", base]) == 1

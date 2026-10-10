@@ -1,0 +1,288 @@
+[
+  {
+    "id": "F1",
+    "inputs": [
+      {
+        "name": "segments.csv",
+        "sha256": "27c0984bcdb2ad112f04c41dfb9bfa5f525a46f380b552cbc0d45187ab2debff"
+      }
+    ],
+    "label": "Street a bike may use",
+    "method": "I add up the length of every street segment inside the boundary where a bike may ride.",
+    "recipe": "import csv;print(round(sum(float(r['length_m']) for r in csv.DictReader(open('segments.csv')) if True)/1000,3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 03",
+    "unit": "km",
+    "value": 5.2
+  },
+  {
+    "id": "F2",
+    "inputs": [
+      {
+        "name": "segments.csv",
+        "sha256": "27c0984bcdb2ad112f04c41dfb9bfa5f525a46f380b552cbc0d45187ab2debff"
+      }
+    ],
+    "label": "Street that is safe for a child to ride alone (AAA)",
+    "method": "I score each edge for stress and keep the segments where every edge is AAA.",
+    "recipe": "import csv;print(round(sum(float(r['length_m']) for r in csv.DictReader(open('segments.csv')) if r['aaa'] == '1')/1000,3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 04",
+    "unit": "km",
+    "value": 3.0
+  },
+  {
+    "id": "F3",
+    "inputs": [
+      {
+        "name": "segments.csv",
+        "sha256": "27c0984bcdb2ad112f04c41dfb9bfa5f525a46f380b552cbc0d45187ab2debff"
+      }
+    ],
+    "label": "Street with no width estimate",
+    "method": "I try each width source in rank order. I count the segments where none gave a width.",
+    "recipe": "import csv;print(round(sum(float(r['length_m']) for r in csv.DictReader(open('segments.csv')) if r['width_source'] == 'none')/1000,3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 05",
+    "unit": "km",
+    "value": 0.0
+  },
+  {
+    "id": "F4",
+    "inputs": [
+      {
+        "name": "map.json",
+        "sha256": "8b1971c195dbb83e05e7dc2ff7dc7f1549ae8c7ad6167eaad1dfc56f67267c85"
+      }
+    ],
+    "label": "Street piece drawn on the map",
+    "method": "I join street segments that touch and share a name, street type, stress level, safety and fix. I draw each joined piece once. I count the pieces I drew.",
+    "recipe": "import json;print(len(json.load(open('map.json'))['segments']))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "pieces",
+    "value": 12
+  },
+  {
+    "id": "F5",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "0fbef5e8a081b40c3e391760b5b3f15a91062e7f052620ef837681074f50aeca"
+      }
+    ],
+    "label": "Access score at the recommended stop",
+    "method": "I take the projects in the order I picked them, and add up what each one costs and gains. The shown step is the recommended stop of the Weights as set scenario. The recipe reads that step from frontier.json; change the rank in it to check any other step.",
+    "recipe": "import json;d=json.load(open('frontier.json'));s=[c for c in d['scenarios'] if c['id']=='shipped'][0];p=s['picks'][s['recommended_stop'] or 0];print(p['score'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "points",
+    "value": 100.0
+  },
+  {
+    "id": "F6",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "0fbef5e8a081b40c3e391760b5b3f15a91062e7f052620ef837681074f50aeca"
+      }
+    ],
+    "label": "Disruption score at the recommended stop",
+    "method": "I take the projects in the order I picked them, and add up what each one costs and gains. The shown step is the recommended stop of the Weights as set scenario. The recipe reads that step from frontier.json; change the rank in it to check any other step.",
+    "recipe": "import json;d=json.load(open('frontier.json'));s=[c for c in d['scenarios'] if c['id']=='shipped'][0];p=s['picks'][s['recommended_stop'] or 0];print(p['disruption'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "points",
+    "value": 15.0
+  },
+  {
+    "id": "F7",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "0fbef5e8a081b40c3e391760b5b3f15a91062e7f052620ef837681074f50aeca"
+      }
+    ],
+    "label": "Parking spaces taken at the recommended stop",
+    "method": "I take the projects in the order I picked them, and add up what each one costs and gains. The shown step is the recommended stop of the Weights as set scenario. The recipe reads that step from frontier.json; change the rank in it to check any other step.",
+    "recipe": "import json;d=json.load(open('frontier.json'));s=[c for c in d['scenarios'] if c['id']=='shipped'][0];p=s['picks'][s['recommended_stop'] or 0];print(p['parking_spaces'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "spaces",
+    "value": 0
+  },
+  {
+    "id": "F8",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "0fbef5e8a081b40c3e391760b5b3f15a91062e7f052620ef837681074f50aeca"
+      }
+    ],
+    "label": "Traffic-lane length taken at the recommended stop",
+    "method": "I take the projects in the order I picked them, and add up what each one costs and gains. The shown step is the recommended stop of the Weights as set scenario. The recipe reads that step from frontier.json; change the rank in it to check any other step.",
+    "recipe": "import json;d=json.load(open('frontier.json'));s=[c for c in d['scenarios'] if c['id']=='shipped'][0];p=s['picks'][s['recommended_stop'] or 0];print(p['lane_km'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "km",
+    "value": 0.0
+  },
+  {
+    "id": "F9",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "0fbef5e8a081b40c3e391760b5b3f15a91062e7f052620ef837681074f50aeca"
+      }
+    ],
+    "label": "Street length with a lower speed limit at the recommended stop",
+    "method": "I take the projects in the order I picked them, and add up what each one costs and gains. The shown step is the recommended stop of the Weights as set scenario. The recipe reads that step from frontier.json; change the rank in it to check any other step.",
+    "recipe": "import json;d=json.load(open('frontier.json'));s=[c for c in d['scenarios'] if c['id']=='shipped'][0];p=s['picks'][s['recommended_stop'] or 0];print(p['speed_km'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "km",
+    "value": 0.0
+  },
+  {
+    "id": "F10",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "0fbef5e8a081b40c3e391760b5b3f15a91062e7f052620ef837681074f50aeca"
+      }
+    ],
+    "label": "People who gain safe reach at the recommended stop",
+    "method": "I take the projects in the order I picked them, and add up what each one costs and gains. The shown step is the recommended stop of the Weights as set scenario. The recipe reads that step from frontier.json; change the rank in it to check any other step.",
+    "recipe": "import json;d=json.load(open('frontier.json'));s=[c for c in d['scenarios'] if c['id']=='shipped'][0];p=s['picks'][s['recommended_stop'] or 0];print(round(sum(p['people'].values()),3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "people",
+    "value": 750.0
+  },
+  {
+    "id": "F11",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "0fbef5e8a081b40c3e391760b5b3f15a91062e7f052620ef837681074f50aeca"
+      }
+    ],
+    "label": "Street length changed at the recommended stop",
+    "method": "I take the projects in the order I picked them, and add up what each one costs and gains. The shown step is the recommended stop of the Weights as set scenario. The recipe reads that step from frontier.json; change the rank in it to check any other step.",
+    "recipe": "import json;d=json.load(open('frontier.json'));s=[c for c in d['scenarios'] if c['id']=='shipped'][0];p=s['picks'][s['recommended_stop'] or 0];print(round(sum(p['km_by_fix'].values()),3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "km",
+    "value": 0
+  },
+  {
+    "id": "F12",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "0fbef5e8a081b40c3e391760b5b3f15a91062e7f052620ef837681074f50aeca"
+      }
+    ],
+    "label": "Steps drawn on the access against disruption chart",
+    "method": "Each scenario draws one point for no change and one for each project I picked. I count the points of every scenario.",
+    "recipe": "import json;print(sum(len(c['picks']) for c in json.load(open('frontier.json'))['scenarios']))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "steps",
+    "value": 6
+  },
+  {
+    "id": "F13",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "0fbef5e8a081b40c3e391760b5b3f15a91062e7f052620ef837681074f50aeca"
+      }
+    ],
+    "label": "Projects up to the recommended stop",
+    "method": "I divide each pick's gain by its cost plus one, using full precision. I compare it with the best ratio so far, including this pick. The stop is the last rank at least 0.25 times that best ratio, even after a weaker pick.",
+    "recipe": "import json;d=json.load(open('frontier.json'));s=[c for c in d['scenarios'] if c['id']=='shipped'][0];p=s['picks'][s['recommended_stop'] or 0];print(s['recommended_stop'] or 0)",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "projects",
+    "value": 1
+  }
+]

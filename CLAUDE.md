@@ -20,6 +20,9 @@ Every step that spends model tokens must show its value in numbers, or it goes.
 
 - Read spec 16 when a row cites FR-16: community outcome and trade-offs, local works, delivery and honest unknowns. It amends the older report rules. The owner's example counts are never targets.
 - Read spec 15 for a review row. It amends the earlier rules it names. Its case table states what tests and real proof must show.
+- FR-0.35 permits the named legacy report tests to require added figure IDs and the FILES fixture to require added public files. Keep old entries, order and all field, recipe, hash and link checks. Other old test bodies and cases stay intact. The contracts and red-green gates prove this narrow change.
 - Feature rows keep tests first, with each new test failing on base. Only a pre-authorised `[proof]` row may pass on base through FR-0.27. Never invent a code change to make a proof test fail.
 - Follow the proof steps and turn result schema in `PROMPT.md`. Keep a blocked row open and name the exact missing input. Do not repeat the same failed plan.
 - The service starts on Sonnet/GPT-6.1 Sol at medium effort within the owner's $20 plans. A stalled turn raises effort on the same models. Opus/Astra need an explicit operator opt-in. Per-attempt costs and tokens go to `.ralph/model-usage.jsonl`; keep using `.ralph/usage.csv` for turn totals. Gates and real outputs judge the work, regardless of model.
+
+- The service uses a detached controller worktree. Never edit `.ralph/control` from a model turn. The scheduler owns task and PR identity; waits are visible in `.ralph/status.json`.
