@@ -14,16 +14,16 @@ Tags: [reasoning] needs deep checks, with no larger model by default; [routine] 
 - [ ] **Q1.4** [reasoning] Crossing movements and confirmed, assumed or unknown safety; no absolute child-safety claims (FR-15.5)
 - [ ] **Q1.5** [reasoning] Count unique people and type gains separately in every output, including route reviews (FR-15.6)
 - [ ] **Q1.6** [reasoning] One package and versioned proposal record drive headline, map, totals, list, sheets and exports; allow explicit goal/stage identities and keep the old shortlist named (FR-15.2, FR-16.1)
-- [ ] **Q1.7** [routine] Community outcome and trade-offs first, with costs, stage, gaps and council ask; reorder sections, fold tables and test selection, phone, keyboard and print views (FR-15.3, FR-16.2)
+- [x] **Q1.7** [routine] Community outcome and trade-offs first, with costs, stage, gaps and council ask; reorder sections, fold tables and test selection, phone, keyboard and print views (FR-15.3, FR-16.2)
 
 ## Community proposal: before the remaining phases
 
 The approved order is proposal and trade-offs, network map, options, neighbourhood impacts, street plans, delivery, then evidence. Read spec 16. The example 40 schools, 500 parking spaces and 20 roads is not a target or a real result. Missing field data must stay visible; it does not block honest report features. PR 111 shipped width rules only. A concept, confirmed shortlist and focused survey plan are distinct outputs. Do not turn all missing fields into the next council ask.
 
-- [ ] **C1.1** [reasoning] Prove complete directed trips to known entrances; show joined routes, separate groups, gaps and strict versus first-leg claims (FR-16.3)
+- [x] **C1.1** [reasoning] Prove complete directed trips to known entrances; show joined routes, separate groups, gaps and strict versus first-leg claims (FR-16.3)
 - [ ] **C1.2** [reasoning] Unique school-site coverage before, after and newly served; named entrances, source coverage and per-site resident reach, with no invented pupil count (FR-16.4)
-- [ ] **C1.3** [reasoning] Unique residents gaining useful complete trips; keep scope, first-leg assumptions, population proxies and missing groups explicit (FR-16.5, FR-15.6)
-- [ ] **C1.4** [reasoning] Actual route types, unique roads and works sections, named endpoints and precise before/after lane, parking and access changes (FR-16.6)
+- [x] **C1.3** [reasoning] Unique residents gaining useful complete trips; keep scope, first-leg assumptions, population proxies and missing groups explicit (FR-16.5, FR-15.6)
+- [x] **C1.4** [reasoning] Actual route types, unique roads and works sections, named endpoints and precise before/after lane, parking and access changes (FR-16.6)
 - [ ] **C1.5** [reasoning] Parking before, removed, added, after and net by street; expose local losses, special uses and incomplete inventory (FR-16.7)
 - [ ] **Q2.4** [reasoning] Optional sourced proposal inputs, owners, approvals, cost bands, stage and next ask; hash and validate metadata, unknown is never zero or funded (FR-15.14, FR-16.10)
 - [ ] **C1.0** [reasoning] Network concepts with archived assumptions, complete conditional trips, exact work sets and honest local impacts; keep the confirmed shortlist separate and disclose failed goals (FR-16.14, FR-16.1)
@@ -42,6 +42,8 @@ The approved order is proposal and trade-offs, network map, options, neighbourho
 - [ ] **Q1.11** [reasoning] Reuse immutable graph and access work with versioned cache keys; cold and warm output bytes match; fast and full modes have labels (FR-15.16)
 
 ## Phase S: Scaffold (operator)
+
+- [x] **S0.9** Operator: own PR scheduling, stable controller, visible bounded waits, additive report contracts and private release path checks (FR-0.34, FR-0.35, FR-0.36, FR-0.31)
 
 - [x] **S0.8** Operator: save unfinished loop work before main sync and restore the same branch without lost files or index state (FR-0.33)
 

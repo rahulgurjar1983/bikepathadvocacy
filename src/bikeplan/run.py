@@ -7,13 +7,21 @@ from importlib.metadata import version
 from pathlib import Path
 
 from bikeplan.access import write_access
-from bikeplan.change import change_figures, change_scripts, change_section, frontier_data
+from bikeplan.change import (
+    change_figures,
+    change_scripts,
+    change_section,
+    frontier_data,
+    proposal_opening,
+)
 from bikeplan.config import ConfigError, config_hash
 from bikeplan.fit import segment_fit
 from bikeplan.network import bike_segments, build
 from bikeplan.page import calendar_dates, credits_for, details, page_scripts
 from bikeplan.propose import KINDS, csv_fields, csv_row, write_propose
 from bikeplan.report import (
+    KEEP,
+    chart,
     check_leaks,
     figure_list,
     map_data,
@@ -23,7 +31,9 @@ from bikeplan.report import (
 )
 from bikeplan.snapshot import verify_snapshot
 from bikeplan.stress import score_edges, stress_features, stress_summary
+from bikeplan.trips import trip_section
 from bikeplan.width import fuse
+from bikeplan.works import works_figures, works_section
 
 FILES = [
     "access_homes.geojson",
@@ -174,6 +184,7 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
         places = read_json(base / "places.geojson")["features"]
         homes = read_json(base / "access_homes.geojson")["features"]
         shapes = read_json(base / "projects.geojson")["features"]
+        shortlist_trips = read_json(base / "projects.geojson")["trip_proof"]
         raw = read_json(base / "frontier.json")
     kinds = list(weights)
     before = access["score"]
@@ -198,12 +209,20 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
     network = collection(features)
     place_layer = collection(with_ids(places, lambda p: f"{p['osm_id']}:{p['type']}"))
     shape_layer = collection(with_ids(shapes, lambda properties: properties["id"]))
+    shape_layer["trip_proof"] = shortlist_trips
+    page_shapes = shape_layer | {
+        "trip_proof": {
+            key: value
+            for key, value in shortlist_trips.items()
+            if key not in ("works_catalog", "population_sources")
+        }
+    }
     payload = {
         "summary": canon(summary),
         "projects": canon(records),
         "network": canon(network),
         "places": canon(place_layer),
-        "project_shapes": canon(shape_layer),
+        "project_shapes": canon(page_shapes),
     }
     frontier_shapes = collection(
         with_ids(raw["shapes"]["features"], lambda p: f"{p['project']}:{p['id']}"), 5
@@ -218,15 +237,30 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
     map_payload = map_data(graph, rows, Path(snapshot), payload["project_shapes"])
     map_payload["survey_options"] = surveys
     map_text = json.dumps(map_payload, sort_keys=True) + "\n"
-    figures = [*figure_list(text, map_text), *change_figures(frontier, frontier_bytes.decode())]
+    figures = [
+        *figure_list(text, map_text),
+        *change_figures(frontier, frontier_bytes.decode()),
+        *works_figures(frontier, frontier_bytes.decode()),
+    ]
+    works_page = works_section(frontier)
+    works_body, _, works_data = works_page.partition("<script")
     page_text = page(
         region,
         figures,
         json.dumps(calendar_dates(map_payload), sort_keys=True) + "\n",
-        details(payload["summary"], canon(sheets), profile, payload),
+        details(payload["summary"], canon(sheets), profile, payload)
+        + trip_section(frontier)
+        + works_body,
         page_scripts(payload),
-        change_section(frontier, {item["id"]: item for item in figures}),
-        change_scripts(calendar_dates(frontier)),
+        change_section(
+            frontier,
+            {item["id"]: item for item in figures},
+            chart([item for item in figures if item["id"] in KEEP])
+            .replace('<section id="chart">', '<div id="chart">')
+            .replace("</section>", "</div>"),
+        ),
+        change_scripts(calendar_dates(frontier)) + ("<script" + works_data if works_data else ""),
+        proposal_opening(frontier),
     )
     survey_note = "Survey options need site checks. They are kept out of the confirmed picks."
     if summary["shortlist_reason"]:

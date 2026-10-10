@@ -969,3 +969,96 @@ bash -n loop.sh
 
 Expect: all 52 focused checks pass. Seven new cases fail on the base. Unfinished proof, staged tests and untracked fixtures survive a switch to main and restore on the exact branch and head. Inputs and other branches are never stashed. Changed heads keep the saved work intact. The row note names its saved branch. The local stash is kept; no feature is marked shipped by a checkpoint. CI runs the full suite before merge.
 Artifact: `artifacts/S0.8/check.txt`
+
+### Q1.7
+
+```sh
+uv run pytest -q tests/test_community_opening.py
+uv run python artifacts/Q1.7/collect.py
+```
+
+Expect: The new cases pass. The fresh test-grid report opens with the selected proposal, space losses, gaps and council ask. The page order is proposal, map, options, area impacts, street plans, delivery and evidence. Phone and desktop views have no sideways scroll. Keys change the scenario and rank; a status names the choice. The print file shows that choice and the model method. With scripts off, the default proposal shows and the full curve table can be opened. The saved proof checks the report size and selected losses against the saved curve. Costs, school coverage and stages stay unknown. This proves page behaviour, not real school reach or the full community report.
+
+Artifact: `artifacts/Q1.7/browser-proof.json`, with fresh report files in `artifacts/Q1.7/report/`, screen views and `artifacts/Q1.7/selected.pdf`.
+
+### C1.1
+
+```bash
+uv run --frozen pytest tests/test_complete_trips.py -q --tb=short
+/usr/bin/time -v -o /tmp/c11-real-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-C1.1-ci-proof
+uv run --frozen python artifacts/C1.1/collect.py
+uv run --frozen bikeplan verify /tmp/bikeplan-C1.1-ci-proof
+```
+
+Expect: trip checks pass. Strict trips need sourced bike entrances,
+confirmed directed links and crossing moves, and valid return routes.
+Both directions meet the shipped reach and detour limits. Separate
+route groups stay separate; a join needs valid travel directions.
+Missing entrances, unknown links and later work stay in the gaps.
+Calm first legs stay a model-score claim, apart from strict trips.
+The fresh real proof records each curve package and its exact work set.
+Missing entrance evidence cannot prove a strict route. The saved samples
+show that limit. The verify command checks file structure; full route
+replay is a later row. No model witness proves field safety.
+
+Artifact: `artifacts/C1.1/manifest.json`, `artifacts/C1.1/trip-samples.json`
+and `artifacts/C1.1/time-full.txt`.
+### C1.3
+
+```bash
+uv run --frozen pytest tests/test_resident_unions.py -q --tb=short
+/usr/bin/time -v -o /tmp/c13-real-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-C1.3-real
+uv run --frozen python artifacts/C1.3/collect.py
+uv run --frozen bikeplan verify /tmp/bikeplan-C1.3-real
+```
+
+Expect: each package has before, after and newly gained resident unions.
+Each population-node share counts once across routes and works. Type
+counts may overlap; they are not the unique total. Newly gained means
+access to a new place, even with prior access. It is not after minus
+before. Strict return trips stay apart from calm first-leg model access.
+Cell centres set council scope. Whole partial cells count; buffer cells
+stay out. Equal node shares model origins, not home addresses. The proof
+checks those shares against the source cell counts and reports unsnapped
+people. Missing group data and route evidence stay clear. Zero proved
+trips do not mean no useful places. The real run uses shipped settings.
+The verify command checks file structure; full replay is a later row.
+
+Artifact: `artifacts/C1.3/manifest.json` and `artifacts/C1.3/time-full.txt`.
+
+### C1.4
+
+```bash
+uv run --frozen pytest tests/test_physical_works.py tests/test_report.py::test_fr13_1_figures_are_sorted_with_every_field tests/test_report.py::test_fr13_2_the_figure_links_hold_the_numbers_and_resolve_to_one_entry -q --tb=short
+/usr/bin/time -v -o /tmp/c14-real-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-C1.4-real
+uv run --frozen python artifacts/C1.4/collect.py
+uv run --frozen bikeplan verify /tmp/bikeplan-C1.4-real
+```
+
+Expect: reverse edges and shared works count once. Roads use exact source
+names and references; unnamed roads use way IDs with a name gap. Joined
+links with the same plan form a works section; disjoint works stay apart.
+Each curve package saves its exact works set, types, lengths, crossing
+upgrades, retained proved links and route gaps. Local plans show endpoint
+names or IDs, lane counts and widths, parking sides, walking space, turns
+and access changes. A verge label does not prove shared use or separate
+walking space. Unknown field effects stay survey needs. Offline selection
+and print keep the same package. The fresh real plans use shipped settings.
+Unselected model plan samples stay apart from the chosen package works.
+The file check is structural; full source replay belongs to a later row.
+
+Artifact: `artifacts/C1.4/manifest.json`, `artifacts/C1.4/plans-shipped.json`
+and `artifacts/C1.4/time-full.txt`.
+
+### S0.9
+
+```bash
+uv run --frozen pytest gates/tests/test_loop.py gates/tests/test_checkpoint.py gates/tests/test_scheduler.py gates/tests/test_contracts.py gates/tests/test_runnerstatus.py gates/tests/test_publicreview.py gates/tests/test_ledger.py gates/tests/test_release_tag.py gates/tests/test_inputs.py -q --tb=short
+systemd-analyze --user verify deploy/systemd/bikepath-loop.service
+python3 .ralph/control/gates/control.py gates.scheduler status
+bash .ralph/control/scripts/loop-status.sh /home/oem/claude/bikepathadvocacy
+```
+
+Expect: all focused checks pass. The new cases fail on base. An open PR keeps its owner, a blocked or pending PR spends no model turn, and unrelated row blocks are repaired with a full backup. Old task files cannot replace the service code. Sync failures retry in service mode; a second runner cannot launch a model. Heartbeats keep the reason and retry time, and Codex gets its prompt. Exact figure and file contracts may grow without lost checks. Private links are excluded, while missing public files still fail. After green CI and install, the service is active with a live heartbeat and the owning row or a stated wait. Full app checks run in CI. No app feature is marked done by this operator row.
+
+Artifact: `artifacts/S0.9/check.txt`

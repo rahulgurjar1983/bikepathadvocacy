@@ -294,9 +294,9 @@ STYLE = (
     "body{max-width:48rem;margin:0 auto;padding:0 1rem;font-family:sans-serif;line-height:1.5;"
     "overflow-wrap:anywhere}"
     "pre{overflow-x:auto;white-space:pre-wrap;background:#f4f4f4;padding:.5rem}"
-    "table{border-collapse:collapse;max-width:100%}"
+    "table{border-collapse:collapse;width:100%;max-width:100%;table-layout:fixed}"
     "td,th{border:1px solid #444;padding:.25rem .5rem;text-align:left}"
-    "svg{max-width:100%;height:auto}"
+    "svg{max-width:100%;height:auto}fieldset{min-width:0}input{max-width:100%}"
     "#report-map-canvas{height:24rem;background:#fff;border:1px solid #444}"
     "#report-map fieldset{border:1px solid #444;margin:.5rem 0}"
     "#report-map label{display:block}"
@@ -308,6 +308,7 @@ GLOSSARY = {
     "AAA": "All Ages and Abilities: a street that is safe for a child or an older rider.",
     "access": "how many needed places a home can reach by bike.",
     "bike": "a bicycle, including an electric bicycle.",
+    "claim": "a plan statement that route data can check.",
     "disruption": "what a change takes from people who drive or park today.",
     "Furth": "Peter Furth, who wrote the stress tables that I use.",
     "km": "a kilometre, which is one thousand metres.",
@@ -367,7 +368,9 @@ def map_section(by_id: dict, proposed_ready: bool) -> str:
 
 
 def map_scripts(map_text: str, data_script: str) -> str:
-    safe = map_text.replace("</", "<\\/")
+    safe = json.dumps(json.loads(map_text), sort_keys=True, separators=(",", ":")).replace(
+        "</", "<\\/"
+    )
     return (
         f"<style>{(ASSETS / 'leaflet.css').read_text()}</style>"
         f"<script>{(ASSETS / 'leaflet.js').read_text()}</script>"
@@ -420,6 +423,7 @@ def page(
     data_script: str,
     change: str = "",
     change_head: str = "",
+    opening: str = "",
 ):
     by_id = {item["id"]: item for item in figures}
     appendix = "".join(entry(item) for item in figures)
@@ -433,15 +437,29 @@ def page(
         f"<style>{STYLE}</style>{map_scripts(map_text, data_script)}{change_head}</head><body>"
         f"<h1>Bike paths in {html.escape(region.name)}</h1>"
         f"{author}"
-        f'<section id="opening"><h2>What the data shows</h2>'
-        f"<p>I checked {link(by_id['F1'])} of street that a bike may use. "
-        f"{link(by_id['F2'])} of it is safe for a child to ride alone. "
-        f"For {link(by_id['F3'])} I have no width.</p>"
-        f"<p>I ask council to measure the street where I have no width. "
-        "Please read the appendix to check every number.</p></section>"
+        f"{opening}"
         f"{map_section(by_id, has_stage('propose'))}"
-        f"{chart([item for item in figures if item['id'] in KEEP])}"
         f"{change}"
+        '<section id="neighbourhoods"><h2>Neighbourhood benefits and impacts</h2>'
+        "<p>Area-level trips and space changes are unknown. Area boundaries and resident unions "
+        'still need proof. See the <a href="#street-plans">local works</a>.</p></section>'
+        '<section id="street-plans"><h2>Street plans</h2>'
+        "<p>Local plans for the selected proposal are pending. The "
+        '<a href="#projects">old minimum-gain shortlist</a> and '
+        '<a href="#sheets">its project sheets</a> are separate evidence. '
+        "They may differ from the selected curve and do not prove its local impacts.</p></section>"
+        '<section id="delivery"><h2>Delivery and next decision</h2>'
+        "<p>I seek studies and a costed concept design before detailed design or construction. "
+        "Costs, upkeep, owner, approvals, first build stage and funding are unknown. "
+        'Dates are not commitments. See my <a href="#council-ask">council ask</a>.</p></section>'
+        '<section id="evidence"><h2>Evidence and model limits</h2>'
+        f"<p>I checked {link(by_id['F1'])} of street that a bike may use. "
+        f"{link(by_id['F2'])} meets the model's all-ages criteria. "
+        f"For {link(by_id['F3'])} I have no width. A model result does not prove field safety.</p>"
+        "<p>Model scores and type gains follow in the selected totals. Before is the baseline; "
+        "after is the selected step. Type gains are not a unique resident count. "
+        "The calm first-leg allowance is a model assumption, "
+        "not a confirmed complete trip.</p></section>"
         f"{glossary_section(terms)}"
         f'<section id="appendix"><h2>How to check every number</h2>'
         f"<p>This report uses the data snapshot of {snapshot_date(region)}.</p>{appendix}"
