@@ -427,6 +427,7 @@ def page(
     change: str = "",
     change_head: str = "",
     opening: str = "",
+    delivery: str = "",
 ):
     by_id = {item["id"]: item for item in figures}
     appendix = "".join(entry(item) for item in figures)
@@ -451,10 +452,7 @@ def page(
         '<a href="#projects">old minimum-gain shortlist</a> and '
         '<a href="#sheets">its project sheets</a> are separate evidence. '
         "They may differ from the selected curve and do not prove its local impacts.</p></section>"
-        '<section id="delivery"><h2>Delivery and next decision</h2>'
-        "<p>I seek studies and a costed concept design before detailed design or construction. "
-        "Costs, upkeep, owner, approvals, first build stage and funding are unknown. "
-        'Dates are not commitments. See my <a href="#council-ask">council ask</a>.</p></section>'
+        f"{delivery}"
         '<section id="evidence"><h2>Evidence and model limits</h2>'
         f"<p>I checked {link(by_id['F1'])} of street that a bike may use. "
         f"{link(by_id['F2'])} meets the model's all-ages criteria. "

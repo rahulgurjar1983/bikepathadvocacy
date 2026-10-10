@@ -113,6 +113,7 @@ def frontier_data(raw: dict, before: float, kinds: list, shapes: dict) -> dict:
         "scenarios": scenarios,
         "shapes": shapes,
         "trip_sources": raw.get("trip_sources", {}),
+        "proposal_metadata": raw.get("proposal_metadata"),
     }
 
 
@@ -380,7 +381,7 @@ def capped_note(chosen: dict, note_id: str = "change-capped") -> str:
     )
 
 
-def proposal_opening(frontier: dict) -> str:
+def proposal_opening(frontier: dict, delivery: str = "") -> str:
     chosen = default_scenario(frontier)
     rank = chosen["recommended_stop"] or 0
     pick = chosen["picks"][rank]
@@ -417,15 +418,12 @@ def proposal_opening(frontier: dict) -> str:
         f"<dl>{impacts}</dl>"
         "<p>Parking before, after, added and net change are unknown without an inventory. "
         "These loss estimates do not prove the full parking impact.</p>"
-        "<p>Capital cost: unknown. Upkeep cost: unknown. No sourced rates or budget are supplied. "
-        "First delivery stage: unknown; no funded date or build order is proved.</p>"
-        "<p>Key gaps: useful trips, school coverage, unique resident gains, usable widths, "
+        f'<div id="opening-delivery"><p id="council-ask">I ask council to take '
+        "the next evidence and design step.</p>"
+        f"{delivery}</div>"
+        "<p>First delivery stage is unknown without sourced stage records. "
+        "Key gaps: useful trips, school coverage, unique resident gains, usable widths, "
         "safe crossing movements and local walking, tree, bus and driveway effects need checks.</p>"
-        '<p id="council-ask">I ask council to scope a costed concept design for the selected works '
-        "and check their usable widths and crossing movements before a build decision. "
-        "For no new works, I ask council to name a useful route goal and seek its missing public "
-        "records first. A ranked survey plan tied to those routes is still pending. "
-        "The owner, approvals and funding are unknown.</p>"
         '<p>Please see the <a href="#street-plans">local works and their limits</a> '
         'and <a href="#delivery">next decision</a>.</p></section>'
     )
