@@ -855,3 +855,34 @@ def test_fr0_36_second_runner_cannot_launch_a_model(loop_repo):
         assert count(state) == 1
     finally:
         first.communicate(timeout=30)
+
+
+def test_fr0_36_provider_heartbeat_preserves_fallback_stdin(loop_repo, tmp_path):
+    repo, env, _state = loop_repo
+    fallback = tmp_path / "heartbeat-agent"
+    fallback.write_text(
+        f"#!{sys.executable}\n"
+        "import json, os, sys, time\n"
+        "from pathlib import Path\n"
+        "prompt = sys.stdin.read()\n"
+        "first = json.loads(Path('.ralph/status.json').read_text())\n"
+        "time.sleep(0.25)\n"
+        "second = json.loads(Path('.ralph/status.json').read_text())\n"
+        "Path(os.environ['PROMPT_PROOF']).write_text(json.dumps({'prompt': prompt, "
+        "'heartbeat': second['heartbeat_at'] > first['heartbeat_at']}))\n"
+        "print(json.dumps({'type': 'turn.completed', 'usage': {}}))\n"
+    )
+    fallback.chmod(0o755)
+    proof = tmp_path / "prompt.json"
+    env.update(
+        FAKE_LIMIT_ON="1",
+        RALPH_FALLBACK_BIN=str(fallback),
+        RALPH_AGENT_POLL_SECS="0.05",
+        PROMPT_PROOF=str(proof),
+    )
+    result = run_loop(repo, env, "1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    saved = json.loads(proof.read_text())
+    assert "Do one task." in saved["prompt"]
+    assert "P0.2" in saved["prompt"]
+    assert saved["heartbeat"]
