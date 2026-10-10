@@ -141,6 +141,7 @@ def places(snapshot: str | Path) -> list[dict]:
 class Homes(NamedTuple):
     people: dict
     unsnapped: float
+    population: dict | None = None
 
 
 def highways(data: dict) -> set:
@@ -182,9 +183,17 @@ def homes(units: list[dict], graph, boundary) -> Homes:
     ys = np.array([graph.nodes[node]["y"] for node in legal])
     people: dict = defaultdict(float)
     unsnapped = 0.0
-    for unit in units:
+    buffer_excluded = 0.0
+    shares = []
+    seen = set()
+    for index, unit in enumerate(units):
+        unit_id = str(unit.get("id", index))
+        if unit_id in seen:
+            raise ValueError("Duplicate population unit: " + unit_id)
+        seen.add(unit_id)
         centre = unit["polygon"].centroid
         if not boundary.contains(centre):
+            buffer_excluded += unit["people"]
             continue
         inside = [
             node
@@ -199,8 +208,27 @@ def homes(units: list[dict], graph, boundary) -> Homes:
             unsnapped += unit["people"]
             continue
         for node in targets:
-            people[node] += unit["people"] / len(targets)
-    return Homes(dict(people), unsnapped)
+            count = unit["people"] / len(targets)
+            people[node] += count
+            shares.append({"unit": unit_id, "node": node, "people": count})
+    return Homes(
+        dict(people),
+        unsnapped,
+        {
+            "shares": sorted(shares, key=lambda item: (item["unit"], str(item["node"]))),
+            "scope": "council population cells by centroid; destinations may be in the buffer",
+            "unit": "estimated residents",
+            "source": "snapshot population.gpkg",
+            "buffer_excluded": buffer_excluded,
+            "unsnapped": unsnapped,
+            "snapped": sum(people.values()),
+            "partial_cell_rule": "whole count when centroid is inside council",
+            "allocation": (
+                "equal shares at residential bike nodes, then other bike nodes, "
+                "then nearest within 300 m"
+            ),
+        },
+    )
 
 
 def in_scope_places(found: list[dict], boundary, buffer_m: float) -> list[dict]:
@@ -213,16 +241,18 @@ def population_units(snapshot: str | Path, crs) -> list[dict]:
     transformer = Transformer.from_crs(3857, crs, always_xy=True)
     database = sqlite3.connect(f"file:{Path(snapshot) / 'population.gpkg'}?mode=ro", uri=True)
     try:
-        rows = database.execute("select geom, population from population order by h3").fetchall()
+        rows = database.execute(
+            "select h3, geom, population from population order by h3"
+        ).fetchall()
     finally:
         database.close()
     units = []
-    for blob, count in rows:
+    for unit_id, blob, count in rows:
         rings = [
             list(zip(*transformer.transform(*zip(*ring, strict=True)), strict=True))
             for ring in gpkg_rings(blob)
         ]
-        units.append({"polygon": Polygon(rings[0], rings[1:]), "people": count})
+        units.append({"id": str(unit_id), "polygon": Polygon(rings[0], rings[1:]), "people": count})
     return units
 
 
@@ -422,6 +452,13 @@ def scene(graph, region, snapshot: str | Path) -> Scene:
     nodes, missed = snap_points([(p["x"], p["y"]) for p in kept], graph)
     placed = [(p["type"], node) for p, node in zip(kept, nodes, strict=True) if node is not None]
     resident = homes(population_units(snapshot, graph.graph["crs"]), graph, boundary)
+    manifest = json.loads((Path(snapshot) / "manifest.json").read_text())
+    population_source = next(
+        item for item in manifest["files"] if item["path"] == "population.gpkg"
+    )
+    resident.population["source"] = {
+        key: population_source.get(key) for key in ("path", "source", "url", "sha256", "licence")
+    }
     weights = {name: item.weight for name, item in region.destinations.items()}
     return Scene(kept, nodes, missed, placed, resident, weights)
 

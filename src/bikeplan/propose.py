@@ -29,7 +29,7 @@ from bikeplan.fit import FIXES, junction_fixes, segment_fit
 from bikeplan.fit import cross_section as fit_cross_section
 from bikeplan.network import bike_segments
 from bikeplan.stress import edge_aaa, own_lts, raise_for_crossings, score_edges
-from bikeplan.trips import complete_trips, snapshot_trip_inputs
+from bikeplan.trips import complete_trips, resident_outcomes, snapshot_trip_inputs
 from bikeplan.width import check_links, fuse
 
 CORRIDOR_FIXES = tuple(fix for fix in FIXES if fix != "quietway")
@@ -1028,6 +1028,7 @@ def scenario_curve(
     legs=None,
     corridors: Corridors | None = None,
     trip_inputs=None,
+    population=None,
 ) -> dict:
     scaled = scaled_region(region, scenario)
     scaled = dataclasses.replace(
@@ -1073,6 +1074,11 @@ def scenario_curve(
                         region.access.last_leg_m,
                     ),
                 }
+            )
+    if population is not None and packages:
+        for package in packages:
+            package["resident_outcomes"] = resident_outcomes(
+                packages[0], package, population, destinations
             )
     return {
         "shapes": shapes,
@@ -1165,6 +1171,20 @@ def write_propose(
         region.access.detour_max,
         region.access.last_leg_m,
     )
+    baseline_trips = complete_trips(
+        graph,
+        resident.people,
+        destinations,
+        links,
+        movements,
+        set(),
+        region.access.reach_m,
+        region.access.detour_max,
+        region.access.last_leg_m,
+    )
+    shortlist_trips["resident_outcomes"] = resident_outcomes(
+        baseline_trips, shortlist_trips, resident.population, destinations
+    )
     surveys = survey_layer(planning)
     if stats is not None:
         stats["survey_options"] = surveys
@@ -1181,7 +1201,11 @@ def write_propose(
     collection = {
         "type": "FeatureCollection",
         "features": project_features(graph, planning, records),
-        "trip_proof": {"package": "minimum-gain-shortlist", **shortlist_trips},
+        "trip_proof": {
+            "package": "minimum-gain-shortlist",
+            "population_sources": resident.population,
+            **shortlist_trips,
+        },
     }
     (out / "projects.geojson").write_text(json.dumps(collection))
     curves = [
@@ -1199,6 +1223,7 @@ def write_propose(
             legs,
             corridors,
             trip_inputs,
+            resident.population,
         )
         for scenario in scenarios_for(region.proposals)
     ]
@@ -1213,6 +1238,7 @@ def write_propose(
         "scenarios": curves,
         "trip_sources": {
             "destinations": destinations,
+            "population": resident.population,
             "evidence": json.loads((Path(snapshot) / "places.json").read_text()).get(
                 "trip_evidence", {}
             ),
