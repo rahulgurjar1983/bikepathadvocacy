@@ -1,0 +1,37 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+______ test_fr16_10_cost_figure_ids_are_stable_when_a_cost_kind_is_added _______
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-600/test_fr16_10_cost_figure_ids_a0')
+
+    def test_fr16_10_cost_figure_ids_are_stable_when_a_cost_kind_is_added(tmp_path):
+        from bikeplan.proposal_inputs import cost_figures, delivery_record
+    
+        annual = {**cost("upkeep", ["segment:a"], unit="per_year"), "kind": "upkeep"}
+    
+        def figures(costs):
+            delivery = delivery_record(
+                load(tmp_path, {**metadata(), "costs": costs}), ["segment:a"], CATALOG
+            )
+            frontier = {
+                "scenarios": [
+                    {"id": "test", "trip_packages": [{"package": {"rank": 1}, "delivery": delivery}]}
+                ]
+            }
+            records, _ = cost_figures(frontier, json.dumps(frontier))
+            return {r["label"]: r["id"] for r in records if "upkeep" in r["label"]}
+    
+        original = figures([annual])
+        expanded = figures([cost("capital", ["segment:a"]), annual])
+>       assert original == expanded
+E       AssertionError: assert {'test:1 upke...range': 'F25'} == {'test:1 upke...range': 'F27'}
+E         
+E         Differing items:
+E         {'test:1 upkeep low cost range': 'F24'} != {'test:1 upkeep low cost range': 'F26'}
+E         {'test:1 upkeep high cost range': 'F25'} != {'test:1 upkeep high cost range': 'F27'}
+E         Use -v to get more diff
+
+tests/test_proposal_inputs.py:476: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_proposal_inputs.py::test_fr16_10_cost_figure_ids_are_stable_when_a_cost_kind_is_added
+1 failed in 5.18s
