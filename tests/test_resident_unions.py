@@ -106,3 +106,46 @@ def test_fr16_5_saved_packages_shortlist_and_report_publish_resident_unions():
     assert "Unique estimated residents" in page
     assert "not a forecast of rides" in page
     assert "Unknown age, disability, pupil and household data" in page
+
+
+def test_fr16_5_offline_selection_keeps_counts_without_bulk_origin_records():
+    from bikeplan.change import change_scripts
+
+    outcomes = {
+        "strict": {
+            "unique_residents": {"before": 0, "after": 100, "newly_gained": 100},
+            "by_place_type": {"school": {"before": 0, "after": 100, "newly_gained": 100}},
+            "membership": {"after": [{"unit": "cell", "node": i, "people": 1} for i in range(100)]},
+        },
+        "population": {"scope": "council cells"},
+    }
+    frontier = {
+        "trip_sources": {"population": {"shares": outcomes["strict"]["membership"]["after"]}},
+        "scenarios": [
+            {
+                "id": "shipped",
+                "picks": [{"rank": 1}],
+                "trip_packages": [
+                    {
+                        "package": {"scenario": "shipped", "rank": 1},
+                        "project_ids": ["project"],
+                        "element_ids": ["link"],
+                        "strict": [{"origin": i, "destination": "school"} for i in range(100)],
+                        "resident_outcomes": outcomes,
+                    }
+                ],
+            }
+        ],
+    }
+    script = change_scripts(frontier)
+    embedded = json.loads(script.split('id="change-data">', 1)[1].split("</script>", 1)[0])
+    package = embedded["scenarios"][0]["trip_packages"][0]
+    assert package["package"] == {"scenario": "shipped", "rank": 1}
+    assert package["project_ids"] == ["project"]
+    assert package["resident_outcomes"]["strict"]["unique_residents"]["after"] == 100
+    assert package["resident_outcomes"]["strict"]["by_place_type"]["school"]["after"] == 100
+    assert "membership" not in package["resident_outcomes"]["strict"]
+    assert "strict" not in package
+    assert "shares" not in embedded["trip_sources"]["population"]
+    assert frontier["trip_sources"]["population"]["shares"]
+    assert frontier["scenarios"][0]["trip_packages"][0]["strict"]
