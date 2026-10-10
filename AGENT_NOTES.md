@@ -88,6 +88,12 @@ above shows the same failures. C1.10 cannot start while PR 118 stays
 open. Keep this rule clash as an input block; do not start report work
 or change the old checks from a loop branch.
 
+The Q1.10 turn checked fresh main with the proof command above. Both
+base checks pass; both feature checks fail on F14. The CI log command
+above shows the same failures. Q1.10 cannot start while PR 118 stays
+open. Repair the exact-list checks on an input branch while keeping
+the order, fields and link checks. No source or test was changed.
+
 Input ask: amend the exact figure-list checks on an input branch to
 allow new figure IDs while retaining order, fields and resolved links.
 Or grant a narrow rule for this test update. Keep the requirement for a
