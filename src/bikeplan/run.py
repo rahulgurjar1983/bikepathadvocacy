@@ -210,12 +210,17 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
     place_layer = collection(with_ids(places, lambda p: f"{p['osm_id']}:{p['type']}"))
     shape_layer = collection(with_ids(shapes, lambda properties: properties["id"]))
     shape_layer["trip_proof"] = shortlist_trips
+    page_shapes = shape_layer | {
+        "trip_proof": {
+            key: value for key, value in shortlist_trips.items() if key != "works_catalog"
+        }
+    }
     payload = {
         "summary": canon(summary),
         "projects": canon(records),
         "network": canon(network),
         "places": canon(place_layer),
-        "project_shapes": canon(shape_layer),
+        "project_shapes": canon(page_shapes),
     }
     frontier_shapes = collection(
         with_ids(raw["shapes"]["features"], lambda p: f"{p['project']}:{p['id']}"), 5
