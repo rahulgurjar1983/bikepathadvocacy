@@ -475,3 +475,11 @@ def test_fr16_10_cost_figure_ids_are_stable_when_a_cost_kind_is_added(tmp_path):
     expanded = figures([cost("capital", ["segment:a"]), annual])
     assert original == expanded
     assert len(original) == 2
+
+
+def test_fr16_10_length_rates_cannot_price_missing_physical_length_as_zero(tmp_path):
+    from bikeplan.proposal_inputs import delivery_record
+
+    supplied = load(tmp_path, {**metadata(), "costs": [cost("rate", ["segment:a"], unit="per_m")]})
+    with pytest.raises(ConfigError, match="physical length"):
+        delivery_record(supplied, ["segment:a"], {"segment:a": {"length_m": 0}})
