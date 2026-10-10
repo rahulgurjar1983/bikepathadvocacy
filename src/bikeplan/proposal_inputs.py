@@ -517,7 +517,16 @@ def cost_figures(frontier, text):
                 for gi, group in enumerate(package["delivery"]["costs"][kind]["groups"]):
                     pair = []
                     for bound in ("low", "high"):
-                        fid = f"F{24 + len(figures)}"
+                        identity = [
+                            key,
+                            kind,
+                            group["currency"],
+                            group["base_year"],
+                            group["unit"],
+                            bound,
+                        ]
+                        digest = hashlib.sha256(json.dumps(identity).encode()).hexdigest()
+                        fid = f"F{1000 + int(digest[:16], 16)}"
                         pair.append(fid)
                         recipe = (
                             "import json;d=json.load(open('frontier.json'));"
