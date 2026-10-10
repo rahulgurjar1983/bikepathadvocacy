@@ -160,6 +160,12 @@ base checks pass; both feature checks fail on F14. The CI log command
 clash. P12.1 cannot start while PR 118 stays open. The input ask below
 still applies. No source or test was changed.
 
+The P12.2 turn ran the fresh main proof with the command above. Both
+base checks pass; both feature checks fail on F14. The CI log command
+`gh run view 38026752269 --log-failed | tail -n 80` shows the same
+clash. P12.2 cannot start while PR 118 stays open. No source or test
+was changed. The input ask below still applies.
+
 Input ask: amend the exact figure-list checks on an input branch to
 allow new figure IDs while retaining order, fields and resolved links.
 Or grant a narrow rule for this test update. Keep the requirement for a
