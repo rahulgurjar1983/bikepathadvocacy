@@ -238,3 +238,7 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   retain all values. Keep full route and node records in the archive,
   with counts for offline page choices. Rebuild the full report after
   a size fix; do not patch a saved page or relax the cap.
+- Smaller stand-alone snapshots may have no source manifest. Keep
+  their counts usable and mark source metadata unknown with a reason.
+  Full report runs still need their manifest. A place with no type
+  belongs in the unknown type count; do not guess that it is a school.

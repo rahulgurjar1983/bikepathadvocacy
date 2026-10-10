@@ -1,5 +1,5 @@
 {
-  "build_commit": "efa99cf0bc1df486bfe6d02c0cafc03cc455b89d",
+  "build_commit": "879ae539ac59986935075e1a050999d01539b562",
   "command": "/usr/bin/time -v -o /tmp/c13-real-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-C1.3-real",
   "inputs": [
     {
