@@ -71,7 +71,7 @@ ROWS = [
     ("Traffic-lane km taken", "lane_km", "F8"),
     ("Speed-change km", "speed_km", "F9"),
     ("Unique people gaining a safe destination", "unique_people", "F10"),
-    ("Gains counted by type", "gains_by_type", "F14"),
+    ("Gains counted by type", "gains_by_type", "F15"),
 ]
 STROKES = ("#1b5e8a", "#2e7d32", "#8a5a00", "#7b2cbf", "#a33")
 DASHES = ("", "8 4", "2 4", "10 4 2 4", "6 2")
@@ -143,10 +143,10 @@ def change_figures(frontier: dict, text: str) -> list[dict]:
         }
         for figure_id, label, unit, expr, value in STEP_FIGURES
     ]
-    measures = [("F14", "Gains counted by type", "p['gains_by_type']", pick["gains_by_type"])]
+    measures = [("F15", "Gains counted by type", "p['gains_by_type']", pick["gains_by_type"])]
     measures += [
         (
-            f"F{15 + index}",
+            f"F{16 + index}",
             f"Unique people by type: {kind.replace('_', ' ')}",
             f"p['unique_people_by_type'][{kind!r}]",
             count,
@@ -228,7 +228,7 @@ def total_rows(frontier: dict, pick: dict) -> str:
         (
             f"Unique people by type: {kind.replace('_', ' ')}",
             f"people.{kind}",
-            f"F{15 + index}",
+            f"F{16 + index}",
             count,
         )
         for index, (kind, count) in enumerate(sorted(pick["unique_people_by_type"].items()))

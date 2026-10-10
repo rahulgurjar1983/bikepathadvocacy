@@ -251,6 +251,7 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
         *change_figures(frontier, frontier_bytes.decode()),
         *works_figures(frontier, frontier_bytes.decode()),
     ]
+    figures.sort(key=lambda item: int(item["id"][1:]))
     works_page = works_section(frontier)
     works_body, _, works_data = works_page.partition("<script")
     page_text = page(
