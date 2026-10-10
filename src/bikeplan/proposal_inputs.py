@@ -226,6 +226,7 @@ def validate_references(metadata, catalog, project_ids, destination_ids):
         if scope & occupied:
             raise ConfigError("Overlapping cost scopes price shared works twice")
         occupied.update(scope)
+        cost_length(cost, catalog)
     if contents.get("areas"):
         from shapely.geometry import shape
 
@@ -250,6 +251,15 @@ def unknown(reason):
     return {"value": None, "status": "unknown", "reason": reason}
 
 
+def cost_length(row, catalog):
+    if row["unit"] not in ("per_m", "per_m_year"):
+        return 1
+    lengths = [catalog[i].get("length_m") for i in row["element_ids"]]
+    if any(length is None or not math.isfinite(length) or length <= 0 for length in lengths):
+        raise ConfigError("A cost rate needs known positive physical length")
+    return sum(lengths)
+
+
 def cost_totals(contents, selected, catalog, kind):
     groups = defaultdict(list)
     covered = set()
@@ -262,11 +272,7 @@ def cost_totals(contents, selected, catalog, kind):
         covered.update(scope)
         annual = kind == "upkeep"
         key = (row["currency"], row["base_year"], "per_year" if annual else "total")
-        factor = (
-            sum(catalog[i]["length_m"] for i in scope)
-            if row["unit"] in ("per_m", "per_m_year")
-            else 1
-        )
+        factor = cost_length(row, catalog)
         groups[key].append(
             {**row, "computed_low": row["low"] * factor, "computed_high": row["high"] * factor}
         )
