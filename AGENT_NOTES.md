@@ -99,6 +99,12 @@ checks pass; the feature checks fail on F14. The CI log command above
 shows the same failures. Q1.11 cannot start while PR 118 stays open.
 The input ask still applies. No source or test was changed.
 
+The P10.1 turn checked fresh main with the proof command above. Base
+checks pass; both feature checks fail on F14. The CI log command above
+shows the same failures. P10.1 cannot start while PR 118 stays open.
+The exact-list checks still need an input fix; keep their order, field
+and link checks. No source or test was changed.
+
 Input ask: amend the exact figure-list checks on an input branch to
 allow new figure IDs while retaining order, fields and resolved links.
 Or grant a narrow rule for this test update. Keep the requirement for a
