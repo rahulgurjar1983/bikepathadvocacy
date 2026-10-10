@@ -33,4 +33,4 @@ E     Use -v to get more diff
 =========================== short test summary info ============================
 FAILED tests/test_report.py::test_fr13_1_figures_are_sorted_with_every_field
 FAILED tests/test_report.py::test_fr13_2_the_figure_links_hold_the_numbers_and_resolve_to_one_entry
-2 failed in 1.98s
+2 failed in 2.84s
