@@ -355,3 +355,56 @@ def test_fr15_5_default_junction_pick_requires_sourced_proposed_movements():
     }
     assert (1, 2, 0) in confirmed_planning(graph, PROFILE, planning).edges
     assert not score_edges(graph, PROFILE)[1, 2, 0]["confirmed_aaa"]
+
+
+def test_fr15_5_literal_model_scores_never_claim_confirmed_distance():
+    from bikeplan.stress import stress_summary
+    from tests.test_network_clip import two_way_graph
+
+    graph = two_way_graph()
+    scores = {(1, 2, 0): {"lts": 1, "aaa": True}, (2, 1, 0): {"lts": 1, "aaa": True}}
+    summary = stress_summary(graph, scores)
+    assert summary["km_aaa"] == pytest.approx(0.1)
+    assert summary["safety_scenario"] == "model"
+    assert summary["km_confirmed_aaa"] == 0
+    assert summary["by_road_class"]["residential"]["km_confirmed_aaa"] == 0
+
+
+def test_fr15_5_evidence_scores_label_confirmed_distance_separately():
+    from bikeplan.stress import stress_summary
+    from tests.test_network_clip import two_way_graph
+
+    graph = two_way_graph()
+    scores = {
+        (1, 2, 0): {"lts": 1, "aaa": True, "confirmed_aaa": True},
+        (2, 1, 0): {"lts": 1, "aaa": True, "confirmed_aaa": False},
+    }
+    summary = stress_summary(graph, scores)
+    assert summary["safety_scenario"] == "confirmed"
+    assert summary["km_model_aaa"] == pytest.approx(0.1)
+    assert summary["km_confirmed_aaa"] == summary["km_aaa"] == 0
+
+
+def test_fr15_5_confirmed_picks_retain_unverified_corridor_candidate_count(tmp_path):
+    from bikeplan.propose import solve
+    from tests.test_propose_corridor import OPEN, RAIL, Corridors, loop_graph
+    from tests.test_propose_network import PROFILE, REGION
+
+    graph = loop_graph()
+    graph.graph["points"] = []
+    stats = {}
+    solved, planning, picked = solve(
+        graph,
+        REGION,
+        PROFILE,
+        [],
+        {0: 10},
+        {},
+        corridors=Corridors([("rail", RAIL)], OPEN),
+        stats=stats,
+        confirmed=True,
+    )
+    assert stats["corridor_candidates"] >= 1
+    assert not any(data.get("candidate") for _, _, data in solved.edges(data=True))
+    assert not any(item["fix"] == "new_path" for item in planning.elements.values())
+    assert picked == []
