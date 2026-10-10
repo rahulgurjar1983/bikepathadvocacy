@@ -596,7 +596,7 @@ def check_private_paths(route, claims, out, reply=None):
         records.append(path)
     if restricted:
         for path in [*paths, *records]:
-            if not path.resolve().is_relative_to(private):
+            if not path.is_relative_to(private) or not path.resolve().is_relative_to(private):
                 raise ConfigError(f"Private review files must stay under data/private: {path}")
 
 
