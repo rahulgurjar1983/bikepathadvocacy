@@ -32,7 +32,11 @@ on that base. Apply only the feature source patch; both fail on the added
 F14. No old test is changed. Logs are in
 `artifacts/C1.4/input-base-tests.txt` and
 `artifacts/C1.4/input-feature-tests.txt`. CI proof: run
-`gh run view 38025980539 --log-failed | tail -n 80`.
+`gh run view 38026461146 --log-failed | tail -n 80`.
+
+The C1.5 turn ran the same proof on fresh main again. The base still
+passes and the feature still fails. Finish this open PR before starting
+C1.5; do not weaken old tests or reuse a figure ID to pass CI.
 
 Input ask: amend the exact figure-list checks on an input branch to
 allow new figure IDs while retaining order, fields and resolved links.
