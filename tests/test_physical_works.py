@@ -233,3 +233,24 @@ def test_fr16_6_existing_links_need_no_proposed_fix_to_be_retained():
     result = works_package(catalog, ["segment:a"], [(1, 2, 0), (2, 1, 0)])
     assert result["existing_links_retained"]["length_m"] == 100
     assert result["existing_links_retained"]["element_ids"] == ["segment:b"]
+
+
+def test_fr16_6_page_uses_shared_plan_rows_without_copying_archive_catalogs():
+    from bikeplan.change import change_scripts
+
+    frontier = {
+        "default": "shipped",
+        "scenarios": [
+            {
+                "id": "shipped",
+                "works_catalog": {"segment:one": {"source": "full archived plan"}},
+                "trip_packages": [],
+            }
+        ],
+    }
+    script = change_scripts(frontier)
+    embedded = json.loads(script.split('id="change-data">', 1)[1].split("</script>", 1)[0])
+    assert "works_catalog" not in embedded["scenarios"][0]
+    assert (
+        frontier["scenarios"][0]["works_catalog"]["segment:one"]["source"] == "full archived plan"
+    )
