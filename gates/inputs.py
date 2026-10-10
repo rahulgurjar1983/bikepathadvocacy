@@ -23,6 +23,8 @@ INPUT_FILES = frozenset(
         "scripts/install-gitleaks.sh",
         "scripts/check-reply.sh",
         "scripts/install-hooks.sh",
+        "scripts/install-loop-service.sh",
+        "scripts/loop-status.sh",
     }
 )
 

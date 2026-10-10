@@ -1,0 +1,24 @@
+{
+  "base_commit": "45ea37e9aa89e81aa4ad9b87cdab5fa67fbcdc4a",
+  "config_hash": "df0dd49ebd0cbf430b9077096ed47d45a1bcc7cfa1e275a8a372f3a1203a9803",
+  "snapshot_hash": "4e2af873e84a9ca96f04b7b22a7d846cb4d9d579c0361136492226b4f1234a8f",
+  "required_baseline_score": 25.0,
+  "required_after_score": 100.0,
+  "residential_adt": {
+    "value": 750,
+    "source": "assumption: typical daily traffic for the class",
+    "assumption": true
+  },
+  "signals": [
+    {
+      "node": "1012",
+      "tags": {
+        "highway": "traffic_signals"
+      }
+    }
+  ],
+  "movement_evidence_present": false,
+  "way_adt_evidence_present": false,
+  "command": "uv run python artifacts/Q1.4/check_inputs.py /tmp/bikeplan-q14-input-proof-current",
+  "test_command": "uv run --directory /tmp/bikeplan-q14-input-proof-current pytest tests/test_test_grid.py -q -k 'baseline_region_score_is_25 or side_streets_at_the_signals_are_lts_1_and_aaa'"
+}

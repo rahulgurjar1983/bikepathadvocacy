@@ -1,0 +1,691 @@
+{
+  "package": {
+    "rank": 1,
+    "scenario": "light"
+  },
+  "plans": [
+    {
+      "access_changes": null,
+      "endpoints": [
+        {
+          "id": "13135418944",
+          "name": "President Avenue",
+          "name_gap": false,
+          "x": 328456.43648246664,
+          "y": 6240136.494547399
+        }
+      ],
+      "fix": "signals",
+      "id": "junction:13135418944",
+      "kind": "crossing",
+      "name": "unnamed cycleway",
+      "turn_changes": null
+    }
+  ],
+  "sample_scope": "Unselected model options, not confirmed package works.",
+  "sections": [],
+  "unselected_model_plan_samples": [
+    {
+      "access_changes": null,
+      "after": [
+        {
+          "kind": "cycleway",
+          "width_m": 1.5
+        },
+        {
+          "kind": "separator",
+          "width_m": 0.5
+        },
+        {
+          "kind": "through",
+          "width_m": 3.0
+        },
+        {
+          "kind": "through",
+          "width_m": 3.0
+        },
+        {
+          "kind": "separator",
+          "width_m": 0.5
+        },
+        {
+          "kind": "cycleway",
+          "width_m": 1.5
+        },
+        {
+          "kind": "spare",
+          "width_m": 1.0
+        }
+      ],
+      "before": [
+        {
+          "kind": "parking",
+          "width_m": 2.1
+        },
+        {
+          "kind": "through",
+          "width_m": 3.0
+        },
+        {
+          "kind": "through",
+          "width_m": 3.0
+        },
+        {
+          "kind": "parking",
+          "width_m": 2.1
+        },
+        {
+          "kind": "spare",
+          "width_m": 0.8000000000000007
+        }
+      ],
+      "design": "protected_cycleway",
+      "directed_edges": [
+        [
+          1836915442,
+          246201101,
+          0
+        ],
+        [
+          246201101,
+          1836915442,
+          0
+        ]
+      ],
+      "endpoints": [
+        {
+          "id": "1836915442",
+          "name": "Unara Street",
+          "name_gap": false,
+          "x": 324740.62134301057,
+          "y": 6245588.615329141
+        },
+        {
+          "id": "246201101",
+          "name": "Fletcher Street",
+          "name_gap": false,
+          "x": 324752.39659662324,
+          "y": 6245358.682022579
+        }
+      ],
+      "evidence_status": "modelled",
+      "fix": "cycleway_parking_both_sides",
+      "id": "segment:025bcbe216770fa9",
+      "kind": "link",
+      "lanes": {
+        "after_count": 2,
+        "after_widths_m": [
+          3.0,
+          3.0
+        ],
+        "before_count": 2,
+        "before_widths_m": [
+          3.0,
+          3.0
+        ],
+        "evidence_status": "modelled",
+        "narrowed": false,
+        "removed": 0,
+        "source": "osm_tag"
+      },
+      "length_m": 0.0,
+      "name": "Beamish Street",
+      "name_gap": false,
+      "parking": {
+        "after_sides": null,
+        "before_sides": null,
+        "removed_side_count": 2,
+        "side_rule": "Left then right in the saved edge direction; unknown sides need a survey.",
+        "unknown_sides": [
+          "left",
+          "right"
+        ]
+      },
+      "road_id": "road:969c91fbd01c438a",
+      "survey_needs": [
+        "walking_width",
+        "trees",
+        "bus_stops",
+        "utilities",
+        "drainage",
+        "driveways"
+      ],
+      "turn_changes": null,
+      "walking": {
+        "after_m": null,
+        "before_m": null,
+        "reason": "No walking width evidence."
+      },
+      "width_confidence": "medium",
+      "width_source": "osm_tag"
+    },
+    {
+      "access_changes": null,
+      "after": [
+        {
+          "kind": "cycleway",
+          "width_m": 2.5
+        },
+        {
+          "kind": "separator",
+          "width_m": 0.5
+        },
+        {
+          "kind": "through",
+          "width_m": 3.0
+        },
+        {
+          "kind": "through",
+          "width_m": 3.0
+        },
+        {
+          "kind": "parking",
+          "width_m": 2.1
+        },
+        {
+          "kind": "spare",
+          "width_m": 0.9000000000000004
+        }
+      ],
+      "before": [
+        {
+          "kind": "parking",
+          "width_m": 2.1
+        },
+        {
+          "kind": "through",
+          "width_m": 3.0
+        },
+        {
+          "kind": "through",
+          "width_m": 3.0
+        },
+        {
+          "kind": "parking",
+          "width_m": 2.1
+        },
+        {
+          "kind": "spare",
+          "width_m": 1.8000000000000007
+        }
+      ],
+      "design": "protected_cycleway",
+      "directed_edges": [
+        [
+          18496899,
+          8835984872,
+          0
+        ],
+        [
+          8835984872,
+          18496899,
+          0
+        ]
+      ],
+      "endpoints": [
+        {
+          "id": "18496899",
+          "name": "Chapman Avenue",
+          "name_gap": false,
+          "x": 338766.6486445692,
+          "y": 6242406.421378778
+        },
+        {
+          "id": "8835984872",
+          "name": null,
+          "name_gap": true,
+          "x": 338822.8510772696,
+          "y": 6242466.601993604
+        }
+      ],
+      "evidence_status": "modelled",
+      "fix": "cycleway_parking_one_side",
+      "id": "segment:03d3282f1b66994a",
+      "kind": "link",
+      "lanes": {
+        "after_count": 2,
+        "after_widths_m": [
+          3.0,
+          3.0
+        ],
+        "before_count": 2,
+        "before_widths_m": [
+          3.0,
+          3.0
+        ],
+        "evidence_status": "modelled",
+        "narrowed": false,
+        "removed": 0,
+        "source": "osm_tag"
+      },
+      "length_m": 0.0,
+      "name": "Fenton Avenue",
+      "name_gap": false,
+      "parking": {
+        "after_sides": null,
+        "before_sides": null,
+        "removed_side_count": 1,
+        "side_rule": "Left then right in the saved edge direction; unknown sides need a survey.",
+        "unknown_sides": [
+          "left",
+          "right"
+        ]
+      },
+      "road_id": "road:595f0d0d8cb59a62",
+      "survey_needs": [
+        "walking_width",
+        "trees",
+        "bus_stops",
+        "utilities",
+        "drainage",
+        "driveways"
+      ],
+      "turn_changes": null,
+      "walking": {
+        "after_m": null,
+        "before_m": null,
+        "reason": "No walking width evidence."
+      },
+      "width_confidence": "medium",
+      "width_source": "osm_tag"
+    },
+    {
+      "access_changes": null,
+      "after": [
+        {
+          "kind": "cycleway",
+          "width_m": 2.5
+        },
+        {
+          "kind": "separator",
+          "width_m": 0.5
+        },
+        {
+          "kind": "through",
+          "width_m": 3.0
+        },
+        {
+          "kind": "through",
+          "width_m": 3.0
+        },
+        {
+          "kind": "parking",
+          "width_m": 2.1
+        },
+        {
+          "kind": "spare",
+          "width_m": 0.9000000000000004
+        }
+      ],
+      "before": [
+        {
+          "kind": "parking",
+          "width_m": 2.1
+        },
+        {
+          "kind": "through",
+          "width_m": 3.0
+        },
+        {
+          "kind": "through",
+          "width_m": 3.0
+        },
+        {
+          "kind": "parking",
+          "width_m": 2.1
+        },
+        {
+          "kind": "spare",
+          "width_m": 1.8000000000000007
+        }
+      ],
+      "design": "protected_cycleway",
+      "directed_edges": [
+        [
+          1832386647,
+          4455935812,
+          0
+        ],
+        [
+          4455935812,
+          1832386647,
+          0
+        ]
+      ],
+      "endpoints": [
+        {
+          "id": "1832386647",
+          "name": "Marrickville Road",
+          "name_gap": false,
+          "x": 330093.0756973133,
+          "y": 6245914.826920815
+        },
+        {
+          "id": "4455935812",
+          "name": "Southwest Link Shared Path",
+          "name_gap": false,
+          "x": 330097.3909400739,
+          "y": 6245921.24958452
+        }
+      ],
+      "evidence_status": "modelled",
+      "fix": "cycleway_parking_one_side",
+      "id": "segment:048ed4a60c663fec",
+      "kind": "link",
+      "lanes": {
+        "after_count": 2,
+        "after_widths_m": [
+          3.0,
+          3.0
+        ],
+        "before_count": 2,
+        "before_widths_m": [
+          3.0,
+          3.0
+        ],
+        "evidence_status": "modelled",
+        "narrowed": false,
+        "removed": 0,
+        "source": "osm_tag"
+      },
+      "length_m": 0.0,
+      "name": "Sydney Street",
+      "name_gap": false,
+      "parking": {
+        "after_sides": [
+          "right"
+        ],
+        "before_sides": [
+          "left",
+          "right"
+        ],
+        "removed_side_count": 1,
+        "side_rule": "Left then right in the saved edge direction; unknown sides need a survey.",
+        "unknown_sides": []
+      },
+      "road_id": "road:761c7bf2e30af3e1",
+      "survey_needs": [
+        "walking_width",
+        "trees",
+        "bus_stops",
+        "utilities",
+        "drainage",
+        "driveways"
+      ],
+      "turn_changes": null,
+      "walking": {
+        "after_m": null,
+        "before_m": null,
+        "reason": "No walking width evidence."
+      },
+      "width_confidence": "medium",
+      "width_source": "osm_tag"
+    },
+    {
+      "access_changes": null,
+      "after": [
+        {
+          "kind": "cycleway",
+          "width_m": 1.5
+        },
+        {
+          "kind": "separator",
+          "width_m": 0.5
+        },
+        {
+          "kind": "through",
+          "width_m": 3.0
+        },
+        {
+          "kind": "through",
+          "width_m": 3.0
+        },
+        {
+          "kind": "separator",
+          "width_m": 0.5
+        },
+        {
+          "kind": "cycleway",
+          "width_m": 1.5
+        },
+        {
+          "kind": "spare",
+          "width_m": 1.5999999999999996
+        }
+      ],
+      "before": [
+        {
+          "kind": "through",
+          "width_m": 3.0
+        },
+        {
+          "kind": "through",
+          "width_m": 3.0
+        },
+        {
+          "kind": "spare",
+          "width_m": 5.6
+        }
+      ],
+      "design": "protected_cycleway",
+      "directed_edges": [
+        [
+          2152408112,
+          2152408163,
+          0
+        ],
+        [
+          2152408163,
+          2152408112,
+          0
+        ]
+      ],
+      "endpoints": [
+        {
+          "id": "2152408112",
+          "name": null,
+          "name_gap": true,
+          "x": 333139.69225281954,
+          "y": 6247211.39316106
+        },
+        {
+          "id": "2152408163",
+          "name": null,
+          "name_gap": true,
+          "x": 333141.1053454221,
+          "y": 6247209.410136265
+        }
+      ],
+      "evidence_status": "modelled",
+      "fix": "cycleway_in_spare",
+      "id": "segment:04d628c5b2e6f321",
+      "kind": "link",
+      "lanes": {
+        "after_count": 2,
+        "after_widths_m": [
+          3.0,
+          3.0
+        ],
+        "before_count": 2,
+        "before_widths_m": [
+          3.0,
+          3.0
+        ],
+        "evidence_status": "modelled",
+        "narrowed": false,
+        "removed": 0,
+        "source": "osm_tag"
+      },
+      "length_m": 0.0,
+      "name": "Fountain Street",
+      "name_gap": false,
+      "parking": {
+        "after_sides": null,
+        "before_sides": null,
+        "removed_side_count": 0,
+        "side_rule": "Left then right in the saved edge direction; unknown sides need a survey.",
+        "unknown_sides": [
+          "left",
+          "right"
+        ]
+      },
+      "road_id": "road:1b4b1bc17491ec8c",
+      "survey_needs": [
+        "walking_width",
+        "trees",
+        "bus_stops",
+        "utilities",
+        "drainage",
+        "driveways"
+      ],
+      "turn_changes": null,
+      "walking": {
+        "after_m": null,
+        "before_m": null,
+        "reason": "No walking width evidence."
+      },
+      "width_confidence": "medium",
+      "width_source": "osm_tag"
+    },
+    {
+      "access_changes": null,
+      "after": [
+        {
+          "kind": "cycleway",
+          "width_m": 1.5
+        },
+        {
+          "kind": "separator",
+          "width_m": 0.5
+        },
+        {
+          "kind": "through",
+          "width_m": 3.0
+        },
+        {
+          "kind": "through",
+          "width_m": 3.0
+        },
+        {
+          "kind": "parking",
+          "width_m": 2.1
+        },
+        {
+          "kind": "separator",
+          "width_m": 1.0
+        },
+        {
+          "kind": "cycleway",
+          "width_m": 1.5
+        },
+        {
+          "kind": "spare",
+          "width_m": 0.09999999999999964
+        }
+      ],
+      "before": [
+        {
+          "kind": "parking",
+          "width_m": 2.1
+        },
+        {
+          "kind": "through",
+          "width_m": 3.0
+        },
+        {
+          "kind": "through",
+          "width_m": 3.0
+        },
+        {
+          "kind": "parking",
+          "width_m": 2.1
+        },
+        {
+          "kind": "spare",
+          "width_m": 2.5
+        }
+      ],
+      "design": "protected_cycleway",
+      "directed_edges": [
+        [
+          4455867962,
+          5698178122,
+          0
+        ],
+        [
+          5698178122,
+          4455867962,
+          0
+        ]
+      ],
+      "endpoints": [
+        {
+          "id": "4455867962",
+          "name": null,
+          "name_gap": true,
+          "x": 330428.0202874958,
+          "y": 6246366.47052105
+        },
+        {
+          "id": "5698178122",
+          "name": null,
+          "name_gap": true,
+          "x": 330450.2523818734,
+          "y": 6246345.424252825
+        }
+      ],
+      "evidence_status": "modelled",
+      "fix": "cycleway_parking_one_side",
+      "id": "segment:059f612b52397e91",
+      "kind": "link",
+      "lanes": {
+        "after_count": 2,
+        "after_widths_m": [
+          3.0,
+          3.0
+        ],
+        "before_count": 2,
+        "before_widths_m": [
+          3.0,
+          3.0
+        ],
+        "evidence_status": "modelled",
+        "narrowed": false,
+        "removed": 0,
+        "source": "osm_tag"
+      },
+      "length_m": 0.0,
+      "name": "Saywell Street",
+      "name_gap": false,
+      "parking": {
+        "after_sides": [
+          "right"
+        ],
+        "before_sides": [
+          "left",
+          "right"
+        ],
+        "removed_side_count": 1,
+        "side_rule": "Left then right in the saved edge direction; unknown sides need a survey.",
+        "unknown_sides": []
+      },
+      "road_id": "road:c677a53014888f7d",
+      "survey_needs": [
+        "walking_width",
+        "trees",
+        "bus_stops",
+        "utilities",
+        "drainage",
+        "driveways"
+      ],
+      "turn_changes": null,
+      "walking": {
+        "after_m": null,
+        "before_m": null,
+        "reason": "No walking width evidence."
+      },
+      "width_confidence": "medium",
+      "width_source": "osm_tag"
+    }
+  ]
+}

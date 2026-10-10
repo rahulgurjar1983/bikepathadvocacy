@@ -1,0 +1,37 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____________ test_fr15_6_sheets_retain_exact_counts_for_checking ______________
+
+    def test_fr15_6_sheets_retain_exact_counts_for_checking():
+        from html import unescape
+    
+        from bikeplan.page import sheet
+    
+        record = {
+            "id": "sample",
+            "name": "Example people counts",
+            "gain": 1.0,
+            "score_after": 2.0,
+            "elements": [],
+            "totals": {
+                "parking_spaces": 0,
+                "lane_km": 0,
+                "speed_km": 0,
+                "signals": 0,
+                "refuges": 0,
+                "km_by_fix": {},
+                "access_gains": {
+                    "unique_people": 0.4,
+                    "unique_people_by_type": {"station": 0.4, "school": 0.4},
+                    "gains_by_type": 0.8,
+                },
+            },
+        }
+        found = unescape(sheet(record, []))
+>       assert "<details><summary>Exact people counts to check and reuse</summary>" in found
+E       assert '<details><summary>Exact people counts to check and reuse</summary>' in '<article id="project-sample"><h3>Example people counts</h3><p>Gain 1.0. Score after 2.0.</p><table><thead><tr><th>Ele...td><td><code>0</code></td></tr><tr><td><code>station</code></td><td><code>0</code></td></tr></tbody></table></article>'
+
+tests/test_people_gains.py:139: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_people_gains.py::test_fr15_6_sheets_retain_exact_counts_for_checking
+1 failed in 1.65s

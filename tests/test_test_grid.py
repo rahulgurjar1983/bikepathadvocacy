@@ -14,6 +14,7 @@ from bikeplan.fit import segment_fit
 from bikeplan.network import bike_segments, build
 from bikeplan.snapshot import verify_snapshot
 from bikeplan.stress import score_edges
+from tests.grid_safety_inputs import add_grid_safety_inputs
 
 REGION = "regions/test-grid.yaml"
 COMMITTED = Path("tests/fixtures/test-grid/snapshot")
@@ -27,6 +28,7 @@ def snapshot(tmp_path_factory):
     subprocess.run(
         [sys.executable, "scripts/make_test_grid.py", str(folder)], check=True, capture_output=True
     )
+    add_grid_safety_inputs(folder)
     return folder
 
 

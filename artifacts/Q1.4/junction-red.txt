@@ -1,0 +1,37 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____ test_fr15_5_default_junction_pick_requires_sourced_proposed_movements _____
+
+    def test_fr15_5_default_junction_pick_requires_sourced_proposed_movements():
+        from bikeplan.propose import Planning, confirmed_planning
+    
+        graph = crossing_graph()
+        planning = Planning(
+            {(1, 2, 0): {"cost": 100, "needs": ("junction:2",)}},
+            {"junction:2": {"kind": "junction", "fix": "signals", "junction": 2}},
+        )
+        assert not confirmed_planning(graph, PROFILE, planning).edges
+        graph.graph["safety_evidence"] = {
+            "movements": [
+                {
+                    "incoming": [1, 2, 0],
+                    "outgoing": [2, 5, 0],
+                    "stage": "proposed",
+                    "fix": "signals",
+                    "source": "explicit toy signal design",
+                    "date": "2026-10-01",
+                    "protected_phase": True,
+                    "turning_conflicts": "protected",
+                    "bicycle_access": True,
+                }
+            ]
+        }
+>       assert (1, 2, 0) in confirmed_planning(graph, PROFILE, planning).edges
+E       AssertionError: assert (1, 2, 0) in {}
+E        +  where {} = Planning(edges={}, elements={}, survey_options=()).edges
+E        +    where Planning(edges={}, elements={}, survey_options=()) = <function confirmed_planning at 0x7a03a87793a0>(<networkx.classes.multidigraph.MultiDiGraph object at 0x7a03a792eba0>, Profile(id='au-nsw', name='NSW (TfNSW Cycleway Design Toolbox and Austroads)', aaa=Aaa(mixed_traffic=[MixedTraffic(max...), 'GB:motorway': Num(value=112.65, source='OpenStreetMap Wiki, Default speed limits: GB:motorway', assumption=False)}), Planning(edges={(1, 2, 0): {'cost': 100, 'needs': ('junction:2',)}}, elements={'junction:2': {'kind': 'junction', 'fix': 'signals', 'junction': 2}}, survey_options=()))
+
+tests/test_safety_evidence.py:355: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_safety_evidence.py::test_fr15_5_default_junction_pick_requires_sourced_proposed_movements
+1 failed, 16 deselected in 1.92s

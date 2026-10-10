@@ -1,6 +1,18 @@
 #!/usr/bin/env bash
 set -uo pipefail
 
+control_module() {
+  if [ -n "${RALPH_CONTROL_DIR:-}" ]; then
+    python3 "$RALPH_CONTROL_DIR/gates/control.py" "$@"
+  else
+    python3 -m "$@"
+  fi
+}
+
+status() {
+  control_module gates.runnerstatus "$@"
+}
+
 log() {
   printf '%s %s\n' "$(date -u +%FT%TZ)" "$*" | tee -a ralph.log
 }
@@ -34,11 +46,21 @@ rung_limited() {
 }
 
 reset_secs() {
-  python3 -m gates.providerwait --default "$RALPH_BACKOFF_SECS" "$@"
+  control_module gates.providerwait --default "$RALPH_BACKOFF_SECS" "$@"
 }
 
 run_agent() {
-  timeout --kill-after=60 "$RALPH_TURN_SECS" "$@"
+  timeout --kill-after=60 "$RALPH_TURN_SECS" "$@" <&0 &
+  local child=$!
+  while kill -0 "$child" 2>/dev/null; do
+    if ! status heartbeat; then
+      kill -TERM "$child" 2>/dev/null
+      wait "$child"
+      return 2
+    fi
+    sleep "${RALPH_AGENT_POLL_SECS:-5}"
+  done
+  wait "$child"
 }
 
 usage_fields() {
@@ -128,14 +150,9 @@ finish_row() {
   else
     printf '%s\n' "$row" >.ralph/escalate
   fi
-  outcome="$(python3 -m gates.loopstate "$row" "$progress" "$max_stalls")" || return 2
+  outcome="$(control_module gates.loopstate "$row" "$progress" "$max_stalls")" || return 2
   if [ "$outcome" = blocked ]; then
-    reason="$(python3 - "$row" <<'PYCODE'
-import sys
-from gates.loopstate import read_state
-print(read_state()[sys.argv[1]]["reason"])
-PYCODE
-    )" || return 2
+    reason="$(control_module gates.loopstate "$row" --reason)" || return 2
     log "row $row blocked: $reason; inputs saved in .ralph/stalls.json"
   fi
 }
@@ -148,6 +165,7 @@ bounded_backoff() {
     if [ "$remaining" -lt "${hold_poll%.*}" ]; then
       tick="$remaining"
     fi
+    status heartbeat || return 2
     sleep "$tick"
   done
 }
@@ -173,8 +191,8 @@ PYCODE
 }
 
 main() {
-  cd "$(dirname "$0")" || exit 1
-  local self="$PWD/loop.sh"
+  cd "${RALPH_WORK_DIR:-$(dirname "$0")}" || exit 1
+  local self="${RALPH_CONTROL_DIR:-$PWD}/loop.sh"
   local max="${1:-200}"
   case "$max" in '' | *[!0-9]*) max=200 ;; esac
   local flags=()
@@ -191,7 +209,7 @@ main() {
   local fallback_bin="${RALPH_FALLBACK_BIN:-}"
   local deepseek_env="${RALPH_DEEPSEEK_ENV:-}"
   local prompt_file="${RALPH_PROMPT_FILE:-PROMPT.md}"
-  local pick_cmd="${RALPH_PICK_CMD:-uv run --frozen python -m gates.ledger pick}"
+  local pick_cmd="${RALPH_PICK_CMD:-control_module gates.scheduler pick}"
   local base_model="${RALPH_MODEL:-sonnet}"
   local escalate_model="${RALPH_ESCALATE_MODEL:-$base_model}"
   local reasoning_model="${RALPH_REASONING_MODEL:-$base_model}"
@@ -208,7 +226,7 @@ main() {
   local tools="${RALPH_TOOLS:-Bash,Read,Edit,Write,Glob,Grep,WebSearch,WebFetch}"
   local pause="${RALPH_PAUSE_SECS:-5}"
   local hold_poll="${RALPH_HOLD_POLL_SECS:-30}"
-  local idle_secs="${RALPH_IDLE_SECS:-1800}"
+  local idle_secs="${RALPH_IDLE_SECS:-60}"
   local max_idle="${RALPH_MAX_IDLE:-0}"
   local max_sleep="${RALPH_MAX_SLEEP_SECS:-21600}"
   RALPH_NOTIFY_CMD="${RALPH_NOTIFY_CMD:-scripts/notify.sh}"
@@ -221,6 +239,15 @@ main() {
   export BASH_MAX_TIMEOUT_MS="${RALPH_BASH_MAX_MS:-3600000}"
 
   mkdir -p .ralph
+  if [ "${RALPH_LOCK_HELD:-}" != "$$" ]; then
+    exec 9>.ralph/loop.lock
+    if ! flock -n 9; then
+      log "another runner is already running"
+      exit 73
+    fi
+    export RALPH_LOCK_HELD=$$
+  fi
+  status starting || exit 2
   if ! command -v "$claude_bin" >/dev/null 2>&1; then
     log "agent '$claude_bin' is not on PATH"
     exit 127
@@ -257,7 +284,7 @@ main() {
   local model row_id before progress effort role codex_model codex_effort codex_skills recovery
   local limited_logs=()
   if [ ! -f .ralph/checkpoint.py ]; then
-    python3 -m gates.checkpoint install >>ralph.log 2>&1 || exit 2
+    control_module gates.checkpoint install >>ralph.log 2>&1 || exit 2
   fi
   while [ "$i" -lt "$max" ]; do
     if [ -f STOP ]; then
@@ -266,24 +293,45 @@ main() {
     fi
     if [ -f HOLD ]; then
       log "HOLD file present; waiting until it is removed"
+      status paused --reason "HOLD file present" || exit 2
       while [ -f HOLD ] && [ ! -f STOP ]; do
+        status heartbeat || exit 2
         sleep "$hold_poll"
       done
       continue
     fi
     if [ "${RALPH_SKIP_SYNC:-0}" != 1 ]; then
-      if ! git fetch -q origin 2>>ralph.log; then
-        log "git fetch failed; the loop stopped"
-        exit 2
+      if ! timeout --kill-after=10 "${RALPH_SYNC_SECS:-180}" git fetch -q origin 2>>ralph.log; then
+        if [ "${RALPH_RESILIENT:-0}" != 1 ]; then
+          log "git fetch failed; the loop stopped"
+          exit 2
+        fi
+        log "sync failed; retrying without a model turn"
+        status sync_retry --reason "git fetch failed" --retry-seconds "${RALPH_RETRY_SECS:-30}" || exit 2
+        bounded_backoff "${RALPH_RETRY_SECS:-30}" || exit 2
+        continue
       fi
-      if ! python3 .ralph/checkpoint.py save >>ralph.log 2>&1; then
-        log "cannot save unfinished loop work; the loop stopped"
-        exit 1
+      if ! control_module gates.checkpoint save >>ralph.log 2>&1; then
+        log "work needs recovery; waiting without a model turn"
+        status blocked --reason "checkpoint refused; saved work retained" --retry-seconds "$idle_secs" || exit 2
+        bounded_backoff "$idle_secs" || exit 2
+        continue
       fi
-      if ! git checkout -q main 2>>ralph.log || ! git merge -q --ff-only origin/main 2>>ralph.log; then
-        log "cannot return to an up-to-date main; commit or clear the work tree"
-        notify "cannot return to an up-to-date main; the loop stopped"
-        exit 1
+      if ! timeout --kill-after=10 "${RALPH_SYNC_SECS:-180}" git checkout -q main 2>>ralph.log ||
+        ! timeout --kill-after=10 "${RALPH_SYNC_SECS:-180}" git merge -q --ff-only origin/main 2>>ralph.log; then
+        log "main sync needs recovery; waiting without a model turn"
+        status blocked --reason "main checkout or fast-forward failed" --retry-seconds "$idle_secs" || exit 2
+        bounded_backoff "$idle_secs" || exit 2
+        continue
+      fi
+      if [ -n "${RALPH_CONTROL_DIR:-}" ]; then
+        if [ -n "$(git -C "$RALPH_CONTROL_DIR" status --porcelain)" ] ||
+          ! git -C "$RALPH_CONTROL_DIR" checkout -q --detach origin/main 2>>ralph.log; then
+          log "controller update needs recovery; waiting without a model turn"
+          status blocked --reason "control worktree is dirty or cannot update" --retry-seconds "$idle_secs" || exit 2
+          bounded_backoff "$idle_secs" || exit 2
+          continue
+        fi
       fi
     fi
     if [ "$(cksum <"$self")" != "$fingerprint" ]; then
@@ -297,18 +345,30 @@ main() {
       idle=$((idle + 1))
       log "no open row in PROGRESS.md (idle check $idle)"
       if [ "$idle" -eq 1 ]; then
-        notify "no open row left in PROGRESS.md; the loop is idle"
+        notify "no runnable task; inspect .ralph/status.json"
       fi
       if [ "$max_idle" -gt 0 ] && [ "$idle" -ge "$max_idle" ]; then
         break
       fi
-      sleep "$idle_secs"
+      status idle --reason "no runnable task" --retry-seconds "$idle_secs" || exit 2
+      bounded_backoff "$idle_secs" || exit 2
+      continue
+    fi
+    if [ "$status" -eq 4 ] || [ "$status" -eq 5 ]; then
+      log "scheduler waiting; inspect .ralph/status.json; no model turn spent"
+      status retry --retry-seconds "$idle_secs" || exit 2
+      bounded_backoff "$idle_secs" || exit 2
       continue
     fi
     if [ "$status" -ne 0 ]; then
-      log "row picker failed with exit $status; fix PROGRESS.md"
-      notify "row picker failed with exit $status; the loop stopped"
-      exit 1
+      if [ "${RALPH_RESILIENT:-0}" != 1 ]; then
+        log "row picker failed with exit $status; fix PROGRESS.md"
+        exit 1
+      fi
+      log "scheduler failed; retrying without a model turn"
+      status retry --retry-seconds "${RALPH_RETRY_SECS:-30}" || exit 2
+      bounded_backoff "${RALPH_RETRY_SECS:-30}" || exit 2
+      continue
     fi
     idle=0
 
@@ -320,8 +380,8 @@ main() {
     turn_log=".ralph/iter-${stamp}-$((i + 1)).log"
     row_id="${row%% *}"
     note="$row_id"
-    python3 -m gates.checkpoint install >>ralph.log 2>&1 || exit 2
-    recovery="$(python3 -m gates.checkpoint pending "$row_id")" || exit 2
+    control_module gates.checkpoint install >>ralph.log 2>&1 || exit 2
+    recovery="$(control_module gates.checkpoint pending "$row_id")" || exit 2
     if [ "$recovery" != "[]" ]; then
       note+=$'\n'"Saved work for this row: $recovery. Resume its branch and run python3 .ralph/checkpoint.py restore before new edits or merging main. Keep the stash until this work ships."
     fi
@@ -356,6 +416,7 @@ main() {
     fi
     rm -f .ralph/turn-result.json
     before="$(commit_count)"
+    status running --row "$row_id" --reason "provider claude" || exit 2
     log "turn $((i + 1))/$max: $row ($model, effort $effort, role $role)"
     run_agent "$claude_bin" -p "$prompt" --model "$model" --effort "$effort" "${perm[@]}" \
       --append-system-prompt "$note" --output-format json --disable-slash-commands \
@@ -372,6 +433,7 @@ main() {
           continue
         fi
         rm -f .ralph/turn-result.json
+        status running --row "$row_id" --reason "provider $rung" || exit 2
         log "usage limit on the agent before; running $rung"
         rung_log="${turn_log%.log}-$rung.log"
         if [ "$rung" = codex ]; then
@@ -417,7 +479,8 @@ main() {
         secs="$max_sleep"
       fi
       log "usage limit hit; sleeping ${secs}s; this turn does not count; next retry $(date -u -d "+${secs} seconds" +%FT%TZ)"
-      bounded_backoff "$secs"
+      status quota_wait --row "$row_id" --reason "available plan providers are limited" --retry-seconds "$secs" || exit 2
+      bounded_backoff "$secs" || exit 2
       continue
     fi
 
@@ -438,6 +501,7 @@ main() {
     finish_row "$row_id" "$progress" || exit 2
     sleep "$pause"
   done
+  status stopped --reason "STOP or turn bound reached" || exit 2
   log "loop finished after $i turn(s)"
 }
 

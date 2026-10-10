@@ -1,0 +1,25 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____ test_fr15_5_confirmed_picks_retain_unverified_corridor_candidate_count ____
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-568/test_fr15_5_confirmed_picks_re0')
+
+    def test_fr15_5_confirmed_picks_retain_unverified_corridor_candidate_count(tmp_path):
+        from bikeplan.propose import solve
+        from tests.test_propose_corridor import OPEN, RAIL, Corridors, loop_graph
+        from tests.test_propose_network import PROFILE, REGION
+    
+        graph = loop_graph()
+        graph.graph["points"] = []
+        stats = {}
+        solved, planning, picked = solve(
+            graph, REGION, PROFILE, [], {0: 10}, {},
+            corridors=Corridors([("rail", RAIL)], OPEN), stats=stats, confirmed=True,
+        )
+>       assert stats["corridor_candidates"] >= 1
+E       assert 0 >= 1
+
+tests/test_safety_evidence.py:400: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_safety_evidence.py::test_fr15_5_confirmed_picks_retain_unverified_corridor_candidate_count
+1 failed, 19 deselected in 11.02s

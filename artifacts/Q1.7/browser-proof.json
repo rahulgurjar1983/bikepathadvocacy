@@ -1,0 +1,53 @@
+{
+  "announced_status": "Parking and lanes count four times (heavy) proposal, rank 1",
+  "code": "958c4a84ff0920bdbbc781e0520d888a031c5cc4",
+  "command": "uv run python artifacts/Q1.7/collect.py",
+  "hashes": [
+    {
+      "path": "artifacts/Q1.7/report/SHA256SUMS",
+      "sha256": "9699e3851365ff5e2216ca76086c9b64855b6f99c7ff0487bf6b1a99ea77814b"
+    },
+    {
+      "path": "artifacts/Q1.7/report/figures.json",
+      "sha256": "e8f4731bd386ebd65450cfcbf590bc7e30cc649c6e55596cdd93bbd21d723827"
+    },
+    {
+      "path": "artifacts/Q1.7/report/frontier.json",
+      "sha256": "0fbef5e8a081b40c3e391760b5b3f15a91062e7f052620ef837681074f50aeca"
+    },
+    {
+      "path": "artifacts/Q1.7/report/map.json",
+      "sha256": "8b1971c195dbb83e05e7dc2ff7dc7f1549ae8c7ad6167eaad1dfc56f67267c85"
+    },
+    {
+      "path": "artifacts/Q1.7/report/report.html",
+      "sha256": "51617600e231d35b228807aa94ebdb8a1c7ade71e4733a77d2d579c53a4d6877"
+    },
+    {
+      "path": "artifacts/Q1.7/report/segments.csv",
+      "sha256": "27c0984bcdb2ad112f04c41dfb9bfa5f525a46f380b552cbc0d45187ab2debff"
+    }
+  ],
+  "keyboard_package": "heavy:1",
+  "region": "tests/fixtures/test-grid/region.yaml",
+  "report_bytes": 231578,
+  "row": "Q1.7",
+  "scope": "Fresh test-grid report; no claim of real school coverage or full report conversion",
+  "scripts_off": "Default proposal and opened curve table are readable",
+  "selected_impacts": {
+    "lane_km": 0.0,
+    "parking_spaces": 0.0,
+    "speed_km": 0.0
+  },
+  "snapshot": "tests/fixtures/test-grid/snapshot",
+  "views": [
+    {
+      "sideways_scroll": false,
+      "width": 390
+    },
+    {
+      "sideways_scroll": false,
+      "width": 1280
+    }
+  ]
+}

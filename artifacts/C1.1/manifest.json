@@ -1,0 +1,169 @@
+{
+  "build_commit": "ff811569bb9da13ed56929791d7eb3c49b98d692",
+  "command": "/usr/bin/time -v -o /tmp/c11-real-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-C1.1-ci-proof",
+  "inputs": [
+    {
+      "path": "regions/au-nsw-bayside.yaml",
+      "sha256": "b324303588064e489ddf116063e24218bf89dd5e1ac3dab8bd8d2aae57f2b2e0"
+    },
+    {
+      "path": "profiles/au-nsw.yaml",
+      "sha256": "3089879011bff619b5df896b6a63677e7f1d9c50b24c50febf081cb6681e25cf"
+    },
+    {
+      "path": "data/cache/au-nsw-bayside/2026-10-01/manifest.json",
+      "sha256": "2eaf0b00832565765c42e07b48ad7c6117436194487f45931e348f6772964bba"
+    }
+  ],
+  "limit": "These checks inspect saved model witnesses. They do not prove field safety or complete source coverage.",
+  "outputs": [
+    {
+      "path": "access_homes.geojson",
+      "sha256": "45b6a74df5efb30c1a2d4cc92453a4d100a5b47959db76504d34976c282a23c0"
+    },
+    {
+      "path": "frontier.json",
+      "sha256": "228b8eec32b8c69ac1fcdac2c8cb2327f94acd9ad72e2c022109826b3496edf2"
+    },
+    {
+      "path": "network.geojson",
+      "sha256": "ba342a505818555809ad75cecd1de1498784613b1aea4cfaa19446f07f16fa42"
+    },
+    {
+      "path": "outputs.sha256",
+      "sha256": "fa2b61ac047eea7775c26af144d92aebdd11fae1a4c1af7c1808b6da33d9715a"
+    },
+    {
+      "path": "places.geojson",
+      "sha256": "b275748f27eb07121541c246e22a64058d21b81e39bff4d3d823ccffeaa23803"
+    },
+    {
+      "path": "projects.csv",
+      "sha256": "69a447a786ccdf72f74d85204c7639b70c4fd6dcf95355ad0e3a47f99b019ec9"
+    },
+    {
+      "path": "projects.geojson",
+      "sha256": "1512f30c5fcf7159548c7b5dd2721db0c8d468104e7e8978f3f1c9892dcd489f"
+    },
+    {
+      "path": "projects.json",
+      "sha256": "ff4b2a80b661de8c383ae6856e9db5bb5c1de8ef71bbb2d26ae5c491a05c412a"
+    },
+    {
+      "path": "report.html",
+      "sha256": "d06397d6148cea66e09806f5098399e4d3906a4f399ec724ed917e1729a4d846"
+    },
+    {
+      "path": "summary.json",
+      "sha256": "4201d6231a40d06946028da9d283b06afff9e0e89d389bb8ccf4ca20e8ba9287"
+    }
+  ],
+  "packages": [
+    {
+      "continuous_network": false,
+      "element_ids": [],
+      "first_leg_model_trips": null,
+      "first_leg_status": "unknown_entrance_links",
+      "gaps": 294,
+      "joins": 0,
+      "package": {
+        "rank": 0,
+        "scenario": "light"
+      },
+      "project_ids": [],
+      "route_groups": 0,
+      "strict_return_trips": 0
+    },
+    {
+      "continuous_network": false,
+      "element_ids": [
+        "junction:13135418944"
+      ],
+      "first_leg_model_trips": null,
+      "first_leg_status": "unknown_entrance_links",
+      "gaps": 294,
+      "joins": 0,
+      "package": {
+        "rank": 1,
+        "scenario": "light"
+      },
+      "project_ids": [
+        "b9a999953869c8b5"
+      ],
+      "route_groups": 0,
+      "strict_return_trips": 0
+    },
+    {
+      "continuous_network": false,
+      "element_ids": [],
+      "first_leg_model_trips": null,
+      "first_leg_status": "unknown_entrance_links",
+      "gaps": 294,
+      "joins": 0,
+      "package": {
+        "rank": 0,
+        "scenario": "shipped"
+      },
+      "project_ids": [],
+      "route_groups": 0,
+      "strict_return_trips": 0
+    },
+    {
+      "continuous_network": false,
+      "element_ids": [
+        "junction:13135418944"
+      ],
+      "first_leg_model_trips": null,
+      "first_leg_status": "unknown_entrance_links",
+      "gaps": 294,
+      "joins": 0,
+      "package": {
+        "rank": 1,
+        "scenario": "shipped"
+      },
+      "project_ids": [
+        "b9a999953869c8b5"
+      ],
+      "route_groups": 0,
+      "strict_return_trips": 0
+    },
+    {
+      "continuous_network": false,
+      "element_ids": [],
+      "first_leg_model_trips": null,
+      "first_leg_status": "unknown_entrance_links",
+      "gaps": 294,
+      "joins": 0,
+      "package": {
+        "rank": 0,
+        "scenario": "heavy"
+      },
+      "project_ids": [],
+      "route_groups": 0,
+      "strict_return_trips": 0
+    },
+    {
+      "continuous_network": false,
+      "element_ids": [
+        "junction:13135418944"
+      ],
+      "first_leg_model_trips": null,
+      "first_leg_status": "unknown_entrance_links",
+      "gaps": 294,
+      "joins": 0,
+      "package": {
+        "rank": 1,
+        "scenario": "heavy"
+      },
+      "project_ids": [
+        "b9a999953869c8b5"
+      ],
+      "route_groups": 0,
+      "strict_return_trips": 0
+    }
+  ],
+  "row": "C1.1",
+  "shortlist_strict_return_trips": 0,
+  "source_destinations": 294,
+  "source_entrances": 0
+}

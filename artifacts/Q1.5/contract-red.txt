@@ -1,0 +1,202 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+_______________ test_fr13_1_figures_are_sorted_with_every_field ________________
+
+output = PosixPath('/tmp/pytest-of-oem/pytest-573/out0')
+
+    def test_fr13_1_figures_are_sorted_with_every_field(output):
+        figures = json.loads((output / "figures.json").read_text())
+>       assert [item["id"] for item in figures] == [f"F{n}" for n in range(1, 23)]
+E       AssertionError: assert ['F1', 'F2', ...5', 'F6', ...] == ['F1', 'F2', ...5', 'F6', ...]
+E         
+E         Right contains 8 more items, first extra item: 'F15'
+E         Use -v to get more diff
+
+tests/test_report.py:54: AssertionError
+---------------------------- Captured stdout setup -----------------------------
+F1 5.2 km
+F2 3.0 km
+F3 0.0 km
+F4 12 pieces
+F5 100.0 points
+F6 15.0 points
+F7 0 spaces
+F8 0.0 km
+F9 0.0 km
+F10 750.0 people
+F11 0 km
+F12 6 steps
+F13 1 projects
+F14 0 roads
+____ test_fr13_2_the_figure_links_hold_the_numbers_and_resolve_to_one_entry ____
+
+output = PosixPath('/tmp/pytest-of-oem/pytest-573/out0')
+
+    def test_fr13_2_the_figure_links_hold_the_numbers_and_resolve_to_one_entry(output):
+        page = parsed(output)
+>       assert sorted(set(page.links)) == sorted(f"F{n}" for n in range(1, 23))
+E       AssertionError: assert ['F1', 'F10',...', 'F14', ...] == ['F1', 'F10',...', 'F14', ...]
+E         
+E         At index 6 diff: 'F2' != 'F15'
+E         Right contains 8 more items, first extra item: 'F22'
+E         Use -v to get more diff
+
+tests/test_report.py:184: AssertionError
+____________ test_fr15_6_slider_shows_unique_people_and_type_gains _____________
+
+browser = <selenium.webdriver.chrome.webdriver.WebDriver (session="696c16f64911191d7389931d53931d23")>
+frontier = {'baseline': 25.0, 'default': 'shipped', 'scenarios': [{'cap_reached': False, 'evaluated_projects': 1, 'id': 'light', ...onfirmed': None, 'fix': 'signals', 'id': 'junction:1010', ...}, 'type': 'Feature'}], 'type': 'FeatureCollection'}, ...}
+
+    def test_fr15_6_slider_shows_unique_people_and_type_gains(browser, frontier):
+        for curve in frontier["scenarios"][:2]:
+            browser.find_element(By.ID, "scenario-" + curve["id"]).click()
+            for rank in (0, len(curve["picks"]) - 1):
+                move(browser, rank)
+                pick = curve["picks"][rank]
+                for key in ("unique_people", "gains_by_type"):
+>                   cell = browser.find_element(By.CSS_SELECTOR, f'[data-measure="{key}"]')
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_report_change.py:268: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/home/oem/claude/bikepathadvocacy/.venv/lib/python3.12/site-packages/selenium/webdriver/remote/webdriver.py:914: in find_element
+    return self.execute(Command.FIND_ELEMENT, {"using": by, "value": value})["value"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/oem/claude/bikepathadvocacy/.venv/lib/python3.12/site-packages/selenium/webdriver/remote/webdriver.py:506: in execute
+    self.error_handler.check_response(response)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <selenium.webdriver.remote.errorhandler.ErrorHandler object at 0x72e43eb35850>
+response = {'status': 404, 'value': '{"value":{"error":"no such element","message":"no such element: Unable to locate element: {\...\\n#15 0x55a783449b63 \\u003Cunknown>\\n#16 0x711a0309cb84 \\u003Cunknown>\\n#17 0x711a03129ecc \\u003Cunknown>\\n"}}'}
+
+    def check_response(self, response: dict[str, Any]) -> None:
+        """Check that a JSON response from the WebDriver does not have an error.
+    
+        Args:
+            response: The JSON response from the WebDriver server as a dictionary
+                object.
+    
+        Raises:
+            WebDriverException: If the response contains an error message.
+        """
+        status = response.get("status", None)
+        if not status or status == ErrorCode.SUCCESS:
+            return
+        value = None
+        message = response.get("message", "")
+        screen: str = response.get("screen", "")
+        stacktrace = None
+        if isinstance(status, int):
+            value_json = response.get("value", None)
+            if value_json and isinstance(value_json, str):
+                try:
+                    value = json.loads(value_json)
+                    if isinstance(value, dict):
+                        if len(value) == 1:
+                            value = value["value"]
+                        status = value.get("error", None)
+                        if not status:
+                            status = value.get("status", ErrorCode.UNKNOWN_ERROR)
+                            message = value.get("value") or value.get("message")
+                            if not isinstance(message, str):
+                                value = message
+                                message = message.get("message") if isinstance(message, dict) else None
+                        else:
+                            message = value.get("message", None)
+                except ValueError:
+                    pass
+    
+        exception_class: type[WebDriverException]
+        e = ErrorCode()
+        error_codes = [item for item in dir(e) if not item.startswith("__")]
+        for error_code in error_codes:
+            error_info = getattr(ErrorCode, error_code)
+            if isinstance(error_info, list) and status in error_info:
+                exception_class = getattr(ExceptionMapping, error_code, WebDriverException)
+                break
+        else:
+            exception_class = WebDriverException
+    
+        if not value:
+            value = response["value"]
+        if isinstance(value, str):
+            raise exception_class(value)
+        if message == "" and "message" in value:
+            message = value["message"]
+    
+        screen = None  # type: ignore[assignment]
+        if "screen" in value:
+            screen = value["screen"]
+    
+        stacktrace = None
+        st_value = value.get("stackTrace") or value.get("stacktrace")
+        if st_value:
+            if isinstance(st_value, str):
+                stacktrace = st_value.split("\n")
+            else:
+                stacktrace = []
+                try:
+                    for frame in st_value:
+                        line = frame.get("lineNumber", "")
+                        file = frame.get("fileName", "<anonymous>")
+                        if line:
+                            file = f"{file}:{line}"
+                        meth = frame.get("methodName", "<anonymous>")
+                        if "className" in frame:
+                            meth = f"{frame['className']}.{meth}"
+                        msg = "    at %s (%s)"
+                        msg = msg % (meth, file)
+                        stacktrace.append(msg)
+                except TypeError:
+                    pass
+        if exception_class == UnexpectedAlertPresentException:
+            alert_text = None
+            if "data" in value:
+                alert_text = value["data"].get("text")
+            elif "alert" in value:
+                alert_text = value["alert"].get("text")
+            raise exception_class(message, screen, stacktrace, alert_text)
+>       raise exception_class(message, screen, stacktrace)
+E       selenium.common.exceptions.NoSuchElementException: Message: no such element: Unable to locate element: {"method":"css selector","selector":"[data-measure="unique_people"]"}
+E         (Session info: chrome=155.0.8059.39); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception
+E       Stacktrace:
+E       #0 0x55a78344b1da <unknown>
+E       #1 0x55a782d6a5c9 <unknown>
+E       #2 0x55a782dc160f <unknown>
+E       #3 0x55a782dc1891 <unknown>
+E       #4 0x55a782e12b04 <unknown>
+E       #5 0x55a782e0fd6e <unknown>
+E       #6 0x55a782db42f8 <unknown>
+E       #7 0x55a782db50d1 <unknown>
+E       #8 0x55a78340dcec <unknown>
+E       #9 0x55a78340c505 <unknown>
+E       #10 0x55a7833f73b5 <unknown>
+E       #11 0x55a78340d15a <unknown>
+E       #12 0x55a7833df939 <unknown>
+E       #13 0x55a783435898 <unknown>
+E       #14 0x55a783435a35 <unknown>
+E       #15 0x55a783449b63 <unknown>
+E       #16 0x711a0309cb84 <unknown>
+E       #17 0x711a03129ecc <unknown>
+
+/home/oem/claude/bikepathadvocacy/.venv/lib/python3.12/site-packages/selenium/webdriver/remote/errorhandler.py:232: NoSuchElementException
+---------------------------- Captured stdout setup -----------------------------
+F1 5.2 km
+F2 3.0 km
+F3 0.0 km
+F4 12 pieces
+F5 100.0 points
+F6 15.0 points
+F7 0 spaces
+F8 0.0 km
+F9 0.0 km
+F10 750.0 people
+F11 0 km
+F12 6 steps
+F13 1 projects
+F14 0 roads
+=========================== short test summary info ============================
+FAILED tests/test_report.py::test_fr13_1_figures_are_sorted_with_every_field
+FAILED tests/test_report.py::test_fr13_2_the_figure_links_hold_the_numbers_and_resolve_to_one_entry
+FAILED tests/test_report_change.py::test_fr15_6_slider_shows_unique_people_and_type_gains
+3 failed in 90.09s (0:01:30)

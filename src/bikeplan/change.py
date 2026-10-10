@@ -43,10 +43,10 @@ STEP_FIGURES = [
     ),
     (
         "F10",
-        "People who gain safe reach at the recommended stop",
+        "Unique people gaining a safe destination at the recommended stop",
         "people",
-        "round(sum(p['people'].values()),3)",
-        lambda p: round(sum(p["people"].values()), 3),
+        "p['unique_people']",
+        lambda p: p["unique_people"],
     ),
     (
         "F11",
@@ -59,7 +59,10 @@ STEP_FIGURES = [
 METHOD = (
     "I take the projects in the order I picked them, and add up what each one costs and gains. "
     "The shown step is the recommended stop of the {label} scenario. The recipe reads that step "
-    "from frontier.json; change the rank in it to check any other step."
+    "from frontier.json; change the rank in it to check any other step. Unique people count the "
+    "union of home nodes gaining a safe destination. Unique people by type use a union for each "
+    "type. Gains counted by type sum those type counts and can count a person again. People are "
+    "population estimates, not households; each node holds a share of its population unit."
 )
 ROWS = [
     ("Access score", "score", "F5"),
@@ -67,6 +70,8 @@ ROWS = [
     ("Parking spaces taken", "parking_spaces", "F7"),
     ("Traffic-lane km taken", "lane_km", "F8"),
     ("Speed-change km", "speed_km", "F9"),
+    ("Unique people gaining a safe destination", "unique_people", "F10"),
+    ("Gains counted by type", "gains_by_type", "F15"),
 ]
 STROKES = ("#1b5e8a", "#2e7d32", "#8a5a00", "#7b2cbf", "#a33")
 DASHES = ("", "8 4", "2 4", "10 4 2 4", "6 2")
@@ -96,6 +101,9 @@ def frontier_data(raw: dict, before: float, kinds: list, shapes: dict) -> dict:
         "km_by_fix": {},
         "score": before,
         "people": dict.fromkeys(kinds, 0),
+        "unique_people": 0,
+        "unique_people_by_type": dict.fromkeys(kinds, 0),
+        "gains_by_type": 0,
     }
     scenarios = [{**item, "picks": [baseline, *item["picks"]]} for item in raw["scenarios"]]
     default = next((item for item in scenarios if item["id"] == "shipped"), scenarios[0])
@@ -104,6 +112,7 @@ def frontier_data(raw: dict, before: float, kinds: list, shapes: dict) -> dict:
         "default": default["id"],
         "scenarios": scenarios,
         "shapes": shapes,
+        "trip_sources": raw.get("trip_sources", {}),
     }
 
 
@@ -133,6 +142,28 @@ def change_figures(frontier: dict, text: str) -> list[dict]:
             "recipe": PRELUDE.format(scenario=chosen["id"], expr=expr),
         }
         for figure_id, label, unit, expr, value in STEP_FIGURES
+    ]
+    measures = [("F15", "Gains counted by type", "p['gains_by_type']", pick["gains_by_type"])]
+    measures += [
+        (
+            f"F{16 + index}",
+            f"Unique people by type: {kind.replace('_', ' ')}",
+            f"p['unique_people_by_type'][{kind!r}]",
+            count,
+        )
+        for index, (kind, count) in enumerate(sorted(pick["unique_people_by_type"].items()))
+    ]
+    figures += [
+        {
+            **base,
+            "id": figure_id,
+            "label": label,
+            "value": value,
+            "unit": "people",
+            "method": method,
+            "recipe": PRELUDE.format(scenario=chosen["id"], expr=expr),
+        }
+        for figure_id, label, expr, value in measures
     ]
     steps = sum(len(item["picks"]) for item in frontier["scenarios"])
     figures.append(
@@ -169,7 +200,7 @@ PLACES = {"score": 1, "disruption": 1, "parking_spaces": 0, "lane_km": 3, "speed
 
 
 def places(key: str) -> int:
-    if key.startswith("people."):
+    if key in ("unique_people", "gains_by_type") or key.startswith("people."):
         return 0
     if key.startswith("km."):
         return 3
@@ -194,8 +225,13 @@ def fix_names(frontier: dict) -> list[str]:
 def total_rows(frontier: dict, pick: dict) -> str:
     rows = [(label, key, figure, pick[key]) for label, key, figure in ROWS]
     rows += [
-        (f"People gaining safe reach: {kind.replace('_', ' ')}", f"people.{kind}", "F10", count)
-        for kind, count in sorted(pick["people"].items())
+        (
+            f"Unique people by type: {kind.replace('_', ' ')}",
+            f"people.{kind}",
+            f"F{16 + index}",
+            count,
+        )
+        for index, (kind, count) in enumerate(sorted(pick["unique_people_by_type"].items()))
     ]
     rows += [
         (
@@ -208,7 +244,9 @@ def total_rows(frontier: dict, pick: dict) -> str:
     ]
     return "".join(
         f'<tr><th scope="row">{html.escape(label)}</th>'
-        f'<td><a href="#{figure}" data-total="{html.escape(key, quote=True)}">'
+        f'<td><a href="#{figure}" '
+        f"{'data-measure' if key in ('unique_people', 'gains_by_type') else 'data-total'}="
+        f'"{html.escape(key, quote=True)}">'
         f"{number(value, key)}</a></td></tr>"
         for label, key, figure, value in rows
     )
@@ -287,7 +325,45 @@ def chart_section(frontier: dict) -> str:
 
 
 def change_scripts(frontier: dict) -> str:
-    data = json.dumps(frontier, sort_keys=True).replace("</", "<\\/")
+    sources = frontier.get("trip_sources", {})
+    compact = {
+        **frontier,
+        "trip_sources": {
+            **sources,
+            "population": {
+                key: value
+                for key, value in sources.get("population", {}).items()
+                if key != "shares"
+            },
+        },
+        "scenarios": [
+            {
+                **{key: value for key, value in curve.items() if key != "works_catalog"},
+                "trip_packages": [
+                    {
+                        key: value
+                        for key, value in package.items()
+                        if key in {"package", "project_ids", "element_ids"}
+                    }
+                    | {
+                        "resident_outcomes": {
+                            key: {
+                                name: value
+                                for name, value in record.items()
+                                if name != "membership"
+                            }
+                            if isinstance(record, dict)
+                            else record
+                            for key, record in package.get("resident_outcomes", {}).items()
+                        }
+                    }
+                    for package in curve.get("trip_packages", [])
+                ],
+            }
+            for curve in frontier["scenarios"]
+        ],
+    }
+    data = json.dumps(compact, sort_keys=True, separators=(",", ":")).replace("</", "<\\/")
     return (
         f'<script type="application/json" id="change-data">{data}</script>'
         f"<script>{(ASSETS / 'change.js').read_text()}</script>"
@@ -304,7 +380,58 @@ def capped_note(chosen: dict, note_id: str = "change-capped") -> str:
     )
 
 
-def change_section(frontier: dict, by_id: dict) -> str:
+def proposal_opening(frontier: dict) -> str:
+    chosen = default_scenario(frontier)
+    rank = chosen["recommended_stop"] or 0
+    pick = chosen["picks"][rank]
+    status = f"{chosen['label']} ({chosen['id']}) proposal, rank "
+    state = (
+        "No new works are selected."
+        if rank == 0
+        else "I propose the modelled works in this selection."
+    )
+    fields = [
+        ("Modelled parking spaces removed", "parking_spaces", "F7"),
+        ("Modelled traffic-lane km removed", "lane_km", "F8"),
+        ("Modelled lower-speed street km", "speed_km", "F9"),
+    ]
+    impacts = "".join(
+        f'<dt>{label}</dt><dd><a href="#{figure}" data-opening="{key}">'
+        f"{number(pick[key], key)}</a></dd>"
+        for label, key, figure in fields
+    )
+    return (
+        f'<section id="opening" data-package="{html.escape(chosen["id"])}:{rank}">'
+        "<h2>My proposal and its trade-offs</h2>"
+        f'<p id="package-status" role="status" aria-live="polite" aria-atomic="true">'
+        f'{html.escape(status)}<a href="#F13">{rank}</a></p>'
+        f'<p id="proposal-state">{state}</p>'
+        "<p>I checked the modelled route choices. Useful complete trips and school sites served "
+        "before, after and newly served are unknown. "
+        "Entrance links and return trips still need proof. "
+        "Schools, stations and other places are model goals, not a proved joined network.</p>"
+        "<p>Modelled route works are in the "
+        '<a href="#change-totals">selected model totals</a>. '
+        "Crossing works, existing links retained and remaining route gaps still need checks. "
+        "I keep these limits beside the lasting space changes.</p>"
+        f"<dl>{impacts}</dl>"
+        "<p>Parking before, after, added and net change are unknown without an inventory. "
+        "These loss estimates do not prove the full parking impact.</p>"
+        "<p>Capital cost: unknown. Upkeep cost: unknown. No sourced rates or budget are supplied. "
+        "First delivery stage: unknown; no funded date or build order is proved.</p>"
+        "<p>Key gaps: useful trips, school coverage, unique resident gains, usable widths, "
+        "safe crossing movements and local walking, tree, bus and driveway effects need checks.</p>"
+        '<p id="council-ask">I ask council to scope a costed concept design for the selected works '
+        "and check their usable widths and crossing movements before a build decision. "
+        "For no new works, I ask council to name a useful route goal and seek its missing public "
+        "records first. A ranked survey plan tied to those routes is still pending. "
+        "The owner, approvals and funding are unknown.</p>"
+        '<p>Please see the <a href="#street-plans">local works and their limits</a> '
+        'and <a href="#delivery">next decision</a>.</p></section>'
+    )
+
+
+def change_section(frontier: dict, by_id: dict, inventory: str = "") -> str:
     chosen = default_scenario(frontier)
     stop = chosen["recommended_stop"] or 0
     pick = chosen["picks"][stop]
@@ -316,7 +443,9 @@ def change_section(frontier: dict, by_id: dict) -> str:
         for item in frontier["scenarios"]
     )
     return (
-        '<section id="change"><h2>How much change?</h2>'
+        '<section id="change"><h2>Options: how much change?</h2>'
+        "<p>These curves test weights. They may choose the same works; "
+        "they are not distinct route plans.</p>"
         '<p id="change-why">The slider opens at my recommended stop for the '
         f"{html.escape(chosen['label'])} scenario: {link(by_id['F13'])}. I stop there because "
         "I divide each pick's gain by its cost plus one. I compare that ratio with the "
@@ -340,5 +469,6 @@ def change_section(frontier: dict, by_id: dict) -> str:
         f'value="{stop}" step="1" disabled> <output id="change-step"></output></p>'
         '<table id="change-totals"><caption>Totals for the projects picked so far</caption>'
         f"{total_rows(frontier, pick)}</table>"
-        f"{chart_section(frontier)}</section>"
+        '<details id="curve-table"><summary>Full curve tables and street evidence</summary>'
+        f"{inventory}{chart_section(frontier)}</details></section>"
     )

@@ -256,3 +256,17 @@ def test_fr8_14_the_report_says_when_the_cap_was_reached(tmp_path):
     out = tmp_path / "out"
     assert main(["report", str(region), "--snapshot", str(COMMITTED), "--out", str(out)]) == 0
     assert "cap" in re.search(r'id="change-capped".*?</p>', change_part(out), re.S).group(0)
+
+
+def test_fr15_6_slider_shows_unique_people_and_type_gains(browser, frontier):
+    for curve in frontier["scenarios"][:2]:
+        browser.find_element(By.ID, "scenario-" + curve["id"]).click()
+        for rank in (0, len(curve["picks"]) - 1):
+            move(browser, rank)
+            pick = curve["picks"][rank]
+            for key in ("unique_people", "gains_by_type"):
+                cell = browser.find_element(By.CSS_SELECTOR, f'[data-measure="{key}"]')
+                assert float(cell.text) == round(pick[key])
+            for kind, count in pick["unique_people_by_type"].items():
+                cell = browser.find_element(By.CSS_SELECTOR, f'[data-total="people.{kind}"]')
+                assert float(cell.text) == round(count)

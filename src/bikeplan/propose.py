@@ -19,17 +19,20 @@ from bikeplan.access import (
     Reach,
     edge_table,
     last_legs,
+    people_gains,
     reach,
     safe_reach,
     scene,
     score_access,
 )
 from bikeplan.config import Scenario
-from bikeplan.fit import FIXES, junction_fixes, segment_fit
+from bikeplan.fit import FIXES, fixed_edge, junction_fixes, segment_fit
 from bikeplan.fit import cross_section as fit_cross_section
 from bikeplan.network import bike_segments
 from bikeplan.stress import edge_aaa, own_lts, raise_for_crossings, score_edges
+from bikeplan.trips import complete_trips, resident_outcomes, snapshot_trip_inputs
 from bikeplan.width import check_links, fuse
+from bikeplan.works import works_catalog, works_package
 
 CORRIDOR_FIXES = tuple(fix for fix in FIXES if fix != "quietway")
 KINDS = ("corridor", "neighbourhood", "route")
@@ -237,6 +240,40 @@ def planning_network(graph, profile, region, confirmed_only=True) -> Planning:
         used.update(needs)
     elements = {name: item for name, item in {**segments, **junctions}.items() if name in used}
     return Planning(edges, elements, tuple(surveys))
+
+
+def confirmed_planning(graph, profile, planning: Planning) -> Planning:
+    changed = graph.copy()
+    for u, v, k, data in changed.edges(keys=True, data=True):
+        item = planning.elements.get(f"segment:{data['segment_id']}")
+        if item is None or item["fix"] == "verge_path":
+            continue
+        fixed = fixed_edge(data, item["fix"], profile)
+        if item["fix"] == "quietway":
+            fixed["speed_source"] = "assumed"
+        else:
+            fixed["bicycle"] = "designated"
+            fixed["bike_lane_width_m"] = profile.widths_m.one_way_cycleway.min.value
+        changed.edges[u, v, k].update(fixed)
+    evidence = graph.graph.get("safety_evidence", {})
+    movements = []
+    for record in evidence.get("movements", []):
+        if record.get("stage") == "proposed":
+            node = record["incoming"][1]
+            element = planning.elements.get(f"junction:{node}")
+            if element is None or element["fix"] != record.get("fix"):
+                continue
+            record = {**record, "stage": "existing"}
+        movements.append(record)
+    changed.graph["safety_evidence"] = {**evidence, "movements": movements}
+    scores = score_edges(changed, profile)
+    edges = {key: item for key, item in planning.edges.items() if scores[key]["confirmed_aaa"]}
+    used = {name for item in edges.values() for name in item["needs"]}
+    return Planning(
+        edges,
+        {name: item for name, item in planning.elements.items() if name in used},
+        planning.survey_options,
+    )
 
 
 def trip_values(people: dict, placed: list, results: list[Reach], weights: dict) -> dict:
@@ -615,6 +652,7 @@ def greedy_picks(
 
     now = aaa_after(set())
     results = reach(graph, sources, reach_m, detour_max, now, table, legs)
+    baseline_results = results
     counts = reach_counts(placed, results)
     score = exact_score(people, placed, results, weights)
     current = fixed_planning(graph, planning, fixed, proposals.metres_per_point)
@@ -707,6 +745,10 @@ def greedy_picks(
                 "cost": costs[elements],
                 "score_after": score,
                 "place": labels[main],
+                "access_gains": people_gains(people, placed, before, results, list(weights)),
+                "package_access_gains": people_gains(
+                    people, placed, baseline_results, results, list(weights)
+                ),
                 "people": {kind: safe_after[kind] - safe_before[kind] for kind in weights},
             }
         )
@@ -767,7 +809,14 @@ def project_records(picked: list[dict], planning: Planning) -> list[dict]:
                 "kind": pick["kind"],
                 "name": f"{pick['place']}: {', '.join(streets)}",
                 "elements": elements,
-                "totals": project_totals(elements),
+                "totals": {
+                    **project_totals(elements),
+                    **{
+                        key: pick[key]
+                        for key in ("access_gains", "package_access_gains")
+                        if key in pick
+                    },
+                },
                 "gain": pick["gain"],
                 "score_after": pick["score_after"],
                 "people": pick["people"],
@@ -833,6 +882,9 @@ def csv_fields(kinds: list) -> list[str]:
         "refuges",
         *(f"km_{fix}" for fix in PROJECT_FIXES),
         *(f"people_{kind}" for kind in kinds),
+        "unique_people",
+        "gains_by_type",
+        *(f"unique_people_{kind}" for kind in kinds),
     ]
 
 
@@ -855,6 +907,11 @@ def csv_row(record: dict, kinds: list) -> dict:
         row[f"km_{fix}"] = totals["km_by_fix"].get(fix, 0.0)
     for kind in kinds:
         row[f"people_{kind}"] = record["people"][kind]
+    measures = totals.get("access_gains", {})
+    row["unique_people"] = measures.get("unique_people")
+    row["gains_by_type"] = measures.get("gains_by_type")
+    for kind in kinds:
+        row[f"unique_people_{kind}"] = measures.get("unique_people_by_type", {}).get(kind)
     return row
 
 
@@ -915,14 +972,19 @@ def solve(
     legs=None,
     corridors: Corridors | None = None,
     stats: dict | None = None,
+    confirmed: bool = False,
 ):
     planning = planning_network(graph, profile, region)
-    big = big_projects(graph, planning, profile)
     made: list = []
     if corridors is not None:
-        graph, planning, made = add_corridor_paths(
+        corridor_graph, corridor_planning, made = add_corridor_paths(
             graph, planning, corridors, region.proposals.metres_per_point
         )
+        if not confirmed:
+            graph, planning = corridor_graph, corridor_planning
+    if confirmed:
+        planning = confirmed_planning(graph, profile, planning)
+    big = big_projects(graph, planning, profile)
     if stats is not None:
         stats["corridor_candidates"] = len(made)
     picked = greedy_picks(
@@ -1008,6 +1070,7 @@ def curve_picks(picked: list[dict], planning: Planning) -> list[dict]:
                 "km_by_fix": {fix: round(by_fix[fix], 6) for fix in PROJECT_FIXES if fix in by_fix},
                 "score": record["score_after"],
                 "people": dict(people),
+                **totals.get("package_access_gains", {}),
             }
         )
     return found
@@ -1026,6 +1089,9 @@ def scenario_curve(
     names: list | None = None,
     legs=None,
     corridors: Corridors | None = None,
+    trip_inputs=None,
+    population=None,
+    confirmed: bool = False,
 ) -> dict:
     scaled = scaled_region(region, scenario)
     scaled = dataclasses.replace(
@@ -1033,15 +1099,75 @@ def scenario_curve(
     )
     stats = {}
     solved, planning, picked = solve(
-        graph, scaled, profile, placed, people, weights, names, legs, corridors, stats
+        graph, scaled, profile, placed, people, weights, names, legs, corridors, stats, confirmed
     )
     picks = curve_picks(picked, planning)
     stop = recommended_stop(picks, region.proposals.recommend_ratio)
     shapes = project_features(solved, planning, project_records(picked, planning))
+    packages = []
+    if trip_inputs is not None:
+        destinations, links, movements = trip_inputs
+        links = {
+            key: {
+                **links.get(key, {"status": "unknown"}),
+                "model_needs": planning.edges.get(key, {"needs": ["missing"]})["needs"],
+            }
+            for key in solved.edges(keys=True)
+        }
+        fixed = set()
+        projects = []
+        for rank in range(len(picked) + 1):
+            if rank:
+                fixed.update(picked[rank - 1]["elements"])
+                projects.append(picked[rank - 1]["id"])
+            packages.append(
+                {
+                    "package": {"scenario": scenario.id, "rank": rank},
+                    "project_ids": list(projects),
+                    "element_ids": sorted(fixed),
+                    **complete_trips(
+                        solved,
+                        people,
+                        destinations,
+                        links,
+                        movements,
+                        fixed,
+                        reach_m,
+                        detour_max,
+                        region.access.last_leg_m,
+                    ),
+                }
+            )
+    if population is not None and packages:
+        for package in packages:
+            package["resident_outcomes"] = resident_outcomes(
+                packages[0], package, population, destinations
+            )
+    catalog = works_catalog(
+        solved,
+        planning.elements,
+        [
+            key
+            for package in packages
+            for witness in package["strict"]
+            for direction in ("outbound", "return")
+            for key in witness[direction]["edges"]
+        ],
+    )
+    for package in packages:
+        retained = [
+            key
+            for witness in package["strict"]
+            for direction in ("outbound", "return")
+            for key in witness[direction]["edges"]
+        ]
+        package["works"] = works_package(catalog, package["element_ids"], retained, package["gaps"])
     return {
+        "works_catalog": catalog,
         "shapes": shapes,
         "id": scenario.id,
         "label": scenario.label,
+        "safety_scenario": "confirmed" if confirmed else "model assumptions",
         "scales": scenario.scales,
         "recommended_stop": stop,
         "recommend_ratio": region.proposals.recommend_ratio,
@@ -1050,6 +1176,7 @@ def scenario_curve(
         "truncated": stats["termination_reason"] == "project_cap",
         "cap_reached": stats["termination_reason"] == "project_cap",
         "picks": picks,
+        "trip_packages": packages,
     }
 
 
@@ -1102,9 +1229,8 @@ def write_propose(
 ) -> list[dict]:
     out = Path(out)
     kept, nodes, _, placed, resident, weights = scene(graph, region, snapshot)
-    legs = last_legs(
-        graph, score_edges(graph, profile), sorted(resident.people), region.access.last_leg_m
-    )
+    scores = score_edges(graph, profile)
+    legs = last_legs(graph, scores, sorted(resident.people), region.access.last_leg_m)
     corridors = read_corridors(snapshot, graph.graph["crs"])
     names = [
         place["name"] or place["type"]
@@ -1113,9 +1239,68 @@ def write_propose(
     ]
     shipped_graph = graph
     graph, planning, picked = solve(
-        graph, region, profile, placed, resident.people, weights, names, legs, corridors, stats
+        graph,
+        region,
+        profile,
+        placed,
+        resident.people,
+        weights,
+        names,
+        legs,
+        corridors,
+        stats,
+        True,
     )
     records = project_records(picked, planning)
+    trip_inputs = snapshot_trip_inputs(snapshot, kept, nodes, graph, scores, planning)
+    destinations, links, movements = trip_inputs
+    shortlist_trips = complete_trips(
+        graph,
+        resident.people,
+        destinations,
+        links,
+        movements,
+        {name for pick in picked for name in pick["elements"]},
+        region.access.reach_m,
+        region.access.detour_max,
+        region.access.last_leg_m,
+    )
+    baseline_trips = complete_trips(
+        graph,
+        resident.people,
+        destinations,
+        links,
+        movements,
+        set(),
+        region.access.reach_m,
+        region.access.detour_max,
+        region.access.last_leg_m,
+    )
+    shortlist_trips["resident_outcomes"] = resident_outcomes(
+        baseline_trips, shortlist_trips, resident.population, destinations
+    )
+    catalog = works_catalog(
+        graph,
+        planning.elements,
+        [
+            key
+            for witness in shortlist_trips["strict"]
+            for direction in ("outbound", "return")
+            for key in witness[direction]["edges"]
+        ],
+    )
+    shortlist_trips["works_catalog"] = catalog
+    shortlist_trips["works"] = works_package(
+        catalog,
+        {name for pick in picked for name in pick["elements"]},
+        [
+            key
+            for witness in shortlist_trips["strict"]
+            for direction in ("outbound", "return")
+            for key in witness[direction]["edges"]
+        ],
+        shortlist_trips["gaps"],
+    )
     surveys = survey_layer(planning)
     if stats is not None:
         stats["survey_options"] = surveys
@@ -1132,6 +1317,11 @@ def write_propose(
     collection = {
         "type": "FeatureCollection",
         "features": project_features(graph, planning, records),
+        "trip_proof": {
+            "package": "minimum-gain-shortlist",
+            "population_sources": resident.population,
+            **shortlist_trips,
+        },
     }
     (out / "projects.geojson").write_text(json.dumps(collection))
     curves = [
@@ -1148,6 +1338,9 @@ def write_propose(
             names,
             legs,
             corridors,
+            trip_inputs,
+            resident.population,
+            confirmed=True,
         )
         for scenario in scenarios_for(region.proposals)
     ]
@@ -1160,6 +1353,15 @@ def write_propose(
             )
     frontier = {
         "scenarios": curves,
+        "trip_sources": {
+            "destinations": destinations,
+            "population": resident.population,
+            "evidence": json.loads((Path(snapshot) / "places.json").read_text()).get(
+                "trip_evidence", {}
+            ),
+            "missing_link_status": "unknown",
+            "missing_movement_status": "unknown",
+        },
         "shapes": {
             "type": "FeatureCollection",
             "features": [shapes[key] for key in sorted(shapes)],

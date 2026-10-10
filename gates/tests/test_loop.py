@@ -77,6 +77,7 @@ def loop_repo(repo, tmp_path):
             "PYTHONPATH": str(ROOT),
             "RALPH_SKIP_SYNC": "1",
             "RALPH_PAUSE_SECS": "0",
+            "RALPH_AGENT_POLL_SECS": "0.05",
             "RALPH_BACKOFF_SECS": "0",
             "RALPH_MAX_SLEEP_SECS": "0",
             "RALPH_NOTIFY_CMD": "true",
@@ -755,3 +756,178 @@ def test_fr0_33_sync_saves_dirty_loop_work(loop_repo, tmp_path):
     )
     assert restored.returncode == 0, restored.stdout + restored.stderr
     assert (repo.path / "artifacts/P0.2/proof.txt").read_text() == "unfinished proof\n"
+
+
+def test_fr0_36_sync_failure_retries_before_spending_a_turn(loop_repo, tmp_path):
+    repo, env, state = loop_repo
+    remote = tmp_path / "origin.git"
+    subprocess.run(["git", "init", "--bare", "-q", str(remote)], check=True)
+    repo.git("remote", "add", "origin", str(remote))
+    repo.git("push", "-q", "origin", "main")
+    binaries = tmp_path / "bin"
+    binaries.mkdir()
+    original = shutil.which("git")
+    wrapper = binaries / "git"
+    wrapper.write_text(
+        "#!/usr/bin/env bash\n"
+        'if [ "$1" = fetch ]; then\n'
+        '  n=$(( $(cat "$FETCH_COUNT" 2>/dev/null || echo 0) + 1 ))\n'
+        '  echo "$n" > "$FETCH_COUNT"\n'
+        '  if [ "$n" = 1 ]; then echo transient >&2; exit 1; fi\n'
+        "fi\n"
+        f'exec "{original}" "$@"\n'
+    )
+    wrapper.chmod(0o755)
+    env.update(
+        PATH=f"{binaries}{os.pathsep}{env['PATH']}",
+        FETCH_COUNT=str(tmp_path / "fetch-count"),
+        RALPH_SKIP_SYNC="0",
+        RALPH_RETRY_SECS="0",
+        RALPH_RESILIENT="1",
+    )
+    result = run_loop(repo, env, "1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert (tmp_path / "fetch-count").read_text().strip() == "2"
+    assert count(state) == 1
+    assert "sync failed; retrying" in result.stdout
+
+
+def test_fr0_36_controller_runs_when_model_switches_to_old_loop(loop_repo, tmp_path):
+    repo, env, state = loop_repo
+    shutil.copytree(
+        ROOT / "gates", repo.path / "gates", ignore=shutil.ignore_patterns("tests", "__pycache__")
+    )
+    shutil.copy(ROOT / ".gitignore", repo.path / ".gitignore")
+    repo.commit("controller inputs")
+    repo.branch("loop/P0.2-old")
+    repo.write("loop.sh", "#!/usr/bin/env bash\nexit 98\n")
+    repo.delete("gates/loopstate.py")
+    repo.delete("gates/checkpoint.py")
+    repo.commit("older task branch")
+    repo.git("checkout", "main")
+    remote = tmp_path / "origin.git"
+    subprocess.run(["git", "init", "--bare", "-q", str(remote)], check=True)
+    repo.git("remote", "add", "origin", str(remote))
+    repo.git("push", "-q", "origin", "main")
+    control = tmp_path / "controller"
+    repo.git("worktree", "add", "--detach", str(control), "main")
+    env.update(
+        RALPH_CONTROL_DIR=str(control),
+        RALPH_WORK_DIR=str(repo.path),
+        RALPH_SKIP_SYNC="0",
+        FAKE_RUN=(
+            "git checkout -q loop/P0.2-old; mkdir -p artifacts/P0.2; "
+            "echo saved > artifacts/P0.2/proof.txt"
+        ),
+    )
+    result = subprocess.run(
+        ["bash", str(control / "loop.sh"), "2"],
+        cwd=repo.path,
+        env=env,
+        capture_output=True,
+        text=True,
+        timeout=60,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert count(state) == 2
+    assert (control / "gates/loopstate.py").exists()
+    records = list((repo.path / ".ralph/checkpoints").glob("*.json"))
+    assert len(records) == 1
+    record = json.loads(records[0].read_text())
+    assert record["branch"] == "loop/P0.2-old"
+    assert repo.git("show", record["stash"] + "^3:artifacts/P0.2/proof.txt") == "saved"
+
+
+def test_fr0_36_second_runner_cannot_launch_a_model(loop_repo, tmp_path):
+    repo, env, state = loop_repo
+    release = tmp_path / "release-agent"
+    env.update(
+        RELEASE_AGENT=str(release),
+        FAKE_RUN=(
+            'if [ "$(cat "$FAKE_STATE/$FAKE_NAME.count")" = 1 ]; then '
+            'while [ ! -f "$RELEASE_AGENT" ]; do sleep 0.05; done; fi'
+        ),
+    )
+    first = subprocess.Popen(
+        ["bash", "loop.sh", "1"],
+        cwd=repo.path,
+        env=env,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+    try:
+        deadline = time.monotonic() + 20
+        while count(state) == 0 and time.monotonic() < deadline:
+            time.sleep(0.05)
+        assert count(state) == 1
+        second = run_loop(repo, env, "1")
+        assert second.returncode == 73
+        assert "already running" in second.stdout
+        assert count(state) == 1
+    finally:
+        release.touch()
+        first.communicate(timeout=30)
+
+
+def test_fr0_36_provider_heartbeat_preserves_fallback_stdin(loop_repo, tmp_path):
+    repo, env, _state = loop_repo
+    fallback = tmp_path / "heartbeat-agent"
+    fallback.write_text(
+        f"#!{sys.executable}\n"
+        "import json, os, sys, time\n"
+        "from pathlib import Path\n"
+        "prompt = sys.stdin.read()\n"
+        "first = json.loads(Path('.ralph/status.json').read_text())\n"
+        "deadline = time.monotonic() + 30\n"
+        "second = first\n"
+        "while second['heartbeat_at'] == first['heartbeat_at'] and time.monotonic() < deadline:\n"
+        "    time.sleep(0.05)\n"
+        "    second = json.loads(Path('.ralph/status.json').read_text())\n"
+        "Path(os.environ['PROMPT_PROOF']).write_text(json.dumps({'prompt': prompt, "
+        "'heartbeat': second['heartbeat_at'] > first['heartbeat_at']}))\n"
+        "print(json.dumps({'type': 'turn.completed', 'usage': {}}))\n"
+    )
+    fallback.chmod(0o755)
+    proof = tmp_path / "prompt.json"
+    env.update(
+        FAKE_LIMIT_ON="1",
+        RALPH_FALLBACK_BIN=str(fallback),
+        RALPH_AGENT_POLL_SECS="0.05",
+        PROMPT_PROOF=str(proof),
+    )
+    result = run_loop(repo, env, "1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    saved = json.loads(proof.read_text())
+    assert "Do one task." in saved["prompt"]
+    assert "P0.2" in saved["prompt"]
+    assert saved["heartbeat"]
+
+
+def test_fr0_34_blocked_pr_wait_does_not_run_or_block_another_row(loop_repo, tmp_path):
+    from gates.loopstate import input_hash
+
+    repo, env, state = loop_repo
+    repo.append("PROGRESS.md", "- [ ] **P0.3** Other task (FR-11.3)\n")
+    repo.write(
+        ".ralph/stalls.json",
+        json.dumps(
+            {"P0.2": {"blocked": True, "input_hash": input_hash("P0.2"), "reason": "contract fix"}}
+        ),
+    )
+    binaries = tmp_path / "bin"
+    binaries.mkdir()
+    query = binaries / "gh"
+    pr = {"number": 118, "headRefName": "loop/P0.2-stuck", "statusCheckRollup": []}
+    query.write_text(
+        f"#!{sys.executable}\nimport json\nfrom pathlib import Path\n"
+        f"print(json.dumps([{pr!r}]))\nPath('STOP').touch()\n"
+    )
+    query.chmod(0o755)
+    env.pop("RALPH_PICK_CMD")
+    env["PATH"] = f"{binaries}{os.pathsep}{env['PATH']}"
+    result = run_loop(repo, env, "1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert count(state) == 0
+    assert "scheduler waiting" in result.stdout
+    assert list(json.loads((repo.path / ".ralph/stalls.json").read_text())) == ["P0.2"]

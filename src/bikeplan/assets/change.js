@@ -20,13 +20,13 @@ window.addEventListener("load", function () {
   }
 
   function places(key) {
-    if (key.startsWith("people.")) return 0;
+    if (key === "unique_people" || key === "gains_by_type" || key.startsWith("people.")) return 0;
     if (key.startsWith("km.")) return 3;
     return { score: 1, disruption: 1, parking_spaces: 0, lane_km: 3, speed_km: 3 }[key];
   }
 
   function value(pick, key) {
-    if (key.startsWith("people.")) return pick.people[key.slice(7)];
+    if (key.startsWith("people.")) return pick.unique_people_by_type[key.slice(7)];
     if (key.startsWith("km.")) return pick.km_by_fix[key.slice(3)] || 0;
     return pick[key];
   }
@@ -56,8 +56,42 @@ window.addEventListener("load", function () {
     const chosen = scenario();
     const pick = chosen.picks[step];
     draw(chosen, step);
-    for (const cell of document.querySelectorAll("#change-totals [data-total]")) {
-      cell.textContent = value(pick, cell.dataset.total).toFixed(places(cell.dataset.total));
+    const worksData = document.getElementById("works-data");
+    if (worksData) {
+      const plans = JSON.parse(worksData.textContent)[current];
+      const work = plans.packages[step];
+      document.getElementById("works-package").textContent = current + ":" + step;
+      document.getElementById("works-summary").textContent = JSON.stringify(work.summary);
+      const body = document.getElementById("works-rows");
+      body.replaceChildren();
+      for (const id of work.rows) {
+        const row = document.createElement("tr");
+        for (const value of plans.rows[id]) {
+          const cell = document.createElement("td");
+          const code = document.createElement("code");
+          code.textContent = value;
+          cell.appendChild(code);
+          row.appendChild(cell);
+        }
+        body.appendChild(row);
+      }
+    }
+    const opening = document.getElementById("opening");
+    opening.dataset.package = current + ":" + step;
+    const rankLink = document.createElement("a");
+    rankLink.href = "#F13";
+    rankLink.textContent = String(step);
+    document.getElementById("package-status").replaceChildren(
+      document.createTextNode(chosen.label + " (" + current + ") proposal, rank "), rankLink
+    );
+    document.getElementById("proposal-state").textContent = step === 0
+      ? "No new works are selected."
+      : "I propose the modelled works in this selection.";
+    for (const cell of document.querySelectorAll("[data-opening]")) {
+      cell.textContent = value(pick, cell.dataset.opening).toFixed(places(cell.dataset.opening));
+    }
+    for (const cell of document.querySelectorAll("#change-totals [data-total], #change-totals [data-measure]")) {
+      cell.textContent = value(pick, cell.dataset.measure || cell.dataset.total).toFixed(places(cell.dataset.measure || cell.dataset.total));
     }
     const point = document.getElementById("curve-" + current).getAttribute("points").split(" ")[step].split(",");
     dot.setAttribute("cx", point[0]);
