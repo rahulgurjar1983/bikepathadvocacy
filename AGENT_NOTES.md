@@ -628,3 +628,22 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   Read `km_confirmed_aaa` for confirmed distance, never the old model total.
   The new cases and unchanged old score cases pass in
   `artifacts/Q1.4/resume-tests.txt`.
+
+### Q1.5 resumed
+
+- The prior figure block is resolved by FR-0.35. Keep the works figure
+  and give the people measures their own IDs. Sort all figures by ID
+  before writing the file. The new exact-list tests retain every old
+  figure and every field, recipe and link check.
+- Package gains use the baseline node union. A project's own gain uses
+  the prior pick's reach. Do not add project totals or type totals to
+  claim unique people. A node may gain a new school even when it could
+  already reach another school.
+- The offline slider reads the unique type union, not the old net change
+  in safe reach. Keep the legacy fields for their old claims and use the
+  same new measure names in summaries, sheets, exports and reviews.
+- `uv run --frozen python artifacts/Q1.5/collect.py` uses the shipped
+  test-grid region for fresh full-mode worked-case proof. It rebuilds
+  unions without the new count helper. The saved scope excludes real
+  region and field claims. Use gpxpy for the made-up route; test helper
+  imports depend on pytest's import mode and do not work in a plain run.

@@ -1114,3 +1114,28 @@ not a real route's safety. Public proof holds only output hashes, input
 hashes, the code hash and verdict counts.
 
 Artifact: `artifacts/Q1.2/privacy-proof.json`
+
+### Q1.5
+
+```bash
+uv run --frozen pytest tests/test_people_gains.py tests/test_report.py::test_fr13_1_figures_are_sorted_with_every_field tests/test_report.py::test_fr13_2_the_figure_links_hold_the_numbers_and_resolve_to_one_entry tests/test_report_change.py::test_fr15_6_slider_shows_unique_people_and_type_gains -q
+uv run --frozen python artifacts/Q1.5/collect.py
+uv run --frozen bikeplan verify /tmp/bikeplan-Q1.5/run
+```
+
+Expect: unique people count each node share once across new destinations.
+The count for each type unions new destinations of that type. Gains
+counted by type add those type counts, so one person may count again.
+The cases include two schools and a station, and nodes that share a
+population cell. Summaries, sheets, exports, figures and route reviews
+use these distinct measures. Offline browser checks change the scenario
+and rank. The proof rebuilds package unions from node membership, checks
+all figure recipes and saves hashes from fresh full-mode worked-case
+runs with the shipped test-grid settings. This is a made-up region,
+not proof of real-region access or field safety. It uses the model's
+safe destination reach; strict complete-trip counts stay separate.
+
+Artifact: `artifacts/Q1.5/people-proof.json`,
+`artifacts/Q1.5/collect.py`, `artifacts/Q1.5/real-run.txt`,
+`artifacts/Q1.5/contract-red.txt`, `artifacts/Q1.5/verify.txt` and
+`artifacts/Q1.5/people-green.txt`.

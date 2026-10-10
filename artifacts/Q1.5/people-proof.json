@@ -1,0 +1,230 @@
+{
+  "build_commit": "42175298c31c83da2fa18558d23c1e247f18aa85",
+  "commands": [
+    "uv run --frozen bikeplan run tests/fixtures/test-grid/region.yaml --snapshot tests/fixtures/test-grid/snapshot --out /tmp/bikeplan-Q1.5/run",
+    "uv run --frozen bikeplan report tests/fixtures/test-grid/region.yaml --snapshot tests/fixtures/test-grid/snapshot --out /tmp/bikeplan-Q1.5/report",
+    "uv run --frozen bikeplan review /tmp/bikeplan-Q1.5/made-up.gpx --claims /tmp/bikeplan-Q1.5/claims.yaml --region tests/fixtures/test-grid/region.yaml --snapshot tests/fixtures/test-grid/snapshot --out /tmp/bikeplan-Q1.5/review"
+  ],
+  "config_hash": "1258a6fbf083fcd15143bc4dad094757183c46e070315db276920bdbaa24511b",
+  "outputs": [
+    {
+      "path": "report/SHA256SUMS",
+      "sha256": "8659d549a250adf4550ad5ea3e5ac269ea82878118354ae24b8ea8f01342a0d3"
+    },
+    {
+      "path": "report/figures.json",
+      "sha256": "5d71d43911d03d42d3eef5b2050d951850870a1222c136224ed1ef34f4cb8e6c"
+    },
+    {
+      "path": "report/frontier.json",
+      "sha256": "0f6617152812d10da803b70711309b52fb661f8c5f04a48caa7cdbf1355bf106"
+    },
+    {
+      "path": "report/map.json",
+      "sha256": "f53b2cb3090c8b4eb88c6599d8dcbe4fa43648ffff17abd575d23510c57e28c1"
+    },
+    {
+      "path": "report/report.html",
+      "sha256": "45fc78e3707077769fa4e6fa78acc9e0c741dd21886656f04b846a35558caae0"
+    },
+    {
+      "path": "report/segments.csv",
+      "sha256": "27c0984bcdb2ad112f04c41dfb9bfa5f525a46f380b552cbc0d45187ab2debff"
+    },
+    {
+      "path": "review/SHA256SUMS",
+      "sha256": "5869c391089b0b14791e9a14f2279f3f0b9f5866b17306d4930828b5afda474d"
+    },
+    {
+      "path": "review/figures.json",
+      "sha256": "358754189f8ff7464c6bab5faa32c202a8394df57f360fe8578adb3d6662b73d"
+    },
+    {
+      "path": "review/report.html",
+      "sha256": "5cf8a9b13fccc99bd4724a2e17fca50d68683c01aff85c7313bfdcf7a00dc013"
+    },
+    {
+      "path": "review/route_figures.json",
+      "sha256": "8638fdfcf0224d306ee20203738cf04338590c2b02ce4789e12191669fac1fc2"
+    },
+    {
+      "path": "review/route_layer.json",
+      "sha256": "9a1ff726d92e8738b497cb990cb6b0d3fff735cda1b69a2e979833775ff1ab35"
+    },
+    {
+      "path": "review/verdicts.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "run/access_homes.geojson",
+      "sha256": "186b8439ead3137573bd631e9a055dee31f092c4da0f97d7f9f7ea61b8e17db6"
+    },
+    {
+      "path": "run/frontier.json",
+      "sha256": "0f6617152812d10da803b70711309b52fb661f8c5f04a48caa7cdbf1355bf106"
+    },
+    {
+      "path": "run/network.geojson",
+      "sha256": "72c9d8c7c55832e3affbc78bc8c9ba37b8e1d29732b55ef5bbb9140fb40be4d5"
+    },
+    {
+      "path": "run/outputs.sha256",
+      "sha256": "38730312412bfe74c38fa1d051a1005c0dfe22a790c7305f5c6456cfc02243e6"
+    },
+    {
+      "path": "run/places.geojson",
+      "sha256": "4116b95de89c478c112926709ddb0296ca964b29407639e54494759a4f5e2770"
+    },
+    {
+      "path": "run/projects.csv",
+      "sha256": "b450911811c7b28a590724f007a294816eb34d72a3acbf9a164fc855a56c47da"
+    },
+    {
+      "path": "run/projects.geojson",
+      "sha256": "506ab0e87702516a7a8245511bd6844a37d06fec1e0ae3397345dd859b6b9dd7"
+    },
+    {
+      "path": "run/projects.json",
+      "sha256": "ab6cadb5c3f967525f2f7fe7084685ae847ec7cb74731f9eefb53799207de6d6"
+    },
+    {
+      "path": "run/report.html",
+      "sha256": "45fc78e3707077769fa4e6fa78acc9e0c741dd21886656f04b846a35558caae0"
+    },
+    {
+      "path": "run/summary.json",
+      "sha256": "3c5de24372f692e1c3b4ecb1fd302423e6226b9477f30daeb5db5c0e7b1921e8"
+    }
+  ],
+  "packages": [
+    {
+      "gains_by_type": 0,
+      "package": {
+        "rank": 0,
+        "scenario": "light"
+      },
+      "unique_people": 0,
+      "unique_people_by_type": {
+        "aged_care": 0,
+        "college": 0,
+        "library": 0,
+        "school": 0,
+        "station": 0,
+        "town_centre": 0,
+        "university": 0
+      }
+    },
+    {
+      "gains_by_type": 750.0,
+      "package": {
+        "rank": 1,
+        "scenario": "light"
+      },
+      "unique_people": 750.0,
+      "unique_people_by_type": {
+        "aged_care": 0,
+        "college": 0,
+        "library": 0,
+        "school": 750.0,
+        "station": 0,
+        "town_centre": 0,
+        "university": 0
+      }
+    },
+    {
+      "gains_by_type": 0,
+      "package": {
+        "rank": 0,
+        "scenario": "shipped"
+      },
+      "unique_people": 0,
+      "unique_people_by_type": {
+        "aged_care": 0,
+        "college": 0,
+        "library": 0,
+        "school": 0,
+        "station": 0,
+        "town_centre": 0,
+        "university": 0
+      }
+    },
+    {
+      "gains_by_type": 750.0,
+      "package": {
+        "rank": 1,
+        "scenario": "shipped"
+      },
+      "unique_people": 750.0,
+      "unique_people_by_type": {
+        "aged_care": 0,
+        "college": 0,
+        "library": 0,
+        "school": 750.0,
+        "station": 0,
+        "town_centre": 0,
+        "university": 0
+      }
+    },
+    {
+      "gains_by_type": 0,
+      "package": {
+        "rank": 0,
+        "scenario": "heavy"
+      },
+      "unique_people": 0,
+      "unique_people_by_type": {
+        "aged_care": 0,
+        "college": 0,
+        "library": 0,
+        "school": 0,
+        "station": 0,
+        "town_centre": 0,
+        "university": 0
+      }
+    },
+    {
+      "gains_by_type": 750.0,
+      "package": {
+        "rank": 1,
+        "scenario": "heavy"
+      },
+      "unique_people": 750.0,
+      "unique_people_by_type": {
+        "aged_care": 0,
+        "college": 0,
+        "library": 0,
+        "school": 750.0,
+        "station": 0,
+        "town_centre": 0,
+        "university": 0
+      }
+    }
+  ],
+  "review_access_gains": {
+    "Gains counted by type": 750.0,
+    "Unique people by type: aged care": 0,
+    "Unique people by type: college": 0,
+    "Unique people by type: library": 0,
+    "Unique people by type: school": 750.0,
+    "Unique people by type: station": 0,
+    "Unique people by type: town centre": 0,
+    "Unique people by type: university": 0,
+    "Unique people gaining a safe destination": 750.0
+  },
+  "row": "Q1.5",
+  "scope": "Fresh full-mode shipped test-grid worked case; no real-region claim",
+  "snapshot_sha256": "4e2af873e84a9ca96f04b7b22a7d846cb4d9d579c0361136492226b4f1234a8f",
+  "summary_access_gains": {
+    "gains_by_type": 750.0,
+    "unique_people": 750.0,
+    "unique_people_by_type": {
+      "aged_care": 0,
+      "college": 0,
+      "library": 0,
+      "school": 750.0,
+      "station": 0,
+      "town_centre": 0,
+      "university": 0
+    }
+  }
+}
