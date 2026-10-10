@@ -254,3 +254,29 @@ def test_fr16_6_page_uses_shared_plan_rows_without_copying_archive_catalogs():
     assert (
         frontier["scenarios"][0]["works_catalog"]["segment:one"]["source"] == "full archived plan"
     )
+
+
+def test_fr16_6_page_keeps_shortlist_plan_catalog_only_in_archive():
+    from html.parser import HTMLParser
+
+    class Embedded(HTMLParser):
+        def handle_starttag(self, tag, attrs):
+            self.current = dict(attrs).get("id")
+
+        def handle_data(self, text):
+            if self.current in ("page-data", "map-data"):
+                blocks[self.current] = json.loads(text)
+
+    _summary, outputs, _files, _figures = build_all(
+        load_region("tests/fixtures/test-grid/region.yaml"),
+        load_profile("au-nsw"),
+        Path("tests/fixtures/test-grid/snapshot"),
+    )
+    blocks = {}
+    Embedded().feed(outputs["report.html"].decode())
+    archived = json.loads(outputs["projects.geojson"])
+    assert archived["trip_proof"]["works_catalog"]
+    for projects in (blocks["page-data"]["project_shapes"], blocks["map-data"]["projects"]):
+        assert "works_catalog" not in projects["trip_proof"]
+        assert projects["features"] == archived["features"]
+        assert projects["trip_proof"]["works"] == archived["trip_proof"]["works"]
