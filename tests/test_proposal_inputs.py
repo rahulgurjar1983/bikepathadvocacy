@@ -483,3 +483,27 @@ def test_fr16_10_length_rates_cannot_price_missing_physical_length_as_zero(tmp_p
     supplied = load(tmp_path, {**metadata(), "costs": [cost("rate", ["segment:a"], unit="per_m")]})
     with pytest.raises(ConfigError, match="physical length"):
         delivery_record(supplied, ["segment:a"], {"segment:a": {"length_m": 0}})
+
+
+def test_fr16_10_scoped_owners_and_approval_statuses_do_not_claim_whole_package(tmp_path):
+    from bikeplan.proposal_inputs import delivery_record, delivery_text
+
+    data = {
+        **metadata(),
+        "owners": [{**SOURCE, "id": "o", "organization": "Council", "element_ids": ["segment:a"]}],
+        "approvals": [
+            {
+                **SOURCE,
+                "id": "permit",
+                "authority": "Land authority",
+                "status": "pending",
+                "element_ids": ["segment:a"],
+            }
+        ],
+    }
+    record = delivery_record(load(tmp_path, data), list(CATALOG), CATALOG)
+    for field in ("owner", "approvals"):
+        assert record[field]["status"] == "partial"
+        assert record[field]["missing_element_ids"] == ["segment:b"]
+    assert "Land authority (pending)" in delivery_text(record)
+    assert "remaining scope unknown" in delivery_text(record)
