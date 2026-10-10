@@ -122,6 +122,13 @@ base checks pass; both feature checks fail on F14. The CI log command
 above shows the same failures. P10.4 cannot start while PR 118 stays
 open. The input ask still applies. No source or test was changed.
 
+The P11.2 turn ran `bash artifacts/C1.4/reproduce-input.sh` on fresh
+main. Both base checks pass; both feature checks fail on F14. The saved
+logs show the results. `scripts/wait-ci.sh 118` exits with failed test
+checks; `gh run view 38026752269 --log-failed | tail -n 80` shows the
+same clash. P11.2 cannot start while this loop PR stays open. No source
+or test was changed.
+
 Input ask: amend the exact figure-list checks on an input branch to
 allow new figure IDs while retaining order, fields and resolved links.
 Or grant a narrow rule for this test update. Keep the requirement for a
