@@ -1,0 +1,57 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_____ test_fr15_5_sourced_street_observations_confirm_only_matching_values _____
+
+    def test_fr15_5_sourced_street_observations_confirm_only_matching_values():
+        graph = path_graph()
+        graph[1][2][0].update(
+            bike_facility="none",
+            highway="residential",
+            lanes_total=2,
+            lanes_dir=1,
+            oneway=False,
+            speed_kmh=30,
+            speed_source="default",
+            adt=750,
+            adt_source="default",
+        )
+        graph.graph["safety_evidence"] = {
+            "streets": [
+                {
+                    "edge": [1, 2, 0],
+                    "source": "explicit toy traffic survey",
+                    "date": "2026-10-01",
+                    "speed_kmh": 30,
+                    "adt": 750,
+                }
+            ]
+        }
+>       assert score_edges(graph, PROFILE)[1, 2, 0]["confirmed_aaa"]
+E       assert False
+
+tests/test_safety_evidence.py:310: AssertionError
+_________ test_fr15_5_planned_phase_is_not_existing_crossing_evidence __________
+
+    def test_fr15_5_planned_phase_is_not_existing_crossing_evidence():
+        from bikeplan.safety import movement_status
+    
+        record = {
+            "stage": "proposed",
+            "source": "explicit toy signal design",
+            "date": "2026-10-01",
+            "protected_phase": True,
+            "turning_conflicts": "protected",
+            "bicycle_access": True,
+        }
+        status, reason = movement_status(record, {"signal": True, "refuge": False}, None, None)
+>       assert status == "unknown"
+E       AssertionError: assert 'confirmed' == 'unknown'
+E         
+E         - unknown
+E         + confirmed
+
+tests/test_safety_evidence.py:327: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_safety_evidence.py::test_fr15_5_sourced_street_observations_confirm_only_matching_values
+FAILED tests/test_safety_evidence.py::test_fr15_5_planned_phase_is_not_existing_crossing_evidence
+2 failed, 14 deselected in 1.62s

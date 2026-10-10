@@ -9,6 +9,7 @@ from pyproj import Transformer
 
 from bikeplan.config import Profile
 from bikeplan.network import FOOT_PATHS, bike_segments, first, parking_on_side, road_class
+from bikeplan.safety import audit
 
 SPEED_TOPS_KMH = [37.82, 45.87, 53.91, 61.96, 70.01, 78.05]
 MINOR_CLASSES = {"residential", "living_street", "service", "unclassified"}
@@ -423,11 +424,23 @@ def edge_reason(data: dict, profile: Profile, own: int, final: int, crossing) ->
     return "; ".join(parts)
 
 
-def score_edges(graph, profile: Profile) -> dict:
+def score_edges(graph, profile: Profile, assumptions: bool = False) -> dict:
     own = {(u, v, k): own_lts(d, profile) for u, v, k, d in graph.edges(keys=True, data=True)}
     final, crossings = raise_for_crossings(graph, own, profile)
+    evidence = audit(
+        graph,
+        profile,
+        {key: edge_aaa(graph.edges[key], own[key], profile) for key in own},
+        own,
+        junction_points(graph),
+        junction_legs,
+        main_street,
+        crossing_lts,
+        assumptions,
+    )
     return {
         key: {
+            **evidence[key],
             "lts": final[key],
             "aaa": edge_aaa(data, final[key], profile),
             "reason": edge_reason(data, profile, own[key], final[key], crossings.get(key)),
@@ -461,6 +474,8 @@ def stress_features(graph, scores: dict) -> list[dict]:
                     "length_m": round(data["length_m"], 2),
                     "bike_ok": data["bike_ok"],
                     **scores[(u, v, k)],
+                    "model_aaa": scores[(u, v, k)]["aaa"],
+                    "aaa": scores[(u, v, k)]["confirmed_aaa"],
                 },
             }
         )
@@ -468,19 +483,31 @@ def stress_features(graph, scores: dict) -> list[dict]:
 
 
 def stress_summary(graph, scores: dict) -> dict:
+    scenario = "confirmed" if all("confirmed_aaa" in item for item in scores.values()) else "model"
+
     def empty():
-        return {"km_by_lts": {str(lts): 0.0 for lts in range(1, 5)}, "km_aaa": 0.0}
+        return {
+            "km_by_lts": {str(lts): 0.0 for lts in range(1, 5)},
+            "km_aaa": 0.0,
+            "km_model_aaa": 0.0,
+            "km_confirmed_aaa": 0.0,
+            "safety_scenario": scenario,
+        }
 
     total, by_class = empty(), {}
     for segment in bike_segments(graph).values():
         keys, datas = zip(*segment["edges"], strict=True)
         lts = max(scores[key]["lts"] for key in keys)
-        aaa = all(scores[key]["aaa"] for key in keys)
+        model = all(scores[key]["aaa"] for key in keys)
+        confirmed = all(scores[key].get("confirmed_aaa", False) for key in keys)
+        aaa = confirmed if scenario == "confirmed" else model
         km = segment["inside_m"] / 1000
         name = str(first(datas[0].get("highway")))
         for bucket in (total, by_class.setdefault(name, empty())):
             bucket["km_by_lts"][str(lts)] += km
             bucket["km_aaa"] += km * aaa
+            bucket["km_model_aaa"] += km * model
+            bucket["km_confirmed_aaa"] += km * confirmed
     return {**total, "by_road_class": dict(sorted(by_class.items()))}
 
 
@@ -493,3 +520,8 @@ def write_stress(graph, profile: Profile, out) -> dict:
     summary = stress_summary(graph, scores)
     (out / "stress_summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     return summary
+
+
+def eligible_links(scores: dict, assumptions: bool = False) -> set:
+    states = {"confirmed", "assumed"} if assumptions else {"confirmed"}
+    return {key for key, item in scores.items() if item["all_ages_status"] in states}

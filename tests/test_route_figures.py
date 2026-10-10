@@ -37,6 +37,9 @@ def set_facility(graph, ends, facility):
     for u, v, _, data in graph.edges(keys=True, data=True):
         if {u, v} == set(ends):
             data["bike_facility"] = facility
+            if facility == "protected":
+                data["bike_lane_width_m"] = 1.5
+                data["bicycle"] = "designated"
 
 
 def test_fr14_4_corner_route_gives_the_hand_worked_km_by_facility_and_level(

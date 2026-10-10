@@ -1,0 +1,48 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_______ test_fr15_5_literal_model_scores_never_claim_confirmed_distance ________
+
+    def test_fr15_5_literal_model_scores_never_claim_confirmed_distance():
+        from bikeplan.stress import stress_summary
+        from tests.test_network_clip import two_way_graph
+    
+        graph = two_way_graph()
+        scores = {(1, 2, 0): {"lts": 1, "aaa": True}, (2, 1, 0): {"lts": 1, "aaa": True}}
+>       summary = stress_summary(graph, scores)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_safety_evidence.py:366: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/bikeplan/stress.py:493: in stress_summary
+    aaa = all(scores[key]["confirmed_aaa"] for key in keys)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <tuple_iterator object at 0x786b269c9d20>
+
+>   aaa = all(scores[key]["confirmed_aaa"] for key in keys)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'confirmed_aaa'
+
+src/bikeplan/stress.py:493: KeyError
+_______ test_fr15_5_evidence_scores_label_confirmed_distance_separately ________
+
+    def test_fr15_5_evidence_scores_label_confirmed_distance_separately():
+        from bikeplan.stress import stress_summary
+        from tests.test_network_clip import two_way_graph
+    
+        graph = two_way_graph()
+        scores = {
+            (1, 2, 0): {"lts": 1, "aaa": True, "confirmed_aaa": True},
+            (2, 1, 0): {"lts": 1, "aaa": True, "confirmed_aaa": False},
+        }
+        summary = stress_summary(graph, scores)
+>       assert summary["safety_scenario"] == "confirmed"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'safety_scenario'
+
+tests/test_safety_evidence.py:383: KeyError
+=========================== short test summary info ============================
+FAILED tests/test_safety_evidence.py::test_fr15_5_literal_model_scores_never_claim_confirmed_distance
+FAILED tests/test_safety_evidence.py::test_fr15_5_evidence_scores_label_confirmed_distance_separately
+2 failed, 17 deselected in 64.07s (0:01:04)

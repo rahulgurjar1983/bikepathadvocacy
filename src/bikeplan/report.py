@@ -71,7 +71,7 @@ FIGURES = [
     ),
     (
         "F2",
-        "Street that is safe for a child to ride alone (AAA)",
+        "Street that meets the model's all-ages criteria (AAA)",
         "spec 04",
         "I score each edge for stress and keep the segments where every edge is AAA.",
         "r['aaa'] == '1'",
@@ -107,7 +107,7 @@ def segment_rows(graph, profile: Profile, fixes: dict) -> list[list]:
                 str(segment_id),
                 f"{segment['inside_m']:.3f}",
                 max(scores[key]["lts"] for key in keys),
-                int(all(scores[key]["aaa"] for key in keys)),
+                int(all(scores[key]["confirmed_aaa"] for key in keys)),
                 found["width_source"] or "none",
                 fixes.get(segment_id) or "",
             ]
@@ -305,7 +305,10 @@ STYLE = (
 )
 GLOSSARY = {
     "ADT": "average daily traffic: how many motor vehicles use a street in a day.",
-    "AAA": "All Ages and Abilities: a street that is safe for a child or an older rider.",
+    "AAA": (
+        "All Ages and Abilities: meets the model's all-ages criteria. "
+        "This does not guarantee child safety."
+    ),
     "access": "how many needed places a home can reach by bike.",
     "bike": "a bicycle, including an electric bicycle.",
     "claim": "a plan statement that route data can check.",

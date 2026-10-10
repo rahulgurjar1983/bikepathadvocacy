@@ -513,8 +513,9 @@ def page(
         f"<h1>Review of a route in {html.escape(region.name)}</h1>"
         f"<p>By {html.escape(region.report.author)}</p>"
         '<section id="opening"><h2>What the data shows</h2>'
-        f"<p>I checked {link(length)} of route. {link(safe)} of it is safe for a child to ride "
-        f"alone. I found {link(breaks)} in the safe run and {link(crossings)} with no signal. "
+        f"<p>I checked {link(length)} of route. {link(safe)} of it meets the model's all-ages "
+        f"criteria. This does not guarantee child safety. "
+        f"I found {link(breaks)} in the safe run and {link(crossings)} with no signal. "
         f"I judge {link(claims)} below.</p>"
         "<p>I ask the author of the plan to read this review and send me a reply. I print every "
         "reply in full. Please read the appendix to check every number.</p></section>"

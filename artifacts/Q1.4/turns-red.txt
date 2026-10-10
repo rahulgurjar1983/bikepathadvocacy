@@ -1,0 +1,27 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+______ test_fr15_5_assumptions_do_not_override_recorded_turning_conflicts ______
+
+    def test_fr15_5_assumptions_do_not_override_recorded_turning_conflicts():
+        graph = crossing_graph(signal=True)
+        graph.graph["safety_evidence"] = {
+            "movements": [
+                {
+                    "incoming": [1, 2, 0],
+                    "outgoing": [2, 5, 0],
+                    "source": "test signal plan",
+                    "date": "2026-10-01",
+                    "protected_phase": True,
+                    "turning_conflicts": "permitted",
+                    "bicycle_access": True,
+                }
+            ]
+        }
+>       score = score_edges(graph, PROFILE, assumptions=True)[1, 2, 0]
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: score_edges() got an unexpected keyword argument 'assumptions'
+
+tests/test_safety_evidence.py:234: TypeError
+=========================== short test summary info ============================
+FAILED tests/test_safety_evidence.py::test_fr15_5_assumptions_do_not_override_recorded_turning_conflicts
+1 failed, 10 deselected in 13.68s

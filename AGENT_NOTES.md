@@ -18,6 +18,35 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Spec issues
 
+### Q1.4 literal score inputs (resolved)
+
+Spec 15 now permits the old score as a labelled model measure. The old
+literal score tests stay intact. `stress_summary` labels model-only
+inputs and keeps their old distance. It also reports confirmed distance
+on its own; missing proof gives no confirmed distance. Scores from the
+full evidence audit still use confirmed distance for the main total.
+Run `uv run pytest tests/test_safety_evidence.py tests/test_network_clip.py -q`.
+
+### Q1.4 prior input proof (resolved)
+
+The fixture-only rule in spec 15 now lets the loop add toy evidence in
+fixture data or input builders. The old proof below predates that rule.
+It is a past audit, not a current blocked result.
+
+`artifacts/Q1.4/input-proof.json` records the old main commit, config and
+snapshot hashes. Rebuild the source audit with
+`uv run python artifacts/Q1.4/check_inputs.py <worktree>`.
+It shows that the grid has class traffic defaults and nearby signal tags,
+with no phase or turn records. Those tags alone cannot confirm a crossing.
+
+
+The confirmed filter keeps survey options when it filters planning links.
+The access assumptions flag names unverified signal phases and turn
+conflicts. It cannot override a recorded conflict. Missing path width
+stays unknown in both modes. Reuse pytest, SciPy and the existing graph;
+no new runner or package is needed. The
+[TfNSW toolbox](https://www.transport.nsw.gov.au/system/files/media/documents/2023/Cycleway-Design-Toolbox-Web.pdf)
+calls for bike signal time and protection from turning vehicles.
 ### Q1.2 prior release block
 
 The resolved path checks are now on main. The notes below are history.
@@ -438,6 +467,24 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   A file name that starts with `access` can make the secret scan flag a
   plain hash. Keep the scanner strict and fix the proof writer.
 
+- Q1.4: The full network export includes movement records on street edges.
+  It is large. The full Bayside timing in `artifacts/Q1.4/time-full.txt`
+  exceeds the memory goal on this host. Use the saved
+  command to check those limits; do not cite this as performance proof.
+
+- Q1.4: Keep toy traffic records tied to exact edge values. Keep planned
+  phases apart from existing crossings. The grid input helper adds phase
+  proof only at its signal site and planned signal site, leaving both
+  unsignalised crossings without that proof. Old test bodies stay intact.
+- Q1.4: Stress exports, report maps and route figures use confirmed status.
+  The internal model AAA flag stays separate. An unknown turn can exclude
+  a whole edge; the current graph filter is conservative and does not
+  claim to prove every possible route movement.
+- Q1.4: Use the explicit access assumptions mode to compare class defaults
+  and unverified signal phases. Known turning conflicts stay unknown.
+  A proposed phase can support a matching junction fix but never the
+  existing network. Real source observations must stay unchanged.
+
 ### Q1.7
 
 - The opening uses the curve choice while Q1.6's shared record is pending. Keep costs, strict trips, school coverage and stages unknown until their source blocks exist. The old shortlist sheets are separate evidence, not the selected curve's local plans.
@@ -551,3 +598,11 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   profiles and test data. An error for a missing profile does not
   prove that private paths were rejected. A link escape test needs a
   real target folder, so a broken link cannot mask the missing guard.
+
+- Q1.4: Count corridor candidates before the confirmed filter. Keep their
+  model graph apart from the confirmed graph when their proof is missing.
+  The count describes options made, not works proven safe.
+- Q1.4: A model-only stress summary has `safety_scenario: model`.
+  Read `km_confirmed_aaa` for confirmed distance, never the old model total.
+  The new cases and unchanged old score cases pass in
+  `artifacts/Q1.4/resume-tests.txt`.

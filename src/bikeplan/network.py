@@ -360,6 +360,8 @@ def build(snapshot: str | Path, region: Region, profile: Profile) -> nx.MultiDiG
     set_lengths(graph)
     graph.graph["points"] = points
     graph.graph["gates"] = gates
+    if (folder / "safety_evidence.json").is_file():
+        graph.graph["safety_evidence"] = json.loads((folder / "safety_evidence.json").read_text())
     graph.graph["boundary"] = boundary_polygon(folder / "boundary.geojson", crs)
     manifest_path = folder / "manifest.json"
     manifest = json.loads(manifest_path.read_text()) if manifest_path.is_file() else {}
