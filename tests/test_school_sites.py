@@ -356,3 +356,18 @@ def test_fr16_4_school_headline_uses_the_selected_coverage():
     assert 'data-school="after">2</a>' in text
     assert 'data-school="new">1</a>' in text
     assert "Coverage of mapped sites" in text
+
+
+def test_fr16_4_school_report_leaves_room_for_sites_without_dropping_map_evidence():
+    import importlib
+    import re
+
+    report = importlib.import_module("bikeplan.report")
+    data = {
+        "boundary": {"coordinates": [[1, 2], [3, 4]]},
+        "segments": [{"source": "test map", "id": "street", "lines": [[1, 2], [3, 4]]}],
+    }
+    script = report.map_scripts(json.dumps(data, indent=2), "")
+    saved = re.search(r'id="map-data">(.*?)</script>', script, re.S)[1]
+    assert json.loads(saved) == data
+    assert len(saved) == len(json.dumps(data, separators=(",", ":")))
