@@ -14,7 +14,7 @@ from shapely.geometry import Point, Polygon
 
 from bikeplan.network import boundary_centre, utm_crs
 from bikeplan.snapshot import gpkg_rings
-from bikeplan.stress import score_edges
+from bikeplan.stress import eligible_links, score_edges
 
 DUPLICATE_RADIUS_M = 50.0
 SHOP_JOIN_M = 150.0
@@ -141,6 +141,7 @@ def places(snapshot: str | Path) -> list[dict]:
 class Homes(NamedTuple):
     people: dict
     unsnapped: float
+    population: dict | None = None
 
 
 def highways(data: dict) -> set:
@@ -182,9 +183,17 @@ def homes(units: list[dict], graph, boundary) -> Homes:
     ys = np.array([graph.nodes[node]["y"] for node in legal])
     people: dict = defaultdict(float)
     unsnapped = 0.0
-    for unit in units:
+    buffer_excluded = 0.0
+    shares = []
+    seen = set()
+    for index, unit in enumerate(units):
+        unit_id = str(unit.get("id", index))
+        if unit_id in seen:
+            raise ValueError("Duplicate population unit: " + unit_id)
+        seen.add(unit_id)
         centre = unit["polygon"].centroid
         if not boundary.contains(centre):
+            buffer_excluded += unit["people"]
             continue
         inside = [
             node
@@ -199,8 +208,27 @@ def homes(units: list[dict], graph, boundary) -> Homes:
             unsnapped += unit["people"]
             continue
         for node in targets:
-            people[node] += unit["people"] / len(targets)
-    return Homes(dict(people), unsnapped)
+            count = unit["people"] / len(targets)
+            people[node] += count
+            shares.append({"unit": unit_id, "node": node, "people": count})
+    return Homes(
+        dict(people),
+        unsnapped,
+        {
+            "shares": sorted(shares, key=lambda item: (item["unit"], str(item["node"]))),
+            "scope": "council population cells by centroid; destinations may be in the buffer",
+            "unit": "estimated residents",
+            "source": "snapshot population.gpkg",
+            "buffer_excluded": buffer_excluded,
+            "unsnapped": unsnapped,
+            "snapped": sum(people.values()),
+            "partial_cell_rule": "whole count when centroid is inside council",
+            "allocation": (
+                "equal shares at residential bike nodes, then other bike nodes, "
+                "then nearest within 300 m"
+            ),
+        },
+    )
 
 
 def in_scope_places(found: list[dict], boundary, buffer_m: float) -> list[dict]:
@@ -213,16 +241,18 @@ def population_units(snapshot: str | Path, crs) -> list[dict]:
     transformer = Transformer.from_crs(3857, crs, always_xy=True)
     database = sqlite3.connect(f"file:{Path(snapshot) / 'population.gpkg'}?mode=ro", uri=True)
     try:
-        rows = database.execute("select geom, population from population order by h3").fetchall()
+        rows = database.execute(
+            "select h3, geom, population from population order by h3"
+        ).fetchall()
     finally:
         database.close()
     units = []
-    for blob, count in rows:
+    for unit_id, blob, count in rows:
         rings = [
             list(zip(*transformer.transform(*zip(*ring, strict=True)), strict=True))
             for ring in gpkg_rings(blob)
         ]
-        units.append({"polygon": Polygon(rings[0], rings[1:]), "people": count})
+        units.append({"id": str(unit_id), "polygon": Polygon(rings[0], rings[1:]), "people": count})
     return units
 
 
@@ -289,7 +319,14 @@ def with_legs(runs: np.ndarray, legs: coo_array) -> np.ndarray:
     return out
 
 
-def last_legs(graph, scores: dict, homes: list, leg_m: float, table: EdgeTable | None = None):
+def last_legs(
+    graph,
+    scores: dict,
+    homes: list,
+    leg_m: float,
+    table: EdgeTable | None = None,
+    assumptions: bool = False,
+):
     if not leg_m or not homes:
         return None
     table = table or edge_table(graph)
@@ -297,7 +334,11 @@ def last_legs(graph, scores: dict, homes: list, leg_m: float, table: EdgeTable |
     allowed = {
         key
         for key, item in scores.items()
-        if item["lts"] <= 2 and key[0] not in hot and highways(graph.edges[key]) & LEG_HIGHWAYS
+        if item["lts"] <= 2
+        and item.get("all_ages_status", "confirmed")
+        in ({"confirmed", "assumed"} if assumptions else {"confirmed"})
+        and key[0] not in hot
+        and highways(graph.edges[key]) & LEG_HIGHWAYS
     }
     matrix = masked_matrix(table, allowed_mask(table, allowed)).T.tocsr()
     sources = np.array([table.index[node] for node in homes])
@@ -439,18 +480,37 @@ def scene(graph, region, snapshot: str | Path) -> Scene:
     nodes, missed = snap_points([(p["x"], p["y"]) for p in kept], graph)
     placed = [(p["type"], node) for p, node in zip(kept, nodes, strict=True) if node is not None]
     resident = homes(population_units(snapshot, graph.graph["crs"]), graph, boundary)
+    manifest_path = Path(snapshot) / "manifest.json"
+    manifest = json.loads(manifest_path.read_text()) if manifest_path.is_file() else {}
+    population_source = next(
+        (item for item in manifest.get("files", []) if item["path"] == "population.gpkg"), None
+    )
+    resident.population["source"] = (
+        {key: population_source.get(key) for key in ("path", "source", "url", "sha256", "licence")}
+        if population_source is not None
+        else {
+            "path": "population.gpkg",
+            "source": None,
+            "evidence_status": "unknown",
+            "reason": "No population source metadata in snapshot manifest",
+        }
+    )
     weights = {name: item.weight for name, item in region.destinations.items()}
     return Scene(kept, nodes, missed, placed, resident, weights)
 
 
-def write_access(graph, region, profile, snapshot: str | Path, out: str | Path) -> dict:
+def write_access(
+    graph, region, profile, snapshot: str | Path, out: str | Path, assumptions: bool = False
+) -> dict:
     out = Path(out)
     to_degrees = Transformer.from_crs(graph.graph["crs"], 4326, always_xy=True)
     kept, nodes, missed, placed, resident, weights = scene(graph, region, snapshot)
-    edge_scores = score_edges(graph, profile)
-    aaa = {key for key, item in edge_scores.items() if item["aaa"]}
+    edge_scores = score_edges(graph, profile, assumptions)
+    aaa = eligible_links(edge_scores, assumptions)
     table = edge_table(graph)
-    legs = last_legs(graph, edge_scores, sorted(resident.people), region.access.last_leg_m, table)
+    legs = last_legs(
+        graph, edge_scores, sorted(resident.people), region.access.last_leg_m, table, assumptions
+    )
     results = reach(
         graph,
         [node for _, node in placed],
@@ -484,6 +544,12 @@ def write_access(graph, region, profile, snapshot: str | Path, out: str | Path) 
         collection = {"type": "FeatureCollection", "features": features}
         (out / f"{name}.geojson").write_text(json.dumps(collection))
     summary = {
+        "safety_scenario": "assumptions" if assumptions else "confirmed",
+        "safety_assumptions": (
+            ["class traffic and speed defaults", "unverified signal phases and turning conflicts"]
+            if assumptions
+            else []
+        ),
         "score": scored["score"],
         "types": scored["types"],
         "safe_people": scored["safe_people"],

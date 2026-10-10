@@ -1,0 +1,28 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+____ test_fr3_13_segment_takes_the_higher_lts_and_aaa_needs_every_direction ____
+tests/test_network_clip.py:81: in test_fr3_13_segment_takes_the_higher_lts_and_aaa_needs_every_direction
+    summary = stress_summary(graph, scores)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/bikeplan/stress.py:493: in stress_summary
+    aaa = all(scores[key]["confirmed_aaa"] for key in keys)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/bikeplan/stress.py:493: in <genexpr>
+    aaa = all(scores[key]["confirmed_aaa"] for key in keys)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'confirmed_aaa'
+____________ test_fr3_13_segment_is_aaa_when_every_direction_is_aaa ____________
+tests/test_network_clip.py:90: in test_fr3_13_segment_is_aaa_when_every_direction_is_aaa
+    summary = stress_summary(graph, scores)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/bikeplan/stress.py:493: in stress_summary
+    aaa = all(scores[key]["confirmed_aaa"] for key in keys)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/bikeplan/stress.py:493: in <genexpr>
+    aaa = all(scores[key]["confirmed_aaa"] for key in keys)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'confirmed_aaa'
+=========================== short test summary info ============================
+FAILED tests/test_network_clip.py::test_fr3_13_segment_takes_the_higher_lts_and_aaa_needs_every_direction
+FAILED tests/test_network_clip.py::test_fr3_13_segment_is_aaa_when_every_direction_is_aaa
+2 failed in 2.92s

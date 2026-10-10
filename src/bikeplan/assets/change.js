@@ -56,9 +56,42 @@ window.addEventListener("load", function () {
     const chosen = scenario();
     const pick = chosen.picks[step];
     draw(chosen, step);
+    const worksData = document.getElementById("works-data");
+    if (worksData) {
+      const plans = JSON.parse(worksData.textContent)[current];
+      const work = plans.packages[step];
+      document.getElementById("works-package").textContent = current + ":" + step;
+      document.getElementById("works-summary").textContent = JSON.stringify(work.summary);
+      const body = document.getElementById("works-rows");
+      body.replaceChildren();
+      for (const id of work.rows) {
+        const row = document.createElement("tr");
+        for (const value of plans.rows[id]) {
+          const cell = document.createElement("td");
+          const code = document.createElement("code");
+          code.textContent = value;
+          cell.appendChild(code);
+          row.appendChild(cell);
+        }
+        body.appendChild(row);
+      }
+    }
+    const opening = document.getElementById("opening");
+    opening.dataset.package = current + ":" + step;
+    const rankLink = document.createElement("a");
+    rankLink.href = "#F13";
+    rankLink.textContent = String(step);
+    document.getElementById("package-status").replaceChildren(
+      document.createTextNode(chosen.label + " (" + current + ") proposal, rank "), rankLink
+    );
+    document.getElementById("proposal-state").textContent = step === 0
+      ? "No new works are selected."
+      : "I propose the modelled works in this selection.";
+    for (const cell of document.querySelectorAll("[data-opening]")) {
+      cell.textContent = value(pick, cell.dataset.opening).toFixed(places(cell.dataset.opening));
+    }
     for (const cell of document.querySelectorAll("#change-totals [data-total], #change-totals [data-measure]")) {
-      const key = cell.dataset.measure || cell.dataset.total;
-      cell.textContent = value(pick, key).toFixed(places(key));
+      cell.textContent = value(pick, cell.dataset.measure || cell.dataset.total).toFixed(places(cell.dataset.measure || cell.dataset.total));
     }
     const point = document.getElementById("curve-" + current).getAttribute("points").split(" ")[step].split(",");
     dot.setAttribute("cx", point[0]);

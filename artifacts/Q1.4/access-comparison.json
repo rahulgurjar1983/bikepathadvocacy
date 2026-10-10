@@ -1,0 +1,176 @@
+{
+  "build_commit": "39420a8fa1ca08a92859e0b21effcd793a2cb1da",
+  "config_hash": "6b7cd7698f58145f6669419dd0e4fba0cd4378fab2e1430a32df0a772127b665",
+  "snapshot_hash": "2eaf0b00832565765c42e07b48ad7c6117436194487f45931e348f6772964bba",
+  "command": "uv run python artifacts/Q1.4/compare_access.py",
+  "scope": "Fresh full Bayside report and access modes; model evidence, not field validation",
+  "full_command": "uv run bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out data/output/Q1.4/resume-full",
+  "edge_status_counts": {
+    "assumed": 11579,
+    "confirmed": 34,
+    "unknown": 177773
+  },
+  "movement_status_counts": {
+    "assumed": 495972,
+    "unknown": 191780
+  },
+  "output_hashes": [
+    {
+      "path": "access_homes.geojson",
+      "sha256": "64e5ee7d19083b024fdadaba43c37caa6ca5f72a1ce0ef2cf4123d7c914752ff"
+    },
+    {
+      "path": "frontier.json",
+      "sha256": "7319f9dadfc337d6eea8a49eab6374d00014c6f2cec91b07723a54a585ee0f86"
+    },
+    {
+      "path": "network.geojson",
+      "sha256": "956f6c9c40e9364bb9984f41f7b5294e28a4a3120d7b61af815011f4bd61ca6f"
+    },
+    {
+      "path": "outputs.sha256",
+      "sha256": "56da5ac040e2b15abfb970538837bfe352986f67e046b5c5580360081f7627a6"
+    },
+    {
+      "path": "places.geojson",
+      "sha256": "b275748f27eb07121541c246e22a64058d21b81e39bff4d3d823ccffeaa23803"
+    },
+    {
+      "path": "projects.csv",
+      "sha256": "2c02b470a6e4d518829921a9b5f1843a420b4f4041a00d2a696b24c5c2094262"
+    },
+    {
+      "path": "projects.geojson",
+      "sha256": "4e2d8899f0147228f24e65b9b76f22b6f94ae3ae9265490eb8e2b087bcce03d8"
+    },
+    {
+      "path": "projects.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "report.html",
+      "sha256": "21d9cc87391ab03ea3b0b380f6f4786577ec120669d34285284424ead9da76b4"
+    },
+    {
+      "path": "summary.json",
+      "sha256": "353c46925825d422a9cb7fdf891f141ee42823b0f244fa1a81f8920a3ac3cf72"
+    }
+  ],
+  "status_samples": [
+    {
+      "edge": [
+        15079385,
+        9971272835,
+        0
+      ],
+      "all_ages_status": "confirmed",
+      "safety_reason": "path width and bicycle access meet the model's all-ages criteria"
+    },
+    {
+      "edge": [
+        15079385,
+        4089375009,
+        0
+      ],
+      "all_ages_status": "confirmed",
+      "safety_reason": "path width and bicycle access meet the model's all-ages criteria"
+    },
+    {
+      "edge": [
+        624543,
+        18325410,
+        0
+      ],
+      "all_ages_status": "assumed",
+      "safety_reason": "meets the model's all-ages criteria with assumed speed or traffic"
+    },
+    {
+      "edge": [
+        624543,
+        13886605,
+        0
+      ],
+      "all_ages_status": "assumed",
+      "safety_reason": "meets the model's all-ages criteria with assumed speed or traffic"
+    },
+    {
+      "edge": [
+        324884,
+        1855186645,
+        0
+      ],
+      "all_ages_status": "unknown",
+      "safety_reason": "does not meet the model's all-ages criteria"
+    },
+    {
+      "edge": [
+        324884,
+        6417822329,
+        0
+      ],
+      "all_ages_status": "unknown",
+      "safety_reason": "does not meet the model's all-ages criteria"
+    }
+  ],
+  "network_status_check": "AAA exports equal confirmed status",
+  "public_prose_check": "Model criteria and child safety limits are shown",
+  "summaries": {
+    "confirmed": {
+      "safety_scenario": "confirmed",
+      "safety_assumptions": [],
+      "score": 0.1,
+      "types": {
+        "school": 0.1,
+        "college": 0.0,
+        "university": 0.0,
+        "aged_care": 0.0,
+        "library": 0.0,
+        "town_centre": 0.0,
+        "station": 0.1
+      },
+      "safe_people": {
+        "school": 1252.7183937185378,
+        "college": 0,
+        "university": 0,
+        "aged_care": 92.45217391304348,
+        "library": 37.78082191780822,
+        "town_centre": 108.11491163761222,
+        "station": 154.08398419784456
+      },
+      "not_snapped": {
+        "places": 0,
+        "people": 8.0
+      }
+    },
+    "assumptions": {
+      "safety_scenario": "assumptions",
+      "safety_assumptions": [
+        "class traffic and speed defaults",
+        "unverified signal phases and turning conflicts"
+      ],
+      "score": 0.1,
+      "types": {
+        "school": 0.1,
+        "college": 0.0,
+        "university": 0.0,
+        "aged_care": 0.0,
+        "library": 0.1,
+        "town_centre": 0.0,
+        "station": 0.1
+      },
+      "safe_people": {
+        "school": 1455.1714053441017,
+        "college": 41.3876404494382,
+        "university": 0,
+        "aged_care": 92.45217391304348,
+        "library": 189.2448959201329,
+        "town_centre": 108.69314293012923,
+        "station": 251.01465433824114
+      },
+      "not_snapped": {
+        "places": 0,
+        "people": 8.0
+      }
+    }
+  }
+}

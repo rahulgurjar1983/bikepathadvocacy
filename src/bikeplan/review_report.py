@@ -531,8 +531,9 @@ def page(
         f"<h1>Review of a route in {html.escape(region.name)}</h1>"
         f"<p>By {html.escape(region.report.author)}</p>"
         '<section id="opening"><h2>What the data shows</h2>'
-        f"<p>I checked {link(length)} of route. {link(safe)} of it is safe for a child to ride "
-        f"alone. I found {link(breaks)} in the safe run and {link(crossings)} with no signal. "
+        f"<p>I checked {link(length)} of route. {link(safe)} of it meets the model's all-ages "
+        f"criteria. This does not guarantee child safety. "
+        f"I found {link(breaks)} in the safe run and {link(crossings)} with no signal. "
         f"I judge {link(claims)} below.</p>"
         "<p>I ask the author of the plan to read this review and send me a reply. I print every "
         "reply in full. Please read the appendix to check every number.</p></section>"
@@ -586,7 +587,40 @@ def build_review(route, claims, region: Region, snapshot, reply=None) -> dict[st
     return {name: content.encode() for name, content in texts.items()}
 
 
+def check_private_paths(route, claims, out, reply=None):
+    private = Path.cwd() / "data/private"
+    inputs = [Path(path).absolute() for path in (route, claims, reply) if path is not None]
+    paths = [*inputs, Path(out).absolute()]
+    metadata = sorted(
+        {
+            folder / "review.yaml"
+            for path in inputs
+            for folder in (path.parent, path.resolve().parent)
+        }
+    )
+    restricted = any(
+        path.is_relative_to(private) or path.resolve().is_relative_to(private) for path in paths
+    )
+    records = []
+    for path in metadata:
+        if not path.is_file():
+            continue
+        try:
+            record = yaml.safe_load(path.read_text())
+        except yaml.YAMLError as error:
+            raise ConfigError(f"{path}: cannot read review settings") from error
+        if not isinstance(record, dict) or not isinstance(record.get("public"), bool):
+            raise ConfigError(f"{path}: public must be true or false")
+        restricted = restricted or record["public"] is False
+        records.append(path)
+    if restricted:
+        for path in [*paths, *records]:
+            if not path.is_relative_to(private) or not path.resolve().is_relative_to(private):
+                raise ConfigError(f"Private review files must stay under data/private: {path}")
+
+
 def write_review(route, claims, region: Region, snapshot, out, reply=None) -> list[dict]:
+    check_private_paths(route, claims, out, reply)
     files = build_review(route, claims, region, snapshot, reply)
     check_leaks(files["report.html"].decode(), out, snapshot)
     target = Path(out)

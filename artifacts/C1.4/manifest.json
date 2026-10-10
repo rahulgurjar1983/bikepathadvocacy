@@ -1,0 +1,3704 @@
+{
+  "build_commit": "1d5224b04e1cf6a93b0692262b216bfc8348c5ea",
+  "command": "/usr/bin/time -v -o /tmp/c14-real-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-C1.4-real",
+  "inputs": [
+    {
+      "path": "regions/au-nsw-bayside.yaml",
+      "sha256": "b324303588064e489ddf116063e24218bf89dd5e1ac3dab8bd8d2aae57f2b2e0"
+    },
+    {
+      "path": "profiles/au-nsw.yaml",
+      "sha256": "3089879011bff619b5df896b6a63677e7f1d9c50b24c50febf081cb6681e25cf"
+    },
+    {
+      "path": "data/cache/au-nsw-bayside/2026-10-01/manifest.json",
+      "sha256": "2eaf0b00832565765c42e07b48ad7c6117436194487f45931e348f6772964bba"
+    }
+  ],
+  "limit": "Modelled lane widths and parking sides are not field measurements. Missing walking, turn and access evidence remains unknown. Roads use source names and references, not a surveyed road register. Retained links cover proved trips only; missing entrances limit that proof.",
+  "outputs": [
+    {
+      "path": "access_homes.geojson",
+      "sha256": "45b6a74df5efb30c1a2d4cc92453a4d100a5b47959db76504d34976c282a23c0"
+    },
+    {
+      "path": "frontier.json",
+      "sha256": "f0bd446d6857a35240500491ac822eb1b8cbf29bb9c8fee22aa8f936c1085b02"
+    },
+    {
+      "path": "network.geojson",
+      "sha256": "ba342a505818555809ad75cecd1de1498784613b1aea4cfaa19446f07f16fa42"
+    },
+    {
+      "path": "outputs.sha256",
+      "sha256": "bb61821fde110087f9aecd1806feb17f7a13086d2c0f1fec83cddca33792f0eb"
+    },
+    {
+      "path": "places.geojson",
+      "sha256": "b275748f27eb07121541c246e22a64058d21b81e39bff4d3d823ccffeaa23803"
+    },
+    {
+      "path": "projects.csv",
+      "sha256": "69a447a786ccdf72f74d85204c7639b70c4fd6dcf95355ad0e3a47f99b019ec9"
+    },
+    {
+      "path": "projects.geojson",
+      "sha256": "f716c30a1c216fa5ea39a4aa7d060bdffdee03858d94b91b12f74a24e9fb5510"
+    },
+    {
+      "path": "projects.json",
+      "sha256": "ff4b2a80b661de8c383ae6856e9db5bb5c1de8ef71bbb2d26ae5c491a05c412a"
+    },
+    {
+      "path": "report.html",
+      "sha256": "b972260446cae0141f13b08250f6d0f6a698c9d9401483d28c40b9e8385baf6e"
+    },
+    {
+      "path": "summary.json",
+      "sha256": "4201d6231a40d06946028da9d283b06afff9e0e89d389bb8ccf4ca20e8ba9287"
+    }
+  ],
+  "packages": [
+    {
+      "package": {
+        "rank": 1,
+        "scenario": "light"
+      },
+      "project_ids": [
+        "b9a999953869c8b5"
+      ],
+      "works": {
+        "crossing_upgrades": [
+          "junction:13135418944"
+        ],
+        "distinct_sections": 0,
+        "element_ids": [
+          "junction:13135418944"
+        ],
+        "evidence_status": "modelled",
+        "existing_links_retained": {
+          "element_ids": [],
+          "length_m": 0,
+          "scope": "Links in complete proved return trips, excluding new works."
+        },
+        "km_by_design": {
+          "design_unknown": 0.0,
+          "path_use_unknown": 0.0,
+          "protected_cycleway": 0.0,
+          "quiet_street": 0.0,
+          "shared_path": 0.0
+        },
+        "remaining_gaps": [
+          {
+            "destination": "node/10001075693",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/10073901067",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/10082957070",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/10555740031",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1095964197",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/11380628141",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/11898347314",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/12700725513",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/12717080540",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/12751824137",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/13189855905",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/13358592708",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/13394290247",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/13413005966",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/13585522934",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/13752301233",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/15194910",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/15445736",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1569974444",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1572445621",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1663675831",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1685405588",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/17853085",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1843679387",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1843700641",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1853644076",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1886174942",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1886255325",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1886255327",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1886255332",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1963294346",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/20941855",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/2397867681",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/2397868537",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/2397878252",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/26428905",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/266279964",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/2786688377",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/2787323859",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/3500172365",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/4047445989",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/433584509",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/4370860466",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/4370861004",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/4418698201",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/4548459298",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/4593572936",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/4735626773",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/4828675012",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/512098526",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/5585647504",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/5586150041",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/5586150044",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/5692088706",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/5692088707",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/570812831",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/5774544463",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/5824785915",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6338722373",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/634218113",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6372204528",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6553012201",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6560219244",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6571195040",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6576039170",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6576039172",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6620600094",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6620600106",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6620600130",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6627573533",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6627573536",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6627573542",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6698595382",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/8254723627",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/8288988081",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/830985370",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/8946450953",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9033696993",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9194926510",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9546211198",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9546239036",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9559160181",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9559244011",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9567321659",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9574172353",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9821926005",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9866084045",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9868175026",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "relation/10511571",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "relation/1157763",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "relation/16237111",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "relation/16741089",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "relation/5919986",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "relation/9493051",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1032388796",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/104650697",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/104730275",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1050736515",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1075791123",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1075791150",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1078173737",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1078173738",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1106498814",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1109614723",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1133993170",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1137805796",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1137850027",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1138734977",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1148510143",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1148510149",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1148510166",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1148510170",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1160808480",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1162801083",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1162950756",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1162950764",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1162998173",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1162998175",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1174487856",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1174706332",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1175244657",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1175258416",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1196194021",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1196748290",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1197833773",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1204059470",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1204059472",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1208386109",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1231623963",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1261365612",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1306460033",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1324088820",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1329345514",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1332586552",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1368005270",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1443165791",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1468636469",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1468636470",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1471880387",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1472122854",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1472519470",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1479491564",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1502732309",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/162511788",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/169394376",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/172474318",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/172691142",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/173271881",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/173274331",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/173530296",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/174600381",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/174606801",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/174909203",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/175146090",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/17588928",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/17594099",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/17595318",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/175997916",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/180107496",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/182637530",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/183385206",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/183385522",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/188015636",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/189986889",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/189987356",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/20186068",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/20650320",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/21354032",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/21357735",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/214025582",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/22491660",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/22575357",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/22598463",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/22598516",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/22633151",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/23186605",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/23256537",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/23266996",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/23295502",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/238305656",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/247559501",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/247764364",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/247764382",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/252114556",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/252692378",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/280245875",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/291300133",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/30085938",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/301746435",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/339895469",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/339905685",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/339906903",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/34151982",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/366434083",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/368557092",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/389323767",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/403775967",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/403968763",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/409366326",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/409631871",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/410104721",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/421696004",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/421696005",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/421696006",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/421696007",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/421699400",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/421699401",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/423988593",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/423988594",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/425489343",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/45558386",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/45603004",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/45604574",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/47134443",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/502800742",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/514930229",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/521113234",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/532707653",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/532707654",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/550099450",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/554571573",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/561217751",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/561217752",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/563988917",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/584896810",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047330",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047332",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047335",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047338",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047340",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047343",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047345",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047346",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047347",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047348",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047349",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047350",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047351",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047352",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047353",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047354",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600246737",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907439",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907440",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907442",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907443",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907444",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907445",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907446",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907447",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907448",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907449",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907450",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907452",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907453",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907454",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907458",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907459",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907460",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907461",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907462",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/605950458",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/605984568",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/610927146",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/614152386",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/61972634",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/630869551",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/685174017",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/692892007",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/692892892",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/692893074",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/692893338",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/70374399",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/739801575",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/740047983",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/740047984",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/740047985",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/75617037",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/77091343",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/77091417",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/778183436",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/78295530",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/78300475",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/822287352",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/822292588",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/822364731",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/822368372",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/849764222",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/88184025",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/891830797",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/942023060",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/942233879",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/953200605",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/96044131",
+            "reason": "unknown_entrance_link"
+          }
+        ],
+        "road_rule": "Exact source road name and reference; unnamed ways use source way ID. A road name is not a surveyed road register.",
+        "sections": [],
+        "unique_roads": 0,
+        "unnamed_roads": 0
+      }
+    },
+    {
+      "package": {
+        "rank": 1,
+        "scenario": "shipped"
+      },
+      "project_ids": [
+        "b9a999953869c8b5"
+      ],
+      "works": {
+        "crossing_upgrades": [
+          "junction:13135418944"
+        ],
+        "distinct_sections": 0,
+        "element_ids": [
+          "junction:13135418944"
+        ],
+        "evidence_status": "modelled",
+        "existing_links_retained": {
+          "element_ids": [],
+          "length_m": 0,
+          "scope": "Links in complete proved return trips, excluding new works."
+        },
+        "km_by_design": {
+          "design_unknown": 0.0,
+          "path_use_unknown": 0.0,
+          "protected_cycleway": 0.0,
+          "quiet_street": 0.0,
+          "shared_path": 0.0
+        },
+        "remaining_gaps": [
+          {
+            "destination": "node/10001075693",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/10073901067",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/10082957070",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/10555740031",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1095964197",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/11380628141",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/11898347314",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/12700725513",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/12717080540",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/12751824137",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/13189855905",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/13358592708",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/13394290247",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/13413005966",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/13585522934",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/13752301233",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/15194910",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/15445736",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1569974444",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1572445621",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1663675831",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1685405588",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/17853085",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1843679387",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1843700641",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1853644076",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1886174942",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1886255325",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1886255327",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1886255332",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1963294346",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/20941855",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/2397867681",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/2397868537",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/2397878252",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/26428905",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/266279964",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/2786688377",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/2787323859",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/3500172365",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/4047445989",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/433584509",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/4370860466",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/4370861004",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/4418698201",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/4548459298",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/4593572936",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/4735626773",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/4828675012",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/512098526",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/5585647504",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/5586150041",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/5586150044",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/5692088706",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/5692088707",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/570812831",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/5774544463",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/5824785915",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6338722373",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/634218113",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6372204528",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6553012201",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6560219244",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6571195040",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6576039170",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6576039172",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6620600094",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6620600106",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6620600130",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6627573533",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6627573536",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6627573542",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6698595382",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/8254723627",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/8288988081",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/830985370",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/8946450953",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9033696993",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9194926510",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9546211198",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9546239036",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9559160181",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9559244011",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9567321659",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9574172353",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9821926005",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9866084045",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9868175026",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "relation/10511571",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "relation/1157763",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "relation/16237111",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "relation/16741089",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "relation/5919986",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "relation/9493051",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1032388796",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/104650697",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/104730275",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1050736515",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1075791123",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1075791150",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1078173737",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1078173738",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1106498814",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1109614723",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1133993170",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1137805796",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1137850027",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1138734977",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1148510143",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1148510149",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1148510166",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1148510170",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1160808480",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1162801083",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1162950756",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1162950764",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1162998173",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1162998175",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1174487856",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1174706332",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1175244657",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1175258416",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1196194021",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1196748290",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1197833773",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1204059470",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1204059472",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1208386109",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1231623963",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1261365612",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1306460033",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1324088820",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1329345514",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1332586552",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1368005270",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1443165791",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1468636469",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1468636470",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1471880387",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1472122854",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1472519470",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1479491564",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1502732309",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/162511788",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/169394376",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/172474318",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/172691142",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/173271881",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/173274331",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/173530296",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/174600381",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/174606801",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/174909203",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/175146090",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/17588928",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/17594099",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/17595318",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/175997916",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/180107496",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/182637530",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/183385206",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/183385522",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/188015636",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/189986889",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/189987356",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/20186068",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/20650320",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/21354032",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/21357735",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/214025582",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/22491660",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/22575357",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/22598463",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/22598516",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/22633151",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/23186605",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/23256537",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/23266996",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/23295502",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/238305656",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/247559501",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/247764364",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/247764382",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/252114556",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/252692378",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/280245875",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/291300133",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/30085938",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/301746435",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/339895469",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/339905685",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/339906903",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/34151982",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/366434083",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/368557092",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/389323767",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/403775967",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/403968763",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/409366326",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/409631871",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/410104721",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/421696004",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/421696005",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/421696006",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/421696007",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/421699400",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/421699401",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/423988593",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/423988594",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/425489343",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/45558386",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/45603004",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/45604574",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/47134443",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/502800742",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/514930229",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/521113234",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/532707653",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/532707654",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/550099450",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/554571573",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/561217751",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/561217752",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/563988917",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/584896810",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047330",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047332",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047335",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047338",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047340",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047343",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047345",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047346",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047347",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047348",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047349",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047350",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047351",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047352",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047353",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047354",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600246737",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907439",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907440",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907442",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907443",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907444",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907445",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907446",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907447",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907448",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907449",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907450",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907452",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907453",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907454",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907458",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907459",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907460",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907461",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907462",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/605950458",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/605984568",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/610927146",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/614152386",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/61972634",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/630869551",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/685174017",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/692892007",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/692892892",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/692893074",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/692893338",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/70374399",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/739801575",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/740047983",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/740047984",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/740047985",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/75617037",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/77091343",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/77091417",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/778183436",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/78295530",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/78300475",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/822287352",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/822292588",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/822364731",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/822368372",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/849764222",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/88184025",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/891830797",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/942023060",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/942233879",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/953200605",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/96044131",
+            "reason": "unknown_entrance_link"
+          }
+        ],
+        "road_rule": "Exact source road name and reference; unnamed ways use source way ID. A road name is not a surveyed road register.",
+        "sections": [],
+        "unique_roads": 0,
+        "unnamed_roads": 0
+      }
+    },
+    {
+      "package": {
+        "rank": 1,
+        "scenario": "heavy"
+      },
+      "project_ids": [
+        "b9a999953869c8b5"
+      ],
+      "works": {
+        "crossing_upgrades": [
+          "junction:13135418944"
+        ],
+        "distinct_sections": 0,
+        "element_ids": [
+          "junction:13135418944"
+        ],
+        "evidence_status": "modelled",
+        "existing_links_retained": {
+          "element_ids": [],
+          "length_m": 0,
+          "scope": "Links in complete proved return trips, excluding new works."
+        },
+        "km_by_design": {
+          "design_unknown": 0.0,
+          "path_use_unknown": 0.0,
+          "protected_cycleway": 0.0,
+          "quiet_street": 0.0,
+          "shared_path": 0.0
+        },
+        "remaining_gaps": [
+          {
+            "destination": "node/10001075693",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/10073901067",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/10082957070",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/10555740031",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1095964197",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/11380628141",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/11898347314",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/12700725513",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/12717080540",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/12751824137",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/13189855905",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/13358592708",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/13394290247",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/13413005966",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/13585522934",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/13752301233",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/15194910",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/15445736",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1569974444",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1572445621",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1663675831",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1685405588",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/17853085",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1843679387",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1843700641",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1853644076",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1886174942",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1886255325",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1886255327",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1886255332",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/1963294346",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/20941855",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/2397867681",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/2397868537",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/2397878252",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/26428905",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/266279964",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/2786688377",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/2787323859",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/3500172365",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/4047445989",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/433584509",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/4370860466",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/4370861004",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/4418698201",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/4548459298",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/4593572936",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/4735626773",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/4828675012",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/512098526",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/5585647504",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/5586150041",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/5586150044",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/5692088706",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/5692088707",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/570812831",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/5774544463",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/5824785915",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6338722373",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/634218113",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6372204528",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6553012201",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6560219244",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6571195040",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6576039170",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6576039172",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6620600094",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6620600106",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6620600130",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6627573533",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6627573536",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6627573542",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/6698595382",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/8254723627",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/8288988081",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/830985370",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/8946450953",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9033696993",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9194926510",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9546211198",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9546239036",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9559160181",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9559244011",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9567321659",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9574172353",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9821926005",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9866084045",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "node/9868175026",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "relation/10511571",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "relation/1157763",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "relation/16237111",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "relation/16741089",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "relation/5919986",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "relation/9493051",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1032388796",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/104650697",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/104730275",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1050736515",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1075791123",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1075791150",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1078173737",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1078173738",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1106498814",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1109614723",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1133993170",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1137805796",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1137850027",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1138734977",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1148510143",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1148510149",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1148510166",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1148510170",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1160808480",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1162801083",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1162950756",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1162950764",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1162998173",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1162998175",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1174487856",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1174706332",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1175244657",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1175258416",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1196194021",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1196748290",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1197833773",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1204059470",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1204059472",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1208386109",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1231623963",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1261365612",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1306460033",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1324088820",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1329345514",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1332586552",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1368005270",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1443165791",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1468636469",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1468636470",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1471880387",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1472122854",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1472519470",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1479491564",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/1502732309",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/162511788",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/169394376",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/172474318",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/172691142",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/173271881",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/173274331",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/173530296",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/174600381",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/174606801",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/174909203",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/175146090",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/17588928",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/17594099",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/17595318",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/175997916",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/180107496",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/182637530",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/183385206",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/183385522",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/188015636",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/189986889",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/189987356",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/20186068",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/20650320",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/21354032",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/21357735",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/214025582",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/22491660",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/22575357",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/22598463",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/22598516",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/22633151",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/23186605",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/23256537",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/23266996",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/23295502",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/238305656",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/247559501",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/247764364",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/247764382",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/252114556",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/252692378",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/280245875",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/291300133",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/30085938",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/301746435",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/339895469",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/339905685",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/339906903",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/34151982",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/366434083",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/368557092",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/389323767",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/403775967",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/403968763",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/409366326",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/409631871",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/410104721",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/421696004",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/421696005",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/421696006",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/421696007",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/421699400",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/421699401",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/423988593",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/423988594",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/425489343",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/45558386",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/45603004",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/45604574",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/47134443",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/502800742",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/514930229",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/521113234",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/532707653",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/532707654",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/550099450",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/554571573",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/561217751",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/561217752",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/563988917",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/584896810",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047330",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047332",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047335",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047338",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047340",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047343",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047345",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047346",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047347",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047348",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047349",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047350",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047351",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047352",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047353",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600047354",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600246737",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907439",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907440",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907442",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907443",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907444",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907445",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907446",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907447",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907448",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907449",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907450",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907452",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907453",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907454",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907458",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907459",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907460",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907461",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/600907462",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/605950458",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/605984568",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/610927146",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/614152386",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/61972634",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/630869551",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/685174017",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/692892007",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/692892892",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/692893074",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/692893338",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/70374399",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/739801575",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/740047983",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/740047984",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/740047985",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/75617037",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/77091343",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/77091417",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/778183436",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/78295530",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/78300475",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/822287352",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/822292588",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/822364731",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/822368372",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/849764222",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/88184025",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/891830797",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/942023060",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/942233879",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/953200605",
+            "reason": "unknown_entrance_link"
+          },
+          {
+            "destination": "way/96044131",
+            "reason": "unknown_entrance_link"
+          }
+        ],
+        "road_rule": "Exact source road name and reference; unnamed ways use source way ID. A road name is not a surveyed road register.",
+        "sections": [],
+        "unique_roads": 0,
+        "unnamed_roads": 0
+      }
+    }
+  ],
+  "report_bytes": 7331312,
+  "row": "C1.4"
+}
