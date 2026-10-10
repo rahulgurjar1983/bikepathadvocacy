@@ -1128,7 +1128,8 @@ The count for each type unions new destinations of that type. Gains
 counted by type add those type counts, so one person may count again.
 The cases include two schools and a station, and nodes that share a
 population cell. Summaries, sheets, exports, figures and route reviews
-use these distinct measures. Offline browser checks change the scenario
+use these distinct measures. Sheets keep exact counts in folded records
+while their tables round the display. Offline browser checks change the scenario
 and rank. The proof rebuilds package unions from node membership, checks
 all figure recipes and saves hashes from fresh full-mode worked-case
 runs with the shipped test-grid settings. This is a made-up region,
@@ -1138,4 +1139,5 @@ safe destination reach; strict complete-trip counts stay separate.
 Artifact: `artifacts/Q1.5/people-proof.json`,
 `artifacts/Q1.5/collect.py`, `artifacts/Q1.5/real-run.txt`,
 `artifacts/Q1.5/contract-red.txt`, `artifacts/Q1.5/verify.txt` and
-`artifacts/Q1.5/people-green.txt`.
+`artifacts/Q1.5/people-green.txt`, `artifacts/Q1.5/sheet-red.txt` and
+`artifacts/Q1.5/sheet-green.txt`.

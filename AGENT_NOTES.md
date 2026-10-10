@@ -647,3 +647,8 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   unions without the new count helper. The saved scope excludes real
   region and field claims. Use gpxpy for the made-up route; test helper
   imports depend on pytest's import mode and do not work in a plain run.
+
+- Q1.5 sheet repair: the old sheet test checks each saved total in full.
+  Keep its body intact. Fold the exact project and package count records
+  below the plain tables, so readers can check or reuse node-share counts
+  that the display rounds. Sort record keys to match the saved JSON.
