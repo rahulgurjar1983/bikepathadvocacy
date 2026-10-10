@@ -177,3 +177,44 @@ def test_fr16_5_offline_project_data_preserves_counts_in_compact_json():
     embedded = script.split('id="page-data">', 1)[1].split("</script>", 1)[0]
     assert json.loads(embedded) == payload
     assert len(embedded) < len(json.dumps(payload))
+
+
+def test_fr16_5_source_metadata_gaps_stay_unknown_without_blocking_counts(tmp_path):
+    from bikeplan.access import scene
+    from bikeplan.network import build
+    from tests.test_propose_command import snapshot
+
+    folder = snapshot(tmp_path / "snap")
+    region = load_region("regions/au-nsw-bayside.yaml")
+    graph = build(folder, region, load_profile("au-nsw"))
+    resident = scene(graph, region, folder).resident
+    assert resident.people
+    assert resident.population["source"]["source"] is None
+    assert resident.population["source"]["evidence_status"] == "unknown"
+    assert resident.population["source"]["reason"]
+
+
+def test_fr15_6_missing_destination_type_stays_unknown_in_union_counts(tmp_path):
+    from bikeplan.propose import Planning
+    from bikeplan.trips import snapshot_trip_inputs
+    from tests.test_complete_trips import town
+
+    graph, links, _, _ = town()
+    (tmp_path / "places.json").write_text(json.dumps({"trip_evidence": {}}))
+    planning = Planning({key: {"needs": ()} for key in links}, {})
+    destinations, _, _ = snapshot_trip_inputs(
+        tmp_path,
+        [{"osm_id": "site", "name": "Unnamed type"}],
+        [2],
+        graph,
+        {key: {"aaa": True, "lts": 1} for key in links},
+        planning,
+    )
+    assert destinations[0]["type"] == "unknown"
+    result = trips.resident_outcomes(
+        {"strict": [], "first_leg_model": []},
+        {"strict": [{"origin": 0, "destination": "site"}], "first_leg_model": []},
+        population().population,
+        destinations,
+    )
+    assert result["strict"]["by_place_type"]["unknown"]["after"] == 60.25
