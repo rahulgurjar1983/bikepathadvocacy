@@ -18,6 +18,235 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Spec issues
 
+### Q2.7 open PR input block
+
+Q2.7 cannot start while PR 118 stays open. This turn ran
+`bash artifacts/C1.4/reproduce-input.sh` on fresh main. Both base
+checks pass; both feature checks fail on F14. The base and logs are
+in `artifacts/C1.4/input-base-commit.txt`,
+`artifacts/C1.4/input-base-tests.txt` and
+`artifacts/C1.4/input-feature-tests.txt`.
+CI proof: `gh run view 38026752269 --log-failed | tail -n 80`.
+The input owner must align the old exact figure list checks with the
+new figure rule. Keep Q2.7 and C1.4 open until that repair ships.
+
+### Q2.6 open PR input block
+
+Q2.6 cannot start while PR 118 stays open. This turn ran
+`bash artifacts/C1.4/reproduce-input.sh` on fresh main. Both base
+checks pass; both feature checks fail on F14. The base and logs are
+in `artifacts/C1.4/input-base-commit.txt`,
+`artifacts/C1.4/input-base-tests.txt` and
+`artifacts/C1.4/input-feature-tests.txt`.
+CI proof: `gh run view 38026752269 --log-failed | tail -n 80`.
+The input owner must align the old exact figure list checks with the
+new figure rule. Keep Q2.6 and C1.4 open until that repair ships.
+
+### Q2.5 open PR input block
+
+Q2.5 cannot start while PR 118 stays open. This turn ran
+`bash artifacts/C1.4/reproduce-input.sh` on fresh main. Both base
+checks pass; both feature checks fail on F14. The base and logs are
+in `artifacts/C1.4/input-base-commit.txt`,
+`artifacts/C1.4/input-base-tests.txt` and
+`artifacts/C1.4/input-feature-tests.txt`.
+CI proof: `gh run view 38026752269 --log-failed | tail -n 80`.
+The input owner must align the old exact figure list checks with the
+new figure rule. Keep Q2.5 and C1.4 open until that repair ships.
+
+### Q2.2 open PR input block
+
+Q2.2 cannot start while PR 118 stays open. Fresh main proof:
+`bash artifacts/C1.4/reproduce-input.sh`. The base checks pass; the
+feature checks fail on F14. The saved base and logs are in
+`artifacts/C1.4/input-base-commit.txt`,
+`artifacts/C1.4/input-base-tests.txt` and
+`artifacts/C1.4/input-feature-tests.txt`.
+CI proof: `gh run view 38026752269 --log-failed | tail -n 80`.
+The input owner must align the old exact figure list checks with the
+new figure rule. Keep Q2.2 and C1.4 open until that repair ships.
+
+### Q2.1 open PR input block
+
+Q2.1 cannot start while PR 118 stays open. This turn ran
+`bash artifacts/C1.4/reproduce-input.sh` on fresh main. The base checks
+pass; the feature checks fail on F14. The base commit and logs are in
+the C1.4 proof files named below. CI shows the same clash; run
+`gh run view 38026752269 --log-failed | tail -n 80`.
+The input owner must resolve the old exact figure list checks under
+the new figure rule. Keep Q2.1 and C1.4 open until that repair ships.
+
+### C1.4 figure ID clash
+
+Resolved by FR-0.35 on main. The exact figure lists now require the
+new works figure and keep all prior checks. The proof below is history.
+
+C1.4 stays open. CI for PR 118 fails the old report checks that require
+exactly F1 through F13. The works count adds F14. Spec 16 says not to
+reuse an old figure ID for a new measure. The loop cannot change old
+assertions to make them pass. The legacy fixture rule only covers Q1.3
+and Q1.4; it does not permit this change.
+
+Fresh main proof: `bash artifacts/C1.4/reproduce-input.sh`. The base
+commit is in `artifacts/C1.4/input-base-commit.txt`. Both old checks pass
+on that base. Apply only the feature source patch; both fail on the added
+F14. No old test is changed. Logs are in
+`artifacts/C1.4/input-base-tests.txt` and
+`artifacts/C1.4/input-feature-tests.txt`. CI proof: run
+`gh run view 38026461146 --log-failed | tail -n 80`.
+
+The C1.5 turn ran the same proof on fresh main again. The base still
+passes and the feature still fails. Finish this open PR before starting
+C1.5; do not weaken old tests or reuse a figure ID to pass CI.
+
+The Q2.4 turn checked fresh main with the same proof command. Base
+checks pass; the feature checks fail on F14. Q2.4 cannot start while
+PR 118 stays open. The input ask below still applies. CI failed the
+same checks: `gh run view 38026752269 --log-failed | tail -n 80`.
+
+The C1.0 turn ran the fresh main proof again with the command above.
+The base passes; the feature fails on the new figure ID. C1.0 cannot
+start while PR 118 stays open. No source or test was changed this turn.
+
+The C1.6 turn ran the same proof on fresh main. The base checks pass;
+the feature checks fail on F14. CI still fails those same checks:
+`gh run view 38026752269 --log-failed | tail -n 80`. C1.6 cannot
+start while PR 118 stays open. No source or test was changed.
+
+The C1.7 turn ran the same proof on fresh main. The base checks pass;
+the feature checks fail on F14. Run the proof command above and
+`gh run view 38026752269 --log-failed | tail -n 80` to check the clash.
+C1.7 cannot start while PR 118 stays open. No source or test was changed.
+
+The C1.12 turn ran the same proof on fresh main. Base checks pass;
+the feature checks fail on F14. CI still fails those same checks:
+`gh run view 38026752269 --log-failed | tail -n 80`. C1.12 cannot
+start while PR 118 stays open. No source or test was changed.
+
+The C1.8 turn ran the same proof on fresh main. Both base checks pass;
+both feature checks fail on F14. Run the proof command above and
+`gh run view 38026752269 --log-failed | tail -n 80` to check the clash.
+C1.8 cannot start while PR 118 stays open. No source or test was changed.
+
+The C1.9 turn ran the same proof on fresh main. Both base checks pass;
+both feature checks fail on F14. Run the proof command above and
+`gh run view 38026752269 --log-failed | tail -n 80` to check the clash.
+C1.9 cannot start while PR 118 stays open. No source or test was changed.
+
+The Q1.8 turn ran the same proof on fresh main. Both base checks pass;
+both feature checks fail on F14. Run the proof command above and
+`gh run view 38026752269 --log-failed | tail -n 80` to check the clash.
+Q1.8 cannot start while PR 118 stays open. No source or test was changed.
+
+The Q1.9 turn checked fresh main with the proof command above. Base
+checks pass; the feature checks fail on F14. The CI log command above
+shows the same failures. Q1.9 cannot start while PR 118 stays open.
+The input ask still applies. No source or test was changed.
+
+The C1.10 turn checked fresh main with the proof command above. Both
+base checks pass; both feature checks fail on F14. The CI log command
+above shows the same failures. C1.10 cannot start while PR 118 stays
+open. Keep this rule clash as an input block; do not start report work
+or change the old checks from a loop branch.
+
+The Q1.10 turn checked fresh main with the proof command above. Both
+base checks pass; both feature checks fail on F14. The CI log command
+above shows the same failures. Q1.10 cannot start while PR 118 stays
+open. Repair the exact-list checks on an input branch while keeping
+the order, fields and link checks. No source or test was changed.
+
+The Q1.11 turn checked fresh main with the proof command above. Base
+checks pass; the feature checks fail on F14. The CI log command above
+shows the same failures. Q1.11 cannot start while PR 118 stays open.
+The input ask still applies. No source or test was changed.
+
+The P10.1 turn checked fresh main with the proof command above. Base
+checks pass; both feature checks fail on F14. The CI log command above
+shows the same failures. P10.1 cannot start while PR 118 stays open.
+The exact-list checks still need an input fix; keep their order, field
+and link checks. No source or test was changed.
+
+The P10.2 turn checked fresh main with the proof command above. Base
+checks pass; both feature checks fail on F14. The CI log command above
+shows the same failures. P10.2 cannot start while PR 118 stays open.
+The exact-list checks still need an input fix; keep their order, field
+and link checks. No source or test was changed.
+
+The P10.3 turn checked fresh main with the proof command above. Base
+checks pass; both feature checks fail on F14. The CI log command above
+shows the same failures. P10.3 cannot start while PR 118 stays open.
+The exact-list checks still need an input fix; keep their order, field
+and link checks. No source or test was changed.
+
+The P10.4 turn checked fresh main with the proof command above. Both
+base checks pass; both feature checks fail on F14. The CI log command
+above shows the same failures. P10.4 cannot start while PR 118 stays
+open. The input ask still applies. No source or test was changed.
+
+The P11.2 turn ran `bash artifacts/C1.4/reproduce-input.sh` on fresh
+main. Both base checks pass; both feature checks fail on F14. The saved
+logs show the results. `scripts/wait-ci.sh 118` exits with failed test
+checks; `gh run view 38026752269 --log-failed | tail -n 80` shows the
+same clash. P11.2 cannot start while this loop PR stays open. No source
+or test was changed.
+
+The P11.3 turn ran `bash artifacts/C1.4/reproduce-input.sh` on fresh
+main. Both base checks pass; both feature checks fail on F14. The saved
+logs show the results. `scripts/wait-ci.sh 118` reports failed test
+checks. The CI log command above shows the same clash. P11.3 cannot
+start while this loop PR stays open. No source or test was changed.
+
+The P11.4 turn ran `bash artifacts/C1.4/reproduce-input.sh` on fresh
+main. Both base checks pass; both feature checks fail on F14. The saved
+logs show the results. `scripts/wait-ci.sh 118` reports failed test
+checks. The CI log command above shows the same clash. P11.4 cannot
+start while this loop PR stays open. No source or test was changed.
+
+The P11.5 turn ran `bash artifacts/C1.4/reproduce-input.sh` on fresh
+main. Both base checks pass; both feature checks fail on F14. The saved
+logs show the results. `scripts/wait-ci.sh 118` reports failed test
+checks. The CI log command above shows the same clash. P11.5 cannot
+start while this loop PR stays open. No source or test was changed.
+
+The P11.6 turn ran `bash artifacts/C1.4/reproduce-input.sh` on fresh
+main. Both base checks pass; both feature checks fail on F14. The saved
+logs show the results. `scripts/wait-ci.sh 118` reports failed test
+checks. `gh run view 38026752269 --log-failed | tail -n 80` shows the
+same clash. P11.6 cannot start while this loop PR stays open. No source
+or test was changed.
+
+The P12.1 turn ran the fresh main proof with the command above. Both
+base checks pass; both feature checks fail on F14. The CI log command
+`gh run view 38026752269 --log-failed | tail -n 80` shows the same
+clash. P12.1 cannot start while PR 118 stays open. The input ask below
+still applies. No source or test was changed.
+
+The P12.2 turn ran the fresh main proof with the command above. Both
+base checks pass; both feature checks fail on F14. The CI log command
+`gh run view 38026752269 --log-failed | tail -n 80` shows the same
+clash. P12.2 cannot start while PR 118 stays open. No source or test
+was changed. The input ask below still applies.
+
+The P12.3 turn ran `bash artifacts/C1.4/reproduce-input.sh` on fresh
+main. Both base checks pass; both feature checks fail on F14. Run
+`gh run view 38026752269 --log-failed | tail -n 80` for the CI proof.
+P12.3 cannot start while PR 118 stays open. No source or test was
+changed. The input ask below still applies.
+
+The P12.4 turn ran `bash artifacts/C1.4/reproduce-input.sh` on fresh
+main. Both base checks pass; both feature checks fail on F14. Run
+`gh run view 38026752269 --log-failed | tail -n 80` for the CI proof.
+P12.4 cannot start while PR 118 stays open. No source or test was
+changed. The input ask below still applies.
+
+Input ask: amend the exact figure-list checks on an input branch to
+allow new figure IDs while retaining order, fields and resolved links.
+Or grant a narrow rule for this test update. Keep the requirement for a
+new ID and the old checks of each figure. PR 118 stays a draft with
+auto-merge off. The fresh real proof remains saved; it does not mean
+this row shipped.
+
+
 - `gates/tests/test_loop.py::test_fr0_13_usage_limit_turn_is_not_counted` times out after 60 seconds on `origin/main` too. Proof: `git checkout origin/main && uv run pytest gates/tests/test_loop.py -q -k usage_limit`. The pre-push hook still let the push through.
 - P10.1: resolved by the input proof-only gate path; run fresh proof before completion. Prior issue: fresh `origin/main` still has the base commit in `artifacts/P10.1/check.txt`. The grid tests pass there; see the command and result in `artifacts/P10.1/main-audit.txt`. The prior Bayside tests also passed on that base, so the red-green rule bars them. The old temp run files are now gone; the committed hashes are a past record, not a fresh byte check. Keep the row open and held until the operator fixes the rule and gate. Copy run proof out of pytest temp paths before a later test run clears them.
 
@@ -242,3 +471,36 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   their counts usable and mark source metadata unknown with a reason.
   Full report runs still need their manifest. A place with no type
   belongs in the unknown type count; do not guess that it is a school.
+
+### C1.4
+
+- Works use source road names and references, with way IDs for unnamed
+  links. This is not a surveyed road register. Reverse edges and shared
+  fixes count once. Joined links with the same plan form sections; gaps
+  and changed plans split them. Stable works IDs hash their element set.
+- Reuse the installed NetworkX
+  [connected components](https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.components.connected_components.html)
+  to group works. No new package or graph solver is needed.
+- A verge label does not prove shared use or pedestrian separation. Keep
+  the path use unknown unless the design strips prove it. Lane widths
+  and parking sides are model plans; walking, turns and access stay
+  unknown without evidence. Retained links cover proved trips only.
+- Save plan records once per curve, with package section IDs and totals.
+  The page shares row records across ranks to keep its byte size low.
+  Put its data script in the head to retain the report number rule.
+  `uv run --frozen python artifacts/C1.4/collect.py` checks fresh real
+  package unions, section sums, design totals and before/after plans.
+- Keep shortlist plan catalogs and source node shares in the archive only. Both map data
+  and page data embed project shapes; copying the catalog into those
+  shapes can break the report byte cap even when no works are selected.
+  Keep the page geometry and works totals, then rerun the full build.
+
+### C1.4 contract repair
+
+- FR-0.35 permits only the two named figure ranges to grow. Keep the
+  exact list, its start and all prior field and link checks. Both changed
+  tests fail on fresh main without the works feature. The saved base
+  and head logs are in `artifacts/C1.4/contract-red.txt` and
+  `artifacts/C1.4/contract-green.txt`.
+- Do not start a different row while this row owns an open loop PR.
+  Restore saved work, merge main and fix this PR on its own branch.

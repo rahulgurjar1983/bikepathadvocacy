@@ -56,6 +56,26 @@ window.addEventListener("load", function () {
     const chosen = scenario();
     const pick = chosen.picks[step];
     draw(chosen, step);
+    const worksData = document.getElementById("works-data");
+    if (worksData) {
+      const plans = JSON.parse(worksData.textContent)[current];
+      const work = plans.packages[step];
+      document.getElementById("works-package").textContent = current + ":" + step;
+      document.getElementById("works-summary").textContent = JSON.stringify(work.summary);
+      const body = document.getElementById("works-rows");
+      body.replaceChildren();
+      for (const id of work.rows) {
+        const row = document.createElement("tr");
+        for (const value of plans.rows[id]) {
+          const cell = document.createElement("td");
+          const code = document.createElement("code");
+          code.textContent = value;
+          cell.appendChild(code);
+          row.appendChild(cell);
+        }
+        body.appendChild(row);
+      }
+    }
     const opening = document.getElementById("opening");
     opening.dataset.package = current + ":" + step;
     const rankLink = document.createElement("a");

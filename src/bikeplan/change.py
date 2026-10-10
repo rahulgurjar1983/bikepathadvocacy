@@ -301,7 +301,7 @@ def change_scripts(frontier: dict) -> str:
         },
         "scenarios": [
             {
-                **curve,
+                **{key: value for key, value in curve.items() if key != "works_catalog"},
                 "trip_packages": [
                     {
                         key: value
@@ -326,7 +326,7 @@ def change_scripts(frontier: dict) -> str:
             for curve in frontier["scenarios"]
         ],
     }
-    data = json.dumps(compact, sort_keys=True).replace("</", "<\\/")
+    data = json.dumps(compact, sort_keys=True, separators=(",", ":")).replace("</", "<\\/")
     return (
         f'<script type="application/json" id="change-data">{data}</script>'
         f"<script>{(ASSETS / 'change.js').read_text()}</script>"

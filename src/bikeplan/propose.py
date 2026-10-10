@@ -31,6 +31,7 @@ from bikeplan.network import bike_segments
 from bikeplan.stress import edge_aaa, own_lts, raise_for_crossings, score_edges
 from bikeplan.trips import complete_trips, resident_outcomes, snapshot_trip_inputs
 from bikeplan.width import check_links, fuse
+from bikeplan.works import works_catalog, works_package
 
 CORRIDOR_FIXES = tuple(fix for fix in FIXES if fix != "quietway")
 KINDS = ("corridor", "neighbourhood", "route")
@@ -1080,7 +1081,27 @@ def scenario_curve(
             package["resident_outcomes"] = resident_outcomes(
                 packages[0], package, population, destinations
             )
+    catalog = works_catalog(
+        solved,
+        planning.elements,
+        [
+            key
+            for package in packages
+            for witness in package["strict"]
+            for direction in ("outbound", "return")
+            for key in witness[direction]["edges"]
+        ],
+    )
+    for package in packages:
+        retained = [
+            key
+            for witness in package["strict"]
+            for direction in ("outbound", "return")
+            for key in witness[direction]["edges"]
+        ]
+        package["works"] = works_package(catalog, package["element_ids"], retained, package["gaps"])
     return {
+        "works_catalog": catalog,
         "shapes": shapes,
         "id": scenario.id,
         "label": scenario.label,
@@ -1184,6 +1205,28 @@ def write_propose(
     )
     shortlist_trips["resident_outcomes"] = resident_outcomes(
         baseline_trips, shortlist_trips, resident.population, destinations
+    )
+    catalog = works_catalog(
+        graph,
+        planning.elements,
+        [
+            key
+            for witness in shortlist_trips["strict"]
+            for direction in ("outbound", "return")
+            for key in witness[direction]["edges"]
+        ],
+    )
+    shortlist_trips["works_catalog"] = catalog
+    shortlist_trips["works"] = works_package(
+        catalog,
+        {name for pick in picked for name in pick["elements"]},
+        [
+            key
+            for witness in shortlist_trips["strict"]
+            for direction in ("outbound", "return")
+            for key in witness[direction]["edges"]
+        ],
+        shortlist_trips["gaps"],
     )
     surveys = survey_layer(planning)
     if stats is not None:
