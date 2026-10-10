@@ -52,6 +52,11 @@ the feature checks fail on F14. CI still fails those same checks:
 `gh run view 38026752269 --log-failed | tail -n 80`. C1.6 cannot
 start while PR 118 stays open. No source or test was changed.
 
+The C1.7 turn ran the same proof on fresh main. The base checks pass;
+the feature checks fail on F14. Run the proof command above and
+`gh run view 38026752269 --log-failed | tail -n 80` to check the clash.
+C1.7 cannot start while PR 118 stays open. No source or test was changed.
+
 Input ask: amend the exact figure-list checks on an input branch to
 allow new figure IDs while retaining order, fields and resolved links.
 Or grant a narrow rule for this test update. Keep the requirement for a
