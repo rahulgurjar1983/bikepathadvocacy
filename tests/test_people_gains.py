@@ -108,3 +108,38 @@ def test_fr15_6_route_review_keeps_all_three_measures(tmp_path):
     assert measures["unique_people_by_type"]["school"] == pytest.approx(750)
     assert measures["gains_by_type"] == pytest.approx(750)
     assert found["ranked"]["access_gains"] == measures
+
+
+def test_fr15_6_sheets_retain_exact_counts_for_checking():
+    from html import unescape
+
+    from bikeplan.page import sheet
+
+    record = {
+        "id": "sample",
+        "name": "Example people counts",
+        "gain": 1.0,
+        "score_after": 2.0,
+        "elements": [],
+        "totals": {
+            "parking_spaces": 0,
+            "lane_km": 0,
+            "speed_km": 0,
+            "signals": 0,
+            "refuges": 0,
+            "km_by_fix": {},
+            "access_gains": {
+                "unique_people": 0.4,
+                "unique_people_by_type": {"station": 0.4, "school": 0.4},
+                "gains_by_type": 0.8,
+            },
+        },
+    }
+    found = unescape(sheet(record, []))
+    assert "<details><summary>Exact people counts to check and reuse</summary>" in found
+    assert (
+        "{'gains_by_type': 0.8, 'unique_people': 0.4, 'unique_people_by_type': {'school': 0.4, 'station': 0.4}}"
+        in found
+    )
+    assert "Unique people gaining a safe destination" in found
+    assert "Gains counted by type" in found
