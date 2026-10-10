@@ -212,3 +212,22 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   They cannot prove a confirmed link without source evidence. Report
   file names use `code`; any project term in plain text needs its own
   entry in the report glossary as well as this repo's glossary.
+
+### C1.2
+
+- School proof reads the full snapshot education list. The access score's
+  nearby-place rule can drop a distinct campus, so do not use it for a
+  school-site count. A sourced `school_sites` block can join destination
+  IDs to one site ID; an institution ID does not join campuses.
+- Keep a known gate with no proved trip apart from an unknown gate.
+  Per-site resident reach uses unique positive-population origins in
+  strict return trips. It is not pupil reach or a catchment claim.
+- Reuse Shapely for council scope and the saved NetworkX trip witnesses
+  for reach. Its [graph tools](https://networkx.org/documentation/stable/reference/algorithms/component.html)
+  already keep route groups; no new solver or package is needed.
+- The page keeps the data needed for the selected school table. Full
+  route and source proof stays in the archive, which avoids repeating
+  unused route evidence in the page script.
+- Keep map JSON compact in the page; keep all fields. The run output
+  holds the figure recipe in its page, while the report command also
+  saves a figure file. Score visible page text, not embedded scripts.

@@ -1,0 +1,461 @@
+{
+  "build_commit": "d3a0429278d46cd62dd0dfde5706220730e43a00",
+  "collect": "uv run --frozen python artifacts/C1.2/collect.py",
+  "command": "/usr/bin/time -v -o /tmp/c12-real-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-C1.2-proof",
+  "coverage": {
+    "label": "Coverage of mapped sites",
+    "reason": "No complete school source list is supplied.",
+    "source": "Snapshot OpenStreetMap education records",
+    "status": "incomplete"
+  },
+  "inputs": [
+    {
+      "path": "regions/au-nsw-bayside.yaml",
+      "sha256": "b324303588064e489ddf116063e24218bf89dd5e1ac3dab8bd8d2aae57f2b2e0"
+    },
+    {
+      "path": "profiles/au-nsw.yaml",
+      "sha256": "3089879011bff619b5df896b6a63677e7f1d9c50b24c50febf081cb6681e25cf"
+    },
+    {
+      "path": "data/cache/au-nsw-bayside/2026-10-01/manifest.json",
+      "sha256": "2eaf0b00832565765c42e07b48ad7c6117436194487f45931e348f6772964bba"
+    }
+  ],
+  "limit": "Mapped school sites and model residents only; no pupil or field safety claim.",
+  "outputs": [
+    {
+      "path": "access_homes.geojson",
+      "sha256": "45b6a74df5efb30c1a2d4cc92453a4d100a5b47959db76504d34976c282a23c0"
+    },
+    {
+      "path": "frontier.json",
+      "sha256": "2753d7828d13daa25a9c20eae4c347c450ccd5b6902703d07f3b27906fe4d7a0"
+    },
+    {
+      "path": "network.geojson",
+      "sha256": "ba342a505818555809ad75cecd1de1498784613b1aea4cfaa19446f07f16fa42"
+    },
+    {
+      "path": "outputs.sha256",
+      "sha256": "2b598467ea431715efe5784afffb329a9b2cfb527545631afb8c64bd5fe1b344"
+    },
+    {
+      "path": "places.geojson",
+      "sha256": "b275748f27eb07121541c246e22a64058d21b81e39bff4d3d823ccffeaa23803"
+    },
+    {
+      "path": "projects.csv",
+      "sha256": "69a447a786ccdf72f74d85204c7639b70c4fd6dcf95355ad0e3a47f99b019ec9"
+    },
+    {
+      "path": "projects.geojson",
+      "sha256": "24994bc6e7392050b667e64334b37b64136597486ec948e7ceaeaf92f7f97afc"
+    },
+    {
+      "path": "projects.json",
+      "sha256": "ff4b2a80b661de8c383ae6856e9db5bb5c1de8ef71bbb2d26ae5c491a05c412a"
+    },
+    {
+      "path": "report.html",
+      "sha256": "21688ce6e3af10e46dc74e3c7dfc1d166b7d80082fd2c7784fba7cef50eb03fe"
+    },
+    {
+      "path": "summary.json",
+      "sha256": "4201d6231a40d06946028da9d283b06afff9e0e89d389bb8ccf4ca20e8ba9287"
+    }
+  ],
+  "packages": [
+    {
+      "package": {
+        "rank": 0,
+        "scenario": "light"
+      },
+      "served": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "total_known_sites": 47,
+      "unknown_sites": [
+        "node/5585647504",
+        "node/9866084044",
+        "node/9866084045",
+        "relation/1157763",
+        "way/1075791150",
+        "way/1109614723",
+        "way/1133993170",
+        "way/1148510149",
+        "way/1208386109",
+        "way/1329345514",
+        "way/1368005270",
+        "way/1472122854",
+        "way/1502732309",
+        "way/169394376",
+        "way/172474318",
+        "way/175146090",
+        "way/17594099",
+        "way/17595318",
+        "way/188015636",
+        "way/291300133",
+        "way/366434083",
+        "way/368557092",
+        "way/421696005",
+        "way/421696006",
+        "way/423988594",
+        "way/502800742",
+        "way/514930229",
+        "way/521113234",
+        "way/532707653",
+        "way/550099450",
+        "way/600047345",
+        "way/600047349",
+        "way/600047353",
+        "way/600907442",
+        "way/600907446",
+        "way/600907447",
+        "way/600907448",
+        "way/600907449",
+        "way/600907450",
+        "way/600907451",
+        "way/600907452",
+        "way/600907453",
+        "way/630869551",
+        "way/75617037",
+        "way/78300475",
+        "way/942233879",
+        "way/953200605"
+      ],
+      "unsnapped_sites": [
+        "node/9866084044",
+        "way/600907451"
+      ]
+    },
+    {
+      "package": {
+        "rank": 1,
+        "scenario": "light"
+      },
+      "served": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "total_known_sites": 47,
+      "unknown_sites": [
+        "node/5585647504",
+        "node/9866084044",
+        "node/9866084045",
+        "relation/1157763",
+        "way/1075791150",
+        "way/1109614723",
+        "way/1133993170",
+        "way/1148510149",
+        "way/1208386109",
+        "way/1329345514",
+        "way/1368005270",
+        "way/1472122854",
+        "way/1502732309",
+        "way/169394376",
+        "way/172474318",
+        "way/175146090",
+        "way/17594099",
+        "way/17595318",
+        "way/188015636",
+        "way/291300133",
+        "way/366434083",
+        "way/368557092",
+        "way/421696005",
+        "way/421696006",
+        "way/423988594",
+        "way/502800742",
+        "way/514930229",
+        "way/521113234",
+        "way/532707653",
+        "way/550099450",
+        "way/600047345",
+        "way/600047349",
+        "way/600047353",
+        "way/600907442",
+        "way/600907446",
+        "way/600907447",
+        "way/600907448",
+        "way/600907449",
+        "way/600907450",
+        "way/600907451",
+        "way/600907452",
+        "way/600907453",
+        "way/630869551",
+        "way/75617037",
+        "way/78300475",
+        "way/942233879",
+        "way/953200605"
+      ],
+      "unsnapped_sites": [
+        "node/9866084044",
+        "way/600907451"
+      ]
+    },
+    {
+      "package": {
+        "rank": 0,
+        "scenario": "shipped"
+      },
+      "served": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "total_known_sites": 47,
+      "unknown_sites": [
+        "node/5585647504",
+        "node/9866084044",
+        "node/9866084045",
+        "relation/1157763",
+        "way/1075791150",
+        "way/1109614723",
+        "way/1133993170",
+        "way/1148510149",
+        "way/1208386109",
+        "way/1329345514",
+        "way/1368005270",
+        "way/1472122854",
+        "way/1502732309",
+        "way/169394376",
+        "way/172474318",
+        "way/175146090",
+        "way/17594099",
+        "way/17595318",
+        "way/188015636",
+        "way/291300133",
+        "way/366434083",
+        "way/368557092",
+        "way/421696005",
+        "way/421696006",
+        "way/423988594",
+        "way/502800742",
+        "way/514930229",
+        "way/521113234",
+        "way/532707653",
+        "way/550099450",
+        "way/600047345",
+        "way/600047349",
+        "way/600047353",
+        "way/600907442",
+        "way/600907446",
+        "way/600907447",
+        "way/600907448",
+        "way/600907449",
+        "way/600907450",
+        "way/600907451",
+        "way/600907452",
+        "way/600907453",
+        "way/630869551",
+        "way/75617037",
+        "way/78300475",
+        "way/942233879",
+        "way/953200605"
+      ],
+      "unsnapped_sites": [
+        "node/9866084044",
+        "way/600907451"
+      ]
+    },
+    {
+      "package": {
+        "rank": 1,
+        "scenario": "shipped"
+      },
+      "served": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "total_known_sites": 47,
+      "unknown_sites": [
+        "node/5585647504",
+        "node/9866084044",
+        "node/9866084045",
+        "relation/1157763",
+        "way/1075791150",
+        "way/1109614723",
+        "way/1133993170",
+        "way/1148510149",
+        "way/1208386109",
+        "way/1329345514",
+        "way/1368005270",
+        "way/1472122854",
+        "way/1502732309",
+        "way/169394376",
+        "way/172474318",
+        "way/175146090",
+        "way/17594099",
+        "way/17595318",
+        "way/188015636",
+        "way/291300133",
+        "way/366434083",
+        "way/368557092",
+        "way/421696005",
+        "way/421696006",
+        "way/423988594",
+        "way/502800742",
+        "way/514930229",
+        "way/521113234",
+        "way/532707653",
+        "way/550099450",
+        "way/600047345",
+        "way/600047349",
+        "way/600047353",
+        "way/600907442",
+        "way/600907446",
+        "way/600907447",
+        "way/600907448",
+        "way/600907449",
+        "way/600907450",
+        "way/600907451",
+        "way/600907452",
+        "way/600907453",
+        "way/630869551",
+        "way/75617037",
+        "way/78300475",
+        "way/942233879",
+        "way/953200605"
+      ],
+      "unsnapped_sites": [
+        "node/9866084044",
+        "way/600907451"
+      ]
+    },
+    {
+      "package": {
+        "rank": 0,
+        "scenario": "heavy"
+      },
+      "served": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "total_known_sites": 47,
+      "unknown_sites": [
+        "node/5585647504",
+        "node/9866084044",
+        "node/9866084045",
+        "relation/1157763",
+        "way/1075791150",
+        "way/1109614723",
+        "way/1133993170",
+        "way/1148510149",
+        "way/1208386109",
+        "way/1329345514",
+        "way/1368005270",
+        "way/1472122854",
+        "way/1502732309",
+        "way/169394376",
+        "way/172474318",
+        "way/175146090",
+        "way/17594099",
+        "way/17595318",
+        "way/188015636",
+        "way/291300133",
+        "way/366434083",
+        "way/368557092",
+        "way/421696005",
+        "way/421696006",
+        "way/423988594",
+        "way/502800742",
+        "way/514930229",
+        "way/521113234",
+        "way/532707653",
+        "way/550099450",
+        "way/600047345",
+        "way/600047349",
+        "way/600047353",
+        "way/600907442",
+        "way/600907446",
+        "way/600907447",
+        "way/600907448",
+        "way/600907449",
+        "way/600907450",
+        "way/600907451",
+        "way/600907452",
+        "way/600907453",
+        "way/630869551",
+        "way/75617037",
+        "way/78300475",
+        "way/942233879",
+        "way/953200605"
+      ],
+      "unsnapped_sites": [
+        "node/9866084044",
+        "way/600907451"
+      ]
+    },
+    {
+      "package": {
+        "rank": 1,
+        "scenario": "heavy"
+      },
+      "served": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "total_known_sites": 47,
+      "unknown_sites": [
+        "node/5585647504",
+        "node/9866084044",
+        "node/9866084045",
+        "relation/1157763",
+        "way/1075791150",
+        "way/1109614723",
+        "way/1133993170",
+        "way/1148510149",
+        "way/1208386109",
+        "way/1329345514",
+        "way/1368005270",
+        "way/1472122854",
+        "way/1502732309",
+        "way/169394376",
+        "way/172474318",
+        "way/175146090",
+        "way/17594099",
+        "way/17595318",
+        "way/188015636",
+        "way/291300133",
+        "way/366434083",
+        "way/368557092",
+        "way/421696005",
+        "way/421696006",
+        "way/423988594",
+        "way/502800742",
+        "way/514930229",
+        "way/521113234",
+        "way/532707653",
+        "way/550099450",
+        "way/600047345",
+        "way/600047349",
+        "way/600047353",
+        "way/600907442",
+        "way/600907446",
+        "way/600907447",
+        "way/600907448",
+        "way/600907449",
+        "way/600907450",
+        "way/600907451",
+        "way/600907452",
+        "way/600907453",
+        "way/630869551",
+        "way/75617037",
+        "way/78300475",
+        "way/942233879",
+        "way/953200605"
+      ],
+      "unsnapped_sites": [
+        "node/9866084044",
+        "way/600907451"
+      ]
+    }
+  ],
+  "row": "C1.2"
+}

@@ -1,0 +1,1 @@
+ok   reply  [FK=5.5 FOG=8.0 DC=11 TS=8.0]

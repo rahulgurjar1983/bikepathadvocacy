@@ -1,0 +1,4495 @@
+{
+  "context_sites": [
+    {
+      "destination_ids": [
+        "node/10073901067"
+      ],
+      "entrances": [],
+      "id": "node/10073901067",
+      "institution_id": null,
+      "model_nodes": [
+        9329051801
+      ],
+      "name": "Mini Masterminds",
+      "scope": "context",
+      "source": "OpenStreetMap node/10073901067",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "node/2786688377"
+      ],
+      "entrances": [],
+      "id": "node/2786688377",
+      "institution_id": null,
+      "model_nodes": [
+        13585511347
+      ],
+      "name": "Saint Patrick\u2019s Catholic Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap node/2786688377",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "node/5586150041"
+      ],
+      "entrances": [],
+      "id": "node/5586150041",
+      "institution_id": null,
+      "model_nodes": [
+        2781171678
+      ],
+      "name": "St George Hospital School",
+      "scope": "context",
+      "source": "OpenStreetMap node/5586150041",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "node/5586150044"
+      ],
+      "entrances": [],
+      "id": "node/5586150044",
+      "institution_id": null,
+      "model_nodes": [
+        1869430163
+      ],
+      "name": "Sydney Childrens Hospital School",
+      "scope": "context",
+      "source": "OpenStreetMap node/5586150044",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "node/5586164374"
+      ],
+      "entrances": [],
+      "id": "node/5586164374",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Botany Bay Environmental Education Centre",
+      "scope": "context",
+      "source": "OpenStreetMap node/5586164374",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "node/9033696993"
+      ],
+      "entrances": [],
+      "id": "node/9033696993",
+      "institution_id": null,
+      "model_nodes": [
+        9218427008
+      ],
+      "name": "Montessori Preschool of Sydney",
+      "scope": "context",
+      "source": "OpenStreetMap node/9033696993",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "relation/10511571"
+      ],
+      "entrances": [],
+      "id": "relation/10511571",
+      "institution_id": null,
+      "model_nodes": [
+        11363327379
+      ],
+      "name": "Dulwich Hill Public School",
+      "scope": "context",
+      "source": "OpenStreetMap relation/10511571",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "relation/15746656"
+      ],
+      "entrances": [],
+      "id": "relation/15746656",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Oatley Public School",
+      "scope": "context",
+      "source": "OpenStreetMap relation/15746656",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "relation/5556310"
+      ],
+      "entrances": [],
+      "id": "relation/5556310",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Penshurst West Public School",
+      "scope": "context",
+      "source": "OpenStreetMap relation/5556310",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "relation/5919986"
+      ],
+      "entrances": [],
+      "id": "relation/5919986",
+      "institution_id": null,
+      "model_nodes": [
+        1835598381
+      ],
+      "name": "Our Lady of the Rosary Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap relation/5919986",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "relation/9493051"
+      ],
+      "entrances": [],
+      "id": "relation/9493051",
+      "institution_id": null,
+      "model_nodes": [
+        11230308409
+      ],
+      "name": "Claremont College",
+      "scope": "context",
+      "source": "OpenStreetMap relation/9493051",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1015987757"
+      ],
+      "entrances": [],
+      "id": "way/1015987757",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "St Mel's Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/1015987757",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/104650482"
+      ],
+      "entrances": [],
+      "id": "way/104650482",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Oyster Bay Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/104650482",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/104650697"
+      ],
+      "entrances": [],
+      "id": "way/104650697",
+      "institution_id": null,
+      "model_nodes": [
+        13536051292
+      ],
+      "name": "Woniora Road School",
+      "scope": "context",
+      "source": "OpenStreetMap way/104650697",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/104730275"
+      ],
+      "entrances": [],
+      "id": "way/104730275",
+      "institution_id": null,
+      "model_nodes": [
+        1207989435
+      ],
+      "name": "Hurstville Grove Infants School",
+      "scope": "context",
+      "source": "OpenStreetMap way/104730275",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1075791123"
+      ],
+      "entrances": [],
+      "id": "way/1075791123",
+      "institution_id": null,
+      "model_nodes": [
+        221761130
+      ],
+      "name": "Mater Dei Catholic Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/1075791123",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1081975143"
+      ],
+      "entrances": [],
+      "id": "way/1081975143",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Saint Charles' Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/1081975143",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1081975144"
+      ],
+      "entrances": [],
+      "id": "way/1081975144",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Saint Clare's College",
+      "scope": "context",
+      "source": "OpenStreetMap way/1081975144",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1137850027"
+      ],
+      "entrances": [],
+      "id": "way/1137850027",
+      "institution_id": null,
+      "model_nodes": [
+        1867764906
+      ],
+      "name": "Our Lady of Lourdes Catholic Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/1137850027",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1175244657"
+      ],
+      "entrances": [],
+      "id": "way/1175244657",
+      "institution_id": null,
+      "model_nodes": [
+        2968334222
+      ],
+      "name": "Sacred Heart Catholic Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/1175244657",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1196194021"
+      ],
+      "entrances": [],
+      "id": "way/1196194021",
+      "institution_id": null,
+      "model_nodes": [
+        11100458924
+      ],
+      "name": "St Brigid's Catholic Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/1196194021",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1196748290"
+      ],
+      "entrances": [],
+      "id": "way/1196748290",
+      "institution_id": null,
+      "model_nodes": [
+        1843539945
+      ],
+      "name": "Australia Street Infants School",
+      "scope": "context",
+      "source": "OpenStreetMap way/1196748290",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1197833773"
+      ],
+      "entrances": [],
+      "id": "way/1197833773",
+      "institution_id": null,
+      "model_nodes": [
+        1848511374
+      ],
+      "name": "",
+      "scope": "context",
+      "source": "OpenStreetMap way/1197833773",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1204059470"
+      ],
+      "entrances": [],
+      "id": "way/1204059470",
+      "institution_id": null,
+      "model_nodes": [
+        6967866328
+      ],
+      "name": "Al Hikma College",
+      "scope": "context",
+      "source": "OpenStreetMap way/1204059470",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1242372762"
+      ],
+      "entrances": [],
+      "id": "way/1242372762",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "St Anthonys Catholic Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/1242372762",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1301706235"
+      ],
+      "entrances": [],
+      "id": "way/1301706235",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "St Brigids Catholic Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/1301706235",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/130512357"
+      ],
+      "entrances": [],
+      "id": "way/130512357",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Port Hacking High School",
+      "scope": "context",
+      "source": "OpenStreetMap way/130512357",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1306460033"
+      ],
+      "entrances": [],
+      "id": "way/1306460033",
+      "institution_id": null,
+      "model_nodes": [
+        2444104666
+      ],
+      "name": "Regina Coeli Catholic Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/1306460033",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1324088820"
+      ],
+      "entrances": [],
+      "id": "way/1324088820",
+      "institution_id": null,
+      "model_nodes": [
+        1822854060
+      ],
+      "name": "",
+      "scope": "context",
+      "source": "OpenStreetMap way/1324088820",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/142043738"
+      ],
+      "entrances": [],
+      "id": "way/142043738",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Moore Theological College",
+      "scope": "context",
+      "source": "OpenStreetMap way/142043738",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1443165791"
+      ],
+      "entrances": [],
+      "id": "way/1443165791",
+      "institution_id": null,
+      "model_nodes": [
+        9771074029
+      ],
+      "name": "Saint Mary's Catholic Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/1443165791",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1471880387"
+      ],
+      "entrances": [],
+      "id": "way/1471880387",
+      "institution_id": null,
+      "model_nodes": [
+        7996525755
+      ],
+      "name": "St Aidan's Catholic Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/1471880387",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1472519470"
+      ],
+      "entrances": [],
+      "id": "way/1472519470",
+      "institution_id": null,
+      "model_nodes": [
+        59744007
+      ],
+      "name": "St Finbar's Catholic Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/1472519470",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1472544478"
+      ],
+      "entrances": [],
+      "id": "way/1472544478",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Al-Faisal College Lakemba Campus",
+      "scope": "context",
+      "source": "OpenStreetMap way/1472544478",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/148797796"
+      ],
+      "entrances": [],
+      "id": "way/148797796",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "St Francis Xavier's Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/148797796",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/148802735"
+      ],
+      "entrances": [],
+      "id": "way/148802735",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Croydon Park Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/148802735",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/150899069"
+      ],
+      "entrances": [],
+      "id": "way/150899069",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Kurnell Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/150899069",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/161716101"
+      ],
+      "entrances": [],
+      "id": "way/161716101",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Ashbury Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/161716101",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/162511788"
+      ],
+      "entrances": [],
+      "id": "way/162511788",
+      "institution_id": null,
+      "model_nodes": [
+        13527851405
+      ],
+      "name": "Emanuel School",
+      "scope": "context",
+      "source": "OpenStreetMap way/162511788",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/16683170"
+      ],
+      "entrances": [],
+      "id": "way/16683170",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Gymea Technology High School",
+      "scope": "context",
+      "source": "OpenStreetMap way/16683170",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/16716496"
+      ],
+      "entrances": [],
+      "id": "way/16716496",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Kareela Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/16716496",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/170533495"
+      ],
+      "entrances": [],
+      "id": "way/170533495",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Trinity Grammar School",
+      "scope": "context",
+      "source": "OpenStreetMap way/170533495",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/172691142"
+      ],
+      "entrances": [],
+      "id": "way/172691142",
+      "institution_id": null,
+      "model_nodes": [
+        1835697229
+      ],
+      "name": "Matraville Soldiers' Settlement Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/172691142",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/173271881"
+      ],
+      "entrances": [],
+      "id": "way/173271881",
+      "institution_id": null,
+      "model_nodes": [
+        18493309
+      ],
+      "name": "Maroubra Bay Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/173271881",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/173274331"
+      ],
+      "entrances": [],
+      "id": "way/173274331",
+      "institution_id": null,
+      "model_nodes": [
+        2482154501
+      ],
+      "name": "Malabar Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/173274331",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/174600381"
+      ],
+      "entrances": [],
+      "id": "way/174600381",
+      "institution_id": null,
+      "model_nodes": [
+        1839701971
+      ],
+      "name": "Camdenville Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/174600381",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/174617900"
+      ],
+      "entrances": [],
+      "id": "way/174617900",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Stanmore Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/174617900",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/174692522"
+      ],
+      "entrances": [],
+      "id": "way/174692522",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Canterbury Boys High School",
+      "scope": "context",
+      "source": "OpenStreetMap way/174692522",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/174909203"
+      ],
+      "entrances": [],
+      "id": "way/174909203",
+      "institution_id": null,
+      "model_nodes": [
+        1838825502
+      ],
+      "name": "Marrickville High School",
+      "scope": "context",
+      "source": "OpenStreetMap way/174909203",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/17588928"
+      ],
+      "entrances": [],
+      "id": "way/17588928",
+      "institution_id": null,
+      "model_nodes": [
+        182076117
+      ],
+      "name": "Beverly Hills Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/17588928",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/175997916"
+      ],
+      "entrances": [],
+      "id": "way/175997916",
+      "institution_id": null,
+      "model_nodes": [
+        1838825449
+      ],
+      "name": "Wilkins Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/175997916",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/178408757"
+      ],
+      "entrances": [],
+      "id": "way/178408757",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Yeo Park Infants School",
+      "scope": "context",
+      "source": "OpenStreetMap way/178408757",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/178409665"
+      ],
+      "entrances": [],
+      "id": "way/178409665",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Christian Brothers High School",
+      "scope": "context",
+      "source": "OpenStreetMap way/178409665",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/178409666"
+      ],
+      "entrances": [],
+      "id": "way/178409666",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Lewisham Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/178409666",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/180107496"
+      ],
+      "entrances": [],
+      "id": "way/180107496",
+      "institution_id": null,
+      "model_nodes": [
+        1800179074
+      ],
+      "name": "Dulwich High School of Visual Arts & Design",
+      "scope": "context",
+      "source": "OpenStreetMap way/180107496",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/182637530"
+      ],
+      "entrances": [],
+      "id": "way/182637530",
+      "institution_id": null,
+      "model_nodes": [
+        1836915562
+      ],
+      "name": "Clemton Park Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/182637530",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/183385206"
+      ],
+      "entrances": [],
+      "id": "way/183385206",
+      "institution_id": null,
+      "model_nodes": [
+        1873155666
+      ],
+      "name": "Marrickville West Primary",
+      "scope": "context",
+      "source": "OpenStreetMap way/183385206",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/183385522"
+      ],
+      "entrances": [],
+      "id": "way/183385522",
+      "institution_id": null,
+      "model_nodes": [
+        4584855058
+      ],
+      "name": "Ferncourt Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/183385522",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/189986889"
+      ],
+      "entrances": [],
+      "id": "way/189986889",
+      "institution_id": null,
+      "model_nodes": [
+        221713704
+      ],
+      "name": "Blakehurst Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/189986889",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/189987356"
+      ],
+      "entrances": [],
+      "id": "way/189987356",
+      "institution_id": null,
+      "model_nodes": [
+        12149429335
+      ],
+      "name": "Danebank",
+      "scope": "context",
+      "source": "OpenStreetMap way/189987356",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/20186068"
+      ],
+      "entrances": [],
+      "id": "way/20186068",
+      "institution_id": null,
+      "model_nodes": [
+        5426743477
+      ],
+      "name": "Carlton South Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/20186068",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/20650320"
+      ],
+      "entrances": [],
+      "id": "way/20650320",
+      "institution_id": null,
+      "model_nodes": [
+        3474666346
+      ],
+      "name": "Blakehurst High School",
+      "scope": "context",
+      "source": "OpenStreetMap way/20650320",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/21354032"
+      ],
+      "entrances": [],
+      "id": "way/21354032",
+      "institution_id": null,
+      "model_nodes": [
+        6496620993
+      ],
+      "name": "Hurstville South Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/21354032",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/21357735"
+      ],
+      "entrances": [],
+      "id": "way/21357735",
+      "institution_id": null,
+      "model_nodes": [
+        9901984800
+      ],
+      "name": "Georges River College Penshurst Girls Campus",
+      "scope": "context",
+      "source": "OpenStreetMap way/21357735",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/22491660"
+      ],
+      "entrances": [],
+      "id": "way/22491660",
+      "institution_id": null,
+      "model_nodes": [
+        241440329
+      ],
+      "name": "Marist Catholic College Penshurst",
+      "scope": "context",
+      "source": "OpenStreetMap way/22491660",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/22575357"
+      ],
+      "entrances": [],
+      "id": "way/22575357",
+      "institution_id": null,
+      "model_nodes": [
+        4633824123
+      ],
+      "name": "Kingsgrove North High School",
+      "scope": "context",
+      "source": "OpenStreetMap way/22575357",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/22598463"
+      ],
+      "entrances": [],
+      "id": "way/22598463",
+      "institution_id": null,
+      "model_nodes": [
+        6997852666
+      ],
+      "name": "McCallums Hill Primary",
+      "scope": "context",
+      "source": "OpenStreetMap way/22598463",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/22598516"
+      ],
+      "entrances": [],
+      "id": "way/22598516",
+      "institution_id": null,
+      "model_nodes": [
+        10711594674
+      ],
+      "name": "Belmore South Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/22598516",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/22631012"
+      ],
+      "entrances": [],
+      "id": "way/22631012",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Holy Spirit College",
+      "scope": "context",
+      "source": "OpenStreetMap way/22631012",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/22633151"
+      ],
+      "entrances": [],
+      "id": "way/22633151",
+      "institution_id": null,
+      "model_nodes": [
+        6339108781
+      ],
+      "name": "St Joseph's Catholic Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/22633151",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/22633366"
+      ],
+      "entrances": [],
+      "id": "way/22633366",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Hampden Park Primary",
+      "scope": "context",
+      "source": "OpenStreetMap way/22633366",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/22877585"
+      ],
+      "entrances": [],
+      "id": "way/22877585",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "St Therese's Catholic Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/22877585",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/22887928"
+      ],
+      "entrances": [],
+      "id": "way/22887928",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Belmore Boys High School",
+      "scope": "context",
+      "source": "OpenStreetMap way/22887928",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/22887931"
+      ],
+      "entrances": [],
+      "id": "way/22887931",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Belmore North Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/22887931",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/22888159"
+      ],
+      "entrances": [],
+      "id": "way/22888159",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Harcourt Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/22888159",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/23009468"
+      ],
+      "entrances": [],
+      "id": "way/23009468",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Summer Hill Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/23009468",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/23132037"
+      ],
+      "entrances": [],
+      "id": "way/23132037",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Caringbah High School",
+      "scope": "context",
+      "source": "OpenStreetMap way/23132037",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/23175649"
+      ],
+      "entrances": [],
+      "id": "way/23175649",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Miranda North Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/23175649",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/23186605"
+      ],
+      "entrances": [],
+      "id": "way/23186605",
+      "institution_id": null,
+      "model_nodes": [
+        9136682605
+      ],
+      "name": "Endeavour Sports High School",
+      "scope": "context",
+      "source": "OpenStreetMap way/23186605",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/23246435"
+      ],
+      "entrances": [],
+      "id": "way/23246435",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Kirrawee Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/23246435",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/23247040"
+      ],
+      "entrances": [],
+      "id": "way/23247040",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Gymea North Primary",
+      "scope": "context",
+      "source": "OpenStreetMap way/23247040",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/23256537"
+      ],
+      "entrances": [],
+      "id": "way/23256537",
+      "institution_id": null,
+      "model_nodes": [
+        251681141
+      ],
+      "name": "Sylvania High School",
+      "scope": "context",
+      "source": "OpenStreetMap way/23256537",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/23266996"
+      ],
+      "entrances": [],
+      "id": "way/23266996",
+      "institution_id": null,
+      "model_nodes": [
+        31248102
+      ],
+      "name": "Beverly Hills Girls High School",
+      "scope": "context",
+      "source": "OpenStreetMap way/23266996",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/23295502"
+      ],
+      "entrances": [],
+      "id": "way/23295502",
+      "institution_id": null,
+      "model_nodes": [
+        6618297742
+      ],
+      "name": "Beverley Hills North Primary",
+      "scope": "context",
+      "source": "OpenStreetMap way/23295502",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/238305656"
+      ],
+      "entrances": [],
+      "id": "way/238305656",
+      "institution_id": null,
+      "model_nodes": [
+        11419989742
+      ],
+      "name": "Kingsgrove High School",
+      "scope": "context",
+      "source": "OpenStreetMap way/238305656",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/24430013"
+      ],
+      "entrances": [],
+      "id": "way/24430013",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Sylvania Heights Primary",
+      "scope": "context",
+      "source": "OpenStreetMap way/24430013",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/247559501"
+      ],
+      "entrances": [],
+      "id": "way/247559501",
+      "institution_id": null,
+      "model_nodes": [
+        2544290200
+      ],
+      "name": "St Maroun's School",
+      "scope": "context",
+      "source": "OpenStreetMap way/247559501",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/247764364"
+      ],
+      "entrances": [],
+      "id": "way/247764364",
+      "institution_id": null,
+      "model_nodes": [
+        10091241507
+      ],
+      "name": "Casimir Catholic College",
+      "scope": "context",
+      "source": "OpenStreetMap way/247764364",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/247764382"
+      ],
+      "entrances": [],
+      "id": "way/247764382",
+      "institution_id": null,
+      "model_nodes": [
+        1836185163
+      ],
+      "name": "Tempe High School",
+      "scope": "context",
+      "source": "OpenStreetMap way/247764382",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/252114556"
+      ],
+      "entrances": [],
+      "id": "way/252114556",
+      "institution_id": null,
+      "model_nodes": [
+        12502537152
+      ],
+      "name": "South Coogee Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/252114556",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/252692378"
+      ],
+      "entrances": [],
+      "id": "way/252692378",
+      "institution_id": null,
+      "model_nodes": [
+        1822130546
+      ],
+      "name": "St Brigid's Catholic Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/252692378",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/255516060"
+      ],
+      "entrances": [],
+      "id": "way/255516060",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Oyster Bay Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/255516060",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/273948532"
+      ],
+      "entrances": [],
+      "id": "way/273948532",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "The Athena School",
+      "scope": "context",
+      "source": "OpenStreetMap way/273948532",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/280245875"
+      ],
+      "entrances": [],
+      "id": "way/280245875",
+      "institution_id": null,
+      "model_nodes": [
+        1854241108
+      ],
+      "name": "Sylvania Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/280245875",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/30085938"
+      ],
+      "entrances": [],
+      "id": "way/30085938",
+      "institution_id": null,
+      "model_nodes": [
+        11536156717
+      ],
+      "name": "Hurstville Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/30085938",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/301746435"
+      ],
+      "entrances": [],
+      "id": "way/301746435",
+      "institution_id": null,
+      "model_nodes": [
+        11230372966
+      ],
+      "name": "Centennial Park School",
+      "scope": "context",
+      "source": "OpenStreetMap way/301746435",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/324888320"
+      ],
+      "entrances": [],
+      "id": "way/324888320",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Campsie Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/324888320",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/339895469"
+      ],
+      "entrances": [],
+      "id": "way/339895469",
+      "institution_id": null,
+      "model_nodes": [
+        1840736148
+      ],
+      "name": "Erskineville Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/339895469",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/339905685"
+      ],
+      "entrances": [],
+      "id": "way/339905685",
+      "institution_id": null,
+      "model_nodes": [
+        1844755268
+      ],
+      "name": "Alexandria Park Community School",
+      "scope": "context",
+      "source": "OpenStreetMap way/339905685",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/339906903"
+      ],
+      "entrances": [],
+      "id": "way/339906903",
+      "institution_id": null,
+      "model_nodes": [
+        10711742660
+      ],
+      "name": "Central Sydney Intensive English High School",
+      "scope": "context",
+      "source": "OpenStreetMap way/339906903",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/364715945"
+      ],
+      "entrances": [],
+      "id": "way/364715945",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Mortdale Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/364715945",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/403775967"
+      ],
+      "entrances": [],
+      "id": "way/403775967",
+      "institution_id": null,
+      "model_nodes": [
+        1836185172
+      ],
+      "name": "Tempe Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/403775967",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/403968763"
+      ],
+      "entrances": [],
+      "id": "way/403968763",
+      "institution_id": null,
+      "model_nodes": [
+        1839688947
+      ],
+      "name": "Newtown High School of the Performing Arts",
+      "scope": "context",
+      "source": "OpenStreetMap way/403968763",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/409366326"
+      ],
+      "entrances": [],
+      "id": "way/409366326",
+      "institution_id": null,
+      "model_nodes": [
+        3722734262
+      ],
+      "name": "Matraville Sports High School",
+      "scope": "context",
+      "source": "OpenStreetMap way/409366326",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/409631871"
+      ],
+      "entrances": [],
+      "id": "way/409631871",
+      "institution_id": null,
+      "model_nodes": [
+        11268833339
+      ],
+      "name": "All Saints Grammar School",
+      "scope": "context",
+      "source": "OpenStreetMap way/409631871",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/410104721"
+      ],
+      "entrances": [],
+      "id": "way/410104721",
+      "institution_id": null,
+      "model_nodes": [
+        4119714039
+      ],
+      "name": "Undercliffe Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/410104721",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/421696004"
+      ],
+      "entrances": [],
+      "id": "way/421696004",
+      "institution_id": null,
+      "model_nodes": [
+        5519606335
+      ],
+      "name": "Georges River College Hurstville",
+      "scope": "context",
+      "source": "OpenStreetMap way/421696004",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/421696007"
+      ],
+      "entrances": [],
+      "id": "way/421696007",
+      "institution_id": null,
+      "model_nodes": [
+        182014562
+      ],
+      "name": "Hurstville Adventist School",
+      "scope": "context",
+      "source": "OpenStreetMap way/421696007",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/421699400"
+      ],
+      "entrances": [],
+      "id": "way/421699400",
+      "institution_id": null,
+      "model_nodes": [
+        4214582937
+      ],
+      "name": "St George Christian School",
+      "scope": "context",
+      "source": "OpenStreetMap way/421699400",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/421699401"
+      ],
+      "entrances": [],
+      "id": "way/421699401",
+      "institution_id": null,
+      "model_nodes": [
+        215901152
+      ],
+      "name": "St Raphael's Primary Catholic School",
+      "scope": "context",
+      "source": "OpenStreetMap way/421699401",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/423988593"
+      ],
+      "entrances": [],
+      "id": "way/423988593",
+      "institution_id": null,
+      "model_nodes": [
+        1845672432
+      ],
+      "name": "Gardeners Road Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/423988593",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/429999095"
+      ],
+      "entrances": [],
+      "id": "way/429999095",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Carinya School",
+      "scope": "context",
+      "source": "OpenStreetMap way/429999095",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/449796763"
+      ],
+      "entrances": [],
+      "id": "way/449796763",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Newington College",
+      "scope": "context",
+      "source": "OpenStreetMap way/449796763",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/45603004"
+      ],
+      "entrances": [],
+      "id": "way/45603004",
+      "institution_id": null,
+      "model_nodes": [
+        9372689991
+      ],
+      "name": "Kensington Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/45603004",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/470118820"
+      ],
+      "entrances": [],
+      "id": "way/470118820",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Wangee Park School",
+      "scope": "context",
+      "source": "OpenStreetMap way/470118820",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/47134443"
+      ],
+      "entrances": [],
+      "id": "way/47134443",
+      "institution_id": null,
+      "model_nodes": [
+        1837929617
+      ],
+      "name": "St Mary St Joseph Catholic Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/47134443",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/532707654"
+      ],
+      "entrances": [],
+      "id": "way/532707654",
+      "institution_id": null,
+      "model_nodes": [
+        6745482677
+      ],
+      "name": "Kingsgrove Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/532707654",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/544236177"
+      ],
+      "entrances": [],
+      "id": "way/544236177",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Newington College K-6",
+      "scope": "context",
+      "source": "OpenStreetMap way/544236177",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/561217751"
+      ],
+      "entrances": [],
+      "id": "way/561217751",
+      "institution_id": null,
+      "model_nodes": [
+        1816806304
+      ],
+      "name": "Canterbury Girls High School",
+      "scope": "context",
+      "source": "OpenStreetMap way/561217751",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/561217752"
+      ],
+      "entrances": [],
+      "id": "way/561217752",
+      "institution_id": null,
+      "model_nodes": [
+        1816806305
+      ],
+      "name": "Canterbury Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/561217752",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600047324"
+      ],
+      "entrances": [],
+      "id": "way/600047324",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Waverley Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/600047324",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600047328"
+      ],
+      "entrances": [],
+      "id": "way/600047328",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Clovelly Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/600047328",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600047330"
+      ],
+      "entrances": [],
+      "id": "way/600047330",
+      "institution_id": null,
+      "model_nodes": [
+        2744090706
+      ],
+      "name": "Marcellin College",
+      "scope": "context",
+      "source": "OpenStreetMap way/600047330",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600047332"
+      ],
+      "entrances": [],
+      "id": "way/600047332",
+      "institution_id": null,
+      "model_nodes": [
+        1838877895
+      ],
+      "name": "Coogee Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/600047332",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600047335"
+      ],
+      "entrances": [],
+      "id": "way/600047335",
+      "institution_id": null,
+      "model_nodes": [
+        8693799351
+      ],
+      "name": "Randwick Girls High School",
+      "scope": "context",
+      "source": "OpenStreetMap way/600047335",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600047338"
+      ],
+      "entrances": [],
+      "id": "way/600047338",
+      "institution_id": null,
+      "model_nodes": [
+        1837898395
+      ],
+      "name": "Randwick Boys High School",
+      "scope": "context",
+      "source": "OpenStreetMap way/600047338",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600047340"
+      ],
+      "entrances": [],
+      "id": "way/600047340",
+      "institution_id": null,
+      "model_nodes": [
+        1825680778
+      ],
+      "name": "Rainbow Street Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/600047340",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600047343"
+      ],
+      "entrances": [],
+      "id": "way/600047343",
+      "institution_id": null,
+      "model_nodes": [
+        1840615268
+      ],
+      "name": "St Spyridon",
+      "scope": "context",
+      "source": "OpenStreetMap way/600047343",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600047346"
+      ],
+      "entrances": [],
+      "id": "way/600047346",
+      "institution_id": null,
+      "model_nodes": [
+        12404358022
+      ],
+      "name": "The International French School of Sydney",
+      "scope": "context",
+      "source": "OpenStreetMap way/600047346",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600047347"
+      ],
+      "entrances": [],
+      "id": "way/600047347",
+      "institution_id": null,
+      "model_nodes": [
+        1822853975
+      ],
+      "name": "Maroubra Junction Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/600047347",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600047348"
+      ],
+      "entrances": [],
+      "id": "way/600047348",
+      "institution_id": null,
+      "model_nodes": [
+        12450371535
+      ],
+      "name": "South Sydney High School",
+      "scope": "context",
+      "source": "OpenStreetMap way/600047348",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600047350"
+      ],
+      "entrances": [],
+      "id": "way/600047350",
+      "institution_id": null,
+      "model_nodes": [
+        2429091672
+      ],
+      "name": "St Andrew's Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/600047350",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600047351"
+      ],
+      "entrances": [],
+      "id": "way/600047351",
+      "institution_id": null,
+      "model_nodes": [
+        1833898371
+      ],
+      "name": "Chifley Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/600047351",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600047352"
+      ],
+      "entrances": [],
+      "id": "way/600047352",
+      "institution_id": null,
+      "model_nodes": [
+        6093333300
+      ],
+      "name": "La Perouse Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/600047352",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600047354"
+      ],
+      "entrances": [],
+      "id": "way/600047354",
+      "institution_id": null,
+      "model_nodes": [
+        7742426225
+      ],
+      "name": "Sans Souci Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/600047354",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600047357"
+      ],
+      "entrances": [],
+      "id": "way/600047357",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Miranda Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/600047357",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600047360"
+      ],
+      "entrances": [],
+      "id": "way/600047360",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Bates Drive Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/600047360",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600246737"
+      ],
+      "entrances": [],
+      "id": "way/600246737",
+      "institution_id": null,
+      "model_nodes": [
+        9901984793
+      ],
+      "name": "Penshurst Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/600246737",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600907443"
+      ],
+      "entrances": [],
+      "id": "way/600907443",
+      "institution_id": null,
+      "model_nodes": [
+        11411741636
+      ],
+      "name": "Kogarah Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/600907443",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600907444"
+      ],
+      "entrances": [],
+      "id": "way/600907444",
+      "institution_id": null,
+      "model_nodes": [
+        1827905489
+      ],
+      "name": "Kogarah High School",
+      "scope": "context",
+      "source": "OpenStreetMap way/600907444",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600907445"
+      ],
+      "entrances": [],
+      "id": "way/600907445",
+      "institution_id": null,
+      "model_nodes": [
+        13510972151
+      ],
+      "name": "St George Girls High School",
+      "scope": "context",
+      "source": "OpenStreetMap way/600907445",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600907454"
+      ],
+      "entrances": [],
+      "id": "way/600907454",
+      "institution_id": null,
+      "model_nodes": [
+        1963535116
+      ],
+      "name": "Earlwood Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/600907454",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600907457"
+      ],
+      "entrances": [],
+      "id": "way/600907457",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Canterbury Vale School",
+      "scope": "context",
+      "source": "OpenStreetMap way/600907457",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600907458"
+      ],
+      "entrances": [],
+      "id": "way/600907458",
+      "institution_id": null,
+      "model_nodes": [
+        1836915456
+      ],
+      "name": "Canterbury South Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/600907458",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600907459"
+      ],
+      "entrances": [],
+      "id": "way/600907459",
+      "institution_id": null,
+      "model_nodes": [
+        4582151284
+      ],
+      "name": "Edgeware School",
+      "scope": "context",
+      "source": "OpenStreetMap way/600907459",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600907460"
+      ],
+      "entrances": [],
+      "id": "way/600907460",
+      "institution_id": null,
+      "model_nodes": [
+        1844048052
+      ],
+      "name": "Marrickville Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/600907460",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600907461"
+      ],
+      "entrances": [],
+      "id": "way/600907461",
+      "institution_id": null,
+      "model_nodes": [
+        7360290567
+      ],
+      "name": "St Peters Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/600907461",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600907462"
+      ],
+      "entrances": [],
+      "id": "way/600907462",
+      "institution_id": null,
+      "model_nodes": [
+        1839689401
+      ],
+      "name": "Newtown Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/600907462",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600907468"
+      ],
+      "entrances": [],
+      "id": "way/600907468",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "NSW School of Languages",
+      "scope": "context",
+      "source": "OpenStreetMap way/600907468",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600907469"
+      ],
+      "entrances": [],
+      "id": "way/600907469",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Petersham Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/600907469",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/605950458"
+      ],
+      "entrances": [],
+      "id": "way/605950458",
+      "institution_id": null,
+      "model_nodes": [
+        5746076942
+      ],
+      "name": "St Pius' Catholic Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/605950458",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/60609983"
+      ],
+      "entrances": [],
+      "id": "way/60609983",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Moriah War Memorial College",
+      "scope": "context",
+      "source": "OpenStreetMap way/60609983",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/61972634"
+      ],
+      "entrances": [],
+      "id": "way/61972634",
+      "institution_id": null,
+      "model_nodes": [
+        1836724601
+      ],
+      "name": "Yudi Gunyi School",
+      "scope": "context",
+      "source": "OpenStreetMap way/61972634",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/621048792"
+      ],
+      "entrances": [],
+      "id": "way/621048792",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Our Lady Star of the Sea",
+      "scope": "context",
+      "source": "OpenStreetMap way/621048792",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/624576084"
+      ],
+      "entrances": [],
+      "id": "way/624576084",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Airmount Courtyard",
+      "scope": "context",
+      "source": "OpenStreetMap way/624576084",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/624577228"
+      ],
+      "entrances": [],
+      "id": "way/624577228",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Centenary Quadrangle",
+      "scope": "context",
+      "source": "OpenStreetMap way/624577228",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/624587014"
+      ],
+      "entrances": [],
+      "id": "way/624587014",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Ludlow Courtyard",
+      "scope": "context",
+      "source": "OpenStreetMap way/624587014",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/624644609"
+      ],
+      "entrances": [],
+      "id": "way/624644609",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Waverley College Senior Campus",
+      "scope": "context",
+      "source": "OpenStreetMap way/624644609",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/624645482"
+      ],
+      "entrances": [],
+      "id": "way/624645482",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Waverley Bus Shelter",
+      "scope": "context",
+      "source": "OpenStreetMap way/624645482",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/624650839"
+      ],
+      "entrances": [],
+      "id": "way/624650839",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Waverley College Preparatory School",
+      "scope": "context",
+      "source": "OpenStreetMap way/624650839",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/625691980"
+      ],
+      "entrances": [],
+      "id": "way/625691980",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "St Catherine's School",
+      "scope": "context",
+      "source": "OpenStreetMap way/625691980",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/676709097"
+      ],
+      "entrances": [],
+      "id": "way/676709097",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "St Margaret Mary's Catholic Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/676709097",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/685174017"
+      ],
+      "entrances": [],
+      "id": "way/685174017",
+      "institution_id": null,
+      "model_nodes": [
+        31561287
+      ],
+      "name": "St Spyridon High School",
+      "scope": "context",
+      "source": "OpenStreetMap way/685174017",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/692892007"
+      ],
+      "entrances": [],
+      "id": "way/692892007",
+      "institution_id": null,
+      "model_nodes": [
+        20954578
+      ],
+      "name": "Our Lady of Mount Carmel Catholic Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/692892007",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/692892892"
+      ],
+      "entrances": [],
+      "id": "way/692892892",
+      "institution_id": null,
+      "model_nodes": [
+        2996955833
+      ],
+      "name": "Randwick Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/692892892",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/692893074"
+      ],
+      "entrances": [],
+      "id": "way/692893074",
+      "institution_id": null,
+      "model_nodes": [
+        6698369402
+      ],
+      "name": "Coogee Boys Preparatory School",
+      "scope": "context",
+      "source": "OpenStreetMap way/692893074",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/692893338"
+      ],
+      "entrances": [],
+      "id": "way/692893338",
+      "institution_id": null,
+      "model_nodes": [
+        579701731
+      ],
+      "name": "Corpus Christi College Maroubra",
+      "scope": "context",
+      "source": "OpenStreetMap way/692893338",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/692896740"
+      ],
+      "entrances": [],
+      "id": "way/692896740",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "St Joseph's Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/692896740",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/692914220"
+      ],
+      "entrances": [],
+      "id": "way/692914220",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "All Saints Grammar Junior School",
+      "scope": "context",
+      "source": "OpenStreetMap way/692914220",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/70374399"
+      ],
+      "entrances": [],
+      "id": "way/70374399",
+      "institution_id": null,
+      "model_nodes": [
+        4429689517
+      ],
+      "name": "Taren Point Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/70374399",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/74653157"
+      ],
+      "entrances": [],
+      "id": "way/74653157",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Georges River College Oatley Senior Campus",
+      "scope": "context",
+      "source": "OpenStreetMap way/74653157",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/75035399"
+      ],
+      "entrances": [],
+      "id": "way/75035399",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Jannali East Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/75035399",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/77091343"
+      ],
+      "entrances": [],
+      "id": "way/77091343",
+      "institution_id": null,
+      "model_nodes": [
+        12290054536
+      ],
+      "name": "Bald Face Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/77091343",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/77091417"
+      ],
+      "entrances": [],
+      "id": "way/77091417",
+      "institution_id": null,
+      "model_nodes": [
+        225837395
+      ],
+      "name": "Connells Point Public School",
+      "scope": "context",
+      "source": "OpenStreetMap way/77091417",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/849764222"
+      ],
+      "entrances": [],
+      "id": "way/849764222",
+      "institution_id": null,
+      "model_nodes": [
+        9922439218
+      ],
+      "name": "St Declan's Catholic Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/849764222",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/88184025"
+      ],
+      "entrances": [],
+      "id": "way/88184025",
+      "institution_id": null,
+      "model_nodes": [
+        229660907
+      ],
+      "name": "Marist Catholic College Penshurst",
+      "scope": "context",
+      "source": "OpenStreetMap way/88184025",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/942023060"
+      ],
+      "entrances": [],
+      "id": "way/942023060",
+      "institution_id": null,
+      "model_nodes": [
+        1837968637
+      ],
+      "name": "Our Lady of the Sacred Heart Catholic Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/942023060",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/96044131"
+      ],
+      "entrances": [],
+      "id": "way/96044131",
+      "institution_id": null,
+      "model_nodes": [
+        11936942078
+      ],
+      "name": "St George Christian School Infants Campus",
+      "scope": "context",
+      "source": "OpenStreetMap way/96044131",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/987247523"
+      ],
+      "entrances": [],
+      "id": "way/987247523",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "St Michael's Catholic Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/987247523",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/998628919"
+      ],
+      "entrances": [],
+      "id": "way/998628919",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "St Joseph's Catholic Primary School",
+      "scope": "context",
+      "source": "OpenStreetMap way/998628919",
+      "type": "school"
+    }
+  ],
+  "coverage": {
+    "label": "Coverage of mapped sites",
+    "reason": "No complete school source list is supplied.",
+    "source": "Snapshot OpenStreetMap education records",
+    "status": "incomplete"
+  },
+  "evidence_status": "modelled",
+  "other_education": [
+    {
+      "destination_ids": [
+        "node/3500172365"
+      ],
+      "entrances": [],
+      "id": "node/3500172365",
+      "institution_id": null,
+      "model_nodes": [
+        3017412133
+      ],
+      "name": "School of Mathematics & Statistics",
+      "scope": "context",
+      "source": "OpenStreetMap node/3500172365",
+      "type": "college"
+    },
+    {
+      "destination_ids": [
+        "node/8288988081"
+      ],
+      "entrances": [],
+      "id": "node/8288988081",
+      "institution_id": null,
+      "model_nodes": [
+        13618473940
+      ],
+      "name": "Taylors College",
+      "scope": "context",
+      "source": "OpenStreetMap node/8288988081",
+      "type": "college"
+    },
+    {
+      "destination_ids": [
+        "way/1116449859"
+      ],
+      "entrances": [],
+      "id": "way/1116449859",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Cliffbrook Campus",
+      "scope": "context",
+      "source": "OpenStreetMap way/1116449859",
+      "type": "university"
+    },
+    {
+      "destination_ids": [
+        "way/1160808480"
+      ],
+      "entrances": [],
+      "id": "way/1160808480",
+      "institution_id": null,
+      "model_nodes": [
+        13510972124
+      ],
+      "name": "TAFE NSW St George College",
+      "scope": "context",
+      "source": "OpenStreetMap way/1160808480",
+      "type": "college"
+    },
+    {
+      "destination_ids": [
+        "way/152763403"
+      ],
+      "entrances": [],
+      "id": "way/152763403",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Sydney Institute Gymea TAFE",
+      "scope": "context",
+      "source": "OpenStreetMap way/152763403",
+      "type": "college"
+    },
+    {
+      "destination_ids": [
+        "way/173530296"
+      ],
+      "entrances": [],
+      "id": "way/173530296",
+      "institution_id": null,
+      "model_nodes": [
+        2844121840
+      ],
+      "name": "University of New South Wales",
+      "scope": "context",
+      "source": "OpenStreetMap way/173530296",
+      "type": "university"
+    },
+    {
+      "destination_ids": [
+        "way/174606801"
+      ],
+      "entrances": [],
+      "id": "way/174606801",
+      "institution_id": null,
+      "model_nodes": [
+        6749200706
+      ],
+      "name": "TAFE NSW Enmore",
+      "scope": "context",
+      "source": "OpenStreetMap way/174606801",
+      "type": "college"
+    },
+    {
+      "destination_ids": [
+        "way/214025582"
+      ],
+      "entrances": [],
+      "id": "way/214025582",
+      "institution_id": null,
+      "model_nodes": [
+        1840730347
+      ],
+      "name": "University of Sydney, Burren Street Campus",
+      "scope": "context",
+      "source": "OpenStreetMap way/214025582",
+      "type": "university"
+    },
+    {
+      "destination_ids": [
+        "way/440183993"
+      ],
+      "entrances": [],
+      "id": "way/440183993",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "University of Sydney, Burren Street Campus",
+      "scope": "context",
+      "source": "OpenStreetMap way/440183993",
+      "type": "university"
+    },
+    {
+      "destination_ids": [
+        "way/45558386"
+      ],
+      "entrances": [],
+      "id": "way/45558386",
+      "institution_id": null,
+      "model_nodes": [
+        4096499363
+      ],
+      "name": "National Institute of Dramatic Art",
+      "scope": "context",
+      "source": "OpenStreetMap way/45558386",
+      "type": "university"
+    },
+    {
+      "destination_ids": [
+        "way/45604574"
+      ],
+      "entrances": [],
+      "id": "way/45604574",
+      "institution_id": null,
+      "model_nodes": [
+        580967423
+      ],
+      "name": "University of New South Wales",
+      "scope": "context",
+      "source": "OpenStreetMap way/45604574",
+      "type": "university"
+    },
+    {
+      "destination_ids": [
+        "way/600907439"
+      ],
+      "entrances": [],
+      "id": "way/600907439",
+      "institution_id": null,
+      "model_nodes": [
+        6336886110
+      ],
+      "name": "St George TAFE",
+      "scope": "council",
+      "source": "OpenStreetMap way/600907439",
+      "type": "college"
+    },
+    {
+      "destination_ids": [
+        "way/600907440"
+      ],
+      "entrances": [],
+      "id": "way/600907440",
+      "institution_id": null,
+      "model_nodes": [
+        5828794071
+      ],
+      "name": "Saint George TAFE College",
+      "scope": "context",
+      "source": "OpenStreetMap way/600907440",
+      "type": "college"
+    },
+    {
+      "destination_ids": [
+        "way/600907456"
+      ],
+      "entrances": [],
+      "id": "way/600907456",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Rissalah College",
+      "scope": "context",
+      "source": "OpenStreetMap way/600907456",
+      "type": "college"
+    },
+    {
+      "destination_ids": [
+        "way/610927146"
+      ],
+      "entrances": [],
+      "id": "way/610927146",
+      "institution_id": null,
+      "model_nodes": [
+        10125413818
+      ],
+      "name": "University of New South Wales Randwick Campus",
+      "scope": "context",
+      "source": "OpenStreetMap way/610927146",
+      "type": "university"
+    },
+    {
+      "destination_ids": [
+        "way/78295530"
+      ],
+      "entrances": [],
+      "id": "way/78295530",
+      "institution_id": null,
+      "model_nodes": [
+        5785344305
+      ],
+      "name": "TAFE Sydney Institute Randwick",
+      "scope": "context",
+      "source": "OpenStreetMap way/78295530",
+      "type": "college"
+    },
+    {
+      "destination_ids": [
+        "way/891830797"
+      ],
+      "entrances": [],
+      "id": "way/891830797",
+      "institution_id": null,
+      "model_nodes": [
+        14048072280
+      ],
+      "name": "William Angliss Institute - Sydney Campus",
+      "scope": "context",
+      "source": "OpenStreetMap way/891830797",
+      "type": "college"
+    }
+  ],
+  "package": {
+    "rank": 1,
+    "scenario": "shipped"
+  },
+  "resident_limit": "These are estimated residents, not pupils, enrolled students, households or people reaching their assigned school. Population nodes model origins, not home addresses. The source list may miss sites or duplicate sites with no sourced join.",
+  "rule": "I count a site once when a positive-population origin has a complete confirmed return trip to a known bike entrance within the shipped reach and detour rules. I merge only sourced site IDs, not nearby sites or campuses of the same school.",
+  "scope": "council",
+  "served": {
+    "after": [],
+    "before": [],
+    "new": []
+  },
+  "sites": [
+    {
+      "destination_ids": [
+        "node/5585647504"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "node/5585647504",
+      "institution_id": null,
+      "model_nodes": [
+        29415567
+      ],
+      "name": "St George School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap node/5585647504",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "node/9866084044"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "node/9866084044",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Our Lady of Fatima Catholic Primary School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap node/9866084044",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "node/9866084045"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "node/9866084045",
+      "institution_id": null,
+      "model_nodes": [
+        1837160008
+      ],
+      "name": "St Ursula's College",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap node/9866084045",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "relation/1157763"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "relation/1157763",
+      "institution_id": null,
+      "model_nodes": [
+        11330424282
+      ],
+      "name": "St Therese Catholic Primary School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap relation/1157763",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1075791150"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/1075791150",
+      "institution_id": null,
+      "model_nodes": [
+        2461489517
+      ],
+      "name": "",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/1075791150",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1109614723"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/1109614723",
+      "institution_id": null,
+      "model_nodes": [
+        2358048580
+      ],
+      "name": "The Scots College Brighton Preparatory School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/1109614723",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1133993170"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/1133993170",
+      "institution_id": null,
+      "model_nodes": [
+        12016323462
+      ],
+      "name": "St Michael's Catholic Primary School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/1133993170",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1148510149"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/1148510149",
+      "institution_id": null,
+      "model_nodes": [
+        1867764884
+      ],
+      "name": "St Mary & St Mina's Coptic Orthodox College",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/1148510149",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1208386109"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/1208386109",
+      "institution_id": null,
+      "model_nodes": [
+        15186774
+      ],
+      "name": "",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/1208386109",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1329345514"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/1329345514",
+      "institution_id": null,
+      "model_nodes": [
+        1832955544
+      ],
+      "name": "St. Benards Catholic Primary School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/1329345514",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1368005270"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/1368005270",
+      "institution_id": null,
+      "model_nodes": [
+        1873133648
+      ],
+      "name": "",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/1368005270",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1472122854"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/1472122854",
+      "institution_id": null,
+      "model_nodes": [
+        1847494449
+      ],
+      "name": "St Dominic Savio School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/1472122854",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/1502732309"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/1502732309",
+      "institution_id": null,
+      "model_nodes": [
+        6656563719
+      ],
+      "name": "Hartford College",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/1502732309",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/169394376"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/169394376",
+      "institution_id": null,
+      "model_nodes": [
+        1836931349
+      ],
+      "name": "Daceyville Public School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/169394376",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/172474318"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/172474318",
+      "institution_id": null,
+      "model_nodes": [
+        8318844233
+      ],
+      "name": "Pagewood Public School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/172474318",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/175146090"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/175146090",
+      "institution_id": null,
+      "model_nodes": [
+        12435010781
+      ],
+      "name": "J J Cahill Memorial High School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/175146090",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/17594099"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/17594099",
+      "institution_id": null,
+      "model_nodes": [
+        12551096906
+      ],
+      "name": "Bexley Primary School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/17594099",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/17595318"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/17595318",
+      "institution_id": null,
+      "model_nodes": [
+        1976179804
+      ],
+      "name": "Rockdale Primary School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/17595318",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/188015636"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/188015636",
+      "institution_id": null,
+      "model_nodes": [
+        1986391547
+      ],
+      "name": "Brighton Le Sands Public School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/188015636",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/291300133"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/291300133",
+      "institution_id": null,
+      "model_nodes": [
+        1847443509
+      ],
+      "name": "Sydney Technical High School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/291300133",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/366434083"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/366434083",
+      "institution_id": null,
+      "model_nodes": [
+        1848414194
+      ],
+      "name": "Arncliffe West Public School Preschool Centre",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/366434083",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/368557092"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/368557092",
+      "institution_id": null,
+      "model_nodes": [
+        2285134877
+      ],
+      "name": "Cairnsfoot Public School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/368557092",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/421696005"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/421696005",
+      "institution_id": null,
+      "model_nodes": [
+        175655451
+      ],
+      "name": "St Mary's Star of the Sea",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/421696005",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/421696006"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/421696006",
+      "institution_id": null,
+      "model_nodes": [
+        4010143679
+      ],
+      "name": "Bethany College",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/421696006",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/423988594"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/423988594",
+      "institution_id": null,
+      "model_nodes": [
+        1833794501
+      ],
+      "name": "Mascot Public School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/423988594",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/502800742"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/502800742",
+      "institution_id": null,
+      "model_nodes": [
+        1847494197
+      ],
+      "name": "Bexley North Public School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/502800742",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/514930229"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/514930229",
+      "institution_id": null,
+      "model_nodes": [
+        1847443497
+      ],
+      "name": "Carlton Public School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/514930229",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/521113234"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/521113234",
+      "institution_id": null,
+      "model_nodes": [
+        9567500986
+      ],
+      "name": "Cairnsfoot School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/521113234",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/532707653"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/532707653",
+      "institution_id": null,
+      "model_nodes": [
+        242102568
+      ],
+      "name": "Kingsgrove Primary School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/532707653",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/550099450"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/550099450",
+      "institution_id": null,
+      "model_nodes": [
+        2857906276
+      ],
+      "name": "Bardwell Park Infants School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/550099450",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600047345"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/600047345",
+      "institution_id": null,
+      "model_nodes": [
+        18319551
+      ],
+      "name": "Eastlakes Public School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/600047345",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600047349"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/600047349",
+      "institution_id": null,
+      "model_nodes": [
+        9436643488
+      ],
+      "name": "Matraville Public School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/600047349",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600047353"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/600047353",
+      "institution_id": null,
+      "model_nodes": [
+        9567501600
+      ],
+      "name": "Ramsgate Public School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/600047353",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600907442"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/600907442",
+      "institution_id": null,
+      "model_nodes": [
+        1856687659
+      ],
+      "name": "Bayside High School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/600907442",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600907446"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/600907446",
+      "institution_id": null,
+      "model_nodes": [
+        1832925372
+      ],
+      "name": "Banksmeadow Public School Preschool",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/600907446",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600907447"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/600907447",
+      "institution_id": null,
+      "model_nodes": [
+        1832925336
+      ],
+      "name": "Banksmeadow Public School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/600907447",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600907448"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/600907448",
+      "institution_id": null,
+      "model_nodes": [
+        12299039280
+      ],
+      "name": "John Brotchie Nursery School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/600907448",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600907449"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/600907449",
+      "institution_id": null,
+      "model_nodes": [
+        2130510869
+      ],
+      "name": "Botany Public School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/600907449",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600907450"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/600907450",
+      "institution_id": null,
+      "model_nodes": [
+        9567500549
+      ],
+      "name": "North Brighton Pre-School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/600907450",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600907451"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/600907451",
+      "institution_id": null,
+      "model_nodes": [
+        null
+      ],
+      "name": "Kyeemagh Public School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/600907451",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600907452"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/600907452",
+      "institution_id": null,
+      "model_nodes": [
+        13979320456
+      ],
+      "name": "Arncliffe Public School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/600907452",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/600907453"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/600907453",
+      "institution_id": null,
+      "model_nodes": [
+        1848414451
+      ],
+      "name": "Athelstane Public School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/600907453",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/630869551"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/630869551",
+      "institution_id": null,
+      "model_nodes": [
+        12565342859
+      ],
+      "name": "Marist College Kogarah",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/630869551",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/75617037"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/75617037",
+      "institution_id": null,
+      "model_nodes": [
+        13987146848
+      ],
+      "name": "St Francis Xavier's School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/75617037",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/78300475"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/78300475",
+      "institution_id": null,
+      "model_nodes": [
+        1847460456
+      ],
+      "name": "St Mary and St Mina's Coptic Orthodox College - Rockdale Campus",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/78300475",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/942233879"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/942233879",
+      "institution_id": null,
+      "model_nodes": [
+        1826925419
+      ],
+      "name": "Kingdom Culture Christian School",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/942233879",
+      "status": "unproved",
+      "type": "school"
+    },
+    {
+      "destination_ids": [
+        "way/953200605"
+      ],
+      "entrances": [],
+      "groups": {
+        "after": [],
+        "before": []
+      },
+      "id": "way/953200605",
+      "institution_id": null,
+      "model_nodes": [
+        1867764810
+      ],
+      "name": "St Gabriel Catholic Primary School Bexley",
+      "origins": {
+        "after": [],
+        "before": [],
+        "new": []
+      },
+      "reason": "No complete confirmed trip from a positive-population origin.",
+      "resident_reach": {
+        "after": 0,
+        "before": 0,
+        "new": 0
+      },
+      "scope": "council",
+      "source": "OpenStreetMap way/953200605",
+      "status": "unproved",
+      "type": "school"
+    }
+  ],
+  "total_known_sites": 47,
+  "unit": "school sites",
+  "unknown_scope_sites": [],
+  "unknown_sites": [
+    "node/5585647504",
+    "node/9866084044",
+    "node/9866084045",
+    "relation/1157763",
+    "way/1075791150",
+    "way/1109614723",
+    "way/1133993170",
+    "way/1148510149",
+    "way/1208386109",
+    "way/1329345514",
+    "way/1368005270",
+    "way/1472122854",
+    "way/1502732309",
+    "way/169394376",
+    "way/172474318",
+    "way/175146090",
+    "way/17594099",
+    "way/17595318",
+    "way/188015636",
+    "way/291300133",
+    "way/366434083",
+    "way/368557092",
+    "way/421696005",
+    "way/421696006",
+    "way/423988594",
+    "way/502800742",
+    "way/514930229",
+    "way/521113234",
+    "way/532707653",
+    "way/550099450",
+    "way/600047345",
+    "way/600047349",
+    "way/600047353",
+    "way/600907442",
+    "way/600907446",
+    "way/600907447",
+    "way/600907448",
+    "way/600907449",
+    "way/600907450",
+    "way/600907451",
+    "way/600907452",
+    "way/600907453",
+    "way/630869551",
+    "way/75617037",
+    "way/78300475",
+    "way/942233879",
+    "way/953200605"
+  ],
+  "unsnapped_sites": [
+    "node/9866084044",
+    "way/600907451"
+  ]
+}
