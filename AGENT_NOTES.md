@@ -242,3 +242,26 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   their counts usable and mark source metadata unknown with a reason.
   Full report runs still need their manifest. A place with no type
   belongs in the unknown type count; do not guess that it is a school.
+
+### C1.4
+
+- Works use source road names and references, with way IDs for unnamed
+  links. This is not a surveyed road register. Reverse edges and shared
+  fixes count once. Joined links with the same plan form sections; gaps
+  and changed plans split them. Stable works IDs hash their element set.
+- Reuse the installed NetworkX
+  [connected components](https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.components.connected_components.html)
+  to group works. No new package or graph solver is needed.
+- A verge label does not prove shared use or pedestrian separation. Keep
+  the path use unknown unless the design strips prove it. Lane widths
+  and parking sides are model plans; walking, turns and access stay
+  unknown without evidence. Retained links cover proved trips only.
+- Save plan records once per curve, with package section IDs and totals.
+  The page shares row records across ranks to keep its byte size low.
+  Put its data script in the head to retain the report number rule.
+  `uv run --frozen python artifacts/C1.4/collect.py` checks fresh real
+  package unions, section sums, design totals and before/after plans.
+- Keep shortlist plan catalogs and source node shares in the archive only. Both map data
+  and page data embed project shapes; copying the catalog into those
+  shapes can break the report byte cap even when no works are selected.
+  Keep the page geometry and works totals, then rerun the full build.
