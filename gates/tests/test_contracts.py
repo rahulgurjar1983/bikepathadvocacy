@@ -1,6 +1,5 @@
 import pytest
 
-
 BEFORE = """
 def test_fr13_1_figures_are_sorted_with_every_field(output):
     figures = read(output)
