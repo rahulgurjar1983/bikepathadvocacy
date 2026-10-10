@@ -212,3 +212,29 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   They cannot prove a confirmed link without source evidence. Report
   file names use `code`; any project term in plain text needs its own
   entry in the report glossary as well as this repo's glossary.
+
+### C1.3
+
+- Keep cell IDs and each node's share of the cell count. Union those
+  shares across routes; never sum school or project gains to claim
+  unique people. Type gains may count a share once per type. A new
+  place can help a node that already had a useful trip, so newly gained
+  is not after minus before.
+- Council scope uses cell centres and whole cell counts, including
+  partial cells. The buffer count stays separate. Equal shares at bike
+  nodes are proxies, not home addresses or household counts. The saved
+  source block holds the shares once; each package holds its own unions.
+- Python sets fit the existing route records and give stable unions
+  when sorted. A table tool such as
+  [pandas](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.drop_duplicates.html)
+  can drop duplicate rows, but adds no value to these keyed node sets.
+  No new package or path solver is needed.
+- `uv run --frozen python artifacts/C1.3/collect.py` checks real saved
+  unions and source cell totals. Missing route proof can leave strict
+  gains empty. Missing entrances leave the first-leg count unknown;
+  that list is not the full centroid-based access score.
+- The real report can hit its byte cap even with small union tables.
+  Compact embedded map and project JSON with the standard JSON writer;
+  retain all values. Keep full route and node records in the archive,
+  with counts for offline page choices. Rebuild the full report after
+  a size fix; do not patch a saved page or relax the cap.

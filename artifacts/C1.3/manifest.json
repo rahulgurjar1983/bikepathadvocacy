@@ -1,0 +1,418 @@
+{
+  "build_commit": "efa99cf0bc1df486bfe6d02c0cafc03cc455b89d",
+  "command": "/usr/bin/time -v -o /tmp/c13-real-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-C1.3-real",
+  "inputs": [
+    {
+      "path": "regions/au-nsw-bayside.yaml",
+      "sha256": "b324303588064e489ddf116063e24218bf89dd5e1ac3dab8bd8d2aae57f2b2e0"
+    },
+    {
+      "path": "profiles/au-nsw.yaml",
+      "sha256": "3089879011bff619b5df896b6a63677e7f1d9c50b24c50febf081cb6681e25cf"
+    },
+    {
+      "path": "data/cache/au-nsw-bayside/2026-10-01/manifest.json",
+      "sha256": "2eaf0b00832565765c42e07b48ad7c6117436194487f45931e348f6772964bba"
+    }
+  ],
+  "limit": "Saved model unions do not prove field safety or complete source coverage. Missing entrances leave strict trips unproved. Cell centres define scope; whole partial cells and equal node shares are proxies, not home addresses or household counts.",
+  "outputs": [
+    {
+      "path": "access_homes.geojson",
+      "sha256": "45b6a74df5efb30c1a2d4cc92453a4d100a5b47959db76504d34976c282a23c0"
+    },
+    {
+      "path": "frontier.json",
+      "sha256": "28260c63e088b99abd69336d3d20dce82ab462b7570481c413e42592e71b96cd"
+    },
+    {
+      "path": "network.geojson",
+      "sha256": "ba342a505818555809ad75cecd1de1498784613b1aea4cfaa19446f07f16fa42"
+    },
+    {
+      "path": "outputs.sha256",
+      "sha256": "01663da4d247ddf34ef1b5f95732323495c037e695c1f0e3033bf9952e772e75"
+    },
+    {
+      "path": "places.geojson",
+      "sha256": "b275748f27eb07121541c246e22a64058d21b81e39bff4d3d823ccffeaa23803"
+    },
+    {
+      "path": "projects.csv",
+      "sha256": "69a447a786ccdf72f74d85204c7639b70c4fd6dcf95355ad0e3a47f99b019ec9"
+    },
+    {
+      "path": "projects.geojson",
+      "sha256": "fed81343e879c33f087acccd8525643314813890c8c84c7fcadade4cea6e0dec"
+    },
+    {
+      "path": "projects.json",
+      "sha256": "ff4b2a80b661de8c383ae6856e9db5bb5c1de8ef71bbb2d26ae5c491a05c412a"
+    },
+    {
+      "path": "report.html",
+      "sha256": "80bd522dcd2a3b5f5433aa87093e41d284b32ea3b3cda341dffc0a3ed8f1a5fb"
+    },
+    {
+      "path": "summary.json",
+      "sha256": "4201d6231a40d06946028da9d283b06afff9e0e89d389bb8ccf4ca20e8ba9287"
+    }
+  ],
+  "packages": [
+    {
+      "by_place_type": {
+        "aged_care": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "college": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "library": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "school": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "station": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "town_centre": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "university": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        }
+      },
+      "evidence_status": "modelled_with_missing_trip_evidence",
+      "first_leg_model": {
+        "after": null,
+        "before": null,
+        "newly_gained": null
+      },
+      "package": {
+        "rank": 0,
+        "scenario": "light"
+      },
+      "project_ids": [],
+      "strict": {
+        "after": 0,
+        "before": 0,
+        "newly_gained": 0
+      }
+    },
+    {
+      "by_place_type": {
+        "aged_care": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "college": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "library": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "school": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "station": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "town_centre": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "university": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        }
+      },
+      "evidence_status": "modelled_with_missing_trip_evidence",
+      "first_leg_model": {
+        "after": null,
+        "before": null,
+        "newly_gained": null
+      },
+      "package": {
+        "rank": 1,
+        "scenario": "light"
+      },
+      "project_ids": [
+        "b9a999953869c8b5"
+      ],
+      "strict": {
+        "after": 0,
+        "before": 0,
+        "newly_gained": 0
+      }
+    },
+    {
+      "by_place_type": {
+        "aged_care": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "college": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "library": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "school": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "station": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "town_centre": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "university": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        }
+      },
+      "evidence_status": "modelled_with_missing_trip_evidence",
+      "first_leg_model": {
+        "after": null,
+        "before": null,
+        "newly_gained": null
+      },
+      "package": {
+        "rank": 0,
+        "scenario": "shipped"
+      },
+      "project_ids": [],
+      "strict": {
+        "after": 0,
+        "before": 0,
+        "newly_gained": 0
+      }
+    },
+    {
+      "by_place_type": {
+        "aged_care": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "college": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "library": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "school": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "station": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "town_centre": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "university": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        }
+      },
+      "evidence_status": "modelled_with_missing_trip_evidence",
+      "first_leg_model": {
+        "after": null,
+        "before": null,
+        "newly_gained": null
+      },
+      "package": {
+        "rank": 1,
+        "scenario": "shipped"
+      },
+      "project_ids": [
+        "b9a999953869c8b5"
+      ],
+      "strict": {
+        "after": 0,
+        "before": 0,
+        "newly_gained": 0
+      }
+    },
+    {
+      "by_place_type": {
+        "aged_care": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "college": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "library": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "school": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "station": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "town_centre": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "university": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        }
+      },
+      "evidence_status": "modelled_with_missing_trip_evidence",
+      "first_leg_model": {
+        "after": null,
+        "before": null,
+        "newly_gained": null
+      },
+      "package": {
+        "rank": 0,
+        "scenario": "heavy"
+      },
+      "project_ids": [],
+      "strict": {
+        "after": 0,
+        "before": 0,
+        "newly_gained": 0
+      }
+    },
+    {
+      "by_place_type": {
+        "aged_care": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "college": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "library": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "school": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "station": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "town_centre": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        },
+        "university": {
+          "after": 0,
+          "before": 0,
+          "newly_gained": 0
+        }
+      },
+      "evidence_status": "modelled_with_missing_trip_evidence",
+      "first_leg_model": {
+        "after": null,
+        "before": null,
+        "newly_gained": null
+      },
+      "package": {
+        "rank": 1,
+        "scenario": "heavy"
+      },
+      "project_ids": [
+        "b9a999953869c8b5"
+      ],
+      "strict": {
+        "after": 0,
+        "before": 0,
+        "newly_gained": 0
+      }
+    }
+  ],
+  "population": {
+    "allocation": "equal shares at residential bike nodes, then other bike nodes, then nearest within 300 m",
+    "buffer_excluded": 702516.0,
+    "partial_cell_rule": "whole count when centroid is inside council",
+    "scope": "council population cells by centroid; destinations may be in the buffer",
+    "snapped": 171068.0,
+    "source": {
+      "licence": "CC BY 4.0",
+      "path": "population.gpkg",
+      "sha256": "7228344d8fad1e6995db2c42c2dc7de2119d7175c5c4a7022824021541697897",
+      "source": "Kontur Population via the Humanitarian Data Exchange",
+      "url": "https://geodata-eu-central-1-kontur-public.s3.amazonaws.com/kontur_datasets/kontur_population_AU_20231101.gpkg.gz"
+    },
+    "unit": "estimated residents",
+    "unsnapped": 8.0
+  },
+  "report_bytes": 7976861,
+  "row": "C1.3",
+  "source_population": 873592.0
+}
