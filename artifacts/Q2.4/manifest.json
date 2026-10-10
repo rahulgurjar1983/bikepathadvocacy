@@ -1,0 +1,836 @@
+{
+  "build_commit": "c45c1ee9ab7bce38481ff19ffc1a6f96bf022dcb",
+  "command": "/usr/bin/time -v -o /tmp/q24-real-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q2.4-real",
+  "inputs": [
+    {
+      "path": "regions/au-nsw-bayside.yaml",
+      "sha256": "b324303588064e489ddf116063e24218bf89dd5e1ac3dab8bd8d2aae57f2b2e0"
+    },
+    {
+      "path": "profiles/au-nsw.yaml",
+      "sha256": "3089879011bff619b5df896b6a63677e7f1d9c50b24c50febf081cb6681e25cf"
+    },
+    {
+      "path": "data/cache/au-nsw-bayside/2026-10-01/manifest.json",
+      "sha256": "2eaf0b00832565765c42e07b48ad7c6117436194487f45931e348f6772964bba"
+    },
+    {
+      "path": "artifacts/Q2.4/sourced-inputs.json",
+      "sha256": "1b58ff803d1f194001b9e211966bfaa9e9c4197c1e605d372ef5265dfddbdadf"
+    }
+  ],
+  "metadata_sha256": "57255d7e18845e84eee8d38f4910b6350a63634f1b6fcbf8e3bf3c62347823d6",
+  "outputs": [
+    {
+      "path": "access_homes.geojson",
+      "sha256": "64e5ee7d19083b024fdadaba43c37caa6ca5f72a1ce0ef2cf4123d7c914752ff"
+    },
+    {
+      "path": "frontier.json",
+      "sha256": "713a79e56a485ffe81da04795b61f74ea597e0761870f3b84f847b7fb5ee4b85"
+    },
+    {
+      "path": "network.geojson",
+      "sha256": "956f6c9c40e9364bb9984f41f7b5294e28a4a3120d7b61af815011f4bd61ca6f"
+    },
+    {
+      "path": "outputs.sha256",
+      "sha256": "581871bac2d60a5888331b4540b7ef17fa10d9b15877c4175770cf14a4a3dbe6"
+    },
+    {
+      "path": "places.geojson",
+      "sha256": "b275748f27eb07121541c246e22a64058d21b81e39bff4d3d823ccffeaa23803"
+    },
+    {
+      "path": "projects.csv",
+      "sha256": "6e49858dbb626819ba2f361646d9efcd37d6d9558126c14ac8bbf026dfa59c40"
+    },
+    {
+      "path": "projects.geojson",
+      "sha256": "e4914e1531bd5ca936715cf6e777265c7039ec62846f7388269bca0bc2fc0977"
+    },
+    {
+      "path": "projects.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "report.html",
+      "sha256": "b05a25b59ab9b5dd12256dcb5a838b45e34cd41c3bde5cb8376cc6a380fb0511"
+    },
+    {
+      "path": "summary.json",
+      "sha256": "7b05483eb6e7875cdb105e8cdffa152515ac349be69950637dd592b42f1521d9"
+    }
+  ],
+  "packages_without_metadata": [
+    {
+      "delivery": {
+        "alternatives": {
+          "reason": "No sourced route alternatives",
+          "status": "unknown",
+          "value": null
+        },
+        "approvals": {
+          "reason": "No sourced approvals or consent",
+          "status": "unknown",
+          "value": null
+        },
+        "budget": {
+          "reason": "No sourced spending constraint",
+          "status": "unknown",
+          "value": null
+        },
+        "complete_trips": {
+          "reason": "Use the package route witnesses; sheet trip joins are pending",
+          "status": "unknown",
+          "value": null
+        },
+        "costs": {
+          "capital": {
+            "base_year": null,
+            "currency": null,
+            "element_ids": [],
+            "exclusions": [],
+            "groups": [],
+            "high": null,
+            "low": null,
+            "missing_element_ids": [],
+            "reason": "Missing costs or incompatible currency/base year; no complete budget",
+            "status": "unknown",
+            "unit": "total"
+          },
+          "upkeep": {
+            "base_year": null,
+            "currency": null,
+            "element_ids": [],
+            "exclusions": [],
+            "groups": [],
+            "high": null,
+            "low": null,
+            "missing_element_ids": [],
+            "reason": "Missing costs or incompatible currency/base year; no complete budget",
+            "status": "unknown",
+            "unit": "per_year"
+          }
+        },
+        "decision": {
+          "ask": "Seek useful route goals and public records, then survey widths and crossing movements or scope a costed concept design before a build decision",
+          "build_ready": false,
+          "kind": "survey_or_concept_design",
+          "reason": "Delivery metadata cannot prove street fit, complete trips, permission or field safety",
+          "required_evidence": [
+            "Usable widths and site constraints",
+            "Crossing movements",
+            "Complete return trips",
+            "Cost and permission evidence"
+          ],
+          "source": null
+        },
+        "dependencies": {
+          "reason": "No sourced delivery order",
+          "status": "unknown",
+          "value": null
+        },
+        "element_ids": [],
+        "funding": {
+          "reason": "No sourced funding status",
+          "status": "unknown",
+          "value": null
+        },
+        "metadata_sha256": null,
+        "mitigation": {
+          "reason": "No sourced mitigation plan",
+          "status": "unknown",
+          "value": null
+        },
+        "observed_problem": {
+          "reason": "No field observation supplied",
+          "status": "unknown",
+          "value": null
+        },
+        "owner": {
+          "reason": "No sourced responsible organization",
+          "status": "unknown",
+          "value": null
+        },
+        "permission_dependencies": {
+          "reason": "Permissions and responsible authorities need checks",
+          "status": "unknown",
+          "value": null
+        },
+        "project_ids": [],
+        "requested_decision": {
+          "ask": "Seek useful route goals and public records, then survey widths and crossing movements or scope a costed concept design before a build decision",
+          "build_ready": false,
+          "kind": "survey_or_concept_design",
+          "reason": "Delivery metadata cannot prove street fit, complete trips, permission or field safety",
+          "required_evidence": [
+            "Usable widths and site constraints",
+            "Crossing movements",
+            "Complete return trips",
+            "Cost and permission evidence"
+          ],
+          "source": null
+        },
+        "stage_status": "unknown",
+        "stages": [],
+        "survey_needs": [
+          "Usable widths and site constraints",
+          "Crossing movements",
+          "Complete return trips",
+          "Cost and permission evidence"
+        ],
+        "uncertainty": "Public planning facts do not prove field safety, cost completeness, consent or funding"
+      },
+      "package": {
+        "rank": 0,
+        "scenario": "light"
+      }
+    },
+    {
+      "delivery": {
+        "alternatives": {
+          "reason": "No sourced route alternatives",
+          "status": "unknown",
+          "value": null
+        },
+        "approvals": {
+          "reason": "No sourced approvals or consent",
+          "status": "unknown",
+          "value": null
+        },
+        "budget": {
+          "reason": "No sourced spending constraint",
+          "status": "unknown",
+          "value": null
+        },
+        "complete_trips": {
+          "reason": "Use the package route witnesses; sheet trip joins are pending",
+          "status": "unknown",
+          "value": null
+        },
+        "costs": {
+          "capital": {
+            "base_year": null,
+            "currency": null,
+            "element_ids": [],
+            "exclusions": [],
+            "groups": [],
+            "high": null,
+            "low": null,
+            "missing_element_ids": [],
+            "reason": "Missing costs or incompatible currency/base year; no complete budget",
+            "status": "unknown",
+            "unit": "total"
+          },
+          "upkeep": {
+            "base_year": null,
+            "currency": null,
+            "element_ids": [],
+            "exclusions": [],
+            "groups": [],
+            "high": null,
+            "low": null,
+            "missing_element_ids": [],
+            "reason": "Missing costs or incompatible currency/base year; no complete budget",
+            "status": "unknown",
+            "unit": "per_year"
+          }
+        },
+        "decision": {
+          "ask": "Seek useful route goals and public records, then survey widths and crossing movements or scope a costed concept design before a build decision",
+          "build_ready": false,
+          "kind": "survey_or_concept_design",
+          "reason": "Delivery metadata cannot prove street fit, complete trips, permission or field safety",
+          "required_evidence": [
+            "Usable widths and site constraints",
+            "Crossing movements",
+            "Complete return trips",
+            "Cost and permission evidence"
+          ],
+          "source": null
+        },
+        "dependencies": {
+          "reason": "No sourced delivery order",
+          "status": "unknown",
+          "value": null
+        },
+        "element_ids": [],
+        "funding": {
+          "reason": "No sourced funding status",
+          "status": "unknown",
+          "value": null
+        },
+        "metadata_sha256": null,
+        "mitigation": {
+          "reason": "No sourced mitigation plan",
+          "status": "unknown",
+          "value": null
+        },
+        "observed_problem": {
+          "reason": "No field observation supplied",
+          "status": "unknown",
+          "value": null
+        },
+        "owner": {
+          "reason": "No sourced responsible organization",
+          "status": "unknown",
+          "value": null
+        },
+        "permission_dependencies": {
+          "reason": "Permissions and responsible authorities need checks",
+          "status": "unknown",
+          "value": null
+        },
+        "project_ids": [],
+        "requested_decision": {
+          "ask": "Seek useful route goals and public records, then survey widths and crossing movements or scope a costed concept design before a build decision",
+          "build_ready": false,
+          "kind": "survey_or_concept_design",
+          "reason": "Delivery metadata cannot prove street fit, complete trips, permission or field safety",
+          "required_evidence": [
+            "Usable widths and site constraints",
+            "Crossing movements",
+            "Complete return trips",
+            "Cost and permission evidence"
+          ],
+          "source": null
+        },
+        "stage_status": "unknown",
+        "stages": [],
+        "survey_needs": [
+          "Usable widths and site constraints",
+          "Crossing movements",
+          "Complete return trips",
+          "Cost and permission evidence"
+        ],
+        "uncertainty": "Public planning facts do not prove field safety, cost completeness, consent or funding"
+      },
+      "package": {
+        "rank": 0,
+        "scenario": "shipped"
+      }
+    },
+    {
+      "delivery": {
+        "alternatives": {
+          "reason": "No sourced route alternatives",
+          "status": "unknown",
+          "value": null
+        },
+        "approvals": {
+          "reason": "No sourced approvals or consent",
+          "status": "unknown",
+          "value": null
+        },
+        "budget": {
+          "reason": "No sourced spending constraint",
+          "status": "unknown",
+          "value": null
+        },
+        "complete_trips": {
+          "reason": "Use the package route witnesses; sheet trip joins are pending",
+          "status": "unknown",
+          "value": null
+        },
+        "costs": {
+          "capital": {
+            "base_year": null,
+            "currency": null,
+            "element_ids": [],
+            "exclusions": [],
+            "groups": [],
+            "high": null,
+            "low": null,
+            "missing_element_ids": [],
+            "reason": "Missing costs or incompatible currency/base year; no complete budget",
+            "status": "unknown",
+            "unit": "total"
+          },
+          "upkeep": {
+            "base_year": null,
+            "currency": null,
+            "element_ids": [],
+            "exclusions": [],
+            "groups": [],
+            "high": null,
+            "low": null,
+            "missing_element_ids": [],
+            "reason": "Missing costs or incompatible currency/base year; no complete budget",
+            "status": "unknown",
+            "unit": "per_year"
+          }
+        },
+        "decision": {
+          "ask": "Seek useful route goals and public records, then survey widths and crossing movements or scope a costed concept design before a build decision",
+          "build_ready": false,
+          "kind": "survey_or_concept_design",
+          "reason": "Delivery metadata cannot prove street fit, complete trips, permission or field safety",
+          "required_evidence": [
+            "Usable widths and site constraints",
+            "Crossing movements",
+            "Complete return trips",
+            "Cost and permission evidence"
+          ],
+          "source": null
+        },
+        "dependencies": {
+          "reason": "No sourced delivery order",
+          "status": "unknown",
+          "value": null
+        },
+        "element_ids": [],
+        "funding": {
+          "reason": "No sourced funding status",
+          "status": "unknown",
+          "value": null
+        },
+        "metadata_sha256": null,
+        "mitigation": {
+          "reason": "No sourced mitigation plan",
+          "status": "unknown",
+          "value": null
+        },
+        "observed_problem": {
+          "reason": "No field observation supplied",
+          "status": "unknown",
+          "value": null
+        },
+        "owner": {
+          "reason": "No sourced responsible organization",
+          "status": "unknown",
+          "value": null
+        },
+        "permission_dependencies": {
+          "reason": "Permissions and responsible authorities need checks",
+          "status": "unknown",
+          "value": null
+        },
+        "project_ids": [],
+        "requested_decision": {
+          "ask": "Seek useful route goals and public records, then survey widths and crossing movements or scope a costed concept design before a build decision",
+          "build_ready": false,
+          "kind": "survey_or_concept_design",
+          "reason": "Delivery metadata cannot prove street fit, complete trips, permission or field safety",
+          "required_evidence": [
+            "Usable widths and site constraints",
+            "Crossing movements",
+            "Complete return trips",
+            "Cost and permission evidence"
+          ],
+          "source": null
+        },
+        "stage_status": "unknown",
+        "stages": [],
+        "survey_needs": [
+          "Usable widths and site constraints",
+          "Crossing movements",
+          "Complete return trips",
+          "Cost and permission evidence"
+        ],
+        "uncertainty": "Public planning facts do not prove field safety, cost completeness, consent or funding"
+      },
+      "package": {
+        "rank": 0,
+        "scenario": "heavy"
+      }
+    }
+  ],
+  "replay_command": "uv run --frozen python artifacts/Q2.4/collect.py",
+  "replay_commit": "57e94210f9100a2269e672b66434e92fe925a6b0",
+  "replayed_packages": [
+    {
+      "delivery": {
+        "alternatives": {
+          "reason": "No sourced route alternatives",
+          "status": "unknown",
+          "value": null
+        },
+        "approvals": {
+          "reason": "No sourced approvals or consent",
+          "status": "unknown",
+          "value": null
+        },
+        "budget": {
+          "reason": "No sourced spending constraint",
+          "status": "unknown",
+          "value": null
+        },
+        "complete_trips": {
+          "reason": "Use the package route witnesses; sheet trip joins are pending",
+          "status": "unknown",
+          "value": null
+        },
+        "costs": {
+          "capital": {
+            "base_year": null,
+            "currency": null,
+            "element_ids": [],
+            "exclusions": [],
+            "groups": [],
+            "high": null,
+            "low": null,
+            "missing_element_ids": [],
+            "reason": "Missing costs or incompatible currency/base year; no complete budget",
+            "status": "unknown",
+            "unit": "total"
+          },
+          "upkeep": {
+            "base_year": null,
+            "currency": null,
+            "element_ids": [],
+            "exclusions": [],
+            "groups": [],
+            "high": null,
+            "low": null,
+            "missing_element_ids": [],
+            "reason": "Missing costs or incompatible currency/base year; no complete budget",
+            "status": "unknown",
+            "unit": "per_year"
+          }
+        },
+        "decision": {
+          "ask": "Scope route options, costs and funding questions for a council review after consultation; survey widths and crossing movements before a build decision",
+          "build_ready": false,
+          "date": "2026-08-31",
+          "kind": "studies",
+          "permission_dependencies": [
+            "Consultation and land permission need proof for the selected works"
+          ],
+          "reason": "Delivery metadata cannot prove street fit, complete trips, permission or field safety",
+          "required_evidence": [
+            "Route options and complete return trips",
+            "Usable widths and crossing movements",
+            "Cost ranges, funding sources and a draft time plan"
+          ],
+          "source": "https://www.bayside.nsw.gov.au/your-council/latest-news/bayside-investigates-new-active-transport-corridor"
+        },
+        "dependencies": {
+          "reason": "No sourced delivery order",
+          "status": "unknown",
+          "value": null
+        },
+        "element_ids": [],
+        "funding": {
+          "reason": "No sourced funding status",
+          "status": "unknown",
+          "value": null
+        },
+        "metadata_sha256": "57255d7e18845e84eee8d38f4910b6350a63634f1b6fcbf8e3bf3c62347823d6",
+        "mitigation": {
+          "reason": "No sourced mitigation plan",
+          "status": "unknown",
+          "value": null
+        },
+        "observed_problem": {
+          "reason": "No field observation supplied",
+          "status": "unknown",
+          "value": null
+        },
+        "owner": {
+          "reason": "No sourced responsible organization",
+          "status": "unknown",
+          "value": null
+        },
+        "permission_dependencies": {
+          "status": "sourced",
+          "value": [
+            "Consultation and land permission need proof for the selected works"
+          ]
+        },
+        "project_ids": [],
+        "requested_decision": {
+          "ask": "Scope route options, costs and funding questions for a council review after consultation; survey widths and crossing movements before a build decision",
+          "build_ready": false,
+          "date": "2026-08-31",
+          "kind": "studies",
+          "permission_dependencies": [
+            "Consultation and land permission need proof for the selected works"
+          ],
+          "reason": "Delivery metadata cannot prove street fit, complete trips, permission or field safety",
+          "required_evidence": [
+            "Route options and complete return trips",
+            "Usable widths and crossing movements",
+            "Cost ranges, funding sources and a draft time plan"
+          ],
+          "source": "https://www.bayside.nsw.gov.au/your-council/latest-news/bayside-investigates-new-active-transport-corridor"
+        },
+        "stage_status": "unknown",
+        "stages": [],
+        "survey_needs": [
+          "Route options and complete return trips",
+          "Usable widths and crossing movements",
+          "Cost ranges, funding sources and a draft time plan"
+        ],
+        "uncertainty": "Public planning facts do not prove field safety, cost completeness, consent or funding"
+      },
+      "package": {
+        "rank": 0,
+        "scenario": "light"
+      }
+    },
+    {
+      "delivery": {
+        "alternatives": {
+          "reason": "No sourced route alternatives",
+          "status": "unknown",
+          "value": null
+        },
+        "approvals": {
+          "reason": "No sourced approvals or consent",
+          "status": "unknown",
+          "value": null
+        },
+        "budget": {
+          "reason": "No sourced spending constraint",
+          "status": "unknown",
+          "value": null
+        },
+        "complete_trips": {
+          "reason": "Use the package route witnesses; sheet trip joins are pending",
+          "status": "unknown",
+          "value": null
+        },
+        "costs": {
+          "capital": {
+            "base_year": null,
+            "currency": null,
+            "element_ids": [],
+            "exclusions": [],
+            "groups": [],
+            "high": null,
+            "low": null,
+            "missing_element_ids": [],
+            "reason": "Missing costs or incompatible currency/base year; no complete budget",
+            "status": "unknown",
+            "unit": "total"
+          },
+          "upkeep": {
+            "base_year": null,
+            "currency": null,
+            "element_ids": [],
+            "exclusions": [],
+            "groups": [],
+            "high": null,
+            "low": null,
+            "missing_element_ids": [],
+            "reason": "Missing costs or incompatible currency/base year; no complete budget",
+            "status": "unknown",
+            "unit": "per_year"
+          }
+        },
+        "decision": {
+          "ask": "Scope route options, costs and funding questions for a council review after consultation; survey widths and crossing movements before a build decision",
+          "build_ready": false,
+          "date": "2026-08-31",
+          "kind": "studies",
+          "permission_dependencies": [
+            "Consultation and land permission need proof for the selected works"
+          ],
+          "reason": "Delivery metadata cannot prove street fit, complete trips, permission or field safety",
+          "required_evidence": [
+            "Route options and complete return trips",
+            "Usable widths and crossing movements",
+            "Cost ranges, funding sources and a draft time plan"
+          ],
+          "source": "https://www.bayside.nsw.gov.au/your-council/latest-news/bayside-investigates-new-active-transport-corridor"
+        },
+        "dependencies": {
+          "reason": "No sourced delivery order",
+          "status": "unknown",
+          "value": null
+        },
+        "element_ids": [],
+        "funding": {
+          "reason": "No sourced funding status",
+          "status": "unknown",
+          "value": null
+        },
+        "metadata_sha256": "57255d7e18845e84eee8d38f4910b6350a63634f1b6fcbf8e3bf3c62347823d6",
+        "mitigation": {
+          "reason": "No sourced mitigation plan",
+          "status": "unknown",
+          "value": null
+        },
+        "observed_problem": {
+          "reason": "No field observation supplied",
+          "status": "unknown",
+          "value": null
+        },
+        "owner": {
+          "reason": "No sourced responsible organization",
+          "status": "unknown",
+          "value": null
+        },
+        "permission_dependencies": {
+          "status": "sourced",
+          "value": [
+            "Consultation and land permission need proof for the selected works"
+          ]
+        },
+        "project_ids": [],
+        "requested_decision": {
+          "ask": "Scope route options, costs and funding questions for a council review after consultation; survey widths and crossing movements before a build decision",
+          "build_ready": false,
+          "date": "2026-08-31",
+          "kind": "studies",
+          "permission_dependencies": [
+            "Consultation and land permission need proof for the selected works"
+          ],
+          "reason": "Delivery metadata cannot prove street fit, complete trips, permission or field safety",
+          "required_evidence": [
+            "Route options and complete return trips",
+            "Usable widths and crossing movements",
+            "Cost ranges, funding sources and a draft time plan"
+          ],
+          "source": "https://www.bayside.nsw.gov.au/your-council/latest-news/bayside-investigates-new-active-transport-corridor"
+        },
+        "stage_status": "unknown",
+        "stages": [],
+        "survey_needs": [
+          "Route options and complete return trips",
+          "Usable widths and crossing movements",
+          "Cost ranges, funding sources and a draft time plan"
+        ],
+        "uncertainty": "Public planning facts do not prove field safety, cost completeness, consent or funding"
+      },
+      "package": {
+        "rank": 0,
+        "scenario": "shipped"
+      }
+    },
+    {
+      "delivery": {
+        "alternatives": {
+          "reason": "No sourced route alternatives",
+          "status": "unknown",
+          "value": null
+        },
+        "approvals": {
+          "reason": "No sourced approvals or consent",
+          "status": "unknown",
+          "value": null
+        },
+        "budget": {
+          "reason": "No sourced spending constraint",
+          "status": "unknown",
+          "value": null
+        },
+        "complete_trips": {
+          "reason": "Use the package route witnesses; sheet trip joins are pending",
+          "status": "unknown",
+          "value": null
+        },
+        "costs": {
+          "capital": {
+            "base_year": null,
+            "currency": null,
+            "element_ids": [],
+            "exclusions": [],
+            "groups": [],
+            "high": null,
+            "low": null,
+            "missing_element_ids": [],
+            "reason": "Missing costs or incompatible currency/base year; no complete budget",
+            "status": "unknown",
+            "unit": "total"
+          },
+          "upkeep": {
+            "base_year": null,
+            "currency": null,
+            "element_ids": [],
+            "exclusions": [],
+            "groups": [],
+            "high": null,
+            "low": null,
+            "missing_element_ids": [],
+            "reason": "Missing costs or incompatible currency/base year; no complete budget",
+            "status": "unknown",
+            "unit": "per_year"
+          }
+        },
+        "decision": {
+          "ask": "Scope route options, costs and funding questions for a council review after consultation; survey widths and crossing movements before a build decision",
+          "build_ready": false,
+          "date": "2026-08-31",
+          "kind": "studies",
+          "permission_dependencies": [
+            "Consultation and land permission need proof for the selected works"
+          ],
+          "reason": "Delivery metadata cannot prove street fit, complete trips, permission or field safety",
+          "required_evidence": [
+            "Route options and complete return trips",
+            "Usable widths and crossing movements",
+            "Cost ranges, funding sources and a draft time plan"
+          ],
+          "source": "https://www.bayside.nsw.gov.au/your-council/latest-news/bayside-investigates-new-active-transport-corridor"
+        },
+        "dependencies": {
+          "reason": "No sourced delivery order",
+          "status": "unknown",
+          "value": null
+        },
+        "element_ids": [],
+        "funding": {
+          "reason": "No sourced funding status",
+          "status": "unknown",
+          "value": null
+        },
+        "metadata_sha256": "57255d7e18845e84eee8d38f4910b6350a63634f1b6fcbf8e3bf3c62347823d6",
+        "mitigation": {
+          "reason": "No sourced mitigation plan",
+          "status": "unknown",
+          "value": null
+        },
+        "observed_problem": {
+          "reason": "No field observation supplied",
+          "status": "unknown",
+          "value": null
+        },
+        "owner": {
+          "reason": "No sourced responsible organization",
+          "status": "unknown",
+          "value": null
+        },
+        "permission_dependencies": {
+          "status": "sourced",
+          "value": [
+            "Consultation and land permission need proof for the selected works"
+          ]
+        },
+        "project_ids": [],
+        "requested_decision": {
+          "ask": "Scope route options, costs and funding questions for a council review after consultation; survey widths and crossing movements before a build decision",
+          "build_ready": false,
+          "date": "2026-08-31",
+          "kind": "studies",
+          "permission_dependencies": [
+            "Consultation and land permission need proof for the selected works"
+          ],
+          "reason": "Delivery metadata cannot prove street fit, complete trips, permission or field safety",
+          "required_evidence": [
+            "Route options and complete return trips",
+            "Usable widths and crossing movements",
+            "Cost ranges, funding sources and a draft time plan"
+          ],
+          "source": "https://www.bayside.nsw.gov.au/your-council/latest-news/bayside-investigates-new-active-transport-corridor"
+        },
+        "stage_status": "unknown",
+        "stages": [],
+        "survey_needs": [
+          "Route options and complete return trips",
+          "Usable widths and crossing movements",
+          "Cost ranges, funding sources and a draft time plan"
+        ],
+        "uncertainty": "Public planning facts do not prove field safety, cost completeness, consent or funding"
+      },
+      "package": {
+        "rank": 0,
+        "scenario": "heavy"
+      }
+    }
+  ],
+  "report_bytes": 7390582,
+  "row": "Q2.4",
+  "scope": "Fresh full Bayside run without metadata, plus offline sourced metadata replay on its exact saved packages. EW6 is public planning context and a proposed next ask, not confirmed works, ownership, consent, funding or a copied council budget. This proves truthful metadata handling, not costs, field safety or performance."
+}

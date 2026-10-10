@@ -679,3 +679,28 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   time file; this parking proof does not prove performance. The run
   embeds its figure recipes in the report, with no separate figures
   file. The collector reads that recipe from the page.
+
+### Q2.4
+
+- Use [JSON Schema](https://json-schema.org/draft/2020-12/json-schema-validation)
+  through jsonschema for public input shapes. It checks fields, dates and
+  units offline. NetworkX checks stage cycles; no new graph tool is needed.
+- Proposal metadata lives in the hashed frontier archive. Each package and
+  sheet has its own delivery record. Empty input keeps costs and owners
+  unknown; an empty work set does not make an unsourced cost zero.
+- Cost scopes use physical element IDs. Reject overlap. Sum only one
+  currency, year and cost kind; keep partial groups and exclusions. A rate
+  uses physical length, not the count of reverse edges or projects.
+- A sourced stage is proposed, with trip outcomes unproved. Dates do not
+  prove funding. A sourced build ask stays in the record while the effective
+  ask seeks survey or concept proof. Later rows own stage and budget choice.
+- `uv run --frozen python artifacts/Q2.4/collect.py` checks a fresh full
+  Bayside output and replays public EW6 planning context offline. The source
+  does not price the package or assign its owners, approvals or funding.
+- Let a red test run finish before editing its code. Imports can start
+  late on a busy host. If that timing spoils the red log, use the saved
+  pre-change source and rerun the case; a passing log cannot prove red.
+
+- Q2.4 sheet repair: put delivery fields before the people table. The
+  whole-number check reads the rest of the sheet after that table. Keep
+  its test intact. The command and pass log are in the row proof.

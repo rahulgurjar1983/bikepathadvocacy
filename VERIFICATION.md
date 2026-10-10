@@ -1167,3 +1167,37 @@ replay belongs to the later verification row.
 
 Artifact: `artifacts/C1.5/manifest.json`, `artifacts/C1.5/roads-shipped.json`
 and `artifacts/C1.5/time-full.txt`.
+
+### Q2.4
+
+Build the full region with its shipped settings and no extra metadata:
+
+```sh
+/usr/bin/time -v -o /tmp/q24-real-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q2.4-real
+uv run --frozen python artifacts/Q2.4/collect.py
+uv run pytest tests/test_proposal_inputs.py -q
+```
+
+Expect: The real archive keeps costs, owner, approvals and funding unknown.
+The offline replay keeps the sourced next ask and hash. It changes no route
+or work set. Cost ranges count shared works once; mixed currency or year
+and missing works cannot form a full budget. A date is not funding proof.
+The test log and the base log show the new cases green and red.
+
+Artifact: `artifacts/Q2.4/manifest.json` holds commands, input and output
+hashes, code commit, no-input facts and sourced replay facts.
+`artifacts/Q2.4/sourced-inputs.json` keeps the public planning context.
+`artifacts/Q2.4/time-full.txt` records the full run. This is proof of honest
+metadata handling, not a measured cost, field audit or run-limit proof.
+See `docs/proposal-inputs.md` for the file contract.
+
+Check the sheet layout after the CI repair:
+
+```sh
+uv run --frozen pytest tests/test_report_change.py::test_fr9_2_people_in_a_project_sheet_are_whole_numbers tests/test_proposal_inputs.py::test_fr15_14_project_sheets_show_delivery_and_evidence_gaps -q
+```
+
+Expect: Both sheet checks pass. Delivery fields precede the people table;
+people counts stay whole and unknown costs stay unknown.
+
+Artifact: `artifacts/Q2.4/sheet-green.txt`.
