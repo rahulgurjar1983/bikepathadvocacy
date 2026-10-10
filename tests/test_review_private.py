@@ -133,3 +133,22 @@ def test_fr15_18_private_symlink_input_cannot_hide_its_location(private_review, 
     assert main([*args, "--out", str(outside)]) == 1
     assert "data/private" in capsys.readouterr().err
     assert not outside.exists()
+
+
+@pytest.mark.parametrize("field", ["route", "claims", "reply", "out"])
+def test_fr15_18_private_alias_outside_root_is_rejected(private_review, field, capsys):
+    folder, args = private_review
+    out = folder / "out"
+    if field == "out":
+        out.mkdir()
+        alias = folder.parents[2] / "output-link"
+        alias.symlink_to(out, target_is_directory=True)
+        out = alias
+    else:
+        index = 1 if field == "route" else args.index("--" + field) + 1
+        alias = folder.parents[2] / Path(args[index]).name
+        alias.symlink_to(args[index])
+        args[index] = str(alias)
+    assert main([*args, "--out", str(out)]) == 1
+    assert "data/private" in capsys.readouterr().err
+    assert not (folder / "out/report.html").exists()
