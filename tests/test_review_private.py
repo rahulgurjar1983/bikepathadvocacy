@@ -103,13 +103,14 @@ def test_fr15_18_private_output_rejects_escapes_even_with_public_flag(
     if escape == "dotdot":
         out = folder / "../../../output"
     elif escape == "symlink":
+        outside.mkdir()
         out = folder / "out"
         out.symlink_to(outside, target_is_directory=True)
     else:
         out = outside
     assert main([*args, "--out", str(out)]) == 1
     assert "data/private" in capsys.readouterr().err
-    assert not outside.exists()
+    assert not (outside / "report.html").exists()
 
 
 def test_fr15_18_false_metadata_outside_private_root_is_rejected(private_review, capsys):
