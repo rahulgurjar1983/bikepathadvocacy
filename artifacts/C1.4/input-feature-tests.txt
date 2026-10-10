@@ -1,0 +1,36 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_______________ test_fr13_1_figures_are_sorted_with_every_field ________________
+tests/test_report.py:54: in test_fr13_1_figures_are_sorted_with_every_field
+    assert [item["id"] for item in figures] == [f"F{n}" for n in range(1, 14)]
+E   AssertionError: assert ['F1', 'F2', ...5', 'F6', ...] == ['F1', 'F2', ...5', 'F6', ...]
+E     
+E     Left contains one more item: 'F14'
+E     Use -v to get more diff
+---------------------------- Captured stdout setup -----------------------------
+F1 5.2 km
+F2 3.0 km
+F3 0.0 km
+F4 12 pieces
+F5 100.0 points
+F6 15.0 points
+F7 0 spaces
+F8 0.0 km
+F9 0.0 km
+F10 750.0 people
+F11 0 km
+F12 6 steps
+F13 1 projects
+F14 0 roads
+____ test_fr13_2_the_figure_links_hold_the_numbers_and_resolve_to_one_entry ____
+tests/test_report.py:184: in test_fr13_2_the_figure_links_hold_the_numbers_and_resolve_to_one_entry
+    assert sorted(set(page.links)) == sorted(f"F{n}" for n in range(1, 14))
+E   AssertionError: assert ['F1', 'F10',...', 'F14', ...] == ['F1', 'F10',...3', 'F2', ...]
+E     
+E     At index 5 diff: 'F14' != 'F2'
+E     Left contains one more item: 'F9'
+E     Use -v to get more diff
+=========================== short test summary info ============================
+FAILED tests/test_report.py::test_fr13_1_figures_are_sorted_with_every_field
+FAILED tests/test_report.py::test_fr13_2_the_figure_links_hold_the_numbers_and_resolve_to_one_entry
+2 failed in 2.10s

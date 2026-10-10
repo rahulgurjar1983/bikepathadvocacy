@@ -18,6 +18,30 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Spec issues
 
+### C1.4 figure ID clash
+
+C1.4 stays open. CI for PR 118 fails the old report checks that require
+exactly F1 through F13. The works count adds F14. Spec 16 says not to
+reuse an old figure ID for a new measure. The loop cannot change old
+assertions to make them pass. The legacy fixture rule only covers Q1.3
+and Q1.4; it does not permit this change.
+
+Fresh main proof: `bash artifacts/C1.4/reproduce-input.sh`. The base
+commit is in `artifacts/C1.4/input-base-commit.txt`. Both old checks pass
+on that base. Apply only the feature source patch; both fail on the added
+F14. No old test is changed. Logs are in
+`artifacts/C1.4/input-base-tests.txt` and
+`artifacts/C1.4/input-feature-tests.txt`. CI proof: run
+`gh run view 38025980539 --log-failed | tail -n 80`.
+
+Input ask: amend the exact figure-list checks on an input branch to
+allow new figure IDs while retaining order, fields and resolved links.
+Or grant a narrow rule for this test update. Keep the requirement for a
+new ID and the old checks of each figure. PR 118 stays a draft with
+auto-merge off. The fresh real proof remains saved; it does not mean
+this row shipped.
+
+
 - `gates/tests/test_loop.py::test_fr0_13_usage_limit_turn_is_not_counted` times out after 60 seconds on `origin/main` too. Proof: `git checkout origin/main && uv run pytest gates/tests/test_loop.py -q -k usage_limit`. The pre-push hook still let the push through.
 - P10.1: resolved by the input proof-only gate path; run fresh proof before completion. Prior issue: fresh `origin/main` still has the base commit in `artifacts/P10.1/check.txt`. The grid tests pass there; see the command and result in `artifacts/P10.1/main-audit.txt`. The prior Bayside tests also passed on that base, so the red-green rule bars them. The old temp run files are now gone; the committed hashes are a past record, not a fresh byte check. Keep the row open and held until the operator fixes the rule and gate. Copy run proof out of pytest temp paths before a later test run clears them.
 
