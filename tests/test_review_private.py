@@ -6,11 +6,13 @@ import pytest
 import yaml
 
 from bikeplan import main
+from tests import test_release
 from tests.route_helpers import SNAPSHOT, densify, lonlat, write_gpx_track
-from tests.test_release import bp_calls, repo, run_script, uploaded
+from tests.test_release import bp_calls, run_script, uploaded
 from tests.test_report import REGION
 
 ROOT = Path(__file__).resolve().parent.parent
+repo = test_release.repo
 
 
 @pytest.fixture
