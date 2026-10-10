@@ -38,6 +38,11 @@ The C1.5 turn ran the same proof on fresh main again. The base still
 passes and the feature still fails. Finish this open PR before starting
 C1.5; do not weaken old tests or reuse a figure ID to pass CI.
 
+The Q2.4 turn checked fresh main with the same proof command. Base
+checks pass; the feature checks fail on F14. Q2.4 cannot start while
+PR 118 stays open. The input ask below still applies. CI failed the
+same checks: `gh run view 38026752269 --log-failed | tail -n 80`.
+
 Input ask: amend the exact figure-list checks on an input branch to
 allow new figure IDs while retaining order, fields and resolved links.
 Or grant a narrow rule for this test update. Keep the requirement for a
