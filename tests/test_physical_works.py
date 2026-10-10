@@ -164,7 +164,7 @@ def test_fr16_6_retained_links_crossings_and_gaps_are_separate():
 
 
 def test_fr16_6_real_report_pipeline_saves_package_plans_and_recipes():
-    summary, outputs, files, figures = build_all(
+    _summary, outputs, _files, figures = build_all(
         load_region("tests/fixtures/test-grid/region.yaml"),
         load_profile("au-nsw"),
         Path("tests/fixtures/test-grid/snapshot"),
@@ -181,3 +181,55 @@ def test_fr16_6_real_report_pipeline_saves_package_plans_and_recipes():
     assert "before/after" in page and "Name unknown" in page
     assert 'id="works-data"' in page
     assert "F14" in {f["id"] for f in figures}
+
+
+def test_fr16_6_offline_selection_keeps_works_and_print_on_same_package(tmp_path):
+    from selenium import webdriver
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.common.keys import Keys
+
+    from bikeplan import main
+
+    assert (
+        main(
+            [
+                "report",
+                "tests/fixtures/test-grid/region.yaml",
+                "--snapshot",
+                "tests/fixtures/test-grid/snapshot",
+                "--out",
+                str(tmp_path),
+            ]
+        )
+        == 0
+    )
+    options = webdriver.ChromeOptions()
+    for flag in ("--headless=new", "--no-sandbox", "--proxy-server=http://127.0.0.1:9"):
+        options.add_argument(flag)
+    driver = webdriver.Chrome(options=options)
+    try:
+        driver.get((tmp_path / "report.html").as_uri())
+        slider = driver.find_element(By.ID, "change-slider")
+        slider.send_keys(Keys.HOME)
+        assert driver.find_element(By.ID, "works-package").text == "shipped:0"
+        assert not driver.find_elements(By.CSS_SELECTOR, "#works-rows tr")
+        slider.send_keys(Keys.END)
+        assert driver.find_element(By.ID, "works-package").text == driver.find_element(
+            By.ID, "opening"
+        ).get_attribute("data-package")
+        assert "junction:" in driver.find_element(By.ID, "works-rows").text
+        driver.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "print"})
+        assert driver.find_element(By.ID, "works-package").is_displayed()
+    finally:
+        driver.quit()
+
+
+def test_fr16_6_existing_links_need_no_proposed_fix_to_be_retained():
+    from bikeplan.works import works_catalog, works_package
+
+    graph, elements = case()
+    del elements["segment:b"]
+    catalog = works_catalog(graph, elements, [(1, 2, 0), (2, 1, 0)])
+    result = works_package(catalog, ["segment:a"], [(1, 2, 0), (2, 1, 0)])
+    assert result["existing_links_retained"]["length_m"] == 100
+    assert result["existing_links_retained"]["element_ids"] == ["segment:b"]
