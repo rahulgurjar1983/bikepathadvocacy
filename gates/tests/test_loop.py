@@ -835,9 +835,13 @@ def test_fr0_36_controller_runs_when_model_switches_to_old_loop(loop_repo, tmp_p
     assert repo.git("show", record["stash"] + "^3:artifacts/P0.2/proof.txt") == "saved"
 
 
-def test_fr0_36_second_runner_cannot_launch_a_model(loop_repo):
+def test_fr0_36_second_runner_cannot_launch_a_model(loop_repo, tmp_path):
     repo, env, state = loop_repo
-    env["FAKE_SLEEP"] = "2"
+    release = tmp_path / "release-agent"
+    env.update(
+        RELEASE_AGENT=str(release),
+        FAKE_RUN='if [ "$(cat "$FAKE_STATE/$FAKE_NAME.count")" = 1 ]; then while [ ! -f "$RELEASE_AGENT" ]; do sleep 0.05; done; fi',
+    )
     first = subprocess.Popen(
         ["bash", "loop.sh", "1"],
         cwd=repo.path,
@@ -856,6 +860,7 @@ def test_fr0_36_second_runner_cannot_launch_a_model(loop_repo):
         assert "already running" in second.stdout
         assert count(state) == 1
     finally:
+        release.touch()
         first.communicate(timeout=30)
 
 
@@ -888,3 +893,32 @@ def test_fr0_36_provider_heartbeat_preserves_fallback_stdin(loop_repo, tmp_path)
     assert "Do one task." in saved["prompt"]
     assert "P0.2" in saved["prompt"]
     assert saved["heartbeat"]
+
+
+def test_fr0_34_blocked_pr_wait_does_not_run_or_block_another_row(loop_repo, tmp_path):
+    from gates.loopstate import input_hash
+
+    repo, env, state = loop_repo
+    repo.append("PROGRESS.md", "- [ ] **P0.3** Other task (FR-11.3)\n")
+    repo.write(
+        ".ralph/stalls.json",
+        json.dumps(
+            {"P0.2": {"blocked": True, "input_hash": input_hash("P0.2"), "reason": "contract fix"}}
+        ),
+    )
+    binaries = tmp_path / "bin"
+    binaries.mkdir()
+    query = binaries / "gh"
+    pr = {"number": 118, "headRefName": "loop/P0.2-stuck", "statusCheckRollup": []}
+    query.write_text(
+        f"#!{sys.executable}\nimport json\nfrom pathlib import Path\n"
+        f"print(json.dumps([{pr!r}]))\nPath('STOP').touch()\n"
+    )
+    query.chmod(0o755)
+    env.pop("RALPH_PICK_CMD")
+    env["PATH"] = f"{binaries}{os.pathsep}{env['PATH']}"
+    result = run_loop(repo, env, "1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert count(state) == 0
+    assert "scheduler waiting" in result.stdout
+    assert list(json.loads((repo.path / ".ralph/stalls.json").read_text())) == ["P0.2"]

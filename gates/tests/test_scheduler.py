@@ -107,3 +107,21 @@ def test_fr0_34_all_blocked_is_distinct_from_all_done(repo):
     assert len(decision["blocked_rows"]) == 3
     repo.write("PROGRESS.md", "- [x] **C1.4** Done (FR-16.6)\n")
     assert choose([])["state"] == "idle"
+
+
+def test_fr0_34_blocker_uses_controller_inputs_and_reopens_for_gate_change(
+    repo, tmp_path, monkeypatch
+):
+    from gates.loopstate import input_hash
+
+    prepared(repo)
+    control = tmp_path / "control"
+    control.mkdir()
+    (control / "PROGRESS.md").write_text((repo.path / "PROGRESS.md").read_text())
+    monkeypatch.setenv("RALPH_CONTROL_DIR", str(control))
+    original = input_hash("C1.4")
+    repo.write("PROMPT.md", "Old task branch prompt.\n")
+    assert input_hash("C1.4") == original
+    (control / "gates").mkdir()
+    (control / "gates/inputs.py").write_text("new operator rule\n")
+    assert input_hash("C1.4") != original
