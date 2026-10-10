@@ -1003,3 +1003,25 @@ replay is a later row. No model witness proves field safety.
 
 Artifact: `artifacts/C1.1/manifest.json`, `artifacts/C1.1/trip-samples.json`
 and `artifacts/C1.1/time-full.txt`.
+### C1.3
+
+```bash
+uv run --frozen pytest tests/test_resident_unions.py -q --tb=short
+/usr/bin/time -v -o /tmp/c13-real-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-C1.3-real
+uv run --frozen python artifacts/C1.3/collect.py
+uv run --frozen bikeplan verify /tmp/bikeplan-C1.3-real
+```
+
+Expect: each package has before, after and newly gained resident unions.
+Each population-node share counts once across routes and works. Type
+counts may overlap; they are not the unique total. Newly gained means
+access to a new place, even with prior access. It is not after minus
+before. Strict return trips stay apart from calm first-leg model access.
+Cell centres set council scope. Whole partial cells count; buffer cells
+stay out. Equal node shares model origins, not home addresses. The proof
+checks those shares against the source cell counts and reports unsnapped
+people. Missing group data and route evidence stay clear. Zero proved
+trips do not mean no useful places. The real run uses shipped settings.
+The verify command checks file structure; full replay is a later row.
+
+Artifact: `artifacts/C1.3/manifest.json` and `artifacts/C1.3/time-full.txt`.

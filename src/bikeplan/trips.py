@@ -292,6 +292,7 @@ def snapshot_trip_inputs(snapshot, kept, nodes, graph, scores, planning):
         {
             "id": place["osm_id"],
             "name": place["name"],
+            "type": place.get("type", "unknown"),
             "model_node": node,
             "entrances": [item for item in entrances if item["destination"] == place["osm_id"]],
         }
@@ -318,6 +319,7 @@ def snapshot_trip_inputs(snapshot, kept, nodes, graph, scores, planning):
 
 def trip_section(frontier):
     rows = []
+    resident_rows = []
     for curve in frontier["scenarios"]:
         for package in curve.get("trip_packages", []):
             values = [
@@ -328,6 +330,36 @@ def trip_section(frontier):
                 len(package["gaps"]),
                 "Joined" if package["continuous_network"] else "No joined network claim",
             ]
+            outcomes = package.get("resident_outcomes")
+            if outcomes:
+                for mode in ("strict", "first_leg_model"):
+                    counts = outcomes[mode]
+                    breakdown = (
+                        counts["by_place_type"].items()
+                        if package["package"]["rank"] == (curve.get("recommended_stop") or 0)
+                        else []
+                    )
+                    for kind, metrics in [
+                        ("all destinations", counts["unique_residents"]),
+                        *breakdown,
+                    ]:
+                        values_people = [
+                            curve["id"],
+                            package["package"]["rank"],
+                            mode,
+                            kind,
+                            *[metrics.get(key) for key in ("before", "after", "newly_gained")],
+                        ]
+                        resident_rows.append(
+                            "<tr>"
+                            + "".join(
+                                "<td><code>"
+                                + html.escape(str(v) if v is not None else "Unknown")
+                                + "</code></td>"
+                                for v in values_people
+                            )
+                            + "</tr>"
+                        )
             rows.append(
                 "<tr>"
                 + "".join(f"<td><code>{html.escape(str(v))}</code></td>" for v in values)
@@ -347,5 +379,98 @@ def trip_section(frontier):
         "<th>Scenario</th><th>Rank</th><th>Strict return trips</th><th>Groups</th>"
         "<th>Gaps</th><th>Network claim</th></tr></thead><tbody>"
         + "".join(rows)
+        + "</tbody></table></details>"
+        + "<h3>Unique estimated residents</h3>"
+        + "<p>These are estimates from population cells with a centre inside the council. "
+        "Whole cell counts are split across model origins, not measured home addresses. "
+        "Buffer population is left out. Cells with no nearby bike node stay unsnapped. "
+        "Each share counts once, even with several schools or works. Type counts overlap. "
+        "Newly gained means a new destination, even with prior access; it is not the change "
+        "in the total. Strict return trips and calm first-leg model access stay separate. "
+        "The first-leg list covers known entrances only, not the full access score. "
+        "This is not a forecast of rides, fewer crashes or less traffic. "
+        "Unknown age, disability, pupil and household data stays missing.</p>"
+        + "<p>The source, cell rule, node shares, buffer count, unsnapped count and limits "
+        "are saved with each package in <code>frontier.json</code>. "
+        "Zero proved trips can mean missing route evidence, not no useful places. "
+        "Type rows show each curve at its stop; all package type counts are in the saved data.</p>"
+        + "<details><summary>Resident unions by package and type</summary><table><thead><tr>"
+        "<th>Scenario</th><th>Rank</th><th>Route rule</th><th>Place type</th>"
+        "<th>Before</th><th>After</th><th>Newly gained</th></tr></thead><tbody>"
+        + "".join(resident_rows)
         + "</tbody></table></details></section>"
     )
+
+
+def resident_outcomes(before, after, population, destinations):
+    types = {item["id"]: item.get("type", "unknown") for item in destinations}
+    shares = {
+        (item["unit"], item["node"]): item for item in population["shares"] if item["people"] > 0
+    }
+
+    def measure(mode):
+        if before.get(mode) is None or after.get(mode) is None:
+            return {
+                "unique_residents": {"before": None, "after": None, "newly_gained": None},
+                "by_place_type": {},
+                "gains_counted_by_type": None,
+                "membership": {},
+                "evidence_status": "unknown",
+                "reason": "Unknown entrance links",
+            }
+        pairs = {
+            label: {(item["origin"], item["destination"]) for item in package.get(mode, [])}
+            for label, package in (("before", before), ("after", after))
+        }
+        pairs["newly_gained"] = pairs["after"] - pairs["before"]
+
+        def members(found):
+            nodes = {node for node, _ in found}
+            return [shares[key] for key in sorted(shares, key=str) if key[1] in nodes]
+
+        membership = {label: members(found) for label, found in pairs.items()}
+        by_type = {
+            kind: {
+                label: sum(
+                    item["people"]
+                    for item in members(
+                        {pair for pair in found if types.get(pair[1], "unknown") == kind}
+                    )
+                )
+                for label, found in pairs.items()
+            }
+            for kind in sorted(set(types.values()))
+        }
+        return {
+            "unique_residents": {
+                label: sum(item["people"] for item in found) for label, found in membership.items()
+            },
+            "by_place_type": by_type,
+            "gains_counted_by_type": sum(item["newly_gained"] for item in by_type.values()),
+            "membership": membership,
+            "evidence_status": "confirmed_route_model" if mode == "strict" else "assumed",
+        }
+
+    return {
+        "strict": measure("strict"),
+        "first_leg_model": measure("first_leg_model"),
+        "population": {key: value for key, value in population.items() if key != "shares"},
+        "evidence_status": "modelled_with_missing_trip_evidence"
+        if after.get("gaps")
+        else "modelled",
+        "method": (
+            "Union population-node shares with at least one complete trip. Newly gained means "
+            "at least one new destination, even with prior access; it is not after minus before. "
+            "Type gains union nodes per type before summing types."
+        ),
+        "missing_groups": {
+            name: {"value": None, "reason": "No sourced group counts and joins"}
+            for name in ("age", "disability", "pupil", "household")
+        },
+        "limit": (
+            "Population nodes model origins, not home addresses. These estimates are not a "
+            "forecast of rides, modal shift, crashes avoided or traffic reduction. First-leg "
+            "model access is separate and does not prove a complete return trip. Unknown trip "
+            "evidence leaves unproved opportunities out of confirmed counts."
+        ),
+    }
