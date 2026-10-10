@@ -1029,7 +1029,7 @@ Artifact: `artifacts/C1.3/manifest.json` and `artifacts/C1.3/time-full.txt`.
 ### C1.4
 
 ```bash
-uv run --frozen pytest tests/test_physical_works.py -q --tb=short
+uv run --frozen pytest tests/test_physical_works.py tests/test_report.py::test_fr13_1_figures_are_sorted_with_every_field tests/test_report.py::test_fr13_2_the_figure_links_hold_the_numbers_and_resolve_to_one_entry -q --tb=short
 /usr/bin/time -v -o /tmp/c14-real-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-C1.4-real
 uv run --frozen python artifacts/C1.4/collect.py
 uv run --frozen bikeplan verify /tmp/bikeplan-C1.4-real

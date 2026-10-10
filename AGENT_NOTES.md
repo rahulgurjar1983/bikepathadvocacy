@@ -78,6 +78,9 @@ the new figure rule. Keep Q2.1 and C1.4 open until that repair ships.
 
 ### C1.4 figure ID clash
 
+Resolved by FR-0.35 on main. The exact figure lists now require the
+new works figure and keep all prior checks. The proof below is history.
+
 C1.4 stays open. CI for PR 118 fails the old report checks that require
 exactly F1 through F13. The works count adds F14. Spec 16 says not to
 reuse an old figure ID for a new measure. The loop cannot change old
@@ -491,3 +494,13 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   and page data embed project shapes; copying the catalog into those
   shapes can break the report byte cap even when no works are selected.
   Keep the page geometry and works totals, then rerun the full build.
+
+### C1.4 contract repair
+
+- FR-0.35 permits only the two named figure ranges to grow. Keep the
+  exact list, its start and all prior field and link checks. Both changed
+  tests fail on fresh main without the works feature. The saved base
+  and head logs are in `artifacts/C1.4/contract-red.txt` and
+  `artifacts/C1.4/contract-green.txt`.
+- Do not start a different row while this row owns an open loop PR.
+  Restore saved work, merge main and fix this PR on its own branch.
