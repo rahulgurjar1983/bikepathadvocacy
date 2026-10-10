@@ -240,9 +240,8 @@ def test_fr16_10_cli_archives_metadata_offline_for_each_command(tmp_path, monkey
 
 
 def test_fr15_14_project_sheets_show_delivery_and_evidence_gaps(tmp_path):
-    from bikeplan.proposal_inputs import enrich_projects, load_proposal_inputs
-
     from bikeplan.page import sheet
+    from bikeplan.proposal_inputs import enrich_projects, load_proposal_inputs
     from bikeplan.propose import planning_network, project_sheet_records
     from tests.test_propose_network import PROFILE, REGION
     from tests.test_propose_picks import star
@@ -267,3 +266,124 @@ def test_fr15_14_project_sheets_show_delivery_and_evidence_gaps(tmp_path):
     ):
         assert label in rendered
     assert sheets[0]["delivery"]["costs"]["capital"]["low"] is None
+
+
+def test_fr16_10_cost_range_recipes_and_opening_replay_archived_sources(tmp_path):
+    import subprocess
+    import sys
+
+    from bikeplan.proposal_inputs import load_proposal_inputs
+    from tests.test_report import Page
+
+    supplied = {
+        **metadata(),
+        "costs": [cost("crossing", ["junction:1010"])],
+        "owners": [{**SOURCE, "id": "council", "organization": "Test Council"}],
+        "approvals": [
+            {**SOURCE, "id": "permission", "authority": "Test Authority", "status": "pending"}
+        ],
+        "stages": [
+            {
+                **SOURCE,
+                "id": "design",
+                "kind": "concept_design",
+                "depends_on": [],
+                "element_ids": ["junction:1010"],
+                "proposed_date": "2027-01-01",
+            }
+        ],
+    }
+    path = tmp_path / "inputs.json"
+    path.write_text(json.dumps(supplied))
+    assert load_proposal_inputs(path)["contents"] == supplied
+    out = tmp_path / "report"
+    assert (
+        main(
+            [
+                "report",
+                "tests/fixtures/test-grid/region.yaml",
+                "--snapshot",
+                "tests/fixtures/test-grid/snapshot",
+                "--proposal-inputs",
+                str(path),
+                "--out",
+                str(out),
+            ]
+        )
+        == 0
+    )
+    figures = json.loads((out / "figures.json").read_text())
+    priced = [r for r in figures if r["spec"] == "FR-16.10"]
+    assert priced
+    for figure in priced:
+        done = subprocess.run(
+            [sys.executable, "-I", "-c", figure["recipe"]],
+            cwd=out,
+            check=True,
+            text=True,
+            capture_output=True,
+        )
+        assert float(done.stdout) == figure["value"]
+        assert (
+            figure["inputs"][0]["sha256"]
+            == hashlib.sha256((out / "frontier.json").read_bytes()).hexdigest()
+        )
+    page = (out / "report.html").read_text()
+    opening = page.split('<section id="opening"', 1)[1].split("</section>", 1)[0]
+    assert "Test Council" in opening and "pending" in opening
+    assert "No sourced rates or budget are supplied" not in opening
+    parsed = Page()
+    parsed.feed(page)
+    assert not any(char.isdigit() for char in " ".join(parsed.outside))
+
+
+def test_fr16_10_supplied_stage_owner_permissions_and_mitigation_are_retained(tmp_path):
+    from bikeplan.proposal_inputs import delivery_record, validate_references
+
+    data = {
+        **metadata(),
+        "owners": [{**SOURCE, "id": "o", "organization": "Council"}],
+        "stages": [
+            {
+                **SOURCE,
+                "id": "study",
+                "kind": "studies",
+                "owner_id": "o",
+                "depends_on": [],
+                "element_ids": ["segment:a"],
+            },
+            {
+                **SOURCE,
+                "id": "design",
+                "kind": "detailed_design",
+                "owner_id": "o",
+                "depends_on": ["study"],
+                "element_ids": ["segment:a"],
+            },
+        ],
+        "approvals": [
+            {
+                **SOURCE,
+                "id": "land",
+                "authority": "Land authority",
+                "status": "required",
+                "permission": "Public land use",
+            }
+        ],
+        "mitigation": [
+            {
+                **SOURCE,
+                "id": "walk",
+                "element_ids": ["segment:a"],
+                "description": "Keep walking access in concept review",
+            }
+        ],
+    }
+    supplied = load(tmp_path, data)
+    validate_references(supplied, CATALOG, [], [])
+    record = delivery_record(supplied, ["segment:a"], CATALOG)
+    assert record["owner"]["value"] == data["owners"]
+    assert record["approvals"]["value"] == data["approvals"]
+    assert record["mitigation"] == data["mitigation"]
+    assert record["stages"][1]["depends_on"] == ["study"]
+    assert record["stages"][0]["owner_id"] == "o"
