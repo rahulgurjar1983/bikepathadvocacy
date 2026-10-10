@@ -387,3 +387,68 @@ def test_fr16_10_supplied_stage_owner_permissions_and_mitigation_are_retained(tm
     assert record["mitigation"] == data["mitigation"]
     assert record["stages"][1]["depends_on"] == ["study"]
     assert record["stages"][0]["owner_id"] == "o"
+
+
+def test_fr16_10_upkeep_is_annual_and_a_build_request_needs_design_proof(tmp_path):
+    from bikeplan.proposal_inputs import delivery_record
+
+    annual = {**cost("upkeep", ["segment:a"], unit="per_m_year"), "kind": "upkeep"}
+    data = {
+        **metadata(),
+        "costs": [annual],
+        "next_decision": {
+            **SOURCE,
+            "kind": "construction",
+            "ask": "Build the route",
+            "required_evidence": ["Land approval"],
+            "permission_dependencies": ["Land permission"],
+        },
+    }
+    record = delivery_record(load(tmp_path, data), ["segment:a"], CATALOG)
+    assert record["costs"]["upkeep"]["low"] == 1000
+    assert record["costs"]["upkeep"]["unit"] == "per_year"
+    assert record["costs"]["capital"]["low"] is None
+    assert record["decision"]["kind"] == "survey_or_concept_design"
+    assert record["requested_decision"]["ask"] == "Build the route"
+    assert record["decision"]["build_ready"] is False
+
+
+def test_fr16_10_hash_tamper_area_bounds_and_unproved_funding_are_rejected(tmp_path):
+    from bikeplan.proposal_inputs import load_proposal_inputs, validate_references
+
+    supplied = load(tmp_path, metadata())
+    supplied["contents"]["goals"] = []
+    with pytest.raises(ConfigError, match="hash"):
+        load_proposal_inputs(supplied)
+    data = {
+        **metadata(),
+        "stages": [
+            {
+                **SOURCE,
+                "id": "build",
+                "kind": "construction",
+                "depends_on": [],
+                "funding_status": "funded",
+            }
+        ],
+    }
+    with pytest.raises(ConfigError, match="funding source"):
+        load(tmp_path, data)
+    data = {
+        **metadata(),
+        "areas": [
+            {
+                **SOURCE,
+                "id": "area",
+                "name": "Test area",
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": [[[200, 0], [201, 0], [201, 1], [200, 0]]],
+                },
+            }
+        ],
+    }
+    with pytest.raises(ConfigError, match="area geometry"):
+        validate_references(load(tmp_path, data), CATALOG, [], [])
+    data["areas"][0]["geometry"]["coordinates"] = [[[0, 0], [1, 0], [1, 1], [0, 0]]]
+    validate_references(load(tmp_path, data), CATALOG, [], [])
