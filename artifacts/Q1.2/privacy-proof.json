@@ -1,0 +1,34 @@
+{
+  "code_commit": "7533786e7899b51e2a3b7c5cdaa61ee6246bfe20",
+  "hashes": [
+    {
+      "file": "SHA256SUMS",
+      "sha256": "7c6c8f0558aa24c15f9beeaa964a677ea486ea34f73cf5a2e31610773e36bf4f"
+    },
+    {
+      "file": "figures.json",
+      "sha256": "194a897c593264a393533a63addbd1ccb191cdb2165b1944d153d7a98d89cf9e"
+    },
+    {
+      "file": "report.html",
+      "sha256": "3a64260b251251464a6a9174160e932fcc73800ccfee79deba2301c6b23a59a7"
+    },
+    {
+      "file": "route_figures.json",
+      "sha256": "486a2527fe11a12ab8a088757899638ad7dd3e9313aeecdc4bdbbb08c1159e1e"
+    },
+    {
+      "file": "route_layer.json",
+      "sha256": "2667fce59896b89d95459bf4f00365d05233beaa0ddbc783355d001674a0b5f2"
+    },
+    {
+      "file": "verdicts.json",
+      "sha256": "d95d0ba8bdc2d24a676731ff5d963ef1f477f2c81b44a7065d5bac1d6faa4232"
+    }
+  ],
+  "region_sha256": "01634ded46011150f4f1e4c30e3f8236af806d5ea0e7686d95bee51b516534c7",
+  "snapshot_sha256": "4e2af873e84a9ca96f04b7b22a7d846cb4d9d579c0361136492226b4f1234a8f",
+  "verdict_counts": {
+    "holds": 1
+  }
+}

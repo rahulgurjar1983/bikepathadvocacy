@@ -531,3 +531,23 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   `artifacts/C1.4/contract-green.txt`.
 - Do not start a different row while this row owns an open loop PR.
   Restore saved work, merge main and fix this PR on its own branch.
+
+
+### Q1.2
+
+- Private review paths use Python's
+  [resolved path checks](https://docs.python.org/3.12/library/pathlib.html).
+  Resolve links before testing the root; a public flag cannot make a
+  private input public. Review settings beside an input can mark it
+  private too. Keep route, claims, reply, settings and outputs in the
+  ignored root. The release path checks are operator inputs; this row
+  adds the CLI guard and retains those checks.
+- `uv run --frozen python artifacts/Q1.2/collect.py` builds a fresh
+  offline review and checks git ignore, output rejection and release
+  exclusion. It tries build and reuse paths with fake upload tools.
+  Its public proof saves only hashes and verdict counts. Test routes
+  have no third party data or permission claim.
+- Tests that change the working folder need links to the shipped
+  profiles and test data. An error for a missing profile does not
+  prove that private paths were rejected. A link escape test needs a
+  real target folder, so a broken link cannot mask the missing guard.
