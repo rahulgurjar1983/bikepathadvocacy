@@ -292,7 +292,7 @@ def snapshot_trip_inputs(snapshot, kept, nodes, graph, scores, planning):
         {
             "id": place["osm_id"],
             "name": place["name"],
-            "type": place["type"],
+            "type": place.get("type", "unknown"),
             "model_node": node,
             "entrances": [item for item in entrances if item["destination"] == place["osm_id"]],
         }

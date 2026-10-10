@@ -452,13 +452,21 @@ def scene(graph, region, snapshot: str | Path) -> Scene:
     nodes, missed = snap_points([(p["x"], p["y"]) for p in kept], graph)
     placed = [(p["type"], node) for p, node in zip(kept, nodes, strict=True) if node is not None]
     resident = homes(population_units(snapshot, graph.graph["crs"]), graph, boundary)
-    manifest = json.loads((Path(snapshot) / "manifest.json").read_text())
+    manifest_path = Path(snapshot) / "manifest.json"
+    manifest = json.loads(manifest_path.read_text()) if manifest_path.is_file() else {}
     population_source = next(
-        item for item in manifest["files"] if item["path"] == "population.gpkg"
+        (item for item in manifest.get("files", []) if item["path"] == "population.gpkg"), None
     )
-    resident.population["source"] = {
-        key: population_source.get(key) for key in ("path", "source", "url", "sha256", "licence")
-    }
+    resident.population["source"] = (
+        {key: population_source.get(key) for key in ("path", "source", "url", "sha256", "licence")}
+        if population_source is not None
+        else {
+            "path": "population.gpkg",
+            "source": None,
+            "evidence_status": "unknown",
+            "reason": "No population source metadata in snapshot manifest",
+        }
+    )
     weights = {name: item.weight for name, item in region.destinations.items()}
     return Scene(kept, nodes, missed, placed, resident, weights)
 
