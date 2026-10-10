@@ -334,9 +334,14 @@ def trip_section(frontier):
             if outcomes:
                 for mode in ("strict", "first_leg_model"):
                     counts = outcomes[mode]
+                    breakdown = (
+                        counts["by_place_type"].items()
+                        if package["package"]["rank"] == (curve.get("recommended_stop") or 0)
+                        else []
+                    )
                     for kind, metrics in [
                         ("all destinations", counts["unique_residents"]),
-                        *counts["by_place_type"].items(),
+                        *breakdown,
                     ]:
                         values_people = [
                             curve["id"],
@@ -387,7 +392,8 @@ def trip_section(frontier):
         "Unknown age, disability, pupil and household data stays missing.</p>"
         + "<p>The source, cell rule, node shares, buffer count, unsnapped count and limits "
         "are saved with each package in <code>frontier.json</code>. "
-        "Zero proved trips can mean missing route evidence, not no useful places.</p>"
+        "Zero proved trips can mean missing route evidence, not no useful places. "
+        "Type rows show each curve at its stop; all package type counts are in the saved data.</p>"
         + "<details><summary>Resident unions by package and type</summary><table><thead><tr>"
         "<th>Scenario</th><th>Rank</th><th>Route rule</th><th>Place type</th>"
         "<th>Before</th><th>After</th><th>Newly gained</th></tr></thead><tbody>"

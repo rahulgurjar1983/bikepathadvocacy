@@ -288,7 +288,45 @@ def chart_section(frontier: dict) -> str:
 
 
 def change_scripts(frontier: dict) -> str:
-    data = json.dumps(frontier, sort_keys=True).replace("</", "<\\/")
+    sources = frontier.get("trip_sources", {})
+    compact = {
+        **frontier,
+        "trip_sources": {
+            **sources,
+            "population": {
+                key: value
+                for key, value in sources.get("population", {}).items()
+                if key != "shares"
+            },
+        },
+        "scenarios": [
+            {
+                **curve,
+                "trip_packages": [
+                    {
+                        key: value
+                        for key, value in package.items()
+                        if key in {"package", "project_ids", "element_ids"}
+                    }
+                    | {
+                        "resident_outcomes": {
+                            key: {
+                                name: value
+                                for name, value in record.items()
+                                if name != "membership"
+                            }
+                            if isinstance(record, dict)
+                            else record
+                            for key, record in package.get("resident_outcomes", {}).items()
+                        }
+                    }
+                    for package in curve.get("trip_packages", [])
+                ],
+            }
+            for curve in frontier["scenarios"]
+        ],
+    }
+    data = json.dumps(compact, sort_keys=True).replace("</", "<\\/")
     return (
         f'<script type="application/json" id="change-data">{data}</script>'
         f"<script>{(ASSETS / 'change.js').read_text()}</script>"
