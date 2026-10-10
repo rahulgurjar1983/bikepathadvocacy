@@ -452,3 +452,26 @@ def test_fr16_10_hash_tamper_area_bounds_and_unproved_funding_are_rejected(tmp_p
         validate_references(load(tmp_path, data), CATALOG, [], [])
     data["areas"][0]["geometry"]["coordinates"] = [[[0, 0], [1, 0], [1, 1], [0, 0]]]
     validate_references(load(tmp_path, data), CATALOG, [], [])
+
+
+def test_fr16_10_cost_figure_ids_are_stable_when_a_cost_kind_is_added(tmp_path):
+    from bikeplan.proposal_inputs import cost_figures, delivery_record
+
+    annual = {**cost("upkeep", ["segment:a"], unit="per_year"), "kind": "upkeep"}
+
+    def figures(costs):
+        delivery = delivery_record(
+            load(tmp_path, {**metadata(), "costs": costs}), ["segment:a"], CATALOG
+        )
+        frontier = {
+            "scenarios": [
+                {"id": "test", "trip_packages": [{"package": {"rank": 1}, "delivery": delivery}]}
+            ]
+        }
+        records, _ = cost_figures(frontier, json.dumps(frontier))
+        return {r["label"]: r["id"] for r in records if "upkeep" in r["label"]}
+
+    original = figures([annual])
+    expanded = figures([cost("capital", ["segment:a"]), annual])
+    assert original == expanded
+    assert len(original) == 2
