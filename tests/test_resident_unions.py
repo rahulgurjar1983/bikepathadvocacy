@@ -163,3 +163,17 @@ def test_fr16_5_offline_report_compacts_maps_without_changing_counts():
     embedded = script.split('id="map-data">', 1)[1].split("</script>", 1)[0]
     assert json.loads(embedded) == payload
     assert len(embedded) < len(json.dumps(payload))
+
+
+def test_fr16_5_offline_project_data_preserves_counts_in_compact_json():
+    from bikeplan.page import data_block
+
+    payload = {
+        "project_shapes": {"features": []},
+        "projects": [],
+        "summary": {"unique_residents": {"before": 10.5, "after": 120.5}},
+    }
+    script = data_block(payload)
+    embedded = script.split('id="page-data">', 1)[1].split("</script>", 1)[0]
+    assert json.loads(embedded) == payload
+    assert len(embedded) < len(json.dumps(payload))
