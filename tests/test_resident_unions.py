@@ -3,10 +3,10 @@ from pathlib import Path
 
 from shapely.geometry import box
 
+from bikeplan import trips
 from bikeplan.access import homes
 from bikeplan.config import load_profile, load_region
 from bikeplan.run import build_all
-from bikeplan import trips
 from tests.test_access_homes import line_graph
 
 
