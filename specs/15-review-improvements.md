@@ -60,7 +60,7 @@ For each row, read only the named requirements, their acceptance cases and the s
 
 ### Legacy worked-case inputs
 
-For Q1.3 and Q1.4, older worked cases may lack source fields that these approved rules now require. The loop may add explicit toy evidence in fixture data, setup or helper builders, in a tests-only commit. Keep every old test function body, assertion and parameter case intact. Use separate new test functions for the new safety rules; each new case must fail on base.
+For Q1.3 and Q1.4, older worked cases may lack source fields that these approved rules now require. The loop may add explicit toy evidence in fixture data, setup or helper builders, in a tests-only commit. Keep every old test function body, assertion and parameter case intact, except the narrow additive report contract in FR-0.35. Use separate new test functions for the new safety rules; each new case must fail on base.
 
 For Q1.3, this applies to the worked street inputs used by test_fit_options.py, test_fit_choice.py, test_fit_disruption.py and test_fit_separation.py. Keep their fit, width, traffic, choice and cost checks. State independent usable verge widths and site constraints for cases meant to have known space. Keep unknown and narrow cases as distinct input records. Do not compute a supposed observation from reserve minus assumed verges, assign known evidence to all streets, patch product results or label toy data as a real survey.
 
@@ -74,3 +74,9 @@ Use existing tools: pytest and its markers for checks, OSMnx and SciPy for the g
 - [Bayside bike network and plan](https://www.bayside.nsw.gov.au/recreation/places/cycling-bayside)
 - [EW6 corridor assessment](https://www.bayside.nsw.gov.au/your-council/latest-news/bayside-investigates-new-active-transport-corridor)
 - [Mascot-Eastlakes study](https://haveyoursay.bayside.nsw.gov.au/draft-mascot-eastlakes-active-transport-corridor)
+
+### Additive report contracts
+
+For Q1.5, Q1.6 and the community rows, follow FR-0.35. The two named tests may require more figure IDs. The FILES list may require new public data files, such as `proposal.json`. Keep the old values and all checks of fields, recipes, hashes and links. Each changed test function and each new feature case must fail on base. An unknown value is not a numeric figure.
+
+For Q1.4, keep the old access score as a model measure when a worked test gives only model AAA flags. Give it that label. Add separate confirmed trip results from known evidence. An old model flag is not proof. Do not use the model score to claim child safety, complete confirmed trips or known signal phases. This keeps the old score calculation and adds strict checks for new claims.

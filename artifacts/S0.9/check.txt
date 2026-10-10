@@ -1,0 +1,21 @@
+S0.9 local proof on 2026-10-10
+Base: c7834c3 (PR117)
+Observed: 37 blocked rows; 28 explicitly name the same open PR118.
+Controller was alive and idle, not productively working on those rows.
+
+Command: uv run --frozen pytest gates/tests/test_loop.py gates/tests/test_checkpoint.py gates/tests/test_scheduler.py gates/tests/test_contracts.py gates/tests/test_runnerstatus.py gates/tests/test_publicreview.py gates/tests/test_ledger.py gates/tests/test_release_tag.py -q --tb=short
+Result: 88 passed in 65.88s.
+
+Command: uv run --frozen pytest gates/tests/test_inputs.py gates/tests/test_scheduler.py gates/tests/test_contracts.py gates/tests/test_runnerstatus.py gates/tests/test_publicreview.py -q --tb=short
+Result: 45 passed in 5.30s.
+
+Twenty-five new cases fail on base. Initial batch: 21 failed in 7.87s.
+The added provider heartbeat, controller hash, blocked-PR dispatch and tool-protection cases also fail on base.
+The pre-push red gate repeats the exact new and changed cases on base.
+
+Command: uv run --frozen python -m gates.scheduler status
+Expect: the real open PR118 belongs to C1.4, regardless of earlier tasks.
+Command: systemd-analyze --user verify deploy/systemd/bikepath-loop.service
+Result: passed.
+
+These checks prove runner behaviour and input contracts. They do not mark any app row or field evidence complete. Full app tests run in CI before merge.
