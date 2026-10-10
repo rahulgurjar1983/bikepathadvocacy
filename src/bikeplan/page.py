@@ -341,8 +341,8 @@ def sheet(record: dict, features: list[dict]) -> str:
         f"<h4>Disruption totals</h4>{table(['Item', 'Total'], disruption)}"
         f"<h4>Kilometres by fix</h4>{table(['Fix', 'km'], fixes or [['none', 0.0]])}"
         f"<h4>Street cross-sections</h4>{sections}{links}"
-        f"{gains_table(record['totals'].get('access_gains'))}{exact_counts}"
-        f"{sheet_delivery(record)}</article>"
+        f"{sheet_delivery(record)}"
+        f"{gains_table(record['totals'].get('access_gains'))}{exact_counts}</article>"
     )
 
 
