@@ -652,3 +652,30 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   Keep its body intact. Fold the exact project and package count records
   below the plain tables, so readers can check or reuse node-share counts
   that the display rounds. Sort record keys to match the saved JSON.
+
+### C1.5
+
+- Parking ledgers use unique bay IDs for each physical link. A bay may
+  have several uses; those counts never add to vehicle capacity. Bike
+  parking is separate. Python keyed records and sets fit this union;
+  no new package is needed. The
+  [TfNSW parking survey](https://www.transport.nsw.gov.au/sites/default/files/media/documents/rww/projects/01documents/alexandria-moore-park/appendix-c.pdf)
+  keeps capacity, restrictions and timed use counts separate.
+- Optional snapshot `parking_evidence.json` keys are element IDs. Each
+  record has source, date, evidence status, before bays, removed IDs and
+  added bays. Bay records have ID and uses. A partial inventory sets
+  `complete` false. Occupancy and spillover need value, source, date and
+  method; capacity alone supplies neither. This row adds no real survey.
+- Keep each section's ledger beside package sums. Unknown inventory
+  leaves before and after null even when a fit loss is known. Unknown
+  crossing effects leave a partial package impact total. Every partial
+  sum lists its known and missing element IDs. The archive keeps raw
+  bay records or fit count inputs for replay. Unselected real model
+  road samples stay apart from the selected package.
+- `uv run --frozen python artifacts/C1.5/collect.py` checks the fresh
+  full-region table and recipe. Its source hashes and limits stay in
+  the manifest. Empty selected works do not prove field inventory.
+- The saved full host run exceeds the time and memory goals. See its
+  time file; this parking proof does not prove performance. The run
+  embeds its figure recipes in the report, with no separate figures
+  file. The collector reads that recipe from the page.

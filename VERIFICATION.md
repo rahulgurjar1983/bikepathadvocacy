@@ -1141,3 +1141,29 @@ Artifact: `artifacts/Q1.5/people-proof.json`,
 `artifacts/Q1.5/contract-red.txt`, `artifacts/Q1.5/verify.txt` and
 `artifacts/Q1.5/people-green.txt`, `artifacts/Q1.5/sheet-red.txt` and
 `artifacts/Q1.5/sheet-green.txt`.
+
+### C1.5
+
+```bash
+uv run --frozen pytest tests/test_parking_ledger.py tests/test_report.py::test_fr13_1_figures_are_sorted_with_every_field tests/test_report.py::test_fr13_2_the_figure_links_hold_the_numbers_and_resolve_to_one_entry -q
+/usr/bin/time -v -o /tmp/c15-real-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-C1.5-real
+uv run --frozen python artifacts/C1.5/collect.py
+uv run --frozen bikeplan verify /tmp/bikeplan-C1.5-real
+```
+
+Expect: each works section and package has spaces before, removed, added,
+after and net. Shared works and reverse edges count once. A gain on another
+street cannot hide a local loss. Bay IDs keep uses apart without adding
+extra spaces for each use. Bike parking stays apart from vehicle spaces.
+Missing inventory keeps full capacity unknown, with the known subset and
+missing work IDs shown. Crossing impacts stay unknown without a design
+record. Occupancy and spillover need their own source. Offline selection
+and print use the selected package ledger. The collector checks fresh
+real sums and runs the parking figure recipe with plain Python. Named
+unselected model roads are samples, not confirmed works. Real inventory
+and use surveys remain missing. The saved host run exceeds the time and
+memory goals; it does not prove performance. The last check is structural; full source
+replay belongs to the later verification row.
+
+Artifact: `artifacts/C1.5/manifest.json`, `artifacts/C1.5/roads-shipped.json`
+and `artifacts/C1.5/time-full.txt`.
