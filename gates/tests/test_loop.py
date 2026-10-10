@@ -77,6 +77,7 @@ def loop_repo(repo, tmp_path):
             "PYTHONPATH": str(ROOT),
             "RALPH_SKIP_SYNC": "1",
             "RALPH_PAUSE_SECS": "0",
+            "RALPH_AGENT_POLL_SECS": "0.05",
             "RALPH_BACKOFF_SECS": "0",
             "RALPH_MAX_SLEEP_SECS": "0",
             "RALPH_NOTIFY_CMD": "true",
@@ -782,6 +783,7 @@ def test_fr0_36_sync_failure_retries_before_spending_a_turn(loop_repo, tmp_path)
         FETCH_COUNT=str(tmp_path / "fetch-count"),
         RALPH_SKIP_SYNC="0",
         RALPH_RETRY_SECS="0",
+        RALPH_RESILIENT="1",
     )
     result = run_loop(repo, env, "1")
     assert result.returncode == 0, result.stdout + result.stderr
