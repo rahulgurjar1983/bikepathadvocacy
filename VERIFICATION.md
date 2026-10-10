@@ -1006,8 +1006,11 @@ and `artifacts/C1.1/time-full.txt`.
 
 ### C1.2
 
-Run: `/usr/bin/time -v -o /tmp/c12-real-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-C1.2-proof`
-Then: `uv run --frozen python artifacts/C1.2/collect.py`
-Tests: `uv run --frozen pytest tests/test_school_sites.py -q`
+```bash
+uv run --frozen pytest tests/test_school_sites.py -q
+/usr/bin/time -v -o /tmp/c12-real-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-C1.2-proof
+uv run --frozen python artifacts/C1.2/collect.py
+```
+
 Expect: The fresh school table names each mapped council site and its source. Confirmed trips give before, after and new site sets and unique resident reach per site. Unknown gates stay unproved. Buffer sites, colleges and early learning stay apart. The recipe and offline page agree with the selected package. These are residents, not pupils; the source list is not a full school register.
 Artifact: `artifacts/C1.2/manifest.json`, `artifacts/C1.2/school-sites.json`, `artifacts/C1.2/school-sites.csv`, `artifacts/C1.2/recipe.json`, `artifacts/C1.2/school-table.png` and `artifacts/C1.2/time-full.txt`. The reading proof is in `artifacts/C1.2/reading.txt` and its visible text is in `artifacts/C1.2/visible.txt`.
