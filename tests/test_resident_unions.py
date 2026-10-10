@@ -149,3 +149,17 @@ def test_fr16_5_offline_selection_keeps_counts_without_bulk_origin_records():
     assert "shares" not in embedded["trip_sources"]["population"]
     assert frontier["trip_sources"]["population"]["shares"]
     assert frontier["scenarios"][0]["trip_packages"][0]["strict"]
+
+
+def test_fr16_5_offline_report_compacts_maps_without_changing_counts():
+    from bikeplan.report import map_scripts
+
+    payload = {
+        "population": {"people": 120.5, "scope": "council"},
+        "features": [{"id": i, "coordinates": [151.1, -33.9]} for i in range(100)],
+    }
+    raw = json.dumps(payload, indent=2)
+    script = map_scripts(raw, "")
+    embedded = script.split('id="map-data">', 1)[1].split("</script>", 1)[0]
+    assert json.loads(embedded) == payload
+    assert len(embedded) < len(json.dumps(payload))
