@@ -483,19 +483,31 @@ def stress_features(graph, scores: dict) -> list[dict]:
 
 
 def stress_summary(graph, scores: dict) -> dict:
+    scenario = "confirmed" if all("confirmed_aaa" in item for item in scores.values()) else "model"
+
     def empty():
-        return {"km_by_lts": {str(lts): 0.0 for lts in range(1, 5)}, "km_aaa": 0.0}
+        return {
+            "km_by_lts": {str(lts): 0.0 for lts in range(1, 5)},
+            "km_aaa": 0.0,
+            "km_model_aaa": 0.0,
+            "km_confirmed_aaa": 0.0,
+            "safety_scenario": scenario,
+        }
 
     total, by_class = empty(), {}
     for segment in bike_segments(graph).values():
         keys, datas = zip(*segment["edges"], strict=True)
         lts = max(scores[key]["lts"] for key in keys)
-        aaa = all(scores[key]["confirmed_aaa"] for key in keys)
+        model = all(scores[key]["aaa"] for key in keys)
+        confirmed = all(scores[key].get("confirmed_aaa", False) for key in keys)
+        aaa = confirmed if scenario == "confirmed" else model
         km = segment["inside_m"] / 1000
         name = str(first(datas[0].get("highway")))
         for bucket in (total, by_class.setdefault(name, empty())):
             bucket["km_by_lts"][str(lts)] += km
             bucket["km_aaa"] += km * aaa
+            bucket["km_model_aaa"] += km * model
+            bucket["km_confirmed_aaa"] += km * confirmed
     return {**total, "by_road_class": dict(sorted(by_class.items()))}
 
 

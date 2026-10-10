@@ -954,14 +954,16 @@ def solve(
     confirmed: bool = False,
 ):
     planning = planning_network(graph, profile, region)
+    made: list = []
+    if corridors is not None:
+        corridor_graph, corridor_planning, made = add_corridor_paths(
+            graph, planning, corridors, region.proposals.metres_per_point
+        )
+        if not confirmed:
+            graph, planning = corridor_graph, corridor_planning
     if confirmed:
         planning = confirmed_planning(graph, profile, planning)
     big = big_projects(graph, planning, profile)
-    made: list = []
-    if corridors is not None and not confirmed:
-        graph, planning, made = add_corridor_paths(
-            graph, planning, corridors, region.proposals.metres_per_point
-        )
     if stats is not None:
         stats["corridor_candidates"] = len(made)
     picked = greedy_picks(
