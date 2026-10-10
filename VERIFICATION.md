@@ -1190,3 +1190,14 @@ hashes, code commit, no-input facts and sourced replay facts.
 `artifacts/Q2.4/time-full.txt` records the full run. This is proof of honest
 metadata handling, not a measured cost, field audit or run-limit proof.
 See `docs/proposal-inputs.md` for the file contract.
+
+Check the sheet layout after the CI repair:
+
+```sh
+uv run --frozen pytest tests/test_report_change.py::test_fr9_2_people_in_a_project_sheet_are_whole_numbers tests/test_proposal_inputs.py::test_fr15_14_project_sheets_show_delivery_and_evidence_gaps -q
+```
+
+Expect: Both sheet checks pass. Delivery fields precede the people table;
+people counts stay whole and unknown costs stay unknown.
+
+Artifact: `artifacts/Q2.4/sheet-green.txt`.

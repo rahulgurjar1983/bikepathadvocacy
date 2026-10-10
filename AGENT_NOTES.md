@@ -700,3 +700,7 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 - Let a red test run finish before editing its code. Imports can start
   late on a busy host. If that timing spoils the red log, use the saved
   pre-change source and rerun the case; a passing log cannot prove red.
+
+- Q2.4 sheet repair: put delivery fields before the people table. The
+  whole-number check reads the rest of the sheet after that table. Keep
+  its test intact. The command and pass log are in the row proof.
