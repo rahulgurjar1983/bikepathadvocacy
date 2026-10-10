@@ -815,7 +815,10 @@ def test_fr0_36_controller_runs_when_model_switches_to_old_loop(loop_repo, tmp_p
         RALPH_CONTROL_DIR=str(control),
         RALPH_WORK_DIR=str(repo.path),
         RALPH_SKIP_SYNC="0",
-        FAKE_RUN="git checkout -q loop/P0.2-old; mkdir -p artifacts/P0.2; echo saved > artifacts/P0.2/proof.txt",
+        FAKE_RUN=(
+            "git checkout -q loop/P0.2-old; mkdir -p artifacts/P0.2; "
+            "echo saved > artifacts/P0.2/proof.txt"
+        ),
     )
     result = subprocess.run(
         ["bash", str(control / "loop.sh"), "2"],
@@ -840,7 +843,10 @@ def test_fr0_36_second_runner_cannot_launch_a_model(loop_repo, tmp_path):
     release = tmp_path / "release-agent"
     env.update(
         RELEASE_AGENT=str(release),
-        FAKE_RUN='if [ "$(cat "$FAKE_STATE/$FAKE_NAME.count")" = 1 ]; then while [ ! -f "$RELEASE_AGENT" ]; do sleep 0.05; done; fi',
+        FAKE_RUN=(
+            'if [ "$(cat "$FAKE_STATE/$FAKE_NAME.count")" = 1 ]; then '
+            'while [ ! -f "$RELEASE_AGENT" ]; do sleep 0.05; done; fi'
+        ),
     )
     first = subprocess.Popen(
         ["bash", "loop.sh", "1"],
