@@ -1062,3 +1062,23 @@ bash .ralph/control/scripts/loop-status.sh /home/oem/claude/bikepathadvocacy
 Expect: all focused checks pass. The new cases fail on base. An open PR keeps its owner, a blocked or pending PR spends no model turn, and unrelated row blocks are repaired with a full backup. Old task files cannot replace the service code. Sync failures retry in service mode; a second runner cannot launch a model. Heartbeats keep the reason and retry time, and Codex gets its prompt. Exact figure and file contracts may grow without lost checks. Private links are excluded, while missing public files still fail. After green CI and install, the service is active with a live heartbeat and the owning row or a stated wait. Full app checks run in CI. No app feature is marked done by this operator row.
 
 Artifact: `artifacts/S0.9/check.txt`
+
+
+### Q1.2
+
+```bash
+uv run --frozen pytest tests/test_review_private.py -q
+uv run --frozen python artifacts/Q1.2/collect.py
+```
+
+Expect: the private path tests pass. A fresh offline review writes under
+`data/private/` and git ignores its files. The CLI rejects an output or
+input outside that root, including links and parent path escapes. A
+public flag does not waive the path check. Release discovery leaves out
+private review folders, routes, claims and replies on both build and
+reuse paths. The release proof uses fake upload tools; it sends nothing.
+The review uses the shipped test grid and profile. This checks privacy,
+not a real route's safety. Public proof holds only output hashes, input
+hashes, the code hash and verdict counts.
+
+Artifact: `artifacts/Q1.2/privacy-proof.json`
