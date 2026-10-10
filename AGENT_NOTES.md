@@ -18,7 +18,11 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Spec issues
 
-### Q1.6
+### Q1.6 prior report archive contract (resolved)
+
+FR-0.35 now allows the report file list to grow. The proof below is
+the prior block, not the current ask. The full run has a separate
+exact file list; see the fresh proof in the next note.
 
 The old report hash check bars the new proposal file. FR-16.1 needs
 `proposal.json` in each report archive. FR-13.1 keeps hashes for the
@@ -39,6 +43,29 @@ Input ask: update the old report file list on main to include
 rule to amend this old archive contract. Do not omit the new file from
 hash checks to keep the old list green. Q1.6 stays open. No product
 code, old test or input was changed by this turn.
+
+### Q1.6 full run archive contract
+
+The full run also writes a report. FR-16.1 needs its saved proposal
+record. The exact hash list in
+`tests/test_run.py::test_fr9_1_the_hash_file_lists_every_file_sorted_by_name`
+rejects a hashed `proposal.json`. FR-0.35 and the loop rule permit
+file-list growth only in `tests/test_report.py`, not this run test.
+Leaving the new record out of the hash list would leave it unchecked.
+
+Proof: `uv run --frozen python artifacts/Q1.6/reproduce_run.py` checks
+fresh main at `artifacts/Q1.6/run-base-commit.txt` in a worktree. The
+old run check passes and the new archive case fails on base. A small
+probe adds the file through the real run writer and hash list. Then
+the new case passes and the old exact-list check fails. See
+`artifacts/Q1.6/run-base.txt`, `artifacts/Q1.6/run-probe.txt` and
+`artifacts/Q1.6/run-result.json`. The probe patch is saved too. This
+is a contract check, not a full feature or real-region proof.
+
+Input ask: extend the narrow file-list rule to `tests/test_run.py`
+and its gates, or update that list on main to require `proposal.json`
+while keeping each old file and hash check. Keep the row open. This
+turn changed no product code, old tests or protected inputs.
 
 ### Q1.5 prior figure block (resolved)
 

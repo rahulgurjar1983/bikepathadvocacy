@@ -1,0 +1,9 @@
+{
+  "base_commit": "4e12ecc92249139299359792a7b4252c39b40c41",
+  "base_new": "failed: proposal.json is absent",
+  "base_old": "passed",
+  "command": "uv run --frozen python artifacts/Q1.6/reproduce_run.py",
+  "probe_new": "passed",
+  "probe_old": "failed: exact full-run hash list rejects proposal.json",
+  "scope": "Full run archive contract probe, not feature or real-region proof."
+}
