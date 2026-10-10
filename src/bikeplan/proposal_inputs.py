@@ -376,21 +376,37 @@ def delivery_record(metadata, element_ids, catalog, project_ids=()):
             if compatible
             else "Missing or incompatible costs; affordability unproved",
         }
-    owner = records("owners")
-    approvals = records("approvals")
+
+    def actor(name, reason):
+        rows = records(name)
+        if not rows:
+            return unknown(reason)
+        covered = set()
+        for row in rows:
+            refs = set(row.get("project_ids", []))
+            scope = set(row.get("element_ids", []))
+            if (not refs and not scope) or (projects and projects <= refs):
+                covered.update(selected)
+            covered.update(selected & scope)
+        missing = sorted(selected - covered)
+        return {
+            "value": rows,
+            "status": "partial" if missing else "sourced",
+            "missing_element_ids": missing,
+            "reason": "Source covers only named works; remaining scope unknown"
+            if missing
+            else "Public source within its stated scope",
+        }
+
     return {
         "metadata_sha256": metadata["sha256"],
         "element_ids": sorted(selected),
         "project_ids": sorted(projects),
         "costs": costs,
         "budget": budget,
-        "owner": {"value": owner, "status": "sourced"}
-        if owner
-        else unknown("No sourced responsible organization"),
-        "approvals": {"value": approvals, "status": "sourced"}
-        if approvals
-        else unknown("No sourced approvals or consent"),
-        "funding": records("funding") or unknown("No sourced funding status"),
+        "owner": actor("owners", "No sourced responsible organization"),
+        "approvals": actor("approvals", "No sourced approvals or consent"),
+        "funding": actor("funding", "No sourced funding status"),
         "stages": stages,
         "stage_status": "proposed, outcomes unproved" if stages else "unknown",
         "decision": decision,
@@ -449,9 +465,13 @@ def delivery_text(record, links=None):
             "unknown"
             if value is None
             else "; ".join(
-                r.get("organization", r.get("authority", r.get("status", "unknown"))) for r in value
+                r.get("organization", r.get("authority", ""))
+                + (" (" + r["status"] + ")" if "status" in r else "")
+                for r in value
             )
         )
+        if isinstance(block, dict) and block.get("status") == "partial":
+            shown += "; remaining scope unknown"
         parts.append(f"<p>{label}: <code>{escaped(shown)}</code>.</p>")
     for kind in ("capital", "upkeep"):
         total = record["costs"][kind]
