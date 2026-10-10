@@ -314,6 +314,23 @@ def sheet(record: dict, features: list[dict]) -> str:
             )
     sections = "".join(drawings)
     links = "".join(check_links(item) for item in record["elements"])
+    exact_counts = "".join(
+        f"<h5>{label}</h5><pre>"
+        f"{html.escape(str(json.loads(json.dumps(record['totals'][key], sort_keys=True))))}"
+        "</pre>"
+        for key, label in (
+            ("access_gains", "New destination gains from this project"),
+            ("package_access_gains", "New destination gains from the package so far"),
+        )
+        if key in record["totals"]
+    )
+    if exact_counts:
+        exact_counts = (
+            "<details><summary>Exact people counts to check and reuse</summary>"
+            "<p>The tables round the display. These records keep the full node-share counts. "
+            "People are estimates; type gains can count the same person again.</p>"
+            f"{exact_counts}</details>"
+        )
     return (
         f'<article id="project-{html.escape(record["id"])}">'
         f"<h3>{html.escape(record['name'])}</h3>"
@@ -323,7 +340,7 @@ def sheet(record: dict, features: list[dict]) -> str:
         f"<h4>Disruption totals</h4>{table(['Item', 'Total'], disruption)}"
         f"<h4>Kilometres by fix</h4>{table(['Fix', 'km'], fixes or [['none', 0.0]])}"
         f"<h4>Street cross-sections</h4>{sections}{links}"
-        f"{gains_table(record['totals'].get('access_gains'))}</article>"
+        f"{gains_table(record['totals'].get('access_gains'))}{exact_counts}</article>"
     )
 
 
