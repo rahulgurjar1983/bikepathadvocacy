@@ -1296,7 +1296,7 @@ Artifact: `artifacts/Q1.6/archive-exports.json`, `artifacts/Q1.6/exports-browser
 Run:
 
 ```sh
-uv run --frozen pytest -q tests/test_proposal_page_sheets.py
+uv run --frozen pytest -q tests/test_proposal_page_sheets.py tests/test_run_report.py::test_fr9_4_project_sheets_show_check_links_width_confidence_and_totals
 /usr/bin/time -v -o /tmp/q16-page-sheets-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.6-page-sheets
 uv run --frozen python artifacts/Q1.6/collect_page_sheets.py
 ```
@@ -1306,8 +1306,9 @@ project set. Street plans link to this list and its sheets in the
 evidence appendix. The page keeps the old shortlist named and apart. The
 worked case uses two test-only grids to check baseline and both ranks
 on each curve. Sheets retain their own plans, widths, impacts and
-unknowns. Their links resolve to one sheet each. Print keeps the chosen
-identity. With scripts off, the saved choice still has its sheets.
+unknowns. Their list links resolve to one sheet each. Selected site-check links
+keep their source URLs and stay apart from legacy link records. The old
+sheet test stays intact. Print keeps the chosen identity. With scripts off, the saved choice still has its sheets.
 
 The fresh Bayside check uses a dead proxy. It checks the list, sheets,
 opening and export against the archive. It checks phone, desktop and
@@ -1324,4 +1325,5 @@ Artifact: `artifacts/Q1.6/archive-page-sheets.json`,
 `artifacts/Q1.6/page-sheets-time-full.txt`,
 `artifacts/Q1.6/page-sheets-red.txt`,
 `artifacts/Q1.6/page-sheets-contract-red.txt`,
+`artifacts/Q1.6/page-sheets-links-red.txt`,
 `artifacts/Q1.6/page-sheets-green.txt`.

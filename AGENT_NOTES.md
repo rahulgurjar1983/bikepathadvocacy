@@ -843,3 +843,11 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 - The first full build was stopped for the appendix fix. Its time file
   is `artifacts/Q1.6/page-sheets-build-stopped-time.txt`; it is not proof.
   The fresh build and offline check below use the fixed code.
+
+### Q1.6 sheet link repair
+
+- The old sheet test counts all `data-check-link` records in the page.
+  Keep that test intact. Selected sheets use `data-selected-check-link`
+  and direct source URLs, so scripts off keeps those links too. The new
+  browser case checks each URL and the legacy link count. The command
+  and pass log are in the row proof.
