@@ -125,3 +125,13 @@ def test_fr16_1_script_free_page_has_selected_sheets_and_named_shortlist(built):
             == record["selected"]["project_ids"]
         )
         assert "Old minimum-gain shortlist" in sections[0].text
+
+
+def test_fr15_2_selected_plans_have_a_local_link_and_keep_the_number_contract(built):
+    from tests.test_report import parsed
+
+    html = (built / "report.html").read_text()
+    assert 'id="selected-projects"' in html
+    assert 'href="#selected-projects"' in html
+    assert html.index('id="appendix"') < html.index('id="selected-projects"')
+    assert not any(char.isdigit() for char in " ".join(parsed(built).outside))
