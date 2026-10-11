@@ -1,6 +1,6 @@
 {
   "build_command": "/usr/bin/time -v -o /tmp/q16-page-sheets-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.6-page-sheets",
-  "build_commit": "c80f5f258e52dc3235181480c791ea685d8e080d",
+  "build_commit": "10326c8d4df4b1ab1ab2da07c2c7ff8365b1a551",
   "cases": [
     {
       "element_ids": [],
@@ -30,7 +30,7 @@
   "check_command": "uv run --frozen python artifacts/Q1.6/collect_page_sheets.py",
   "code": {
     "method": "Sorted package paths and bytes, length-prefixed; excludes bytecode caches",
-    "sha256": "e351f9f9b0952514b4f8cc67a0f4b4a27fc1579420828af182d60ea534580693",
+    "sha256": "ef800130b00c31441e3536662b921f380dac2d5a5d0aa99fa96b8eb014c6190e",
     "version": "0.1.0"
   },
   "input_hashes": {
@@ -67,18 +67,18 @@
     },
     {
       "path": "proposal.json",
-      "sha256": "f58c18926d12110c562225f56a78c7f619675ae395aa7924d07f600e225c4fa3"
+      "sha256": "3f9b92b92ceaf3c0bef5dc663a6dd5212f8115894671dd93951ec9035ab06082"
     },
     {
       "path": "report.html",
-      "sha256": "86ebeabe566105ed8c4ae90ad34b1772f9398961918104aa63d79cdcf302e6fc"
+      "sha256": "a52183401ab197da79b8c7bcee51e3892ffc01cd05d4bd00bec3a8a89e388e06"
     },
     {
       "path": "summary.json",
       "sha256": "7b05483eb6e7875cdb105e8cdffa152515ac349be69950637dd592b42f1521d9"
     }
   ],
-  "report_bytes": 7975377,
+  "report_bytes": 7975514,
   "scope": "Selected curve list and sheets only. Empty real curves prove honest empty selection, not local works or field safety. Two disconnected test-only grids prove nonempty rank selection and sheet plans. Goal/stage packages and full browser acceptance remain open. This run does not prove performance.",
   "snapshot": {
     "id": "2026-10-01",
