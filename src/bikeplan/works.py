@@ -367,7 +367,8 @@ def works_section(frontier, proposal):
         for row in rows
     )
     return (
-        f'<section id="physical-works" data-package="{key}"><h2>What the selected package builds</h2>'
+        f'<section id="physical-works" data-package="{key}">'
+        "<h2>What the selected package builds</h2>"
         '<p id="works-package"><code>' + html.escape(key) + "</code></p>"
         "<p>I count each physical link once. Roads use source names and references; "
         "unnamed ways use IDs and show <code>Name unknown</code>. Disjoint works stay separate. "
