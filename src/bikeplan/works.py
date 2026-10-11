@@ -314,11 +314,14 @@ def crossing_cells(item):
     ]
 
 
-def works_section(frontier):
+def works_section(frontier, proposal):
     curve = next(c for c in frontier["scenarios"] if c["id"] == frontier["default"])
     if not curve.get("trip_packages") or "works" not in curve["trip_packages"][0]:
         return ""
-    package = curve["trip_packages"][curve["recommended_stop"] or 0]
+    package = proposal["selected"]
+    identity = package["identity"]
+    key = f"{identity['scenario']}:{identity['rank']}"
+    curve = next(c for c in frontier["scenarios"] if c["id"] == identity["scenario"])
     works = package["works"]
     rows = [cells(s, curve["works_catalog"]) for s in works["sections"]] + [
         crossing_cells(curve["works_catalog"][key]) for key in works["crossing_upgrades"]
@@ -342,40 +345,31 @@ def works_section(frontier):
 
     payload = {
         c["id"]: {
-            "packages": [
-                {
-                    "summary": summary(p["works"]),
-                    "rows": [s["id"] for s in p["works"]["sections"]]
-                    + p["works"]["crossing_upgrades"],
-                }
-                for p in c["trip_packages"]
-            ],
             "rows": {
                 s["id"]: cells(s, c["works_catalog"])
-                for p in c["trip_packages"]
+                for p in proposal["packages"]
+                if p["identity"]["scenario"] == c["id"]
                 for s in p["works"]["sections"]
             }
             | {
                 key: crossing_cells(c["works_catalog"][key])
-                for p in c["trip_packages"]
+                for p in proposal["packages"]
+                if p["identity"]["scenario"] == c["id"]
                 for key in p["works"]["crossing_upgrades"]
             },
         }
         for c in frontier["scenarios"]
     }
     table = "".join(
-        "<tr>"
+        f'<tr data-work-id="{html.escape(row[0], quote=True)}" data-package="{key}">'
         + "".join("<td><code>" + html.escape(value) + "</code></td>" for value in row)
         + "</tr>"
         for row in rows
     )
     return (
-        '<section id="physical-works"><h2>What the selected package builds</h2>'
-        '<p id="works-package"><code>'
-        + html.escape(curve["id"])
-        + ":"
-        + str(package["package"]["rank"])
-        + "</code></p>"
+        f'<section id="physical-works" data-package="{key}">'
+        "<h2>What the selected package builds</h2>"
+        '<p id="works-package"><code>' + html.escape(key) + "</code></p>"
         "<p>I count each physical link once. Roads use source names and references; "
         "unnamed ways use IDs and show <code>Name unknown</code>. Disjoint works stay separate. "
         "Lane widths and parking sides are model plans, not field measurements. "

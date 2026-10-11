@@ -899,3 +899,21 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   that log is `artifacts/Q1.6/map-totals-regression-start-failed.txt`.
   Keep startup errors separate from assertion failures and rerun the
   affected cases in a fresh session. Do not treat a timeout as a pass.
+
+### Q1.6 shared physical works selection
+
+- Build the works table from the saved proposal package. Keep the per-scenario
+  row text for local plans, but take the summary and exact row IDs from the
+  record. Do not keep a second set of per-rank works totals in the page.
+  Each row names its works ID and selected package, including print.
+- The pair of test grids selects crossing upgrades, not street sections.
+  Check those real IDs. Changing a saved total and crossing set proves that
+  the view reads the record. It is a data-flow test, not a field claim.
+- Reuse native DOM methods for table updates. The browser's
+  [replaceChildren](https://developer.mozilla.org/en-US/docs/Web/API/Element/replaceChildren)
+  keeps the existing page pattern. No extra package or runner is needed.
+- Run `uv run --frozen python artifacts/Q1.6/collect_works_selection.py`
+  after the fresh full build in the verification entry. It checks works,
+  maps, totals, lists, sheets and exports offline. Empty real choices prove
+  honest empty records. Other shared views, goal and stage packages and
+  full browser acceptance still need work.

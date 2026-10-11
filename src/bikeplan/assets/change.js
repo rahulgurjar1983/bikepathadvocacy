@@ -76,13 +76,18 @@ window.addEventListener("load", function () {
     const worksData = document.getElementById("works-data");
     if (worksData) {
       const plans = JSON.parse(worksData.textContent)[current];
-      const work = plans.packages[step];
-      document.getElementById("works-package").textContent = current + ":" + step;
-      document.getElementById("works-summary").textContent = JSON.stringify(work.summary);
+      const work = saved.works;
+      const summary = Object.fromEntries(["unique_roads", "distinct_sections", "unnamed_roads", "km_by_design", "existing_links_retained", "crossing_upgrades", "parking_spaces"].map(name => [name, work[name]]));
+      summary.gap_records = work.remaining_gaps.length;
+      document.getElementById("physical-works").dataset.package = key;
+      document.getElementById("works-package").textContent = key;
+      document.getElementById("works-summary").textContent = JSON.stringify(summary);
       const body = document.getElementById("works-rows");
       body.replaceChildren();
-      for (const id of work.rows) {
+      for (const id of work.sections.map(section => section.id).concat(work.crossing_upgrades)) {
         const row = document.createElement("tr");
+        row.dataset.workId = id;
+        row.dataset.package = key;
         for (const value of plans.rows[id]) {
           const cell = document.createElement("td");
           const code = document.createElement("code");
