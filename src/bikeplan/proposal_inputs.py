@@ -447,6 +447,7 @@ def attach_metadata(frontier, metadata):
     validate_references(metadata, catalog, project_ids, destinations)
     frontier["proposal_metadata"] = metadata
     for curve in frontier["scenarios"]:
+        enrich_projects(curve["project_sheets"], metadata, curve["works_catalog"])
         for package in curve["trip_packages"]:
             package["delivery"] = delivery_record(
                 metadata, package["element_ids"], curve["works_catalog"], package["project_ids"]

@@ -339,7 +339,11 @@ def change_scripts(frontier: dict) -> str:
         },
         "scenarios": [
             {
-                **{key: value for key, value in curve.items() if key != "works_catalog"},
+                **{
+                    key: value
+                    for key, value in curve.items()
+                    if key not in ("works_catalog", "project_sheets")
+                },
                 "trip_packages": [
                     {
                         key: value

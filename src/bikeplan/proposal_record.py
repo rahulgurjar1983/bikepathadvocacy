@@ -141,6 +141,10 @@ def proposal_record(region, profile, snapshot, frontier, shortlist):
         "input_hashes": hashes,
         "selected": next(p for p in packages if p["identity"] == identity),
         "packages": packages,
+        "project_sheets": [
+            {"scenario": curve["id"], "sheets": curve["project_sheets"]}
+            for curve in frontier["scenarios"]
+        ],
         "options": [
             {"id": c["id"], "label": c["label"], "kind": "weight_sensitivity"}
             for c in frontier["scenarios"]
