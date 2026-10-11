@@ -296,14 +296,26 @@ def build_all(
             chart([item for item in figures if item["id"] in KEEP])
             .replace('<section id="chart">', '<div id="chart">')
             .replace("</section>", "</div>"),
+            proposal["selected"],
         ),
         change_scripts(calendar_dates(frontier))
         + export_scripts(proposal, frontier)
         + project_scripts
         + ("<script" + works_data if works_data else "")
         + delivery_script,
-        proposal_opening(frontier, selected_delivery),
+        proposal_opening(frontier, selected_delivery, proposal["selected"]),
         delivery_body,
+    )
+    identity = proposal["selected"]["identity"]
+    key = f"{identity['scenario']}:{identity['rank']}"
+    page_text = page_text.replace(
+        '<section id="report-map">',
+        f'<section id="report-map" data-package="{key}">'
+        f'<p>Map of the selected package: <a href="#F13"><code id="map-package-label">'
+        f"{key}</code></a>.</p>",
+    )
+    page_text = page_text.replace(
+        " Proposed changes</label>", " Old minimum-gain shortlist</label>"
     )
     survey_note = "Survey options need site checks. They are kept out of the confirmed picks."
     if summary["shortlist_reason"]:

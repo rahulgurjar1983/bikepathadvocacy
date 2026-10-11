@@ -31,11 +31,15 @@ window.addEventListener("load", function () {
     return pick[key];
   }
 
-  function draw(chosen, step) {
+  function draw(saved, key) {
     group.clearLayers();
-    for (let index = 1; index <= step; index++) {
-      const pick = chosen.picks[index];
-      for (const feature of shapes[pick.id] || []) {
+    const elements = new Set(saved.element_ids);
+    const drawn = new Set();
+    for (const id of saved.project_ids) {
+      for (const feature of shapes[id] || []) {
+        const element = feature.properties.id;
+        if (!elements.has(element) || drawn.has(element)) continue;
+        drawn.add(element);
         const shape = L.geoJSON(feature, {
           pointToLayer: function (item, latlng) {
             return L.circleMarker(latlng, {
@@ -46,16 +50,29 @@ window.addEventListener("load", function () {
           style: function () {
             return { className: "change-project", color: "#e66100", weight: 7, opacity: 0.9, interactive: false };
           },
+          onEachFeature: function (item, layer) {
+            layer.on("add", function () {
+              const path = layer.getElement();
+              path.dataset.elementId = element;
+              path.dataset.projectId = id;
+              path.dataset.package = key;
+            });
+          },
         });
         shape.addTo(group);
       }
     }
+    document.getElementById("report-map").dataset.package = key;
+    document.getElementById("map-package-label").textContent = key;
   }
 
   function show(step) {
     const chosen = scenario();
-    const pick = chosen.picks[step];
-    draw(chosen, step);
+    const key = current + ":" + step;
+    const saved = JSON.parse(document.getElementById("package-export-data").textContent).packages[key].record;
+    const pick = Object.fromEntries(Object.entries(saved.model_totals).map(([name, metric]) => [name, metric.value]));
+    draw(saved, key);
+    document.getElementById("change-totals").dataset.package = key;
     const worksData = document.getElementById("works-data");
     if (worksData) {
       const plans = JSON.parse(worksData.textContent)[current];
@@ -103,7 +120,7 @@ window.addEventListener("load", function () {
     dot.setAttribute("cx", point[0]);
     dot.setAttribute("cy", point[1]);
     dot.setAttribute("data-step", String(step));
-    output.textContent = "Step " + step + " of " + (chosen.picks.length - 1) + ": " + pick.name;
+    output.textContent = "Step " + step + " of " + (chosen.picks.length - 1) + ": " + chosen.picks[step].name;
     window.dispatchEvent(new CustomEvent("package-selected", { detail: { scenario: current, rank: step } }));
   }
 

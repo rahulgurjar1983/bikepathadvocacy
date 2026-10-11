@@ -1329,3 +1329,25 @@ Artifact: `artifacts/Q1.6/archive-page-sheets.json`,
 `artifacts/Q1.6/page-sheets-links-red.txt`,
 `artifacts/Q1.6/page-sheets-offline-red.txt`,
 `artifacts/Q1.6/page-sheets-green.txt`.
+
+### Q1.6 shared curve map and model totals
+
+```bash
+uv run --frozen pytest tests/test_proposal_map_totals.py -q
+/usr/bin/time -v -o /tmp/q16-map-totals-time-fixed.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.6-map-totals-fixed
+uv run --frozen python artifacts/Q1.6/collect_map_totals.py
+```
+
+Expect: The saved package holds full model totals with units, scope and sources.
+The map uses its exact works set and draws shared elements once. The opening,
+map, totals, list, sheets and exports name the same curve choice. The old
+minimum-gain shortlist has its own named map layer. The browser checks saved
+values offline and keeps nulls and reasons. The real archive uses the shipped
+settings. Empty confirmed choices prove honest empty records, not real works
+or field safety. Goal and stage choices and full browser proof remain open.
+This run does not prove the time limit.
+
+Artifact: `artifacts/Q1.6/archive-map-totals.json`,
+`artifacts/Q1.6/map-totals-time-full.txt`,
+`artifacts/Q1.6/map-totals-red.txt`,
+`artifacts/Q1.6/map-totals-green.txt`.

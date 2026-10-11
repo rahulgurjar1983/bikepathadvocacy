@@ -385,10 +385,14 @@ def capped_note(chosen: dict, note_id: str = "change-capped") -> str:
     )
 
 
-def proposal_opening(frontier: dict, delivery: str = "") -> str:
+def proposal_opening(frontier: dict, delivery: str = "", selected: dict | None = None) -> str:
     chosen = default_scenario(frontier)
     rank = chosen["recommended_stop"] or 0
-    pick = chosen["picks"][rank]
+    pick = (
+        {key: metric["value"] for key, metric in selected["model_totals"].items()}
+        if selected
+        else chosen["picks"][rank]
+    )
     status = f"{chosen['label']} ({chosen['id']}) proposal, rank "
     state = (
         "No new works are selected."
@@ -433,10 +437,16 @@ def proposal_opening(frontier: dict, delivery: str = "") -> str:
     )
 
 
-def change_section(frontier: dict, by_id: dict, inventory: str = "") -> str:
+def change_section(
+    frontier: dict, by_id: dict, inventory: str = "", selected: dict | None = None
+) -> str:
     chosen = default_scenario(frontier)
     stop = chosen["recommended_stop"] or 0
-    pick = chosen["picks"][stop]
+    pick = (
+        {key: metric["value"] for key, metric in selected["model_totals"].items()}
+        if selected
+        else chosen["picks"][stop]
+    )
     radios = "".join(
         f'<label><input type="radio" name="scenario" id="scenario-{html.escape(item["id"])}" '
         f'value="{html.escape(item["id"])}"'
@@ -469,7 +479,8 @@ def change_section(frontier: dict, by_id: dict, inventory: str = "") -> str:
         '<p><label for="change-slider">How much change</label> '
         f'<input type="range" id="change-slider" min="0" max="{len(chosen["picks"]) - 1}" '
         f'value="{stop}" step="1" disabled> <output id="change-step"></output></p>'
-        '<table id="change-totals"><caption>Totals for the projects picked so far</caption>'
+        f'<table id="change-totals" data-package="{chosen["id"]}:{stop}">'
+        "<caption>Totals for the projects picked so far</caption>"
         f"{total_rows(frontier, pick)}</table>"
         '<p id="package-export-status" role="status">'
         "Turn on scripts to export the selected package.</p>"

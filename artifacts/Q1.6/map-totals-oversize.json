@@ -1,0 +1,20 @@
+{
+  "build_commit": "566b37ac48920e495427ee5f84975b347a6e20ed",
+  "code": {
+    "method": "Sorted package paths and bytes, length-prefixed; excludes bytecode caches",
+    "sha256": "3a1a0741f61f9b95f463aad7608b765ceeb0250cfb51029bca007b034b835c0d",
+    "version": "0.1.0"
+  },
+  "command": "uv run --frozen python artifacts/Q1.6/collect_map_totals.py",
+  "input_hashes": {
+    "region_and_profile": "6b7cd7698f58145f6669419dd0e4fba0cd4378fab2e1430a32df0a772127b665"
+  },
+  "limit_bytes": 8000000,
+  "report_bytes": 8011761,
+  "report_sha256": "920bcc1b3b2fbd4a54e0e1cfb6c5764d4ff3a21ecf72b0d21fe04f0d8b5d9900",
+  "result": "Failed the report size check before browser proof",
+  "snapshot": {
+    "id": "2026-10-01",
+    "sha256": "2eaf0b00832565765c42e07b48ad7c6117436194487f45931e348f6772964bba"
+  }
+}
