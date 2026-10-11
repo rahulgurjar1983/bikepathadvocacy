@@ -937,3 +937,19 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   for the recipe proof; do not assume both archive layouts match. The first
   collector's missing-file error stays in
   `artifacts/Q1.6/resident-selection-collector-failed.txt`.
+
+### Q1.6 shared delivery selection
+
+- Read costs and the next decision from the selected proposal record in both
+  the opening and delivery view. Save owner, approvals, funding and budget
+  blocks in each package too. Do not use a second set of rendered curve
+  answers for selection. The embedded delivery data now holds figure links.
+- Reuse the browser's native
+  [replaceChildren](https://developer.mozilla.org/en-US/docs/Web/API/Element/replaceChildren)
+  to render text and links. Missing prices and partial owner scope stay visible.
+  Sourced cost groups retain their own figure links and exclusions.
+- Run `uv run --frozen python artifacts/Q1.6/collect_delivery_selection.py`
+  after the fresh full build in the verification entry. It checks delivery,
+  opening, print and exports offline, plus the saved choice with scripts off.
+  Empty real packages prove truthful gaps. Goal and stage packages, other
+  shared views and full browser acceptance remain open.

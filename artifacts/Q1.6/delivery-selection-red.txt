@@ -1,0 +1,55 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+_____ test_fr16_1_script_free_delivery_reads_selected_record_and_unknowns ______
+tests/test_proposal_delivery_selection.py:38: in test_fr16_1_script_free_delivery_reads_selected_record_and_unknowns
+    body, _ = delivery_section(frontier, links, record)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: delivery_section() takes 2 positional arguments but 3 were given
+---------------------------- Captured stdout setup -----------------------------
+F1 10.4 km
+F2 6.0 km
+F3 0.0 km
+F4 24 pieces
+F5 100.0 points
+F6 30.0 points
+F7 0 spaces
+F8 0.0 km
+F9 0.0 km
+F10 1500.0 people
+F11 0 km
+F12 9 steps
+F13 2 projects
+F14 0 roads
+F15 1500.0 people
+F16 0 people
+F17 0 people
+F18 0 people
+F19 1500.0 people
+F20 0 people
+F21 0 people
+F22 0 people
+F23 0 vehicle spaces
+F24 0 estimated residents
+___ test_fr15_2_delivery_opening_print_and_exports_read_saved_package[light] ___
+tests/test_proposal_delivery_selection.py:71: in test_fr15_2_delivery_opening_print_and_exports_read_saved_package
+    assert browser.find_element(By.ID, "delivery").get_attribute("data-package") == key
+E   assert None == 'light:0'
+E    +  where None = get_attribute('data-package')
+E    +    where get_attribute = <selenium.webdriver.remote.webelement.WebElement (session="066d23db58e82a769ff6576b57b0643e", element="f.925C927186AC69D0C082AA3E382A6983.d.18F285000C51F3B2B7751A82EE323E27.e.5")>.get_attribute
+E    +      where <selenium.webdriver.remote.webelement.WebElement (session="066d23db58e82a769ff6576b57b0643e", element="f.925C927186AC69D0C082AA3E382A6983.d.18F285000C51F3B2B7751A82EE323E27.e.5")> = find_element('id', 'delivery')
+E    +        where find_element = <selenium.webdriver.chrome.webdriver.WebDriver (session="066d23db58e82a769ff6576b57b0643e")>.find_element
+E    +        and   'id' = By.ID
+___ test_fr15_2_delivery_opening_print_and_exports_read_saved_package[heavy] ___
+tests/test_proposal_delivery_selection.py:71: in test_fr15_2_delivery_opening_print_and_exports_read_saved_package
+    assert browser.find_element(By.ID, "delivery").get_attribute("data-package") == key
+E   assert None == 'heavy:0'
+E    +  where None = get_attribute('data-package')
+E    +    where get_attribute = <selenium.webdriver.remote.webelement.WebElement (session="066d23db58e82a769ff6576b57b0643e", element="f.925C927186AC69D0C082AA3E382A6983.d.18F285000C51F3B2B7751A82EE323E27.e.5")>.get_attribute
+E    +      where <selenium.webdriver.remote.webelement.WebElement (session="066d23db58e82a769ff6576b57b0643e", element="f.925C927186AC69D0C082AA3E382A6983.d.18F285000C51F3B2B7751A82EE323E27.e.5")> = find_element('id', 'delivery')
+E    +        where find_element = <selenium.webdriver.chrome.webdriver.WebDriver (session="066d23db58e82a769ff6576b57b0643e")>.find_element
+E    +        and   'id' = By.ID
+=========================== short test summary info ============================
+FAILED tests/test_proposal_delivery_selection.py::test_fr16_1_script_free_delivery_reads_selected_record_and_unknowns
+FAILED tests/test_proposal_delivery_selection.py::test_fr15_2_delivery_opening_print_and_exports_read_saved_package[light]
+FAILED tests/test_proposal_delivery_selection.py::test_fr15_2_delivery_opening_print_and_exports_read_saved_package[heavy]
+3 failed in 181.33s (0:03:01)

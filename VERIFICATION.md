@@ -1397,3 +1397,24 @@ Artifact: `artifacts/Q1.6/archive-resident-selection.json`,
 `artifacts/Q1.6/resident-selection-time-full.txt`,
 `artifacts/Q1.6/resident-selection-red.txt`,
 `artifacts/Q1.6/resident-selection-green.txt`.
+
+### Q1.6 shared delivery selection
+
+```bash
+uv run --frozen pytest tests/test_proposal_delivery_selection.py -q --tb=short
+/usr/bin/time -v -o /tmp/q16-delivery-selection-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.6-delivery-selection
+uv run --frozen python artifacts/Q1.6/collect_delivery_selection.py
+```
+
+Expect: Delivery and the opening read costs and the next decision from the
+selected proposal record. Owner, approval, funding and spending bounds keep
+unknowns and their source scope. Offline selection, print and exports use the
+same package. Scripts off keeps the saved default. The real run uses shipped
+settings. Empty real packages prove honest gaps, not useful new works, known
+costs, consent or funding. Other shared views, goal and stage packages and
+full browser proof remain open. This run does not prove the time or memory limit.
+
+Artifact: `artifacts/Q1.6/archive-delivery-selection.json`,
+`artifacts/Q1.6/delivery-selection-time-full.txt`,
+`artifacts/Q1.6/delivery-selection-red.txt`,
+`artifacts/Q1.6/delivery-selection-green.txt`.

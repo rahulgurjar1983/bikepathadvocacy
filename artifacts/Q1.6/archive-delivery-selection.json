@@ -1,0 +1,207 @@
+{
+  "build_command": "/usr/bin/time -v -o /tmp/q16-delivery-selection-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.6-delivery-selection",
+  "build_commit": "1093c1e2141c4ea4ef8c0b569e7dfc46ca75e37f",
+  "cases": [
+    {
+      "costs": {
+        "capital": {
+          "base_year": null,
+          "currency": null,
+          "element_ids": [],
+          "exclusions": [],
+          "groups": [],
+          "high": null,
+          "low": null,
+          "missing_element_ids": [],
+          "reason": "Missing costs or incompatible currency/base year; no complete budget",
+          "status": "unknown",
+          "unit": "total"
+        },
+        "upkeep": {
+          "base_year": null,
+          "currency": null,
+          "element_ids": [],
+          "exclusions": [],
+          "groups": [],
+          "high": null,
+          "low": null,
+          "missing_element_ids": [],
+          "reason": "Missing costs or incompatible currency/base year; no complete budget",
+          "status": "unknown",
+          "unit": "per_year"
+        }
+      },
+      "decision": {
+        "ask": "Seek useful route goals and public records, then survey widths and crossing movements or scope a costed concept design before a build decision",
+        "build_ready": false,
+        "kind": "survey_or_concept_design",
+        "reason": "Delivery metadata cannot prove street fit, complete trips, permission or field safety",
+        "required_evidence": [
+          "Usable widths and site constraints",
+          "Crossing movements",
+          "Complete return trips",
+          "Cost and permission evidence"
+        ],
+        "source": null
+      },
+      "identity": {
+        "rank": 0,
+        "scenario": "light"
+      },
+      "project_ids": []
+    },
+    {
+      "costs": {
+        "capital": {
+          "base_year": null,
+          "currency": null,
+          "element_ids": [],
+          "exclusions": [],
+          "groups": [],
+          "high": null,
+          "low": null,
+          "missing_element_ids": [],
+          "reason": "Missing costs or incompatible currency/base year; no complete budget",
+          "status": "unknown",
+          "unit": "total"
+        },
+        "upkeep": {
+          "base_year": null,
+          "currency": null,
+          "element_ids": [],
+          "exclusions": [],
+          "groups": [],
+          "high": null,
+          "low": null,
+          "missing_element_ids": [],
+          "reason": "Missing costs or incompatible currency/base year; no complete budget",
+          "status": "unknown",
+          "unit": "per_year"
+        }
+      },
+      "decision": {
+        "ask": "Seek useful route goals and public records, then survey widths and crossing movements or scope a costed concept design before a build decision",
+        "build_ready": false,
+        "kind": "survey_or_concept_design",
+        "reason": "Delivery metadata cannot prove street fit, complete trips, permission or field safety",
+        "required_evidence": [
+          "Usable widths and site constraints",
+          "Crossing movements",
+          "Complete return trips",
+          "Cost and permission evidence"
+        ],
+        "source": null
+      },
+      "identity": {
+        "rank": 0,
+        "scenario": "shipped"
+      },
+      "project_ids": []
+    },
+    {
+      "costs": {
+        "capital": {
+          "base_year": null,
+          "currency": null,
+          "element_ids": [],
+          "exclusions": [],
+          "groups": [],
+          "high": null,
+          "low": null,
+          "missing_element_ids": [],
+          "reason": "Missing costs or incompatible currency/base year; no complete budget",
+          "status": "unknown",
+          "unit": "total"
+        },
+        "upkeep": {
+          "base_year": null,
+          "currency": null,
+          "element_ids": [],
+          "exclusions": [],
+          "groups": [],
+          "high": null,
+          "low": null,
+          "missing_element_ids": [],
+          "reason": "Missing costs or incompatible currency/base year; no complete budget",
+          "status": "unknown",
+          "unit": "per_year"
+        }
+      },
+      "decision": {
+        "ask": "Seek useful route goals and public records, then survey widths and crossing movements or scope a costed concept design before a build decision",
+        "build_ready": false,
+        "kind": "survey_or_concept_design",
+        "reason": "Delivery metadata cannot prove street fit, complete trips, permission or field safety",
+        "required_evidence": [
+          "Usable widths and site constraints",
+          "Crossing movements",
+          "Complete return trips",
+          "Cost and permission evidence"
+        ],
+        "source": null
+      },
+      "identity": {
+        "rank": 0,
+        "scenario": "heavy"
+      },
+      "project_ids": []
+    }
+  ],
+  "check_command": "uv run --frozen python artifacts/Q1.6/collect_delivery_selection.py",
+  "code": {
+    "method": "Sorted package paths and bytes, length-prefixed; excludes bytecode caches",
+    "sha256": "7371eb5dc226b23e4471dd9a93eb50036068cd7476a2d6bf95a9aa6af3afb7dc",
+    "version": "0.1.0"
+  },
+  "input_hashes": {
+    "region_and_profile": "6b7cd7698f58145f6669419dd0e4fba0cd4378fab2e1430a32df0a772127b665"
+  },
+  "outputs": [
+    {
+      "path": "access_homes.geojson",
+      "sha256": "64e5ee7d19083b024fdadaba43c37caa6ca5f72a1ce0ef2cf4123d7c914752ff"
+    },
+    {
+      "path": "frontier.json",
+      "sha256": "cfcfc958051333790e5075c0204dc0e61bfe77ee54999e1ec3bcea24853bf0f2"
+    },
+    {
+      "path": "network.geojson",
+      "sha256": "956f6c9c40e9364bb9984f41f7b5294e28a4a3120d7b61af815011f4bd61ca6f"
+    },
+    {
+      "path": "places.geojson",
+      "sha256": "b275748f27eb07121541c246e22a64058d21b81e39bff4d3d823ccffeaa23803"
+    },
+    {
+      "path": "projects.csv",
+      "sha256": "6e49858dbb626819ba2f361646d9efcd37d6d9558126c14ac8bbf026dfa59c40"
+    },
+    {
+      "path": "projects.geojson",
+      "sha256": "e4914e1531bd5ca936715cf6e777265c7039ec62846f7388269bca0bc2fc0977"
+    },
+    {
+      "path": "projects.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "proposal.json",
+      "sha256": "e74f02916d0d0a251516577f25bc3f8d07fb2afad24790b46f64b27f7649007e"
+    },
+    {
+      "path": "report.html",
+      "sha256": "ee990b866cef1adbf45d869aa6ba4d2d2813e6fd06a025ffea821af82f3cdea8"
+    },
+    {
+      "path": "summary.json",
+      "sha256": "7b05483eb6e7875cdb105e8cdffa152515ac349be69950637dd592b42f1521d9"
+    }
+  ],
+  "report_bytes": 7621513,
+  "scope": "Selected curve delivery, opening, print and JSON/CSV exports; scripts-off default. Empty real packages prove honest unknowns, not useful works, known costs or funding. Nonempty fixture rank changes are unit-tested. Other shared views, goal/stage packages and full browser acceptance remain open. This is not performance proof.",
+  "snapshot": {
+    "id": "2026-10-01",
+    "sha256": "2eaf0b00832565765c42e07b48ad7c6117436194487f45931e348f6772964bba"
+  }
+}
