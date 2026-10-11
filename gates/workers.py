@@ -58,7 +58,11 @@ def stop(unit):
     valid(unit)
     if query(["show", unit, "--property=LoadState", "--value"]).strip() == "not-found":
         return
-    query(["stop", unit])
+    try:
+        query(["stop", unit])
+    except subprocess.CalledProcessError:
+        if query(["show", unit, "--property=LoadState", "--value"]).strip() != "not-found":
+            raise
 
 
 def clear():
