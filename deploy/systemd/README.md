@@ -20,6 +20,6 @@ The status command shows the process state, task row, owning PR, reason and next
 Sources: [Git guide](https://git-scm.com/docs/git-worktree), [service guide](https://github.com/systemd/systemd/blob/main/man/systemd.service.xml).
 
 
-Each provider runs in a separate worker scope with a time and memory bound. The controller keeps its own small budget and normal CPU/IO weight. A report build cannot use that budget or survive the end of its turn. Scope cleanup runs after each call and on startup. Worker scopes are bound to the service, so a service stop ends them too. Builds stay in the foreground; saved files and stashes stay in the work folder.
+Each provider runs in a separate worker scope with a time and memory bound. The controller keeps its own small budget and normal CPU/IO weight. A report build cannot use that budget or survive the end of its turn. Scope cleanup runs after each call and on startup. A failed cleanup stops the controller before another provider starts. Worker scopes are bound to the service, so a service stop ends them too. Builds stay in the foreground; saved files and stashes stay in the work folder.
 
 This uses [systemd scope groups](https://github.com/systemd/systemd/blob/main/man/systemd.scope.xml) and [systemd-run](https://github.com/systemd/systemd/blob/main/man/systemd-run.xml). Run `uv run --frozen python artifacts/S0.10/check-scopes.py` for the model-free check of escaped child cleanup and literal input.
