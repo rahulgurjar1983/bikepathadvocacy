@@ -3,7 +3,7 @@ set -euo pipefail
 work="${1:-$(cd "$(dirname "$0")/.." && pwd)}"
 cd "$work"
 work="$(pwd)"
-for tool in git systemctl install flock timeout python3; do
+for tool in git systemctl systemd-run install flock timeout python3; do
   command -v "$tool" >/dev/null
 done
 timeout --kill-after=10 180 git fetch -q origin

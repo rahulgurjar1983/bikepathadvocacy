@@ -50,17 +50,31 @@ reset_secs() {
 }
 
 run_agent() {
-  timeout --kill-after=60 "$RALPH_TURN_SECS" "$@" <&0 &
-  local child=$!
+  local unit="" child result
+  if [ "${RALPH_SCOPED_WORKERS:-0}" = 1 ]; then
+    unit="bikepath-worker-${BASHPID}-${RANDOM}.scope"
+    control_module gates.workers run --unit "$unit" --seconds "$RALPH_TURN_SECS" -- "$@" <&0 &
+  else
+    timeout --kill-after=60 "$RALPH_TURN_SECS" "$@" <&0 &
+  fi
+  child=$!
   while kill -0 "$child" 2>/dev/null; do
     if ! status heartbeat; then
       kill -TERM "$child" 2>/dev/null
       wait "$child"
+      if [ -n "$unit" ]; then
+        control_module gates.workers stop --unit "$unit"
+      fi
       return 2
     fi
     sleep "${RALPH_AGENT_POLL_SECS:-5}"
   done
   wait "$child"
+  result=$?
+  if [ -n "$unit" ]; then
+    control_module gates.workers stop --unit "$unit" || return 2
+  fi
+  return "$result"
 }
 
 usage_fields() {
@@ -248,6 +262,9 @@ main() {
     export RALPH_LOCK_HELD=$$
   fi
   status starting || exit 2
+  if [ "${RALPH_SCOPED_WORKERS:-0}" = 1 ]; then
+    control_module gates.workers clear >>ralph.log 2>&1 || exit 2
+  fi
   if ! command -v "$claude_bin" >/dev/null 2>&1; then
     log "agent '$claude_bin' is not on PATH"
     exit 127

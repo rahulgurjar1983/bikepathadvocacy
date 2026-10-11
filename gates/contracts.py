@@ -10,6 +10,8 @@ FIGURE_TESTS = (
     "test_fr13_2_the_figure_links_hold_the_numbers_and_resolve_to_one_entry",
 )
 REPORT_TESTS = "tests/test_report.py"
+RUN_TESTS = "tests/test_run.py"
+HASH_TEST = "test_fr9_1_the_hash_file_lists_every_file_sorted_by_name"
 
 
 def valid_figure_extension(before, after):
@@ -87,6 +89,21 @@ def main(argv=None):
     parser.add_argument("--base")
     args = parser.parse_args(argv)
     base = args.base or default_base()
+    old_run = file_at(base, RUN_TESTS)
+    new_run = file_at("HEAD", RUN_TESTS)
+    if old_run is not None and new_run is not None:
+        if not valid_files_extension(old_run, new_run):
+            print("contracts: keep all old full-run files and add only public data files")
+            return 1
+        old_hash = next(
+            (n for n in ast.parse(old_run).body if getattr(n, "name", None) == HASH_TEST), None
+        )
+        new_hash = next(
+            (n for n in ast.parse(new_run).body if getattr(n, "name", None) == HASH_TEST), None
+        )
+        if old_hash is not None and (new_hash is None or ast.dump(old_hash) != ast.dump(new_hash)):
+            print("contracts: retain the full-run exact file and byte-hash assertions")
+            return 1
     before = file_at(base, REPORT_TESTS)
     after = file_at("HEAD", REPORT_TESTS)
     if before is None or after is None:
