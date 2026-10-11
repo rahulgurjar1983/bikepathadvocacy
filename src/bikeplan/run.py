@@ -25,6 +25,7 @@ from bikeplan.proposal_inputs import (
     load_proposal_inputs,
     metadata_records,
 )
+from bikeplan.proposal_record import proposal_record
 from bikeplan.propose import KINDS, csv_fields, csv_row, write_propose
 from bikeplan.report import (
     KEEP,
@@ -50,6 +51,7 @@ FILES = [
     "projects.csv",
     "projects.geojson",
     "projects.json",
+    "proposal.json",
     "report.html",
     "summary.json",
 ]
@@ -248,6 +250,12 @@ def build_all(
     )
     frontier_bytes = dump(frontier_data(raw, before, kinds, frontier_shapes))
     frontier = json.loads(frontier_bytes)
+    proposal_bytes = (
+        json.dumps(
+            proposal_record(region, profile, snapshot, frontier, records), sort_keys=True, indent=2
+        )
+        + "\n"
+    ).encode()
     fixes = {item["properties"]["segment_id"]: item["properties"]["fix"] for item in features}
     rows = segment_rows(graph, profile, fixes)
     text = segments_text(rows)
@@ -312,6 +320,7 @@ def build_all(
         "projects.csv": csv_bytes(records, kinds),
         "projects.geojson": dump(shape_layer),
         "projects.json": dump(records),
+        "proposal.json": proposal_bytes,
         "report.html": page_text.encode(),
         "summary.json": dump(summary),
     }
@@ -319,6 +328,7 @@ def build_all(
         "figures.json": (json.dumps(figures, indent=2, sort_keys=True) + "\n").encode(),
         "frontier.json": frontier_bytes,
         "map.json": map_text.encode(),
+        "proposal.json": proposal_bytes,
         "segments.csv": text.encode(),
     }
     return summary, outputs, files, figures
