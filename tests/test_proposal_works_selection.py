@@ -10,7 +10,6 @@ from tests.test_proposal_page_sheets import built as built
 from tests.test_report_change import browser as browser
 from tests.test_report_change import move
 
-
 SUMMARY_KEYS = (
     "unique_roads",
     "distinct_sections",
