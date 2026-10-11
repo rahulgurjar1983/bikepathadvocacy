@@ -1,6 +1,6 @@
 {
   "build_command": "/usr/bin/time -v -o /tmp/q16-page-sheets-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.6-page-sheets",
-  "build_commit": "57fa4d9e6b49a4b947ff8d43a59868773092ca31",
+  "build_commit": "c80f5f258e52dc3235181480c791ea685d8e080d",
   "cases": [
     {
       "element_ids": [],
@@ -30,7 +30,7 @@
   "check_command": "uv run --frozen python artifacts/Q1.6/collect_page_sheets.py",
   "code": {
     "method": "Sorted package paths and bytes, length-prefixed; excludes bytecode caches",
-    "sha256": "59c4b47a8fe680f45e696535706d347fdb1432af7458d84adf1e13ca2f5bb6be",
+    "sha256": "e351f9f9b0952514b4f8cc67a0f4b4a27fc1579420828af182d60ea534580693",
     "version": "0.1.0"
   },
   "input_hashes": {
@@ -67,11 +67,11 @@
     },
     {
       "path": "proposal.json",
-      "sha256": "7f85fbb2de809afdf80a953d931b0073c54cba7c87b6756063485bad4ff452e9"
+      "sha256": "f58c18926d12110c562225f56a78c7f619675ae395aa7924d07f600e225c4fa3"
     },
     {
       "path": "report.html",
-      "sha256": "aceedb5990d8c54017a34416529817f1d1d48e21cc4c07031fd2d44fea751e8f"
+      "sha256": "86ebeabe566105ed8c4ae90ad34b1772f9398961918104aa63d79cdcf302e6fc"
     },
     {
       "path": "summary.json",
