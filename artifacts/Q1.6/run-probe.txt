@@ -1,0 +1,26 @@
+F.                                                                       [100%]
+=================================== FAILURES ===================================
+___________ test_fr9_1_the_hash_file_lists_every_file_sorted_by_name ___________
+
+blocked_out = PosixPath('/tmp/pytest-of-oem/pytest-580/blocked0/out')
+
+    def test_fr9_1_the_hash_file_lists_every_file_sorted_by_name(blocked_out):
+        lines = (blocked_out / "outputs.sha256").read_text().splitlines()
+        names = [line.split("  ")[1] for line in lines]
+>       assert names == sorted(FILES)
+E       AssertionError: assert ['access_home...geojson', ...] == ['access_home...geojson', ...]
+E         
+E         At index 7 diff: 'proposal.json' != 'report.html'
+E         Left contains one more item: 'summary.json'
+E         Use -v to get more diff
+
+tests/test_run.py:101: AssertionError
+---------------------------- Captured stdout setup -----------------------------
+score_before 25.0
+score_after 100.0
+projects 1
+=========================== short test summary info ============================
+FAILED tests/test_run.py::test_fr9_1_the_hash_file_lists_every_file_sorted_by_name
+1 failed, 1 passed in 179.11s (0:02:59)
+Uninstalled 1 package in 0.95ms
+Installed 1 package in 608ms

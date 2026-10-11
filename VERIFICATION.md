@@ -1214,3 +1214,28 @@ bash .ralph/control/scripts/loop-status.sh /home/oem/claude/bikepathadvocacy
 Expect: new cases fail on base and pass on head. The real scope check preserves literal input, places child commands in a worker scope, and removes escaped children on scope or controller stop. The controller has its own small memory budget. Both archive lists retain old entries and full-run byte checks. Revised unshipped feature tests still fail on fresh base. The default concept policy remains conditional and never forces counts. After install the service has a fresh heartbeat and no orphan report build from an earlier turn. All app rows retain their own completion rules and full proof.
 
 Artifact: `artifacts/S0.10/check.txt`, `artifacts/S0.10/scopes.json`
+
+### Q1.6
+
+Check the archive part with the shipped full region settings:
+
+```sh
+uv run --frozen pytest tests/test_proposal_record.py tests/test_report.py tests/test_run.py -q
+/usr/bin/time -v -o /tmp/q16-real-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.6-real
+uv run --frozen python artifacts/Q1.6/collect.py
+```
+
+Expect: Both report commands hash a versioned proposal record. Every
+saved curve package keeps its exact project and element set and full
+precision model totals. The selected record names the shipped stop.
+Works count shared elements once. Costs and school coverage stay unknown
+when their proof is missing. The old shortlist has its own name and set.
+The collector checks each package and all fresh output hashes.
+
+This is the archive part only. Shared view selection, all selectable
+sheets and exports, goal and non-prefix stage packages, and offline
+browser proof remain open. This does not prove field safety, school
+coverage or the full report conversion. The host time file is a run
+record, not proof of the run limits.
+
+Artifact: `artifacts/Q1.6/archive-record.json`, `artifacts/Q1.6/time-full.txt`, `artifacts/Q1.6/record-red.txt`, `artifacts/Q1.6/record-green.txt`.

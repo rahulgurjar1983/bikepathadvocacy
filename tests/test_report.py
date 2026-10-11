@@ -15,7 +15,14 @@ from bikeplan import main
 
 REGION = "tests/fixtures/test-grid/region.yaml"
 COMMITTED = Path("tests/fixtures/test-grid/snapshot")
-FILES = ["figures.json", "frontier.json", "map.json", "report.html", "segments.csv"]
+FILES = [
+    "figures.json",
+    "frontier.json",
+    "map.json",
+    "proposal.json",
+    "report.html",
+    "segments.csv",
+]
 
 
 @pytest.fixture(scope="module")

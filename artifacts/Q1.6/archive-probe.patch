@@ -1,0 +1,10 @@
+diff --git a/src/bikeplan/run.py b/src/bikeplan/run.py
+--- a/src/bikeplan/run.py
++++ b/src/bikeplan/run.py
+@@ -280,5 +280,6 @@ def write_report(region, profile, snapshot: str | Path, out: str | Path) -> list[di
+     _, outputs, files, figures = build_all(region, profile, snapshot)
+     check_leaks(outputs["report.html"].decode(), out, snapshot)
++    files["proposal.json"] = dump({"schema_version": 1, "status": "archive contract probe only"})
+     lines = write_files(Path(out), {**files, "report.html": outputs["report.html"]})
+     (Path(out) / "SHA256SUMS").write_text("".join(lines))
+     return figures

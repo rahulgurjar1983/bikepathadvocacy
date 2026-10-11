@@ -1,0 +1,38 @@
+.F                                                                       [100%]
+=================================== FAILURES ===================================
+___________ test_fr16_1_full_run_archive_hashes_the_proposal_record ____________
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-579/test_fr16_1_full_run_archive_h0')
+
+    def test_fr16_1_full_run_archive_hashes_the_proposal_record(tmp_path):
+        assert (
+            main(
+                [
+                    "run",
+                    "tests/fixtures/test-grid/region.yaml",
+                    "--snapshot",
+                    "tests/fixtures/test-grid/snapshot",
+                    "--out",
+                    str(tmp_path),
+                ]
+            )
+            == 0
+        )
+        record = tmp_path / "proposal.json"
+>       assert record.is_file()
+E       AssertionError: assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('/tmp/pytest-of-oem/pytest-579/test_fr16_1_full_run_archive_h0/proposal.json').is_file
+
+tests/test_q16_run_archive_probe.py:22: AssertionError
+----------------------------- Captured stdout call -----------------------------
+score_before 25.0
+score_after 100.0
+projects 1
+=========================== short test summary info ============================
+FAILED tests/test_q16_run_archive_probe.py::test_fr16_1_full_run_archive_hashes_the_proposal_record
+1 failed, 1 passed in 86.67s (0:01:26)
+   Building bikeplan @ file:///tmp/bikeplan-q16-run-proof-yxv3yucw/main
+      Built bikeplan @ file:///tmp/bikeplan-q16-run-proof-yxv3yucw/main
+Uninstalled 1 package in 1.73s
+Installed 1 package in 1.07s

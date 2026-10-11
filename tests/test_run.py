@@ -22,6 +22,7 @@ FILES = [
     "projects.csv",
     "projects.geojson",
     "projects.json",
+    "proposal.json",
     "report.html",
     "summary.json",
 ]
