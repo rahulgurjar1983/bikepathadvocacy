@@ -1,0 +1,41 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+__ test_fr15_2_selected_plans_have_a_local_link_and_keep_the_number_contract ___
+
+built = PosixPath('/tmp/pytest-of-oem/pytest-692/page-sheets0/out')
+
+    def test_fr15_2_selected_plans_have_a_local_link_and_keep_the_number_contract(built):
+        from tests.test_report import parsed
+    
+        html = (built / "report.html").read_text()
+>       assert 'id="selected-projects"' in html
+E       assert 'id="selected-projects"' in '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial... 2,\n        &quot;scenario&quot;: &quot;heavy&quot;\n      }\n    }\n  ]\n}</pre></details></section></body></html>\n'
+
+tests/test_proposal_page_sheets.py:134: AssertionError
+---------------------------- Captured stdout setup -----------------------------
+F1 10.4 km
+F2 6.0 km
+F3 0.0 km
+F4 24 pieces
+F5 100.0 points
+F6 30.0 points
+F7 0 spaces
+F8 0.0 km
+F9 0.0 km
+F10 1500.0 people
+F11 0 km
+F12 9 steps
+F13 2 projects
+F14 0 roads
+F15 1500.0 people
+F16 0 people
+F17 0 people
+F18 0 people
+F19 1500.0 people
+F20 0 people
+F21 0 people
+F22 0 people
+F23 0 vehicle spaces
+=========================== short test summary info ============================
+FAILED tests/test_proposal_page_sheets.py::test_fr15_2_selected_plans_have_a_local_link_and_keep_the_number_contract
+1 failed in 2.83s

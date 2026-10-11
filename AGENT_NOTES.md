@@ -819,3 +819,27 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   download folder, before opening the report. The same command passed
   in a fresh browser session. The startup error stays in
   `artifacts/Q1.6/exports-browser-start-failed.txt`; no check was waived.
+
+### Q1.6 selected curve page sheets
+
+- Use the saved package's exact project IDs to select sheets from its
+  own curve. Reuse the sheet builder and give each selected sheet's
+  map and cross-sections their own page IDs. Link from street plans to
+  the selected list and sheets in the evidence appendix. Names can hold
+  numbers too; keep the report number-link check intact. The old shortlist stays
+  named as separate evidence. Script-free HTML holds the saved choice.
+- Native HTML and the browser's
+  [hidden field](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/hidden)
+  fit the empty choice note. No new package or page framework is needed.
+- The shipped grid has only one non-baseline pick. The new test input
+  duplicates it into disconnected grids with their own node IDs, places,
+  traffic records and population cells. It keeps the old test bodies,
+  source files and settings intact. The new tests keep both rank checks.
+- `uv run --frozen python artifacts/Q1.6/collect_page_sheets.py` checks
+  the fresh Bayside list and sheets offline against saved package IDs.
+  The worked case checks nonempty plans and print. Goal and stage
+  choices, shared map and totals from the record and full browser proof
+  still need work. Empty real choices do not prove real local works.
+- The first full build was stopped for the appendix fix. Its time file
+  is `artifacts/Q1.6/page-sheets-build-stopped-time.txt`; it is not proof.
+  The fresh build and offline check below use the fixed code.

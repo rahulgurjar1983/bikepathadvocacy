@@ -1,0 +1,126 @@
+Using CPython 3.12.3 interpreter at: /usr/bin/python3.12
+Creating virtual environment at: .venv
+   Building bikeplan @ file:///tmp/q16-page-base
+      Built bikeplan @ file:///tmp/q16-page-base
+Installed 76 packages in 37.21s
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+___ test_fr15_2_selected_list_and_sheets_follow_exact_curve_projects[light] ____
+
+browser = <selenium.webdriver.chrome.webdriver.WebDriver (session="28b3a71d3d754d1ddd641ecf01ccb882")>
+built = PosixPath('/tmp/pytest-of-oem/pytest-690/page-sheets0/out')
+frontier = {'baseline': 25.0, 'default': 'shipped', 'proposal_metadata': {'contents': None, 'reason': 'No proposal inputs supplie...cap_reached': False, 'evaluated_projects': 2, 'id': 'heavy', 'label': 'Parking and lanes count four times', ...}], ...}
+name = 'light'
+
+    @pytest.mark.parametrize("name", ["light", "heavy"])
+    def test_fr15_2_selected_list_and_sheets_follow_exact_curve_projects(
+        browser, built, frontier, name
+    ):
+        record = json.loads((built / "proposal.json").read_text())
+        curve = scenario(frontier, name)
+        assert len(curve["picks"]) >= 3
+        browser.find_element(By.ID, f"scenario-{name}").click()
+        for rank in (0, 1, 2, 0):
+            move(browser, rank)
+            identity = f"{name}:{rank}"
+            section = browser.find_elements(By.ID, "selected-projects")
+>           assert section, "The selected package needs its own list and page sheets"
+E           AssertionError: The selected package needs its own list and page sheets
+E           assert []
+
+tests/test_proposal_page_sheets.py:43: AssertionError
+---------------------------- Captured stdout setup -----------------------------
+F1 10.4 km
+F2 6.0 km
+F3 0.0 km
+F4 24 pieces
+F5 100.0 points
+F6 30.0 points
+F7 0 spaces
+F8 0.0 km
+F9 0.0 km
+F10 1500.0 people
+F11 0 km
+F12 9 steps
+F13 2 projects
+F14 0 roads
+F15 1500.0 people
+F16 0 people
+F17 0 people
+F18 0 people
+F19 1500.0 people
+F20 0 people
+F21 0 people
+F22 0 people
+F23 0 vehicle spaces
+___ test_fr15_2_selected_list_and_sheets_follow_exact_curve_projects[heavy] ____
+
+browser = <selenium.webdriver.chrome.webdriver.WebDriver (session="28b3a71d3d754d1ddd641ecf01ccb882")>
+built = PosixPath('/tmp/pytest-of-oem/pytest-690/page-sheets0/out')
+frontier = {'baseline': 25.0, 'default': 'shipped', 'proposal_metadata': {'contents': None, 'reason': 'No proposal inputs supplie...cap_reached': False, 'evaluated_projects': 2, 'id': 'heavy', 'label': 'Parking and lanes count four times', ...}], ...}
+name = 'heavy'
+
+    @pytest.mark.parametrize("name", ["light", "heavy"])
+    def test_fr15_2_selected_list_and_sheets_follow_exact_curve_projects(
+        browser, built, frontier, name
+    ):
+        record = json.loads((built / "proposal.json").read_text())
+        curve = scenario(frontier, name)
+        assert len(curve["picks"]) >= 3
+        browser.find_element(By.ID, f"scenario-{name}").click()
+        for rank in (0, 1, 2, 0):
+            move(browser, rank)
+            identity = f"{name}:{rank}"
+            section = browser.find_elements(By.ID, "selected-projects")
+>           assert section, "The selected package needs its own list and page sheets"
+E           AssertionError: The selected package needs its own list and page sheets
+E           assert []
+
+tests/test_proposal_page_sheets.py:43: AssertionError
+__ test_fr16_1_page_sheets_keep_own_plans_impacts_unknowns_and_print_identity __
+
+browser = <selenium.webdriver.chrome.webdriver.WebDriver (session="28b3a71d3d754d1ddd641ecf01ccb882")>
+built = PosixPath('/tmp/pytest-of-oem/pytest-690/page-sheets0/out')
+frontier = {'baseline': 25.0, 'default': 'shipped', 'proposal_metadata': {'contents': None, 'reason': 'No proposal inputs supplie...cap_reached': False, 'evaluated_projects': 2, 'id': 'heavy', 'label': 'Parking and lanes count four times', ...}], ...}
+
+    def test_fr16_1_page_sheets_keep_own_plans_impacts_unknowns_and_print_identity(
+        browser, built, frontier
+    ):
+        browser.find_element(By.ID, "scenario-shipped").click()
+        curve = scenario(frontier, "shipped")
+        rank = len(curve["picks"]) - 1
+        move(browser, rank)
+        articles = browser.find_elements(By.CSS_SELECTOR, "#selected-project-sheets article")
+>       assert articles, "Every selectable project needs its scenario's sheet on the page"
+E       AssertionError: Every selectable project needs its scenario's sheet on the page
+E       assert []
+
+tests/test_proposal_page_sheets.py:71: AssertionError
+_____ test_fr16_1_script_free_page_has_selected_sheets_and_named_shortlist _____
+
+built = PosixPath('/tmp/pytest-of-oem/pytest-690/page-sheets0/out')
+
+    def test_fr16_1_script_free_page_has_selected_sheets_and_named_shortlist(built):
+        record = json.loads((built / "proposal.json").read_text())
+        options = webdriver.ChromeOptions()
+        for flag in (
+            "--headless=new",
+            "--no-sandbox",
+            "--proxy-server=http://127.0.0.1:9",
+            "--blink-settings=scriptEnabled=false",
+        ):
+            options.add_argument(flag)
+        with webdriver.Chrome(options=options) as driver:
+            driver.get((built / "report.html").resolve().as_uri())
+            sections = driver.find_elements(By.ID, "selected-projects")
+>           assert sections, "The saved selected package must remain readable without scripts"
+E           AssertionError: The saved selected package must remain readable without scripts
+E           assert []
+
+tests/test_proposal_page_sheets.py:117: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_proposal_page_sheets.py::test_fr15_2_selected_list_and_sheets_follow_exact_curve_projects[light]
+FAILED tests/test_proposal_page_sheets.py::test_fr15_2_selected_list_and_sheets_follow_exact_curve_projects[heavy]
+FAILED tests/test_proposal_page_sheets.py::test_fr16_1_page_sheets_keep_own_plans_impacts_unknowns_and_print_identity
+FAILED tests/test_proposal_page_sheets.py::test_fr16_1_script_free_page_has_selected_sheets_and_named_shortlist
+4 failed in 198.17s (0:03:18)
