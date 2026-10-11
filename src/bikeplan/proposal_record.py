@@ -74,6 +74,28 @@ def package_record(curve, package, region_id):
         "project_ids": sorted(set(package["project_ids"])),
         "element_ids": sorted(set(package["element_ids"])),
         "metrics": metrics,
+        "model_totals": {
+            key: metric(
+                pick[key],
+                unit,
+                scope,
+                source,
+                "Saved full-precision curve aggregate under the labelled access model",
+            )
+            for key, unit in (
+                ("score", "points"),
+                ("disruption", "weighted points"),
+                ("parking_spaces", "vehicle spaces"),
+                ("lane_km", "traffic-lane km"),
+                ("speed_km", "street km"),
+                ("signals", "signals"),
+                ("refuges", "refuges"),
+                ("km_by_fix", "km by treatment"),
+                ("unique_people", "estimated people"),
+                ("unique_people_by_type", "estimated people by place type"),
+                ("gains_by_type", "estimated people counted by place type"),
+            )
+        },
         "outcomes": {
             "strict_complete_trips": len(package["strict"]),
             "continuous_network": package["continuous_network"],

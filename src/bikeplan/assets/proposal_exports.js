@@ -5,7 +5,7 @@ window.addEventListener("package-selected", function (event) {
   const saved = data.packages[key];
   const curve = JSON.parse(document.getElementById("change-data").textContent)
     .scenarios.find(item => item.id === identity.scenario);
-  const payload = { ...data.metadata, selected: saved.record, curve_totals: curve.picks[identity.rank] };
+  const payload = { ...data.metadata, selected: saved.record, curve_totals: { ...curve.picks[identity.rank], ...Object.fromEntries(Object.entries(saved.record.model_totals).map(([name, metric]) => [name, metric.value])) } };
   for (const [kind, text, type] of [
     ["json", JSON.stringify(payload, null, 2) + "\n", "application/json"],
     ["csv", saved.csv, "text/csv"],

@@ -22,7 +22,10 @@ def export_scripts(record, frontier):
     packages = {}
     for package in record["packages"]:
         identity = package["identity"]
-        pick = curves[identity["scenario"]]["picks"][identity["rank"]]
+        pick = {
+            **curves[identity["scenario"]]["picks"][identity["rank"]],
+            **{key: metric["value"] for key, metric in package["model_totals"].items()},
+        }
         payload = {**metadata, "selected": package, "curve_totals": pick}
         stream = io.StringIO(newline="")
         writer = csv.writer(stream)
