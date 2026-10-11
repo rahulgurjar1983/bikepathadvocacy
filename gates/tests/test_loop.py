@@ -978,3 +978,40 @@ def test_fr0_37_scoped_fallback_keeps_stdin_and_cleans_each_provider(loop_repo, 
         for call in launches
     }
     assert all("--property=BindsTo=bikepath-loop.service" in call for call in launches)
+
+
+def test_fr0_37_failed_scope_cleanup_stops_before_any_other_provider(loop_repo, tmp_path):
+    repo, env, state = loop_repo
+    binaries = tmp_path / "bin"
+    binaries.mkdir()
+    manager = binaries / "systemctl"
+    manager.write_text(
+        f"#!{sys.executable}\nimport sys\n"
+        "if 'show' in sys.argv: print('loaded')\n"
+        "if 'stop' in sys.argv: sys.exit(1)\n"
+    )
+    manager.chmod(0o755)
+    launcher = binaries / "systemd-run"
+    launcher.write_text(
+        f"#!{sys.executable}\nimport os, sys\n"
+        "args=sys.argv[sys.argv.index('--')+1:]\nos.execvp(args[0], args)\n"
+    )
+    launcher.chmod(0o755)
+    fallback = binaries / "fallback"
+    fallback.write_text(
+        f"#!{sys.executable}\nimport os\nfrom pathlib import Path\n"
+        "Path(os.environ['FAKE_STATE']+'/unexpected-fallback').touch()\n"
+    )
+    fallback.chmod(0o755)
+    env.update(
+        PATH=f"{binaries}{os.pathsep}{env['PATH']}",
+        RALPH_SCOPED_WORKERS="1",
+        RALPH_FALLBACK_BIN=str(fallback),
+        FAKE_LIMIT_ON="1",
+    )
+    result = run_loop(repo, env, "2")
+    assert result.returncode == 2, result.stdout + result.stderr
+    assert count(state) == 1
+    assert not (state / "unexpected-fallback").exists()
+    assert not (repo.path / ".ralph/stalls.json").exists()
+    assert json.loads((repo.path / ".ralph/status.json").read_text())["phase"] == "worker_retry"

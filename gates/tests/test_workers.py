@@ -47,4 +47,26 @@ def test_fr0_37_cleanup_reaps_scopes_and_fails_on_a_failed_stop(monkeypatch):
     monkeypatch.setattr(workers.subprocess, "run", run)
     with pytest.raises(subprocess.CalledProcessError):
         workers.clear()
-    assert calls[-1] == ["systemctl", "--user", "stop", "bikepath-worker-12-34.scope"]
+    assert calls[-2] == ["systemctl", "--user", "stop", "bikepath-worker-12-34.scope"]
+    assert calls[-1] == [
+        "systemctl",
+        "--user",
+        "show",
+        "bikepath-worker-12-34.scope",
+        "--property=LoadState",
+        "--value",
+    ]
+
+
+def test_fr0_37_scope_collected_during_stop_is_already_clean(monkeypatch):
+    from gates import workers
+
+    shows = iter(("loaded", "not-found"))
+
+    def run(args, **kwargs):
+        if "show" in args:
+            return subprocess.CompletedProcess(args, 0, next(shows))
+        raise subprocess.CalledProcessError(5, args, stderr="unit has already been collected")
+
+    monkeypatch.setattr(workers.subprocess, "run", run)
+    workers.stop("bikepath-worker-12-34.scope")
