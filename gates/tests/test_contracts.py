@@ -48,3 +48,30 @@ def test_fr0_35_archive_contract_adds_files_without_removal():
     assert valid_files_extension(before, after)
     assert not valid_files_extension(before, after.replace('"segments.csv"', '"other.json"'))
     assert not valid_files_extension(before, after.replace('"proposal.json"', '"../private.json"'))
+
+
+@pytest.mark.parametrize("bad", [False, True])
+def test_fr0_35_full_run_archive_checks_all_files_and_keeps_hash_assertions(monkeypatch, bad):
+    from gates import contracts
+
+    report = 'FILES = ["report.html", "figures.json"]\n'
+    run = 'FILES = ["network.geojson", "report.html"]\n' + (
+        "def test_fr9_1_the_hash_file_lists_every_file_sorted_by_name(output):\n"
+        "    assert names(output) == sorted(FILES)\n"
+        "    for name in FILES:\n"
+        "        assert digest(output, name) == saved(output, name)\n"
+    )
+    added = run.replace('"report.html"', '"report.html", "proposal.json"')
+    if bad:
+        added = added.replace("assert digest(output, name) == saved(output, name)", "pass")
+    seen = []
+
+    def file_at(ref, path):
+        seen.append(path)
+        if path == "tests/test_report.py":
+            return report
+        return run if ref == "base" else added
+
+    monkeypatch.setattr(contracts, "file_at", file_at)
+    assert contracts.main(["--base", "base"]) == (1 if bad else 0)
+    assert "tests/test_run.py" in seen

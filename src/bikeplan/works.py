@@ -6,6 +6,7 @@ from collections import defaultdict
 import networkx as nx
 
 from bikeplan.network import inside_length, parking_on_side
+from bikeplan.parking import parking_record, parking_totals
 
 DESIGNS = (
     "protected_cycleway",
@@ -136,6 +137,12 @@ def works_catalog(graph, elements, retained=()):
                 "endpoints": [endpoint(graph, node, None)],
                 "turn_changes": element.get("turn_changes"),
                 "access_changes": element.get("access_changes"),
+                "parking_spaces": parking_record(
+                    element,
+                    element.get(
+                        "parking_evidence", graph.graph.get("parking_evidence", {}).get(name)
+                    ),
+                ),
             }
             continue
         edges = sorted(segments.get(str(element["segment"]), []), key=lambda item: str(item[0]))
@@ -165,6 +172,10 @@ def works_catalog(graph, elements, retained=()):
             "width_source": element.get("width_source"),
             "width_confidence": element.get("width_confidence"),
             **plan(element, data),
+            "parking_spaces": parking_record(
+                element,
+                element.get("parking_evidence", graph.graph.get("parking_evidence", {}).get(name)),
+            ),
         }
     return catalog
 
@@ -220,6 +231,7 @@ def works_package(catalog, selected, retained=(), gaps=()):
                     "element_ids": sorted(group),
                     "length_m": sum(i["length_m"] for i in records),
                     "endpoints": endpoints,
+                    "parking_spaces": parking_totals(catalog, group),
                 }
             )
     retained = {tuple(key) for key in retained}
@@ -232,6 +244,7 @@ def works_package(catalog, selected, retained=(), gaps=()):
     ]
     return {
         "element_ids": selected,
+        "parking_spaces": parking_totals(catalog, selected),
         "sections": sorted(sections, key=lambda item: item["id"]),
         "unique_roads": len({item["road_id"] for item in links}),
         "distinct_sections": len(sections),
@@ -270,7 +283,11 @@ def cells(section, catalog):
         str(round(section["length_m"], 3)),
         item["design"],
         show(item["lanes"]),
-        show(item["parking"]),
+        show(item["parking"])
+        + "; "
+        + show(section["parking_spaces"])
+        + "; "
+        + show({key: catalog[key]["parking_spaces"] for key in section["element_ids"]}),
         show(item["walking"]),
         show(item["turn_changes"]),
         show(item["access_changes"]),
@@ -289,7 +306,7 @@ def crossing_cells(item):
         "0",
         item["fix"],
         "Unknown",
-        "Unknown",
+        json.dumps(item["parking_spaces"], sort_keys=True),
         "Unknown",
         json.dumps(item["turn_changes"]) if item["turn_changes"] is not None else "Unknown",
         json.dumps(item["access_changes"]) if item["access_changes"] is not None else "Unknown",
@@ -318,7 +335,10 @@ def works_section(frontier):
                 "existing_links_retained",
                 "crossing_upgrades",
             )
-        } | {"gap_records": len(record["remaining_gaps"])}
+        } | {
+            "gap_records": len(record["remaining_gaps"]),
+            "parking_spaces": record["parking_spaces"],
+        }
 
     payload = {
         c["id"]: {
@@ -374,7 +394,7 @@ def works_section(frontier):
                 "Metres",
                 "Design",
                 "Lanes before/after",
-                "Parking before/after",
+                "Spaces before, removed, added, after and net",
                 "Walking before/after",
                 "Turns",
                 "Access",
@@ -384,6 +404,10 @@ def works_section(frontier):
         + '</tr></thead><tbody id="works-rows">'
         + table
         + "</tbody></table>"
+        '<p><a href="#F23">Parking spaces removed in the known subset</a>. '
+        "A net gain elsewhere does not hide local loss. Special uses may overlap and do not "
+        "add spaces to the vehicle total. Bike parking stays separate. Missing inventory "
+        "leaves capacity unknown; occupancy and spillover need their own source.</p>"
         "<p>Unknown turns and access effects need a survey. Existing links and gaps "
         "refer to proved trips; empty proof is not a claim of no route gaps. "
         "Full plans and their source limits are in <code>frontier.json</code>.</p></section>"
@@ -398,6 +422,7 @@ def works_figures(frontier, text):
     if not curve.get("trip_packages") or "works" not in curve["trip_packages"][0]:
         return []
     return [
+        parking_figure(curve, text),
         {
             "id": "F14",
             "spec": "spec 16",
@@ -428,5 +453,37 @@ def works_figures(frontier, text):
                 "p=c['trip_packages'][c['recommended_stop'] or 0];"
                 "print(p['works']['unique_roads'])"
             ),
-        }
+        },
     ]
+
+
+def parking_figure(curve, text):
+    works = curve["trip_packages"][curve["recommended_stop"] or 0]["works"]
+    return {
+        "id": "F23",
+        "spec": "spec 16",
+        "label": "Parking spaces removed in the known subset",
+        "value": works["parking_spaces"]["removed"]["known_subtotal"],
+        "unit": "vehicle spaces",
+        "inputs": [{"name": "frontier.json", "sha256": hashlib.sha256(text.encode()).hexdigest()}],
+        "sources": [
+            {
+                "name": "Saved fit estimates or sourced bay inventory",
+                "licence": "See snapshot sources",
+                "request": "Works catalog parking records",
+            }
+        ],
+        "method": (
+            "I sum removed vehicle spaces once per selected physical link with a known loss. "
+            "Unknown locations stay listed; a known subtotal is not complete inventory. "
+            "Local losses remain beside additions and net change."
+        ),
+        "recipe": (
+            "import json;d=json.load(open('frontier.json'));"
+            "c=next(c for c in d['scenarios'] if c['id']==d['default']);"
+            "w=c['trip_packages'][c['recommended_stop'] or 0]['works'];"
+            "print(sum(c['works_catalog'][k]['parking_spaces']['removed'] "
+            "for k in set(w['element_ids']) if "
+            "c['works_catalog'][k]['parking_spaces']['removed'] is not None))"
+        ),
+    }

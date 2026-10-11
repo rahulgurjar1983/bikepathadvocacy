@@ -18,6 +18,13 @@ from bikeplan.config import ConfigError, config_hash
 from bikeplan.fit import segment_fit
 from bikeplan.network import bike_segments, build
 from bikeplan.page import calendar_dates, credits_for, details, page_scripts
+from bikeplan.proposal_inputs import (
+    cost_figures,
+    delivery_section,
+    delivery_text,
+    load_proposal_inputs,
+    metadata_records,
+)
 from bikeplan.propose import KINDS, csv_fields, csv_row, write_propose
 from bikeplan.report import (
     KEEP,
@@ -176,7 +183,10 @@ def csv_bytes(records: list[dict], kinds: list) -> bytes:
     return buffer.getvalue().encode()
 
 
-def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, list[dict]]:
+def build_all(
+    region, profile, snapshot: str | Path, proposal_inputs=None
+) -> tuple[dict, dict, dict, list[dict]]:
+    metadata = load_proposal_inputs(proposal_inputs)
     _, failed = verify_snapshot(snapshot)
     if failed:
         raise SnapshotError("; ".join(failed))
@@ -189,7 +199,7 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
         access = write_access(graph, region, profile, snapshot, base)
         sheets = []
         stats = {"candidates": 0, "corridor_candidates": 0}
-        records = write_propose(graph, region, profile, snapshot, base, sheets, stats)
+        records = write_propose(graph, region, profile, snapshot, base, sheets, stats, metadata)
         places = read_json(base / "places.geojson")["features"]
         homes = read_json(base / "access_homes.geojson")["features"]
         shapes = read_json(base / "projects.geojson")["features"]
@@ -246,12 +256,21 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
     map_payload = map_data(graph, rows, Path(snapshot), payload["project_shapes"])
     map_payload["survey_options"] = surveys
     map_text = json.dumps(map_payload, sort_keys=True) + "\n"
+    priced_figures, cost_links = cost_figures(frontier, frontier_bytes.decode())
     figures = [
+        *priced_figures,
         *figure_list(text, map_text),
         *change_figures(frontier, frontier_bytes.decode()),
         *works_figures(frontier, frontier_bytes.decode()),
     ]
     figures.sort(key=lambda item: int(item["id"][1:]))
+    delivery_body, delivery_script = delivery_section(frontier, cost_links)
+    selected_curve = next(c for c in frontier["scenarios"] if c["id"] == frontier["default"])
+    selected_rank = selected_curve["recommended_stop"] or 0
+    selected_delivery = delivery_text(
+        selected_curve["trip_packages"][selected_rank]["delivery"],
+        cost_links[f"{selected_curve['id']}:{selected_rank}"],
+    )
     works_page = works_section(frontier)
     works_body, _, works_data = works_page.partition("<script")
     page_text = page(
@@ -260,7 +279,8 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
         json.dumps(calendar_dates(map_payload), sort_keys=True) + "\n",
         details(payload["summary"], canon(sheets), profile, payload)
         + trip_section(frontier)
-        + works_body,
+        + works_body
+        + metadata_records(frontier),
         page_scripts(payload),
         change_section(
             frontier,
@@ -269,8 +289,11 @@ def build_all(region, profile, snapshot: str | Path) -> tuple[dict, dict, dict, 
             .replace('<section id="chart">', '<div id="chart">')
             .replace("</section>", "</div>"),
         ),
-        change_scripts(calendar_dates(frontier)) + ("<script" + works_data if works_data else ""),
-        proposal_opening(frontier),
+        change_scripts(calendar_dates(frontier))
+        + ("<script" + works_data if works_data else "")
+        + delivery_script,
+        proposal_opening(frontier, selected_delivery),
+        delivery_body,
     )
     survey_note = "Survey options need site checks. They are kept out of the confirmed picks."
     if summary["shortlist_reason"]:
@@ -310,18 +333,20 @@ def write_files(target: Path, contents: dict) -> list[str]:
     return lines
 
 
-def run_all(region, profile, snapshot: str | Path, out: str | Path) -> dict:
-    summary, outputs, _, _ = build_all(region, profile, snapshot)
+def run_all(region, profile, snapshot: str | Path, out: str | Path, proposal_inputs=None) -> dict:
+    summary, outputs, _, _ = build_all(region, profile, snapshot, proposal_inputs)
     check_leaks(outputs["report.html"].decode(), out, snapshot)
     lines = write_files(Path(out), outputs)
     (Path(out) / "outputs.sha256").write_text("".join(lines))
     return summary
 
 
-def write_report(region, profile, snapshot: str | Path, out: str | Path) -> list[dict]:
+def write_report(
+    region, profile, snapshot: str | Path, out: str | Path, proposal_inputs=None
+) -> list[dict]:
     if region.report.author is None:
         raise ConfigError("report.author is missing: the report needs the name and suburb")
-    _, outputs, files, figures = build_all(region, profile, snapshot)
+    _, outputs, files, figures = build_all(region, profile, snapshot, proposal_inputs)
     check_leaks(outputs["report.html"].decode(), out, snapshot)
     lines = write_files(Path(out), {**files, "report.html": outputs["report.html"]})
     (Path(out) / "SHA256SUMS").write_text("".join(lines))

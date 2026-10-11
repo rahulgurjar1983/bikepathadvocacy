@@ -1,0 +1,394 @@
+FFFFFFFFFFFFFFFFFFFFFFF                                                  [100%]
+=================================== FAILURES ===================================
+________ test_fr16_10_hashes_public_contents_and_rejects_private_paths _________
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_hashes_public_con0')
+
+    def test_fr16_10_hashes_public_contents_and_rejects_private_paths(tmp_path):
+>       from bikeplan.proposal_inputs import load_proposal_inputs, metadata_bytes
+E       ModuleNotFoundError: No module named 'bikeplan.proposal_inputs'
+
+tests/test_proposal_inputs.py:43: ModuleNotFoundError
+_____ test_fr16_10_rejects_personal_records_and_bad_cost_evidence[change0] _____
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_rejects_personal_0')
+change = {'public': False}
+
+    @pytest.mark.parametrize(
+        "change",
+        [
+            {"public": False},
+            {"residents": [{"name": "A person", "address": "Their home"}]},
+            {"owners": [{**SOURCE, "id": "owner", "organization": "person@example.org"}]},
+            {"costs": [cost("bad", ["segment:a"], year=0)]},
+            {"costs": [{**cost("bad", ["segment:a"]), "high": 5}]},
+            {"costs": [{**cost("bad", ["segment:a"]), "source": ""}]},
+        ],
+    )
+    def test_fr16_10_rejects_personal_records_and_bad_cost_evidence(tmp_path, change):
+        with pytest.raises(ConfigError):
+>           load(tmp_path, {**metadata(), **change})
+
+tests/test_proposal_inputs.py:71: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_rejects_personal_0')
+data = {'version': 1, 'public': False}
+
+    def load(tmp_path, data):
+>       from bikeplan.proposal_inputs import load_proposal_inputs
+E       ModuleNotFoundError: No module named 'bikeplan.proposal_inputs'
+
+tests/test_proposal_inputs.py:35: ModuleNotFoundError
+_____ test_fr16_10_rejects_personal_records_and_bad_cost_evidence[change1] _____
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_rejects_personal_1')
+change = {'residents': [{'name': 'A person', 'address': 'Their home'}]}
+
+    @pytest.mark.parametrize(
+        "change",
+        [
+            {"public": False},
+            {"residents": [{"name": "A person", "address": "Their home"}]},
+            {"owners": [{**SOURCE, "id": "owner", "organization": "person@example.org"}]},
+            {"costs": [cost("bad", ["segment:a"], year=0)]},
+            {"costs": [{**cost("bad", ["segment:a"]), "high": 5}]},
+            {"costs": [{**cost("bad", ["segment:a"]), "source": ""}]},
+        ],
+    )
+    def test_fr16_10_rejects_personal_records_and_bad_cost_evidence(tmp_path, change):
+        with pytest.raises(ConfigError):
+>           load(tmp_path, {**metadata(), **change})
+
+tests/test_proposal_inputs.py:71: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_rejects_personal_1')
+data = {'version': 1, 'public': True, 'residents': [{'name': 'A person', 'address': 'Their home'}]}
+
+    def load(tmp_path, data):
+>       from bikeplan.proposal_inputs import load_proposal_inputs
+E       ModuleNotFoundError: No module named 'bikeplan.proposal_inputs'
+
+tests/test_proposal_inputs.py:35: ModuleNotFoundError
+_____ test_fr16_10_rejects_personal_records_and_bad_cost_evidence[change2] _____
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_rejects_personal_2')
+change = {'owners': [{'source': 'https://example.org/public-plan', 'date': '2026-10-01', 'id': 'owner', 'organization': 'person@example.org'}]}
+
+    @pytest.mark.parametrize(
+        "change",
+        [
+            {"public": False},
+            {"residents": [{"name": "A person", "address": "Their home"}]},
+            {"owners": [{**SOURCE, "id": "owner", "organization": "person@example.org"}]},
+            {"costs": [cost("bad", ["segment:a"], year=0)]},
+            {"costs": [{**cost("bad", ["segment:a"]), "high": 5}]},
+            {"costs": [{**cost("bad", ["segment:a"]), "source": ""}]},
+        ],
+    )
+    def test_fr16_10_rejects_personal_records_and_bad_cost_evidence(tmp_path, change):
+        with pytest.raises(ConfigError):
+>           load(tmp_path, {**metadata(), **change})
+
+tests/test_proposal_inputs.py:71: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_rejects_personal_2')
+data = {'version': 1, 'public': True, 'owners': [{'source': 'https://example.org/public-plan', 'date': '2026-10-01', 'id': 'owner', 'organization': 'person@example.org'}]}
+
+    def load(tmp_path, data):
+>       from bikeplan.proposal_inputs import load_proposal_inputs
+E       ModuleNotFoundError: No module named 'bikeplan.proposal_inputs'
+
+tests/test_proposal_inputs.py:35: ModuleNotFoundError
+_____ test_fr16_10_rejects_personal_records_and_bad_cost_evidence[change3] _____
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_rejects_personal_3')
+change = {'costs': [{'source': 'https://example.org/public-plan', 'date': '2026-10-01', 'id': 'bad', 'element_ids': ['segment:a'], ...}]}
+
+    @pytest.mark.parametrize(
+        "change",
+        [
+            {"public": False},
+            {"residents": [{"name": "A person", "address": "Their home"}]},
+            {"owners": [{**SOURCE, "id": "owner", "organization": "person@example.org"}]},
+            {"costs": [cost("bad", ["segment:a"], year=0)]},
+            {"costs": [{**cost("bad", ["segment:a"]), "high": 5}]},
+            {"costs": [{**cost("bad", ["segment:a"]), "source": ""}]},
+        ],
+    )
+    def test_fr16_10_rejects_personal_records_and_bad_cost_evidence(tmp_path, change):
+        with pytest.raises(ConfigError):
+>           load(tmp_path, {**metadata(), **change})
+
+tests/test_proposal_inputs.py:71: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_rejects_personal_3')
+data = {'version': 1, 'public': True, 'costs': [{'source': 'https://example.org/public-plan', 'date': '2026-10-01', 'id': 'bad', 'element_ids': ['segment:a'], ...}]}
+
+    def load(tmp_path, data):
+>       from bikeplan.proposal_inputs import load_proposal_inputs
+E       ModuleNotFoundError: No module named 'bikeplan.proposal_inputs'
+
+tests/test_proposal_inputs.py:35: ModuleNotFoundError
+_____ test_fr16_10_rejects_personal_records_and_bad_cost_evidence[change4] _____
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_rejects_personal_4')
+change = {'costs': [{'source': 'https://example.org/public-plan', 'date': '2026-10-01', 'id': 'bad', 'element_ids': ['segment:a'], ...}]}
+
+    @pytest.mark.parametrize(
+        "change",
+        [
+            {"public": False},
+            {"residents": [{"name": "A person", "address": "Their home"}]},
+            {"owners": [{**SOURCE, "id": "owner", "organization": "person@example.org"}]},
+            {"costs": [cost("bad", ["segment:a"], year=0)]},
+            {"costs": [{**cost("bad", ["segment:a"]), "high": 5}]},
+            {"costs": [{**cost("bad", ["segment:a"]), "source": ""}]},
+        ],
+    )
+    def test_fr16_10_rejects_personal_records_and_bad_cost_evidence(tmp_path, change):
+        with pytest.raises(ConfigError):
+>           load(tmp_path, {**metadata(), **change})
+
+tests/test_proposal_inputs.py:71: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_rejects_personal_4')
+data = {'version': 1, 'public': True, 'costs': [{'source': 'https://example.org/public-plan', 'date': '2026-10-01', 'id': 'bad', 'element_ids': ['segment:a'], ...}]}
+
+    def load(tmp_path, data):
+>       from bikeplan.proposal_inputs import load_proposal_inputs
+E       ModuleNotFoundError: No module named 'bikeplan.proposal_inputs'
+
+tests/test_proposal_inputs.py:35: ModuleNotFoundError
+_____ test_fr16_10_rejects_personal_records_and_bad_cost_evidence[change5] _____
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_rejects_personal_5')
+change = {'costs': [{'source': '', 'date': '2026-10-01', 'id': 'bad', 'element_ids': ['segment:a'], ...}]}
+
+    @pytest.mark.parametrize(
+        "change",
+        [
+            {"public": False},
+            {"residents": [{"name": "A person", "address": "Their home"}]},
+            {"owners": [{**SOURCE, "id": "owner", "organization": "person@example.org"}]},
+            {"costs": [cost("bad", ["segment:a"], year=0)]},
+            {"costs": [{**cost("bad", ["segment:a"]), "high": 5}]},
+            {"costs": [{**cost("bad", ["segment:a"]), "source": ""}]},
+        ],
+    )
+    def test_fr16_10_rejects_personal_records_and_bad_cost_evidence(tmp_path, change):
+        with pytest.raises(ConfigError):
+>           load(tmp_path, {**metadata(), **change})
+
+tests/test_proposal_inputs.py:71: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_rejects_personal_5')
+data = {'version': 1, 'public': True, 'costs': [{'source': '', 'date': '2026-10-01', 'id': 'bad', 'element_ids': ['segment:a'], ...}]}
+
+    def load(tmp_path, data):
+>       from bikeplan.proposal_inputs import load_proposal_inputs
+E       ModuleNotFoundError: No module named 'bikeplan.proposal_inputs'
+
+tests/test_proposal_inputs.py:35: ModuleNotFoundError
+______ test_fr16_10_prices_shared_works_once_and_rates_by_physical_length ______
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_prices_shared_wor0')
+
+    def test_fr16_10_prices_shared_works_once_and_rates_by_physical_length(tmp_path):
+>       from bikeplan.proposal_inputs import delivery_record
+E       ModuleNotFoundError: No module named 'bikeplan.proposal_inputs'
+
+tests/test_proposal_inputs.py:75: ModuleNotFoundError
+_____ test_fr16_10_incompatible_costs_do_not_form_a_budget[USD-2026-total] _____
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_incompatible_cost0')
+currency = 'USD', year = 2026, unit = 'total'
+
+    @pytest.mark.parametrize(
+        "currency,year,unit",
+        [("USD", 2026, "total"), ("AUD", 2025, "total"), ("AUD", 2026, "per_year")],
+    )
+    def test_fr16_10_incompatible_costs_do_not_form_a_budget(tmp_path, currency, year, unit):
+>       from bikeplan.proposal_inputs import delivery_record
+E       ModuleNotFoundError: No module named 'bikeplan.proposal_inputs'
+
+tests/test_proposal_inputs.py:92: ModuleNotFoundError
+_____ test_fr16_10_incompatible_costs_do_not_form_a_budget[AUD-2025-total] _____
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_incompatible_cost1')
+currency = 'AUD', year = 2025, unit = 'total'
+
+    @pytest.mark.parametrize(
+        "currency,year,unit",
+        [("USD", 2026, "total"), ("AUD", 2025, "total"), ("AUD", 2026, "per_year")],
+    )
+    def test_fr16_10_incompatible_costs_do_not_form_a_budget(tmp_path, currency, year, unit):
+>       from bikeplan.proposal_inputs import delivery_record
+E       ModuleNotFoundError: No module named 'bikeplan.proposal_inputs'
+
+tests/test_proposal_inputs.py:92: ModuleNotFoundError
+___ test_fr16_10_incompatible_costs_do_not_form_a_budget[AUD-2026-per_year] ____
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_incompatible_cost2')
+currency = 'AUD', year = 2026, unit = 'per_year'
+
+    @pytest.mark.parametrize(
+        "currency,year,unit",
+        [("USD", 2026, "total"), ("AUD", 2025, "total"), ("AUD", 2026, "per_year")],
+    )
+    def test_fr16_10_incompatible_costs_do_not_form_a_budget(tmp_path, currency, year, unit):
+>       from bikeplan.proposal_inputs import delivery_record
+E       ModuleNotFoundError: No module named 'bikeplan.proposal_inputs'
+
+tests/test_proposal_inputs.py:92: ModuleNotFoundError
+_______ test_fr16_10_partial_cost_and_spending_constraint_stay_unproved ________
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_partial_cost_and_0')
+
+    def test_fr16_10_partial_cost_and_spending_constraint_stay_unproved(tmp_path):
+>       from bikeplan.proposal_inputs import delivery_record
+E       ModuleNotFoundError: No module named 'bikeplan.proposal_inputs'
+
+tests/test_proposal_inputs.py:109: ModuleNotFoundError
+__________ test_fr16_10_rejects_overlapping_scopes_and_bad_references __________
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_rejects_overlappi0')
+
+    def test_fr16_10_rejects_overlapping_scopes_and_bad_references(tmp_path):
+>       from bikeplan.proposal_inputs import validate_references
+E       ModuleNotFoundError: No module named 'bikeplan.proposal_inputs'
+
+tests/test_proposal_inputs.py:130: ModuleNotFoundError
+_____________ test_fr16_10_unfunded_dates_never_become_commitments _____________
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_unfunded_dates_ne0')
+
+    def test_fr16_10_unfunded_dates_never_become_commitments(tmp_path):
+>       from bikeplan.proposal_inputs import delivery_record, validate_references
+E       ModuleNotFoundError: No module named 'bikeplan.proposal_inputs'
+
+tests/test_proposal_inputs.py:159: ModuleNotFoundError
+__________ test_fr15_14_unknown_costs_owner_and_next_ask_are_explicit __________
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr15_14_unknown_costs_own0')
+
+    def test_fr15_14_unknown_costs_owner_and_next_ask_are_explicit(tmp_path):
+>       from bikeplan.proposal_inputs import delivery_record, load_proposal_inputs
+E       ModuleNotFoundError: No module named 'bikeplan.proposal_inputs'
+
+tests/test_proposal_inputs.py:185: ModuleNotFoundError
+_______ test_fr16_10_cli_archives_metadata_offline_for_each_command[run] _______
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_cli_archives_meta0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x788f543f7b00>
+command = 'run'
+
+    @pytest.mark.parametrize("command", ["run", "propose", "report"])
+    def test_fr16_10_cli_archives_metadata_offline_for_each_command(tmp_path, monkeypatch, command):
+>       from bikeplan.proposal_inputs import metadata_bytes
+E       ModuleNotFoundError: No module named 'bikeplan.proposal_inputs'
+
+tests/test_proposal_inputs.py:199: ModuleNotFoundError
+_____ test_fr16_10_cli_archives_metadata_offline_for_each_command[propose] _____
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_cli_archives_meta1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x788f543f6ab0>
+command = 'propose'
+
+    @pytest.mark.parametrize("command", ["run", "propose", "report"])
+    def test_fr16_10_cli_archives_metadata_offline_for_each_command(tmp_path, monkeypatch, command):
+>       from bikeplan.proposal_inputs import metadata_bytes
+E       ModuleNotFoundError: No module named 'bikeplan.proposal_inputs'
+
+tests/test_proposal_inputs.py:199: ModuleNotFoundError
+_____ test_fr16_10_cli_archives_metadata_offline_for_each_command[report] ______
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_cli_archives_meta2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x788f543f74d0>
+command = 'report'
+
+    @pytest.mark.parametrize("command", ["run", "propose", "report"])
+    def test_fr16_10_cli_archives_metadata_offline_for_each_command(tmp_path, monkeypatch, command):
+>       from bikeplan.proposal_inputs import metadata_bytes
+E       ModuleNotFoundError: No module named 'bikeplan.proposal_inputs'
+
+tests/test_proposal_inputs.py:199: ModuleNotFoundError
+_________ test_fr15_14_project_sheets_show_delivery_and_evidence_gaps __________
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr15_14_project_sheets_sh0')
+
+    def test_fr15_14_project_sheets_show_delivery_and_evidence_gaps(tmp_path):
+        from bikeplan.page import sheet
+>       from bikeplan.proposal_inputs import enrich_projects, load_proposal_inputs
+E       ModuleNotFoundError: No module named 'bikeplan.proposal_inputs'
+
+tests/test_proposal_inputs.py:244: ModuleNotFoundError
+_____ test_fr16_10_cost_range_recipes_and_opening_replay_archived_sources ______
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_cost_range_recipe0')
+
+    def test_fr16_10_cost_range_recipes_and_opening_replay_archived_sources(tmp_path):
+        import subprocess
+        import sys
+    
+>       from bikeplan.proposal_inputs import load_proposal_inputs
+E       ModuleNotFoundError: No module named 'bikeplan.proposal_inputs'
+
+tests/test_proposal_inputs.py:275: ModuleNotFoundError
+__ test_fr16_10_supplied_stage_owner_permissions_and_mitigation_are_retained ___
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_supplied_stage_ow0')
+
+    def test_fr16_10_supplied_stage_owner_permissions_and_mitigation_are_retained(tmp_path):
+>       from bikeplan.proposal_inputs import delivery_record, validate_references
+E       ModuleNotFoundError: No module named 'bikeplan.proposal_inputs'
+
+tests/test_proposal_inputs.py:341: ModuleNotFoundError
+_____ test_fr16_10_upkeep_is_annual_and_a_build_request_needs_design_proof _____
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_upkeep_is_annual_0')
+
+    def test_fr16_10_upkeep_is_annual_and_a_build_request_needs_design_proof(tmp_path):
+>       from bikeplan.proposal_inputs import delivery_record
+E       ModuleNotFoundError: No module named 'bikeplan.proposal_inputs'
+
+tests/test_proposal_inputs.py:393: ModuleNotFoundError
+____ test_fr16_10_hash_tamper_area_bounds_and_unproved_funding_are_rejected ____
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-598/test_fr16_10_hash_tamper_area_0')
+
+    def test_fr16_10_hash_tamper_area_bounds_and_unproved_funding_are_rejected(tmp_path):
+>       from bikeplan.proposal_inputs import load_proposal_inputs, validate_references
+E       ModuleNotFoundError: No module named 'bikeplan.proposal_inputs'
+
+tests/test_proposal_inputs.py:417: ModuleNotFoundError
+=========================== short test summary info ============================
+FAILED tests/test_proposal_inputs.py::test_fr16_10_hashes_public_contents_and_rejects_private_paths
+FAILED tests/test_proposal_inputs.py::test_fr16_10_rejects_personal_records_and_bad_cost_evidence[change0]
+FAILED tests/test_proposal_inputs.py::test_fr16_10_rejects_personal_records_and_bad_cost_evidence[change1]
+FAILED tests/test_proposal_inputs.py::test_fr16_10_rejects_personal_records_and_bad_cost_evidence[change2]
+FAILED tests/test_proposal_inputs.py::test_fr16_10_rejects_personal_records_and_bad_cost_evidence[change3]
+FAILED tests/test_proposal_inputs.py::test_fr16_10_rejects_personal_records_and_bad_cost_evidence[change4]
+FAILED tests/test_proposal_inputs.py::test_fr16_10_rejects_personal_records_and_bad_cost_evidence[change5]
+FAILED tests/test_proposal_inputs.py::test_fr16_10_prices_shared_works_once_and_rates_by_physical_length
+FAILED tests/test_proposal_inputs.py::test_fr16_10_incompatible_costs_do_not_form_a_budget[USD-2026-total]
+FAILED tests/test_proposal_inputs.py::test_fr16_10_incompatible_costs_do_not_form_a_budget[AUD-2025-total]
+FAILED tests/test_proposal_inputs.py::test_fr16_10_incompatible_costs_do_not_form_a_budget[AUD-2026-per_year]
+FAILED tests/test_proposal_inputs.py::test_fr16_10_partial_cost_and_spending_constraint_stay_unproved
+FAILED tests/test_proposal_inputs.py::test_fr16_10_rejects_overlapping_scopes_and_bad_references
+FAILED tests/test_proposal_inputs.py::test_fr16_10_unfunded_dates_never_become_commitments
+FAILED tests/test_proposal_inputs.py::test_fr15_14_unknown_costs_owner_and_next_ask_are_explicit
+FAILED tests/test_proposal_inputs.py::test_fr16_10_cli_archives_metadata_offline_for_each_command[run]
+FAILED tests/test_proposal_inputs.py::test_fr16_10_cli_archives_metadata_offline_for_each_command[propose]
+FAILED tests/test_proposal_inputs.py::test_fr16_10_cli_archives_metadata_offline_for_each_command[report]
+FAILED tests/test_proposal_inputs.py::test_fr15_14_project_sheets_show_delivery_and_evidence_gaps
+FAILED tests/test_proposal_inputs.py::test_fr16_10_cost_range_recipes_and_opening_replay_archived_sources
+FAILED tests/test_proposal_inputs.py::test_fr16_10_supplied_stage_owner_permissions_and_mitigation_are_retained
+FAILED tests/test_proposal_inputs.py::test_fr16_10_upkeep_is_annual_and_a_build_request_needs_design_proof
+FAILED tests/test_proposal_inputs.py::test_fr16_10_hash_tamper_area_bounds_and_unproved_funding_are_rejected
+23 failed in 13.71s

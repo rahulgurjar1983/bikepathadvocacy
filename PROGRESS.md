@@ -24,8 +24,8 @@ The approved order is proposal and trade-offs, network map, options, neighbourho
 - [ ] **C1.2** [reasoning] Unique school-site coverage before, after and newly served; named entrances, source coverage and per-site resident reach, with no invented pupil count (FR-16.4)
 - [x] **C1.3** [reasoning] Unique residents gaining useful complete trips; keep scope, first-leg assumptions, population proxies and missing groups explicit (FR-16.5, FR-15.6)
 - [x] **C1.4** [reasoning] Actual route types, unique roads and works sections, named endpoints and precise before/after lane, parking and access changes (FR-16.6)
-- [ ] **C1.5** [reasoning] Parking before, removed, added, after and net by street; expose local losses, special uses and incomplete inventory (FR-16.7)
-- [ ] **Q2.4** [reasoning] Optional sourced proposal inputs, owners, approvals, cost bands, stage and next ask; hash and validate metadata, unknown is never zero or funded (FR-15.14, FR-16.10)
+- [x] **C1.5** [reasoning] Parking before, removed, added, after and net by street; expose local losses, special uses and incomplete inventory (FR-16.7)
+- [x] **Q2.4** [reasoning] Optional sourced proposal inputs, owners, approvals, cost bands, stage and next ask; hash and validate metadata, unknown is never zero or funded (FR-15.14, FR-16.10)
 - [ ] **C1.0** [reasoning] Network concepts with archived assumptions, complete conditional trips, exact work sets and honest local impacts; keep the confirmed shortlist separate and disclose failed goals (FR-16.14, FR-16.1)
 - [ ] **C1.6** [reasoning] Neighbourhood benefits beside impacts; source boundaries, allocate physical works once, union residents and expose unallocated records (FR-16.8)
 - [ ] **C1.7** [reasoning] Baseline, useful first stage, parking-retention option and broader network; test goals, non-prefix stages, dependencies and actual trade-offs (FR-16.9)
@@ -42,6 +42,8 @@ The approved order is proposal and trade-offs, network map, options, neighbourho
 - [ ] **Q1.11** [reasoning] Reuse immutable graph and access work with versioned cache keys; cold and warm output bytes match; fast and full modes have labels (FR-15.16)
 
 ## Phase S: Scaffold (operator)
+
+- [x] **S0.10** Operator: isolate bounded model workers, reap child builds, retain full-run hash checks and clarify unshipped feature tests and useful default concepts (FR-0.37, FR-0.35, FR-0.2)
 
 - [x] **S0.9** Operator: own PR scheduling, stable controller, visible bounded waits, additive report contracts and private release path checks (FR-0.34, FR-0.35, FR-0.36, FR-0.31)
 

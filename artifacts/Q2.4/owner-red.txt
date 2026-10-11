@@ -1,0 +1,34 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_fr16_10_scoped_owners_and_approval_statuses_do_not_claim_whole_package __
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-605/test_fr16_10_scoped_owners_and0')
+
+    def test_fr16_10_scoped_owners_and_approval_statuses_do_not_claim_whole_package(tmp_path):
+        from bikeplan.proposal_inputs import delivery_record, delivery_text
+    
+        data = {
+            **metadata(),
+            "owners": [{**SOURCE, "id": "o", "organization": "Council", "element_ids": ["segment:a"]}],
+            "approvals": [
+                {
+                    **SOURCE,
+                    "id": "permit",
+                    "authority": "Land authority",
+                    "status": "pending",
+                    "element_ids": ["segment:a"],
+                }
+            ],
+        }
+        record = delivery_record(load(tmp_path, data), list(CATALOG), CATALOG)
+        for field in ("owner", "approvals"):
+>           assert record[field]["status"] == "partial"
+E           AssertionError: assert 'sourced' == 'partial'
+E             
+E             - partial
+E             + sourced
+
+tests/test_proposal_inputs.py:506: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_proposal_inputs.py::test_fr16_10_scoped_owners_and_approval_statuses_do_not_claim_whole_package
+1 failed in 158.00s (0:02:37)

@@ -76,6 +76,12 @@ window.addEventListener("load", function () {
         body.appendChild(row);
       }
     }
+    const deliveryData = document.getElementById("delivery-data");
+    if (deliveryData) {
+      const text = JSON.parse(deliveryData.textContent)[current + ":" + step];
+      document.getElementById("delivery-choice").innerHTML = text;
+      document.getElementById("opening-delivery").innerHTML = '<p id="council-ask">I ask council to take the next evidence and design step.</p>' + text;
+    }
     const opening = document.getElementById("opening");
     opening.dataset.package = current + ":" + step;
     const rankLink = document.createElement("a");

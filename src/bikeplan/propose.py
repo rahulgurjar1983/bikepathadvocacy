@@ -29,6 +29,7 @@ from bikeplan.config import Scenario
 from bikeplan.fit import FIXES, fixed_edge, junction_fixes, segment_fit
 from bikeplan.fit import cross_section as fit_cross_section
 from bikeplan.network import bike_segments
+from bikeplan.proposal_inputs import attach_metadata, enrich_projects, load_proposal_inputs
 from bikeplan.stress import edge_aaa, own_lts, raise_for_crossings, score_edges
 from bikeplan.trips import complete_trips, resident_outcomes, snapshot_trip_inputs
 from bikeplan.width import check_links, fuse
@@ -1226,7 +1227,9 @@ def write_propose(
     out: str | Path,
     sheets: list | None = None,
     stats: dict | None = None,
+    proposal_inputs=None,
 ) -> list[dict]:
+    metadata = load_proposal_inputs(proposal_inputs)
     out = Path(out)
     kept, nodes, _, placed, resident, weights = scene(graph, region, snapshot)
     scores = score_edges(graph, profile)
@@ -1304,8 +1307,11 @@ def write_propose(
     surveys = survey_layer(planning)
     if stats is not None:
         stats["survey_options"] = surveys
+    enrich_projects(records, metadata, catalog)
     if sheets is not None:
-        sheets.extend(project_sheet_records(records, planning))
+        built_sheets = project_sheet_records(records, planning)
+        enrich_projects(built_sheets, metadata, catalog)
+        sheets.extend(built_sheets)
     out.mkdir(parents=True, exist_ok=True)
     (out / "survey_options.geojson").write_text(json.dumps(surveys, indent=2) + "\n")
     (out / "projects.json").write_text(json.dumps(records, indent=2) + "\n")
@@ -1367,5 +1373,6 @@ def write_propose(
             "features": [shapes[key] for key in sorted(shapes)],
         },
     }
+    attach_metadata(frontier, metadata)
     (out / "frontier.json").write_text(json.dumps(frontier, indent=2) + "\n")
     return records

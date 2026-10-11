@@ -50,17 +50,37 @@ reset_secs() {
 }
 
 run_agent() {
-  timeout --kill-after=60 "$RALPH_TURN_SECS" "$@" <&0 &
-  local child=$!
+  local unit="" child result
+  if [ "${RALPH_SCOPED_WORKERS:-0}" = 1 ]; then
+    unit="bikepath-worker-${BASHPID}-${RANDOM}.scope"
+    control_module gates.workers run --unit "$unit" --seconds "$RALPH_TURN_SECS" -- "$@" <&0 &
+  else
+    timeout --kill-after=60 "$RALPH_TURN_SECS" "$@" <&0 &
+  fi
+  child=$!
   while kill -0 "$child" 2>/dev/null; do
     if ! status heartbeat; then
       kill -TERM "$child" 2>/dev/null
-      wait "$child"
-      return 2
+      if [ -n "$unit" ]; then
+        control_module gates.workers stop --unit "$unit"
+      fi
+      return 76
     fi
     sleep "${RALPH_AGENT_POLL_SECS:-5}"
   done
   wait "$child"
+  result=$?
+  if [ -n "$unit" ]; then
+    control_module gates.workers stop --unit "$unit" || return 76
+  fi
+  return "$result"
+}
+
+check_worker() {
+  [ "$1" -eq 76 ] || return 0
+  log "worker control failed; stopping for recovery before another provider"
+  status worker_retry --row "$2" --reason "worker cleanup or heartbeat failed; no new provider dispatched" --retry-seconds 120
+  exit 2
 }
 
 usage_fields() {
@@ -248,6 +268,9 @@ main() {
     export RALPH_LOCK_HELD=$$
   fi
   status starting || exit 2
+  if [ "${RALPH_SCOPED_WORKERS:-0}" = 1 ]; then
+    control_module gates.workers clear >>ralph.log 2>&1 || exit 2
+  fi
   if ! command -v "$claude_bin" >/dev/null 2>&1; then
     log "agent '$claude_bin' is not on PATH"
     exit 127
@@ -422,6 +445,7 @@ main() {
       --append-system-prompt "$note" --output-format json --disable-slash-commands \
       --strict-mcp-config --tools "$tools" >"$turn_log" 2>&1 </dev/null
     agent_status=$?
+    check_worker "$agent_status" "$row_id"
     cat "$turn_log" >>ralph.log
     record_attempt "$row_id" claude "$model" "$effort" "$agent_status" "$turn_log" || exit 2
 
@@ -450,6 +474,7 @@ main() {
             --strict-mcp-config --tools "$tools" >"$rung_log" 2>&1 </dev/null
         fi
         agent_status=$?
+        check_worker "$agent_status" "$row_id"
         cat "$rung_log" >>ralph.log
         if [ "$rung" = codex ]; then
           record_attempt "$row_id" "$rung" "$codex_model" "$codex_effort" "$agent_status" "$rung_log" || exit 2

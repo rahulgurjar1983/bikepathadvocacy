@@ -8,6 +8,7 @@ from bikeplan.config import ConfigError, config_hash, load_profile, load_region
 from bikeplan.fit import fit_summary
 from bikeplan.network import build, summarise
 from bikeplan.page import profile_rows
+from bikeplan.proposal_inputs import load_proposal_inputs
 from bikeplan.propose import write_propose
 from bikeplan.review import ClaimError, write_route_figures
 from bikeplan.review_report import write_review
@@ -86,14 +87,17 @@ def build_parser() -> argparse.ArgumentParser:
     propose.add_argument("region", help="Region file")
     propose.add_argument("--snapshot", required=True, help="Snapshot folder")
     propose.add_argument("--out", required=True, help="Output directory")
+    propose.add_argument("--proposal-inputs", help="Public sourced proposal metadata file")
     run = commands.add_parser("run", help=LEAVES["run"], description=LEAVES["run"])
     run.add_argument("region", help="Region file")
     run.add_argument("--snapshot", required=True, help="Snapshot folder")
     run.add_argument("--out", required=True, help="Output directory")
+    run.add_argument("--proposal-inputs", help="Public sourced proposal metadata file")
     report = commands.add_parser("report", help=REPORT_HELP, description=REPORT_HELP)
     report.add_argument("region", help="Region file")
     report.add_argument("--snapshot", required=True, help="Snapshot folder")
     report.add_argument("--out", required=True, help="Output directory")
+    report.add_argument("--proposal-inputs", help="Public sourced proposal metadata file")
     review = commands.add_parser("review", help=REVIEW_HELP, description=REVIEW_HELP)
     review.add_argument("route", help="Route file")
     review.add_argument("--claims", required=True, help="Claims file")
@@ -243,11 +247,19 @@ def access(path: str, snapshot: str, out: str, assumptions: bool = False) -> int
     return 0
 
 
-def propose(path: str, snapshot: str, out: str) -> int:
+def propose(path: str, snapshot: str, out: str, proposal_inputs=None) -> int:
     try:
         region = load_region(path)
         profile = load_profile(region.profile)
-        records = write_propose(build(snapshot, region, profile), region, profile, snapshot, out)
+        metadata = load_proposal_inputs(proposal_inputs)
+        records = write_propose(
+            build(snapshot, region, profile),
+            region,
+            profile,
+            snapshot,
+            out,
+            proposal_inputs=metadata,
+        )
     except (ConfigError, OSError) as error:
         print(error, file=sys.stderr)
         return 1
@@ -257,10 +269,10 @@ def propose(path: str, snapshot: str, out: str) -> int:
     return 0
 
 
-def run(path: str, snapshot: str, out: str) -> int:
+def run(path: str, snapshot: str, out: str, proposal_inputs=None) -> int:
     try:
         region = load_region(path)
-        summary = run_all(region, load_profile(region.profile), snapshot, out)
+        summary = run_all(region, load_profile(region.profile), snapshot, out, proposal_inputs)
     except (ConfigError, OSError) as error:
         print(error, file=sys.stderr)
         return 1
@@ -286,11 +298,11 @@ def verify(directory: str) -> int:
     return 1 if failed else 0
 
 
-def report(path: str, snapshot: str, out: str) -> int:
+def report(path: str, snapshot: str, out: str, proposal_inputs=None) -> int:
     try:
         region = load_region(path)
         profile = load_profile(region.profile)
-        figures = write_report(region, profile, snapshot, out)
+        figures = write_report(region, profile, snapshot, out, proposal_inputs)
     except (ConfigError, OSError) as error:
         print(error, file=sys.stderr)
         return 1
@@ -381,13 +393,13 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "access":
         return access(args.region, args.snapshot, args.out, args.assumptions)
     if args.command == "propose":
-        return propose(args.region, args.snapshot, args.out)
+        return propose(args.region, args.snapshot, args.out, args.proposal_inputs)
     if args.command == "run":
-        return run(args.region, args.snapshot, args.out)
+        return run(args.region, args.snapshot, args.out, args.proposal_inputs)
     if args.command == "verify":
         return verify(args.directory)
     if args.command == "report":
-        return report(args.region, args.snapshot, args.out)
+        return report(args.region, args.snapshot, args.out, args.proposal_inputs)
     if args.command == "review":
         return review(args.route, args.claims, args.region, args.snapshot, args.out, args.reply)
     if args.command == "checks":

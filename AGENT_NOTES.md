@@ -701,3 +701,55 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   Keep its body intact. Fold the exact project and package count records
   below the plain tables, so readers can check or reuse node-share counts
   that the display rounds. Sort record keys to match the saved JSON.
+
+### C1.5
+
+- Parking ledgers use unique bay IDs for each physical link. A bay may
+  have several uses; those counts never add to vehicle capacity. Bike
+  parking is separate. Python keyed records and sets fit this union;
+  no new package is needed. The
+  [TfNSW parking survey](https://www.transport.nsw.gov.au/sites/default/files/media/documents/rww/projects/01documents/alexandria-moore-park/appendix-c.pdf)
+  keeps capacity, restrictions and timed use counts separate.
+- Optional snapshot `parking_evidence.json` keys are element IDs. Each
+  record has source, date, evidence status, before bays, removed IDs and
+  added bays. Bay records have ID and uses. A partial inventory sets
+  `complete` false. Occupancy and spillover need value, source, date and
+  method; capacity alone supplies neither. This row adds no real survey.
+- Keep each section's ledger beside package sums. Unknown inventory
+  leaves before and after null even when a fit loss is known. Unknown
+  crossing effects leave a partial package impact total. Every partial
+  sum lists its known and missing element IDs. The archive keeps raw
+  bay records or fit count inputs for replay. Unselected real model
+  road samples stay apart from the selected package.
+- `uv run --frozen python artifacts/C1.5/collect.py` checks the fresh
+  full-region table and recipe. Its source hashes and limits stay in
+  the manifest. Empty selected works do not prove field inventory.
+- The saved full host run exceeds the time and memory goals. See its
+  time file; this parking proof does not prove performance. The run
+  embeds its figure recipes in the report, with no separate figures
+  file. The collector reads that recipe from the page.
+
+### Q2.4
+
+- Use [JSON Schema](https://json-schema.org/draft/2020-12/json-schema-validation)
+  through jsonschema for public input shapes. It checks fields, dates and
+  units offline. NetworkX checks stage cycles; no new graph tool is needed.
+- Proposal metadata lives in the hashed frontier archive. Each package and
+  sheet has its own delivery record. Empty input keeps costs and owners
+  unknown; an empty work set does not make an unsourced cost zero.
+- Cost scopes use physical element IDs. Reject overlap. Sum only one
+  currency, year and cost kind; keep partial groups and exclusions. A rate
+  uses physical length, not the count of reverse edges or projects.
+- A sourced stage is proposed, with trip outcomes unproved. Dates do not
+  prove funding. A sourced build ask stays in the record while the effective
+  ask seeks survey or concept proof. Later rows own stage and budget choice.
+- `uv run --frozen python artifacts/Q2.4/collect.py` checks a fresh full
+  Bayside output and replays public EW6 planning context offline. The source
+  does not price the package or assign its owners, approvals or funding.
+- Let a red test run finish before editing its code. Imports can start
+  late on a busy host. If that timing spoils the red log, use the saved
+  pre-change source and rerun the case; a passing log cannot prove red.
+
+- Q2.4 sheet repair: put delivery fields before the people table. The
+  whole-number check reads the rest of the sheet after that table. Keep
+  its test intact. The command and pass log are in the row proof.

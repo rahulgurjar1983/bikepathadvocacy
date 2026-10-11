@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "public": true,
+  "goals": [
+    {
+      "id": "ew6-public-planning-context",
+      "description": "Public planning context: compare a route linking Bexley North, Carlton, Banksia and Rockdale stations. This source does not prove any selected work, route, cost or school site.",
+      "source": "https://www.bayside.nsw.gov.au/your-council/latest-news/bayside-investigates-new-active-transport-corridor",
+      "date": "2026-08-31"
+    }
+  ],
+  "next_decision": {
+    "kind": "studies",
+    "ask": "Scope route options, costs and funding questions for a council review after consultation; survey widths and crossing movements before a build decision",
+    "source": "https://www.bayside.nsw.gov.au/your-council/latest-news/bayside-investigates-new-active-transport-corridor",
+    "date": "2026-08-31",
+    "required_evidence": [
+      "Route options and complete return trips",
+      "Usable widths and crossing movements",
+      "Cost ranges, funding sources and a draft time plan"
+    ],
+    "permission_dependencies": [
+      "Consultation and land permission need proof for the selected works"
+    ]
+  }
+}

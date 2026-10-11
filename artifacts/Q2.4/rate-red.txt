@@ -1,0 +1,17 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____ test_fr16_10_length_rates_cannot_price_missing_physical_length_as_zero ____
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-604/test_fr16_10_length_rates_cann0')
+
+    def test_fr16_10_length_rates_cannot_price_missing_physical_length_as_zero(tmp_path):
+        from bikeplan.proposal_inputs import delivery_record
+    
+        supplied = load(tmp_path, {**metadata(), "costs": [cost("rate", ["segment:a"], unit="per_m")]})
+>       with pytest.raises(ConfigError, match="physical length"):
+E       Failed: DID NOT RAISE ConfigError
+
+tests/test_proposal_inputs.py:484: Failed
+=========================== short test summary info ============================
+FAILED tests/test_proposal_inputs.py::test_fr16_10_length_rates_cannot_price_missing_physical_length_as_zero
+1 failed in 18.51s
