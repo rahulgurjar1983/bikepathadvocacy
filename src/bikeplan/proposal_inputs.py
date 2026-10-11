@@ -619,7 +619,7 @@ def delivery_section(frontier, links, proposal):
     body = (
         f'<section id="delivery" data-package="{html.escape(key, quote=True)}">'
         "<h2>Delivery and next decision</h2>"
-        '<p id="delivery-package"><code>' + html.escape(key) + "</code></p>"
+        '<p><a href="#F13"><code id="delivery-package">' + html.escape(key) + "</code></a></p>"
         f'<div id="delivery-choice" data-package="{html.escape(key, quote=True)}">'
         + delivery_text(selected, links[key])
         + "</div>"
