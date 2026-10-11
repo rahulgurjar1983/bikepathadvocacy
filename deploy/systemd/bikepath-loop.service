@@ -8,11 +8,11 @@ StartLimitIntervalSec=0
 Type=simple
 WorkingDirectory=%h/claude/bikepathadvocacy
 ExecStart=/usr/bin/bash %h/claude/bikepathadvocacy/.ralph/control/loop.sh 100000 --yolo
-CPUWeight=20
-IOWeight=20
-Nice=10
-MemoryHigh=40%
-MemoryMax=55%
+CPUWeight=100
+IOWeight=100
+MemoryHigh=256M
+MemoryMax=512M
+MemorySwapMax=0
 Restart=on-failure
 RestartSec=120
 Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
@@ -23,6 +23,7 @@ Environment=RALPH_IDLE_SECS=60
 Environment=RALPH_RETRY_SECS=30
 Environment=RALPH_SYNC_SECS=180
 Environment=RALPH_AGENT_POLL_SECS=5
+Environment=RALPH_SCOPED_WORKERS=1
 Environment=RALPH_FALLBACK_BIN=%h/.local/bin/codex
 Environment=RALPH_MODEL=claude-sonnet-5-5
 Environment=RALPH_REASONING_MODEL=claude-sonnet-5-5

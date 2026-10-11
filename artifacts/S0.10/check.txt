@@ -1,0 +1,16 @@
+S0.10 local proof on 2026-10-11
+Base: 9b4798b (PR124)
+Observed: service used 7.6 GB with MemoryHigh 6.66 GB; 1,755,000 high-pressure events. A 3-hour report child remained after its model turn. Heartbeat was over 50 minutes old.
+Only bikepath-loop.service was stopped; unrelated services were left alone. Saved C1.0 and Q1.4 checkpoints remain.
+Ten new cases fail before the fix: eight initial cases and two added cleanup cases.
+Command: uv run --frozen pytest gates/tests/test_workers.py gates/tests/test_contracts.py gates/tests/test_loop.py -q --tb=short
+Result: 65 passed in 70.33s.
+Added cases: a scope collected during stop is already clean; failed cleanup ends the loop before fallback or another turn. Both fail on the prior head.
+Command: uv run --frozen pytest gates/tests/test_workers.py gates/tests/test_loop.py::test_fr0_37_failed_scope_cleanup_stops_before_any_other_provider gates/tests/test_loop.py::test_fr0_37_scoped_fallback_keeps_stdin_and_cleans_each_provider -q --tb=short
+Result: 8 passed in 39.37s after the cleanup fix.
+The added literal-input assertion fails without --expand-environment=no; it passes after the fix.
+Command: uv run --frozen python artifacts/S0.10/check-scopes.py
+Result: scope stop and controller stop both remove an escaped session child; literal input is retained.
+Command: systemd-analyze --user verify deploy/systemd/bikepath-loop.service
+Result: passed.
+Full tests run in CI. These checks do not complete app rows or assert that the public report has all community features.

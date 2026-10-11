@@ -1,0 +1,17 @@
+{
+  "literal_prompt_preserved": true,
+  "checks": [
+    {
+      "worker": "bikepath-worker-3474178-1.scope",
+      "child_cgroup": "0::/user.slice/user-29999.slice/user@29999.service/app.slice/bikepath-worker-3474178-1.scope",
+      "orphan_removed": true,
+      "method": "scope stop"
+    },
+    {
+      "worker": "bikepath-worker-3474178-2.scope",
+      "child_cgroup": "0::/user.slice/user-29999.slice/user@29999.service/app.slice/bikepath-worker-3474178-2.scope",
+      "orphan_removed": true,
+      "method": "controller stop"
+    }
+  ]
+}

@@ -1201,3 +1201,16 @@ Expect: Both sheet checks pass. Delivery fields precede the people table;
 people counts stay whole and unknown costs stay unknown.
 
 Artifact: `artifacts/Q2.4/sheet-green.txt`.
+
+### S0.10
+
+```bash
+uv run --frozen pytest gates/tests/test_workers.py gates/tests/test_contracts.py gates/tests/test_loop.py -q --tb=short
+uv run --frozen python artifacts/S0.10/check-scopes.py
+systemd-analyze --user verify deploy/systemd/bikepath-loop.service
+bash .ralph/control/scripts/loop-status.sh /home/oem/claude/bikepathadvocacy
+```
+
+Expect: new cases fail on base and pass on head. The real scope check preserves literal input, places child commands in a worker scope, and removes escaped children on scope or controller stop. The controller has its own small memory budget. Both archive lists retain old entries and full-run byte checks. Revised unshipped feature tests still fail on fresh base. The default concept policy remains conditional and never forces counts. After install the service has a fresh heartbeat and no orphan report build from an earlier turn. All app rows retain their own completion rules and full proof.
+
+Artifact: `artifacts/S0.10/check.txt`, `artifacts/S0.10/scopes.json`
