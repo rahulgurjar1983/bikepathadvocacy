@@ -1,0 +1,135 @@
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+_______ test_fr16_1_archives_save_versioned_selected_record_and_unknowns _______
+
+archives = {'run': PosixPath('/tmp/pytest-of-oem/pytest-677/proposal-record0/run'), 'report': PosixPath('/tmp/pytest-of-oem/pytest-677/proposal-record0/report')}
+
+    def test_fr16_1_archives_save_versioned_selected_record_and_unknowns(archives):
+        for command, out in archives.items():
+            path = out / "proposal.json"
+>           assert path.is_file()
+E           AssertionError: assert False
+E            +  where False = is_file()
+E            +    where is_file = PosixPath('/tmp/pytest-of-oem/pytest-677/proposal-record0/run/proposal.json').is_file
+
+tests/test_proposal_record.py:36: AssertionError
+---------------------------- Captured stdout setup -----------------------------
+score_before 25.0
+score_after 100.0
+projects 1
+F1 5.2 km
+F2 3.0 km
+F3 0.0 km
+F4 12 pieces
+F5 100.0 points
+F6 15.0 points
+F7 0 spaces
+F8 0.0 km
+F9 0.0 km
+F10 750.0 people
+F11 0 km
+F12 6 steps
+F13 1 projects
+F14 0 roads
+F15 750.0 people
+F16 0 people
+F17 0 people
+F18 0 people
+F19 750.0 people
+F20 0 people
+F21 0 people
+F22 0 people
+F23 0 vehicle spaces
+______ test_fr15_2_record_keeps_curve_ids_totals_and_old_shortlist_apart _______
+
+archives = {'run': PosixPath('/tmp/pytest-of-oem/pytest-677/proposal-record0/run'), 'report': PosixPath('/tmp/pytest-of-oem/pytest-677/proposal-record0/report')}
+
+    def test_fr15_2_record_keeps_curve_ids_totals_and_old_shortlist_apart(archives):
+        for out in archives.values():
+>           record = json.loads((out / "proposal.json").read_text())
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_proposal_record.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-oem/pytest-677/proposal-record0/run/proposal.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-oem/pytest-677/proposal-record0/run/proposal.json'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+_____________ test_fr13_1_writes_every_file_and_sha256sums_matches _____________
+
+output = PosixPath('/tmp/pytest-of-oem/pytest-677/out0')
+
+    def test_fr13_1_writes_every_file_and_sha256sums_matches(output):
+        for name in [*FILES, "SHA256SUMS"]:
+>           assert (output / name).is_file()
+E           AssertionError: assert False
+E            +  where False = is_file()
+E            +    where is_file = (PosixPath('/tmp/pytest-of-oem/pytest-677/out0') / 'proposal.json').is_file
+
+tests/test_report.py:51: AssertionError
+---------------------------- Captured stdout setup -----------------------------
+F1 5.2 km
+F2 3.0 km
+F3 0.0 km
+F4 12 pieces
+F5 100.0 points
+F6 15.0 points
+F7 0 spaces
+F8 0.0 km
+F9 0.0 km
+F10 750.0 people
+F11 0 km
+F12 6 steps
+F13 1 projects
+F14 0 roads
+F15 750.0 people
+F16 0 people
+F17 0 people
+F18 0 people
+F19 750.0 people
+F20 0 people
+F21 0 people
+F22 0 people
+F23 0 vehicle spaces
+___________ test_fr9_1_the_hash_file_lists_every_file_sorted_by_name ___________
+
+blocked_out = PosixPath('/tmp/pytest-of-oem/pytest-677/blocked0/out')
+
+    def test_fr9_1_the_hash_file_lists_every_file_sorted_by_name(blocked_out):
+        lines = (blocked_out / "outputs.sha256").read_text().splitlines()
+        names = [line.split("  ")[1] for line in lines]
+>       assert names == sorted(FILES)
+E       AssertionError: assert ['access_home...geojson', ...] == ['access_home...geojson', ...]
+E         
+E         At index 7 diff: 'report.html' != 'proposal.json'
+E         Right contains one more item: 'summary.json'
+E         Use -v to get more diff
+
+tests/test_run.py:102: AssertionError
+---------------------------- Captured stdout setup -----------------------------
+score_before 25.0
+score_after 100.0
+projects 1
+=========================== short test summary info ============================
+FAILED tests/test_proposal_record.py::test_fr16_1_archives_save_versioned_selected_record_and_unknowns
+FAILED tests/test_proposal_record.py::test_fr15_2_record_keeps_curve_ids_totals_and_old_shortlist_apart
+FAILED tests/test_report.py::test_fr13_1_writes_every_file_and_sha256sums_matches
+FAILED tests/test_run.py::test_fr9_1_the_hash_file_lists_every_file_sorted_by_name
+4 failed in 14.51s

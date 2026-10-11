@@ -44,7 +44,10 @@ rule to amend this old archive contract. Do not omit the new file from
 hash checks to keep the old list green. Q1.6 stays open. No product
 code, old test or input was changed by this turn.
 
-### Q1.6 full run archive contract
+### Q1.6 full run archive contract (resolved)
+
+FR-0.35 now permits growth in both file lists. The proof below records
+the prior block, not a current input ask.
 
 The full run also writes a report. FR-16.1 needs its saved proposal
 record. The exact hash list in
@@ -753,3 +756,26 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 - Q2.4 sheet repair: put delivery fields before the people table. The
   whole-number check reads the rest of the sheet after that table. Keep
   its test intact. The command and pass log are in the row proof.
+
+### Q1.6 archive part
+
+- Both legacy file-list blocks above are resolved by FR-0.35. Keep
+  the full run hash and byte checks intact; add the record to both
+  file lists in the tests and to the run writer's file list.
+- Use Python's [JSON writer](https://docs.python.org/3/library/json.html)
+  with sorted keys. It fits the existing archive format; no new
+  package is needed. Keep curve metrics at full precision rather
+  than passing the record through the display rounding helper.
+- The record names the selected curve and the old minimum-gain
+  shortlist apart. Its pending list is part of the partial contract.
+  Shared view selection, all selectable sheets and exports, goal/stage
+  packages and browser proof still need work before this row is done.
+- Keep full route witnesses and node membership in frontier.json.
+  The record points to each scenario and rank and saves outcome
+  summaries, works, costs and gaps. It does not claim field safety.
+- `uv run --frozen python artifacts/Q1.6/collect.py` checks the fresh
+  real archive against every curve package and its hash list. The
+  saved record includes the build commit and code digest. The code
+  digest covers sorted package paths and bytes, with length framing,
+  and excludes bytecode caches. Input hashes cover the resolved region
+  and profile and optional public metadata.
