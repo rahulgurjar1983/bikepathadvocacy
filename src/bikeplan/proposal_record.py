@@ -111,6 +111,10 @@ def package_record(curve, package, region_id):
         "stages": delivery["stages"],
         "stage_status": delivery["stage_status"],
         "costs": delivery["costs"],
+        "budget": delivery["budget"],
+        "owner": delivery["owner"],
+        "approvals": delivery["approvals"],
+        "funding": delivery["funding"],
         "decision": delivery["decision"],
         "evidence": source,
         "evidence_limits": {
