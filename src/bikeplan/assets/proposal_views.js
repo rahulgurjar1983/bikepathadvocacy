@@ -1,3 +1,4 @@
+for (const link of document.querySelectorAll("[data-selected-check-link]")) link.href = link.dataset.selectedCheckLink;
 window.addEventListener("package-selected", function (event) {
   const identity = event.detail;
   const key = identity.scenario + ":" + identity.rank;
@@ -12,5 +13,5 @@ window.addEventListener("package-selected", function (event) {
   const sheets = document.getElementById("selected-project-sheets");
   sheets.innerHTML = projects.map(p => p.sheet).join("");
   for (const article of sheets.querySelectorAll("article")) article.dataset.package = key;
-  for (const link of sheets.querySelectorAll("[data-check-link]")) link.href = link.dataset.checkLink;
+  for (const link of sheets.querySelectorAll("[data-selected-check-link]")) link.href = link.dataset.selectedCheckLink;
 });

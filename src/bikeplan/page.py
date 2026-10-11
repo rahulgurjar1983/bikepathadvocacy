@@ -274,9 +274,9 @@ def check_links(element: dict, selected: bool = False) -> str:
     mapillary = html.escape(links["mapillary"], quote=True)
     return (
         '<p class="check-links">Check location: '
-        f'<a href="{street_view if selected else "#"}" {marker}="{street_view}">'
+        f'<a href="#" {marker}="{street_view}">'
         "Street View</a> · "
-        f'<a href="{mapillary if selected else "#"}" {marker}="{mapillary}">'
+        f'<a href="#" {marker}="{mapillary}">'
         "Mapillary</a></p>"
     )
 
