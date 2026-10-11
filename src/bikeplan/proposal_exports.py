@@ -1,4 +1,6 @@
+import base64
 import csv
+import gzip
 import io
 import json
 
@@ -31,9 +33,12 @@ def export_scripts(record, frontier):
         writer = csv.writer(stream)
         writer.writerow(("field", "value_json"))
         writer.writerows(csv_rows(payload))
+        compressed = io.BytesIO()
+        with gzip.GzipFile(fileobj=compressed, mode="wb", mtime=0) as archive:
+            archive.write(stream.getvalue().encode())
         packages[f"{identity['scenario']}:{identity['rank']}"] = {
             "record": package,
-            "csv": stream.getvalue(),
+            "csv_gzip": base64.b64encode(compressed.getvalue()).decode("ascii"),
         }
     data = json.dumps(
         {"metadata": metadata, "packages": packages}, sort_keys=True, separators=(",", ":")
