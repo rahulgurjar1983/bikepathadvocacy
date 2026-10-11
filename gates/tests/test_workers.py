@@ -8,6 +8,7 @@ def test_fr0_37_worker_is_bounded_and_bound_to_its_controller():
 
     args = command("bikepath-worker-12-34.scope", 120, ["agent", "-p", "$HOME stays literal"])
     assert args[:3] == ["systemd-run", "--user", "--scope"]
+    assert "--expand-environment=no" in args
     assert "--description=Bikepath model worker" in args
     assert "--property=BindsTo=bikepath-loop.service" in args
     assert "--property=After=bikepath-loop.service" in args
