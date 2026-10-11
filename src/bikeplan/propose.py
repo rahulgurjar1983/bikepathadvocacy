@@ -1165,6 +1165,7 @@ def scenario_curve(
         package["works"] = works_package(catalog, package["element_ids"], retained, package["gaps"])
     return {
         "works_catalog": catalog,
+        "project_sheets": project_sheet_records(project_records(picked, planning), planning),
         "shapes": shapes,
         "id": scenario.id,
         "label": scenario.label,

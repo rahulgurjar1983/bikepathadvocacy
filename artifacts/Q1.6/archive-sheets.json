@@ -1,0 +1,77 @@
+{
+  "build_command": "/usr/bin/time -v -o /tmp/q16-sheets-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.6-sheets",
+  "build_commit": "4f7fbf251a332d6740a92c0dec0cba02d4878ef2",
+  "check_command": "uv run --frozen python artifacts/Q1.6/collect_sheets.py",
+  "code": {
+    "method": "Sorted package paths and bytes, length-prefixed; excludes bytecode caches",
+    "sha256": "e9e7d6ffa41975eaa8820c8a4cb4d52bda361b3f55a06276751a76a1e7ae95ce",
+    "version": "0.1.0"
+  },
+  "counts": [
+    {
+      "packages": 1,
+      "scenario": "light",
+      "sheets": 0
+    },
+    {
+      "packages": 1,
+      "scenario": "shipped",
+      "sheets": 0
+    },
+    {
+      "packages": 1,
+      "scenario": "heavy",
+      "sheets": 0
+    }
+  ],
+  "input_hashes": {
+    "region_and_profile": "6b7cd7698f58145f6669419dd0e4fba0cd4378fab2e1430a32df0a772127b665"
+  },
+  "outputs": [
+    {
+      "path": "access_homes.geojson",
+      "sha256": "64e5ee7d19083b024fdadaba43c37caa6ca5f72a1ce0ef2cf4123d7c914752ff"
+    },
+    {
+      "path": "frontier.json",
+      "sha256": "cfcfc958051333790e5075c0204dc0e61bfe77ee54999e1ec3bcea24853bf0f2"
+    },
+    {
+      "path": "network.geojson",
+      "sha256": "956f6c9c40e9364bb9984f41f7b5294e28a4a3120d7b61af815011f4bd61ca6f"
+    },
+    {
+      "path": "places.geojson",
+      "sha256": "b275748f27eb07121541c246e22a64058d21b81e39bff4d3d823ccffeaa23803"
+    },
+    {
+      "path": "projects.csv",
+      "sha256": "6e49858dbb626819ba2f361646d9efcd37d6d9558126c14ac8bbf026dfa59c40"
+    },
+    {
+      "path": "projects.geojson",
+      "sha256": "e4914e1531bd5ca936715cf6e777265c7039ec62846f7388269bca0bc2fc0977"
+    },
+    {
+      "path": "projects.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "proposal.json",
+      "sha256": "b87249c6dcebdc2cddf98a00a8c05e1248546c09d55b55e2624a86d6fae16136"
+    },
+    {
+      "path": "report.html",
+      "sha256": "b19f2c671278d565b8926ea979ce12489ca9dd8669c405609e04ddb488d976c5"
+    },
+    {
+      "path": "summary.json",
+      "sha256": "7b05483eb6e7875cdb105e8cdffa152515ac349be69950637dd592b42f1521d9"
+    }
+  ],
+  "scope": "Archive sheet records only; shared page selection, exports and goal/stage packages remain open",
+  "snapshot": {
+    "id": "2026-10-01",
+    "sha256": "2eaf0b00832565765c42e07b48ad7c6117436194487f45931e348f6772964bba"
+  }
+}

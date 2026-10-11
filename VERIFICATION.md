@@ -1239,3 +1239,29 @@ coverage or the full report conversion. The host time file is a run
 record, not proof of the run limits.
 
 Artifact: `artifacts/Q1.6/archive-record.json`, `artifacts/Q1.6/time-full.txt`, `artifacts/Q1.6/record-red.txt`, `artifacts/Q1.6/record-green.txt`.
+
+### Q1.6 curve sheet records
+
+Check the new archive sheet part with shipped settings:
+
+```sh
+uv run --frozen pytest tests/test_proposal_sheets.py -q
+/usr/bin/time -v -o /tmp/q16-sheets-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.6-sheets
+uv run --frozen python artifacts/Q1.6/collect_sheets.py
+```
+
+Expect: Each curve saves a full sheet record for each pick, including
+cross-sections, width proof, project totals and sourced delivery fields
+or honest unknowns. The proposal archive keeps sheets by scenario. Each
+package's rank joins to the exact project and element sets of its sheets.
+The worked case proves that a sheet keeps its own impact rather than the
+whole package total. The fresh real run keeps empty curves honest. All
+output hashes match. Sheet records stay out of the page's embedded curve
+data to keep the page size down.
+
+This part does not prove shared page selection, selectable page sheets,
+exports or goal and stage packages. Those and offline browser proof
+remain open. Empty works do not prove field fit. The host time file does
+not prove the run limits.
+
+Artifact: `artifacts/Q1.6/archive-sheets.json`, `artifacts/Q1.6/sheets-time-full.txt`, `artifacts/Q1.6/sheets-red.txt`, `artifacts/Q1.6/sheets-green.txt`.
