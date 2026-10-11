@@ -43,6 +43,8 @@ The approved order is proposal and trade-offs, network map, options, neighbourho
 
 ## Phase S: Scaffold (operator)
 
+- [x] **S0.10** Operator: isolate bounded model workers, reap child builds, retain full-run hash checks and clarify unshipped feature tests and useful default concepts (FR-0.37, FR-0.35, FR-0.2)
+
 - [x] **S0.9** Operator: own PR scheduling, stable controller, visible bounded waits, additive report contracts and private release path checks (FR-0.34, FR-0.35, FR-0.36, FR-0.31)
 
 - [x] **S0.8** Operator: save unfinished loop work before main sync and restore the same branch without lost files or index state (FR-0.33)

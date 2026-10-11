@@ -77,6 +77,8 @@ Use existing tools: pytest and its markers for checks, OSMnx and SciPy for the g
 
 ### Additive report contracts
 
-For Q1.5, Q1.6 and the community rows, follow FR-0.35. The two named tests may require more figure IDs. The FILES list may require new public data files, such as `proposal.json`. Keep the old values and all checks of fields, recipes, hashes and links. Each changed test function and each new feature case must fail on base. An unknown value is not a numeric figure.
+For Q1.5, Q1.6 and the community rows, follow FR-0.35. The two named tests may require more figure IDs. The FILES lists in `tests/test_report.py` and `tests/test_run.py` may require new public data files, such as `proposal.json`. Keep the full-run sorted file list and byte-hash test body intact. Keep the old values and all checks of fields, recipes, hashes and links. Each changed test function and each new feature case must fail on base. An unknown value is not a numeric figure.
 
 For Q1.4, keep the old access score as a model measure when a worked test gives only model AAA flags. Give it that label. Add separate confirmed trip results from known evidence. An old model flag is not proof. Do not use the model score to claim child safety, complete confirmed trips or known signal phases. This keeps the old score calculation and adds strict checks for new claims.
+
+For C1.2, the saved new map compaction case now passes on main after other report repairs. It is not a shipped old case. Follow spec 00: retain its compact-data equality and size checks, and strengthen it with an actual unmet school-report requirement. Prove that revised case fails on fresh main. No base-pass exemption, dropped check or invented product change is allowed.
