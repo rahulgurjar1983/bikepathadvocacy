@@ -1265,3 +1265,28 @@ remain open. Empty works do not prove field fit. The host time file does
 not prove the run limits.
 
 Artifact: `artifacts/Q1.6/archive-sheets.json`, `artifacts/Q1.6/sheets-time-full.txt`, `artifacts/Q1.6/sheets-red.txt`, `artifacts/Q1.6/sheets-green.txt`.
+
+
+### Q1.6 offline curve exports
+
+Command:
+
+```sh
+uv run --frozen pytest -q tests/test_proposal_exports.py
+/usr/bin/time -v -o /tmp/q16-exports-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.6-exports
+uv run --frozen python artifacts/Q1.6/collect_exports.py
+```
+
+Expect: Offline browser downloads match the archive package and curve
+step. JSON keeps the full record and code, input and snapshot hashes.
+CSV uses dot paths with JSON values; nulls keep their reasons. Scenario
+and rank switches change both downloads. The worked case covers a
+nonempty rank and a return to baseline. The real run checks every saved
+curve at its baseline, stop and last rank. All output hashes match.
+The real empty confirmed curves prove honest unknowns, not works or
+field safety. The saved time file does not prove the run limits.
+
+Scope: This part adds exports. The shared list, selected page sheets,
+goal and stage packages, and full browser cases remain open.
+
+Artifact: `artifacts/Q1.6/archive-exports.json`, `artifacts/Q1.6/exports-browser.png`, `artifacts/Q1.6/exports-time-full.txt`, `artifacts/Q1.6/exports-red.txt`, `artifacts/Q1.6/exports-green.txt`.

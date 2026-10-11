@@ -471,6 +471,12 @@ def change_section(frontier: dict, by_id: dict, inventory: str = "") -> str:
         f'value="{stop}" step="1" disabled> <output id="change-step"></output></p>'
         '<table id="change-totals"><caption>Totals for the projects picked so far</caption>'
         f"{total_rows(frontier, pick)}</table>"
+        '<p id="package-export-status" role="status">'
+        "Turn on scripts to export the selected package.</p>"
+        '<p><a id="package-export-json">Save selected package as JSON</a> '
+        '<a id="package-export-csv">Save selected package as CSV</a></p>'
+        "<p>CSV fields use dot paths; each value is JSON. Missing values stay null with reasons. "
+        "The old minimum-gain shortlist stays in the archive, apart from these exports.</p>"
         '<details id="curve-table"><summary>Full curve tables and street evidence</summary>'
         f"{inventory}{chart_section(frontier)}</details></section>"
     )

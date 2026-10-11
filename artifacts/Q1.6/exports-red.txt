@@ -1,0 +1,144 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+_____ test_fr15_2_offline_exports_follow_baseline_and_selected_rank[light] _____
+
+browser = <selenium.webdriver.chrome.webdriver.WebDriver (session="a2d7de9dc62b560caf394dbb7b26c178")>
+built = PosixPath('/tmp/pytest-of-oem/pytest-685/change-out0')
+frontier = {'baseline': 25.0, 'default': 'shipped', 'proposal_metadata': {'contents': None, 'reason': 'No proposal inputs supplie...cap_reached': False, 'evaluated_projects': 1, 'id': 'heavy', 'label': 'Parking and lanes count four times', ...}], ...}
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-685/test_fr15_2_offline_exports_fo0')
+name = 'light'
+
+    @pytest.mark.parametrize("name", ["light", "heavy"])
+    def test_fr15_2_offline_exports_follow_baseline_and_selected_rank(
+        browser, built, frontier, tmp_path, name
+    ):
+        archive = json.loads((built / "proposal.json").read_text())
+        chosen = scenario(frontier, name)
+        assert len(chosen["picks"]) >= 2
+        browser.find_element(By.ID, f"scenario-{name}").click()
+        for rank in (0, 1, 0):
+            move(browser, rank)
+            identity = {"scenario": name, "rank": rank}
+>           exported = json.loads(download(browser, tmp_path, "json", identity))
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_proposal_exports.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+browser = <selenium.webdriver.chrome.webdriver.WebDriver (session="a2d7de9dc62b560caf394dbb7b26c178")>
+folder = PosixPath('/tmp/pytest-of-oem/pytest-685/test_fr15_2_offline_exports_fo0')
+kind = 'json', identity = {'scenario': 'light', 'rank': 0}
+
+    def download(browser, folder, kind, identity):
+        browser.execute_cdp_cmd(
+            "Browser.setDownloadBehavior", {"behavior": "allow", "downloadPath": str(folder)}
+        )
+        links = browser.find_elements(By.ID, f"package-export-{kind}")
+>       assert links, f"The selected package needs an offline {kind} export"
+E       AssertionError: The selected package needs an offline json export
+E       assert []
+
+tests/test_proposal_exports.py:31: AssertionError
+---------------------------- Captured stdout setup -----------------------------
+F1 5.2 km
+F2 3.0 km
+F3 0.0 km
+F4 12 pieces
+F5 100.0 points
+F6 15.0 points
+F7 0 spaces
+F8 0.0 km
+F9 0.0 km
+F10 750.0 people
+F11 0 km
+F12 6 steps
+F13 1 projects
+F14 0 roads
+F15 750.0 people
+F16 0 people
+F17 0 people
+F18 0 people
+F19 750.0 people
+F20 0 people
+F21 0 people
+F22 0 people
+F23 0 vehicle spaces
+_____ test_fr15_2_offline_exports_follow_baseline_and_selected_rank[heavy] _____
+
+browser = <selenium.webdriver.chrome.webdriver.WebDriver (session="a2d7de9dc62b560caf394dbb7b26c178")>
+built = PosixPath('/tmp/pytest-of-oem/pytest-685/change-out0')
+frontier = {'baseline': 25.0, 'default': 'shipped', 'proposal_metadata': {'contents': None, 'reason': 'No proposal inputs supplie...cap_reached': False, 'evaluated_projects': 1, 'id': 'heavy', 'label': 'Parking and lanes count four times', ...}], ...}
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-685/test_fr15_2_offline_exports_fo1')
+name = 'heavy'
+
+    @pytest.mark.parametrize("name", ["light", "heavy"])
+    def test_fr15_2_offline_exports_follow_baseline_and_selected_rank(
+        browser, built, frontier, tmp_path, name
+    ):
+        archive = json.loads((built / "proposal.json").read_text())
+        chosen = scenario(frontier, name)
+        assert len(chosen["picks"]) >= 2
+        browser.find_element(By.ID, f"scenario-{name}").click()
+        for rank in (0, 1, 0):
+            move(browser, rank)
+            identity = {"scenario": name, "rank": rank}
+>           exported = json.loads(download(browser, tmp_path, "json", identity))
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_proposal_exports.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+browser = <selenium.webdriver.chrome.webdriver.WebDriver (session="a2d7de9dc62b560caf394dbb7b26c178")>
+folder = PosixPath('/tmp/pytest-of-oem/pytest-685/test_fr15_2_offline_exports_fo1')
+kind = 'json', identity = {'scenario': 'heavy', 'rank': 0}
+
+    def download(browser, folder, kind, identity):
+        browser.execute_cdp_cmd(
+            "Browser.setDownloadBehavior", {"behavior": "allow", "downloadPath": str(folder)}
+        )
+        links = browser.find_elements(By.ID, f"package-export-{kind}")
+>       assert links, f"The selected package needs an offline {kind} export"
+E       AssertionError: The selected package needs an offline json export
+E       assert []
+
+tests/test_proposal_exports.py:31: AssertionError
+_____ test_fr16_1_csv_and_json_keep_provenance_full_precision_and_unknowns _____
+
+browser = <selenium.webdriver.chrome.webdriver.WebDriver (session="a2d7de9dc62b560caf394dbb7b26c178")>
+built = PosixPath('/tmp/pytest-of-oem/pytest-685/change-out0')
+frontier = {'baseline': 25.0, 'default': 'shipped', 'proposal_metadata': {'contents': None, 'reason': 'No proposal inputs supplie...cap_reached': False, 'evaluated_projects': 1, 'id': 'heavy', 'label': 'Parking and lanes count four times', ...}], ...}
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-685/test_fr16_1_csv_and_json_keep_0')
+
+    def test_fr16_1_csv_and_json_keep_provenance_full_precision_and_unknowns(
+        browser, built, frontier, tmp_path
+    ):
+        archive = json.loads((built / "proposal.json").read_text())
+        browser.find_element(By.ID, "scenario-shipped").click()
+        rank = len(scenario(frontier, "shipped")["picks"]) - 1
+        move(browser, rank)
+        identity = {"scenario": "shipped", "rank": rank}
+>       exported = json.loads(download(browser, tmp_path, "json", identity))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_proposal_exports.py:79: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+browser = <selenium.webdriver.chrome.webdriver.WebDriver (session="a2d7de9dc62b560caf394dbb7b26c178")>
+folder = PosixPath('/tmp/pytest-of-oem/pytest-685/test_fr16_1_csv_and_json_keep_0')
+kind = 'json', identity = {'scenario': 'shipped', 'rank': 1}
+
+    def download(browser, folder, kind, identity):
+        browser.execute_cdp_cmd(
+            "Browser.setDownloadBehavior", {"behavior": "allow", "downloadPath": str(folder)}
+        )
+        links = browser.find_elements(By.ID, f"package-export-{kind}")
+>       assert links, f"The selected package needs an offline {kind} export"
+E       AssertionError: The selected package needs an offline json export
+E       assert []
+
+tests/test_proposal_exports.py:31: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_proposal_exports.py::test_fr15_2_offline_exports_follow_baseline_and_selected_rank[light]
+FAILED tests/test_proposal_exports.py::test_fr15_2_offline_exports_follow_baseline_and_selected_rank[heavy]
+FAILED tests/test_proposal_exports.py::test_fr16_1_csv_and_json_keep_provenance_full_precision_and_unknowns
+3 failed in 20.13s
