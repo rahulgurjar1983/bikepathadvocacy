@@ -155,3 +155,20 @@ def test_fr16_1_selected_sheets_keep_their_own_working_evidence_links(browser, f
     legacy = browser.find_elements(By.CSS_SELECTOR, "#sheets [data-check-link]")
     assert legacy
     assert len(browser.find_elements(By.CSS_SELECTOR, "[data-check-link]")) == len(legacy)
+
+
+def test_fr15_2_selected_sheet_sources_keep_static_links_offline(built):
+    from tests.test_run_report import Page
+
+    page = Page()
+    page.feed((built / "report.html").read_text())
+    sources = [
+        value
+        for tag, name, value in page.attributes
+        if tag == "a" and name == "data-selected-check-link"
+    ]
+    assert sources
+    assert all(value.startswith("https:") for value in sources)
+    for tag, name, value in page.attributes:
+        if name in {"src", "href", "action"}:
+            assert not (value or "").startswith(("http:", "https:", "//")), (tag, name, value)
