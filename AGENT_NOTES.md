@@ -779,3 +779,20 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   digest covers sorted package paths and bytes, with length framing,
   and excludes bytecode caches. Input hashes cover the resolved region
   and profile and optional public metadata.
+
+### Q1.6 curve sheet part
+
+- Build each curve's sheet records from that curve's own planning state.
+  Project IDs alone do not carry the scenario's rank, totals or fit proof.
+  Attach delivery metadata with the same curve's works catalog.
+- The archive saves sheets once per scenario; package rank selects a
+  prefix with exact project and element membership. Keep the old shortlist
+  apart. Non-prefix stage joins are still pending.
+- Reuse the standard [JSON writer](https://docs.python.org/3.12/library/json.html)
+  and the existing sheet builder. No new format or package is needed.
+  Full sheet records stay in the archive, outside embedded curve data.
+- `uv run --frozen python artifacts/Q1.6/collect_sheets.py` checks fresh
+  Bayside sheets and package membership. Empty confirmed curves prove
+  honest records, not real works or field safety. The worked case checks
+  non-empty sheet plans and per-project impacts. Shared page selection,
+  page sheets, exports and goal/stage choices still need work.

@@ -1,0 +1,57 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_____ test_fr15_2_each_curve_project_has_a_full_sheet_with_its_own_totals ______
+
+    def test_fr15_2_each_curve_project_has_a_full_sheet_with_its_own_totals():
+        found = curve(star([(400, BUSY), (400, BUSY)]), {1: 100, 2: 10})
+>       sheets = found["project_sheets"]
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'project_sheets'
+
+tests/test_proposal_sheets.py:11: KeyError
+____ test_fr16_1_archive_keeps_scenario_sheets_and_exact_package_membership ____
+
+tmp_path = PosixPath('/tmp/pytest-of-oem/pytest-680/test_fr16_1_archive_keeps_scen0')
+
+    def test_fr16_1_archive_keeps_scenario_sheets_and_exact_package_membership(tmp_path):
+        assert main([
+            "report", "tests/fixtures/test-grid/region.yaml",
+            "--snapshot", "tests/fixtures/test-grid/snapshot", "--out", str(tmp_path),
+        ]) == 0
+        record = json.loads((tmp_path / "proposal.json").read_text())
+        frontier = json.loads((tmp_path / "frontier.json").read_text())
+>       assert [block["scenario"] for block in record["project_sheets"]] == [
+                                               ^^^^^^^^^^^^^^^^^^^^^^^^
+            c["id"] for c in frontier["scenarios"]
+        ]
+E       KeyError: 'project_sheets'
+
+tests/test_proposal_sheets.py:36: KeyError
+----------------------------- Captured stdout call -----------------------------
+F1 5.2 km
+F2 3.0 km
+F3 0.0 km
+F4 12 pieces
+F5 100.0 points
+F6 15.0 points
+F7 0 spaces
+F8 0.0 km
+F9 0.0 km
+F10 750.0 people
+F11 0 km
+F12 6 steps
+F13 1 projects
+F14 0 roads
+F15 750.0 people
+F16 0 people
+F17 0 people
+F18 0 people
+F19 750.0 people
+F20 0 people
+F21 0 people
+F22 0 people
+F23 0 vehicle spaces
+=========================== short test summary info ============================
+FAILED tests/test_proposal_sheets.py::test_fr15_2_each_curve_project_has_a_full_sheet_with_its_own_totals
+FAILED tests/test_proposal_sheets.py::test_fr16_1_archive_keeps_scenario_sheets_and_exact_package_membership
+2 failed in 5.37s
