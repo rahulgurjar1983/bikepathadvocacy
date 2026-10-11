@@ -917,3 +917,23 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   maps, totals, lists, sheets and exports offline. Empty real choices prove
   honest empty records. Other shared views, goal and stage packages and
   full browser acceptance still need work.
+
+### Q1.6 shared resident outcome selection
+
+- Read the selected resident outcomes from the proposal record, not the curve
+  tables. Keep the full tables as separate evidence. The record keeps source
+  scope, strict return trips, first-leg model access and unknown reasons.
+  Print and scripts off retain the chosen identity.
+- Reuse native DOM text updates, as described by
+  [MDN textContent](https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent).
+  No extra page framework or package is needed.
+- Run `uv run --frozen python artifacts/Q1.6/collect_resident_selection.py`
+  after the fresh full build in the verification entry. It checks the resident
+  record beside works, map, totals, plans and exports. Empty real choices do
+  not prove useful new trips or field safety. Other shared views, goal and
+  stage packages and full browser acceptance remain open.
+- A full run keeps figure entries and recipes in the report HTML. The report
+  command also writes a figure JSON file. Read the real archive's HTML entry
+  for the recipe proof; do not assume both archive layouts match. The first
+  collector's missing-file error stays in
+  `artifacts/Q1.6/resident-selection-collector-failed.txt`.

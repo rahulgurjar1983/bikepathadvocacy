@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/home/oem/claude/bikepathadvocacy/artifacts/Q1.6/collect_resident_selection.py", line 235, in <module>
+    figure = next(f for f in json.loads((out / "figures.json").read_text()) if f["id"] == "F24")
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/bikeplan-Q1.6-resident-selection/figures.json'
