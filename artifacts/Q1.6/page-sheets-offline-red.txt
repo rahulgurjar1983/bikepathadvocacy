@@ -1,0 +1,54 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_________ test_fr15_2_selected_sheet_sources_keep_static_links_offline _________
+
+built = PosixPath('/tmp/pytest-of-oem/pytest-699/page-sheets0/out')
+
+    def test_fr15_2_selected_sheet_sources_keep_static_links_offline(built):
+        from tests.test_run_report import Page
+    
+        page = Page()
+        page.feed((built / "report.html").read_text())
+        sources = [
+            value
+            for tag, name, value in page.attributes
+            if tag == "a" and name == "data-selected-check-link"
+        ]
+        assert sources
+        assert all(value.startswith("https:") for value in sources)
+        for tag, name, value in page.attributes:
+>           if name in {"src", "href", "action"}:
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AssertionError: ('a', 'href', 'https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=-33.948264,151.184363')
+E           assert not True
+E            +  where True = <built-in method startswith of str object at 0x7e7617d01c30>(('http:', 'https:', '//'))
+E            +    where <built-in method startswith of str object at 0x7e7617d01c30> = ('https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=-33.948264,151.184363').startswith
+
+tests/test_proposal_page_sheets.py:173: AssertionError
+---------------------------- Captured stdout setup -----------------------------
+F1 10.4 km
+F2 6.0 km
+F3 0.0 km
+F4 24 pieces
+F5 100.0 points
+F6 30.0 points
+F7 0 spaces
+F8 0.0 km
+F9 0.0 km
+F10 1500.0 people
+F11 0 km
+F12 9 steps
+F13 2 projects
+F14 0 roads
+F15 1500.0 people
+F16 0 people
+F17 0 people
+F18 0 people
+F19 1500.0 people
+F20 0 people
+F21 0 people
+F22 0 people
+F23 0 vehicle spaces
+=========================== short test summary info ============================
+FAILED tests/test_proposal_page_sheets.py::test_fr15_2_selected_sheet_sources_keep_static_links_offline
+1 failed in 50.96s

@@ -848,6 +848,16 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 
 - The old sheet test counts all `data-check-link` records in the page.
   Keep that test intact. Selected sheets use `data-selected-check-link`
-  and direct source URLs, so scripts off keeps those links too. The new
-  browser case checks each URL and the legacy link count. The command
+  and saved source URLs. Browser code sets the links on load and each
+  selection. The new browser case checks each URL and the legacy link count. The command
   and pass log are in the row proof.
+
+### Q1.6 offline sheet link repair
+
+- Keep external URLs in data fields, as the old sheet code does. Static
+  HTML links must stay local. The browser sets each selected source link
+  on load and after a package change. Scripts off retains the source
+  records in the archive.
+- When adding sheet links, also run the old no-network cases in
+  test_run_report.py and test_report_map.py. A dead proxy alone does not
+  check the saved HTML contract. The new case checks the generated page.
