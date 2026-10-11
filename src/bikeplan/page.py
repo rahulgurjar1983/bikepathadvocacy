@@ -267,13 +267,16 @@ def cross_section(
     )
 
 
-def check_links(element: dict) -> str:
+def check_links(element: dict, selected: bool = False) -> str:
     links = element["check_links"]
+    marker = "data-selected-check-link" if selected else "data-check-link"
+    street_view = html.escape(links["street_view"], quote=True)
+    mapillary = html.escape(links["mapillary"], quote=True)
     return (
         '<p class="check-links">Check location: '
-        f'<a href="#" data-check-link="{html.escape(links["street_view"], quote=True)}">'
+        f'<a href="{street_view if selected else "#"}" {marker}="{street_view}">'
         "Street View</a> · "
-        f'<a href="#" data-check-link="{html.escape(links["mapillary"], quote=True)}">'
+        f'<a href="{mapillary if selected else "#"}" {marker}="{mapillary}">'
         "Mapillary</a></p>"
     )
 
@@ -321,7 +324,7 @@ def sheet(record: dict, features: list[dict], namespace: str = "") -> str:
                 )
             )
     sections = "".join(drawings)
-    links = "".join(check_links(item) for item in record["elements"])
+    links = "".join(check_links(item, bool(namespace)) for item in record["elements"])
     exact_counts = "".join(
         f"<h5>{label}</h5><pre>"
         f"{html.escape(str(json.loads(json.dumps(record['totals'][key], sort_keys=True))))}"
