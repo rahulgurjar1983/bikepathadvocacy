@@ -135,3 +135,23 @@ def test_fr15_2_selected_plans_have_a_local_link_and_keep_the_number_contract(bu
     assert 'href="#selected-projects"' in html
     assert html.index('id="appendix"') < html.index('id="selected-projects"')
     assert not any(char.isdigit() for char in " ".join(parsed(built).outside))
+
+
+def test_fr16_1_selected_sheets_keep_their_own_working_evidence_links(browser, frontier):
+    browser.find_element(By.ID, "scenario-shipped").click()
+    curve = scenario(frontier, "shipped")
+    move(browser, len(curve["picks"]) - 1)
+    articles = browser.find_elements(By.CSS_SELECTOR, "#selected-project-sheets article")
+    assert articles
+    for article, sheet in zip(articles, curve["project_sheets"], strict=True):
+        links = article.find_elements(By.CSS_SELECTOR, "a[data-selected-check-link]")
+        expected = [
+            element["check_links"][kind]
+            for element in sheet["elements"]
+            for kind in ("street_view", "mapillary")
+        ]
+        assert [link.get_attribute("href") for link in links] == expected
+        assert [link.get_attribute("data-selected-check-link") for link in links] == expected
+    legacy = browser.find_elements(By.CSS_SELECTOR, "#sheets [data-check-link]")
+    assert legacy
+    assert len(browser.find_elements(By.CSS_SELECTOR, "[data-check-link]")) == len(legacy)
