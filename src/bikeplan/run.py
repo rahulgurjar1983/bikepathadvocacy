@@ -284,7 +284,8 @@ def build_all(
         region,
         figures,
         json.dumps(calendar_dates(map_payload), sort_keys=True) + "\n",
-        details(payload["summary"], canon(sheets), profile, payload)
+        selected_projects
+        + details(payload["summary"], canon(sheets), profile, payload)
         + trip_section(frontier)
         + works_body
         + metadata_records(frontier),
@@ -303,7 +304,6 @@ def build_all(
         + delivery_script,
         proposal_opening(frontier, selected_delivery),
         delivery_body,
-        selected_projects,
     )
     survey_note = "Survey options need site checks. They are kept out of the confirmed picks."
     if summary["shortlist_reason"]:

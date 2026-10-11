@@ -428,7 +428,6 @@ def page(
     change_head: str = "",
     opening: str = "",
     delivery: str = "",
-    selected_projects: str = "",
 ):
     by_id = {item["id"]: item for item in figures}
     appendix = "".join(entry(item) for item in figures)
@@ -449,8 +448,7 @@ def page(
         "<p>Area-level trips and space changes are unknown. Area boundaries and resident unions "
         'still need proof. See the <a href="#street-plans">local works</a>.</p></section>'
         '<section id="street-plans"><h2>Street plans</h2>'
-        f"{selected_projects}"
-        "<p>The "
+        '<p>See the <a href="#selected-projects">selected project list and plans</a>. The '
         '<a href="#projects">old minimum-gain shortlist</a> and '
         '<a href="#sheets">its project sheets</a> are separate evidence. '
         "They use their own choices and do not prove the selected curve's local impacts."
