@@ -277,7 +277,7 @@ def build_all(
         selected_curve["trip_packages"][selected_rank]["delivery"],
         cost_links[f"{selected_curve['id']}:{selected_rank}"],
     )
-    works_page = works_section(frontier)
+    works_page = works_section(frontier, proposal)
     works_body, _, works_data = works_page.partition("<script")
     selected_projects, project_scripts = project_views(proposal, frontier)
     page_text = page(
