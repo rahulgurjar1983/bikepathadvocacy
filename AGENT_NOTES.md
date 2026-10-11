@@ -796,3 +796,26 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   honest records, not real works or field safety. The worked case checks
   non-empty sheet plans and per-project impacts. Shared page selection,
   page sheets, exports and goal/stage choices still need work.
+
+
+### Q1.6 offline curve exports
+
+- Use the browser's built-in
+  [Blob URLs](https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Schemes/blob)
+  for offline downloads. Revoke each old URL when the package changes.
+  Python's CSV writer keeps quoted JSON values sound; no new package
+  is needed. CSV paths name fields and JSON values retain lists,
+  full precision and null reasons.
+- Use the same proposal record for the archive and embedded exports.
+  Add the curve step's full totals, with the same scenario and rank.
+  Keep source dates in the record rather than using display date text.
+  A page event passes the selected identity to the export view.
+- `uv run --frozen python artifacts/Q1.6/collect_exports.py` downloads
+  both formats from a fresh Bayside full run with a dead proxy. It
+  checks exact records and hashes. Empty confirmed curves prove empty
+  selection and unknowns, not local works or field safety. Shared page
+  lists and sheets, goal/stage choices and full browser cases remain.
+- The first collector hit a Chrome command timeout while setting the
+  download folder, before opening the report. The same command passed
+  in a fresh browser session. The startup error stays in
+  `artifacts/Q1.6/exports-browser-start-failed.txt`; no check was waived.
