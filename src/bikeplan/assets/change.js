@@ -104,6 +104,7 @@ window.addEventListener("load", function () {
     dot.setAttribute("cy", point[1]);
     dot.setAttribute("data-step", String(step));
     output.textContent = "Step " + step + " of " + (chosen.picks.length - 1) + ": " + pick.name;
+    window.dispatchEvent(new CustomEvent("package-selected", { detail: { scenario: current, rank: step } }));
   }
 
   function choose(id) {

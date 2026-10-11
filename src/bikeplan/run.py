@@ -18,6 +18,7 @@ from bikeplan.config import ConfigError, config_hash
 from bikeplan.fit import segment_fit
 from bikeplan.network import bike_segments, build
 from bikeplan.page import calendar_dates, credits_for, details, page_scripts
+from bikeplan.proposal_exports import export_scripts
 from bikeplan.proposal_inputs import (
     cost_figures,
     delivery_section,
@@ -250,12 +251,8 @@ def build_all(
     )
     frontier_bytes = dump(frontier_data(raw, before, kinds, frontier_shapes))
     frontier = json.loads(frontier_bytes)
-    proposal_bytes = (
-        json.dumps(
-            proposal_record(region, profile, snapshot, frontier, records), sort_keys=True, indent=2
-        )
-        + "\n"
-    ).encode()
+    proposal = proposal_record(region, profile, snapshot, frontier, records)
+    proposal_bytes = (json.dumps(proposal, sort_keys=True, indent=2) + "\n").encode()
     fixes = {item["properties"]["segment_id"]: item["properties"]["fix"] for item in features}
     rows = segment_rows(graph, profile, fixes)
     text = segments_text(rows)
@@ -298,6 +295,7 @@ def build_all(
             .replace("</section>", "</div>"),
         ),
         change_scripts(calendar_dates(frontier))
+        + export_scripts(proposal, frontier)
         + ("<script" + works_data if works_data else "")
         + delivery_script,
         proposal_opening(frontier, selected_delivery),
