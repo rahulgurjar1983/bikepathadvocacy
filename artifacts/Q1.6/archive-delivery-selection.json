@@ -1,6 +1,6 @@
 {
   "build_command": "/usr/bin/time -v -o /tmp/q16-delivery-selection-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.6-delivery-selection",
-  "build_commit": "1093c1e2141c4ea4ef8c0b569e7dfc46ca75e37f",
+  "build_commit": "b8a081c6435ebb962a2f03799694b68b98c72bf3",
   "cases": [
     {
       "costs": {
@@ -150,7 +150,7 @@
   "check_command": "uv run --frozen python artifacts/Q1.6/collect_delivery_selection.py",
   "code": {
     "method": "Sorted package paths and bytes, length-prefixed; excludes bytecode caches",
-    "sha256": "7371eb5dc226b23e4471dd9a93eb50036068cd7476a2d6bf95a9aa6af3afb7dc",
+    "sha256": "ff0da0c3e0bd07bcfc962980bb9fc10ee1da502982d54252e616e179a046b67a",
     "version": "0.1.0"
   },
   "input_hashes": {
@@ -187,11 +187,11 @@
     },
     {
       "path": "proposal.json",
-      "sha256": "e74f02916d0d0a251516577f25bc3f8d07fb2afad24790b46f64b27f7649007e"
+      "sha256": "fd7f76052e7b443d555b5c2406358660671ce4401bdad4c99fb59ee3eb915504"
     },
     {
       "path": "report.html",
-      "sha256": "ee990b866cef1adbf45d869aa6ba4d2d2813e6fd06a025ffea821af82f3cdea8"
+      "sha256": "f93206318c4551c97cbeda590c7b86682d19e8c23fbb732d2af9545daa9b89dd"
     },
     {
       "path": "summary.json",

@@ -122,7 +122,11 @@ for line in (out / "outputs.sha256").read_text().splitlines():
     assert hashlib.sha256((out / name).read_bytes()).hexdigest() == digest
     outputs.append({"path": name, "sha256": digest})
 saved = {
-    "build_command": "/usr/bin/time -v -o /tmp/q16-delivery-selection-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.6-delivery-selection",
+    "build_command": (
+        "/usr/bin/time -v -o /tmp/q16-delivery-selection-time.txt uv run --frozen bikeplan run "
+        "regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 "
+        "--out /tmp/bikeplan-Q1.6-delivery-selection"
+    ),
     "check_command": "uv run --frozen python artifacts/Q1.6/collect_delivery_selection.py",
     "build_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
     "snapshot": record["snapshot"],
@@ -131,7 +135,12 @@ saved = {
     "report_bytes": (out / "report.html").stat().st_size,
     "cases": cases,
     "outputs": outputs,
-    "scope": "Selected curve delivery, opening, print and JSON/CSV exports; scripts-off default. Empty real packages prove honest unknowns, not useful works, known costs or funding. Nonempty fixture rank changes are unit-tested. Other shared views, goal/stage packages and full browser acceptance remain open. This is not performance proof.",
+    "scope": (
+        "Selected curve delivery, opening, print and JSON/CSV exports; scripts-off default. "
+        "Empty real packages prove honest unknowns, not useful works, known costs or funding. "
+        "Nonempty fixture rank changes are unit-tested. Other shared views, goal/stage "
+        "packages and full browser acceptance remain open. This is not performance proof."
+    ),
 }
 (proof / "archive-delivery-selection.json").write_text(
     json.dumps(saved, sort_keys=True, indent=2) + "\n"

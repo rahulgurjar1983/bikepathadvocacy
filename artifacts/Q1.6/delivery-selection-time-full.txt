@@ -1,21 +1,21 @@
 	Command being timed: "uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.6-delivery-selection"
-	User time (seconds): 693.08
-	System time (seconds): 17.95
-	Percent of CPU this job got: 87%
-	Elapsed (wall clock) time (h:mm:ss or m:ss): 13:30.23
+	User time (seconds): 658.78
+	System time (seconds): 16.39
+	Percent of CPU this job got: 57%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 19:34.41
 	Average shared text size (kbytes): 0
 	Average unshared data size (kbytes): 0
 	Average stack size (kbytes): 0
 	Average total size (kbytes): 0
-	Maximum resident set size (kbytes): 6699548
+	Maximum resident set size (kbytes): 6698420
 	Average resident set size (kbytes): 0
-	Major (requiring I/O) page faults: 73
-	Minor (reclaiming a frame) page faults: 4693082
-	Voluntary context switches: 2032
-	Involuntary context switches: 110351
+	Major (requiring I/O) page faults: 273
+	Minor (reclaiming a frame) page faults: 4340016
+	Voluntary context switches: 4042
+	Involuntary context switches: 100003
 	Swaps: 0
-	File system inputs: 144584
-	File system outputs: 1555232
+	File system inputs: 464976
+	File system outputs: 1563424
 	Socket messages sent: 0
 	Socket messages received: 0
 	Signals delivered: 0

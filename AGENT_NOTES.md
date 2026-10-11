@@ -953,3 +953,6 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   opening, print and exports offline, plus the saved choice with scripts off.
   Empty real packages prove truthful gaps. Goal and stage packages, other
   shared views and full browser acceptance remain open.
+- Ruff format can leave long strings over the lint limit. Use Ruff check on
+  the changed files too. The push hook caught long strings in the opening
+  and proof script. Split strings without changing their rendered text.
