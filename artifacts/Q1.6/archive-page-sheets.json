@@ -1,0 +1,87 @@
+{
+  "build_command": "/usr/bin/time -v -o /tmp/q16-page-sheets-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.6-page-sheets",
+  "build_commit": "10326c8d4df4b1ab1ab2da07c2c7ff8365b1a551",
+  "cases": [
+    {
+      "element_ids": [],
+      "identity": {
+        "rank": 0,
+        "scenario": "light"
+      },
+      "project_ids": []
+    },
+    {
+      "element_ids": [],
+      "identity": {
+        "rank": 0,
+        "scenario": "shipped"
+      },
+      "project_ids": []
+    },
+    {
+      "element_ids": [],
+      "identity": {
+        "rank": 0,
+        "scenario": "heavy"
+      },
+      "project_ids": []
+    }
+  ],
+  "check_command": "uv run --frozen python artifacts/Q1.6/collect_page_sheets.py",
+  "code": {
+    "method": "Sorted package paths and bytes, length-prefixed; excludes bytecode caches",
+    "sha256": "ef800130b00c31441e3536662b921f380dac2d5a5d0aa99fa96b8eb014c6190e",
+    "version": "0.1.0"
+  },
+  "input_hashes": {
+    "region_and_profile": "6b7cd7698f58145f6669419dd0e4fba0cd4378fab2e1430a32df0a772127b665"
+  },
+  "outputs": [
+    {
+      "path": "access_homes.geojson",
+      "sha256": "64e5ee7d19083b024fdadaba43c37caa6ca5f72a1ce0ef2cf4123d7c914752ff"
+    },
+    {
+      "path": "frontier.json",
+      "sha256": "cfcfc958051333790e5075c0204dc0e61bfe77ee54999e1ec3bcea24853bf0f2"
+    },
+    {
+      "path": "network.geojson",
+      "sha256": "956f6c9c40e9364bb9984f41f7b5294e28a4a3120d7b61af815011f4bd61ca6f"
+    },
+    {
+      "path": "places.geojson",
+      "sha256": "b275748f27eb07121541c246e22a64058d21b81e39bff4d3d823ccffeaa23803"
+    },
+    {
+      "path": "projects.csv",
+      "sha256": "6e49858dbb626819ba2f361646d9efcd37d6d9558126c14ac8bbf026dfa59c40"
+    },
+    {
+      "path": "projects.geojson",
+      "sha256": "e4914e1531bd5ca936715cf6e777265c7039ec62846f7388269bca0bc2fc0977"
+    },
+    {
+      "path": "projects.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "proposal.json",
+      "sha256": "3f9b92b92ceaf3c0bef5dc663a6dd5212f8115894671dd93951ec9035ab06082"
+    },
+    {
+      "path": "report.html",
+      "sha256": "a52183401ab197da79b8c7bcee51e3892ffc01cd05d4bd00bec3a8a89e388e06"
+    },
+    {
+      "path": "summary.json",
+      "sha256": "7b05483eb6e7875cdb105e8cdffa152515ac349be69950637dd592b42f1521d9"
+    }
+  ],
+  "report_bytes": 7975514,
+  "scope": "Selected curve list and sheets only. Empty real curves prove honest empty selection, not local works or field safety. Two disconnected test-only grids prove nonempty rank selection and sheet plans. Goal/stage packages and full browser acceptance remain open. This run does not prove performance.",
+  "snapshot": {
+    "id": "2026-10-01",
+    "sha256": "2eaf0b00832565765c42e07b48ad7c6117436194487f45931e348f6772964bba"
+  }
+}

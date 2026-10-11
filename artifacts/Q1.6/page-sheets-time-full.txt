@@ -1,0 +1,23 @@
+	Command being timed: "uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.6-page-sheets"
+	User time (seconds): 670.49
+	System time (seconds): 16.59
+	Percent of CPU this job got: 55%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 20:30.20
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 6617492
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 643
+	Minor (reclaiming a frame) page faults: 4303619
+	Voluntary context switches: 5009
+	Involuntary context switches: 108353
+	Swaps: 0
+	File system inputs: 1332744
+	File system outputs: 1557928
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

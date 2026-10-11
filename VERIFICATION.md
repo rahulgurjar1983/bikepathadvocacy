@@ -1290,3 +1290,42 @@ Scope: This part adds exports. The shared list, selected page sheets,
 goal and stage packages, and full browser cases remain open.
 
 Artifact: `artifacts/Q1.6/archive-exports.json`, `artifacts/Q1.6/exports-browser.png`, `artifacts/Q1.6/exports-time-full.txt`, `artifacts/Q1.6/exports-red.txt`, `artifacts/Q1.6/exports-green.txt`.
+
+### Q1.6 selected curve page sheets
+
+Run:
+
+```sh
+uv run --frozen pytest -q tests/test_proposal_page_sheets.py tests/test_run_report.py::test_fr9_4_project_sheets_show_check_links_width_confidence_and_totals tests/test_run_report.py::test_fr9_3_the_page_makes_no_network_request tests/test_report_map.py::test_fr13_9_the_inline_data_is_the_map_file
+/usr/bin/time -v -o /tmp/q16-page-sheets-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.6-page-sheets
+uv run --frozen python artifacts/Q1.6/collect_page_sheets.py
+```
+
+Expect: The selected list and sheets use the saved package's exact
+project set. Street plans link to this list and its sheets in the
+evidence appendix. The page keeps the old shortlist named and apart. The
+worked case uses two test-only grids to check baseline and both ranks
+on each curve. Sheets retain their own plans, widths, impacts and
+unknowns. Their list links resolve to one sheet each. Selected site-check links
+keep their source URLs in data and stay apart from legacy link records.
+Static links stay local; browser code sets the source links. The old
+sheet and no-network tests stay intact. Print keeps the chosen identity. With scripts off, the saved choice still has its sheets.
+
+The fresh Bayside check uses a dead proxy. It checks the list, sheets,
+opening and export against the archive. It checks phone, desktop and
+print views and the report size. Empty confirmed curves prove honest
+empty choices, not local works or field safety. This part does not prove
+performance or the full row. Shared map and totals selection from one
+record, goal and stage packages and full browser cases remain open.
+
+Artifact: `artifacts/Q1.6/archive-page-sheets.json`,
+`artifacts/Q1.6/page-sheets-screen-390.png`,
+`artifacts/Q1.6/page-sheets-screen-1280.png`,
+`artifacts/Q1.6/page-sheets-print-390.png`,
+`artifacts/Q1.6/page-sheets-print-1280.png`,
+`artifacts/Q1.6/page-sheets-time-full.txt`,
+`artifacts/Q1.6/page-sheets-red.txt`,
+`artifacts/Q1.6/page-sheets-contract-red.txt`,
+`artifacts/Q1.6/page-sheets-links-red.txt`,
+`artifacts/Q1.6/page-sheets-offline-red.txt`,
+`artifacts/Q1.6/page-sheets-green.txt`.

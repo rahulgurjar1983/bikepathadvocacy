@@ -27,6 +27,7 @@ from bikeplan.proposal_inputs import (
     metadata_records,
 )
 from bikeplan.proposal_record import proposal_record
+from bikeplan.proposal_views import project_views
 from bikeplan.propose import KINDS, csv_fields, csv_row, write_propose
 from bikeplan.report import (
     KEEP,
@@ -278,11 +279,13 @@ def build_all(
     )
     works_page = works_section(frontier)
     works_body, _, works_data = works_page.partition("<script")
+    selected_projects, project_scripts = project_views(proposal, frontier)
     page_text = page(
         region,
         figures,
         json.dumps(calendar_dates(map_payload), sort_keys=True) + "\n",
-        details(payload["summary"], canon(sheets), profile, payload)
+        selected_projects
+        + details(payload["summary"], canon(sheets), profile, payload)
         + trip_section(frontier)
         + works_body
         + metadata_records(frontier),
@@ -296,6 +299,7 @@ def build_all(
         ),
         change_scripts(calendar_dates(frontier))
         + export_scripts(proposal, frontier)
+        + project_scripts
         + ("<script" + works_data if works_data else "")
         + delivery_script,
         proposal_opening(frontier, selected_delivery),

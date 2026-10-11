@@ -1,0 +1,54 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+______ test_fr16_1_selected_sheets_keep_their_own_working_evidence_links _______
+
+browser = <selenium.webdriver.chrome.webdriver.WebDriver (session="acb34977e7a44d181a30ae7bbc0ff8f9")>
+frontier = {'baseline': 25.0, 'default': 'shipped', 'proposal_metadata': {'contents': None, 'reason': 'No proposal inputs supplie...cap_reached': False, 'evaluated_projects': 2, 'id': 'heavy', 'label': 'Parking and lanes count four times', ...}], ...}
+
+    def test_fr16_1_selected_sheets_keep_their_own_working_evidence_links(browser, frontier):
+        browser.find_element(By.ID, "scenario-shipped").click()
+        curve = scenario(frontier, "shipped")
+        move(browser, len(curve["picks"]) - 1)
+        articles = browser.find_elements(By.CSS_SELECTOR, "#selected-project-sheets article")
+        assert articles
+        for article, sheet in zip(articles, curve["project_sheets"], strict=True):
+            links = article.find_elements(By.CSS_SELECTOR, "a[data-selected-check-link]")
+            expected = [
+                element["check_links"][kind]
+                for element in sheet["elements"]
+                for kind in ("street_view", "mapillary")
+            ]
+>           assert [link.get_attribute("href") for link in links] == expected
+E           AssertionError: assert [] == ['https://www....184363&z=18']
+E             
+E             Right contains 2 more items, first extra item: 'https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=-33.948264,151.184363'
+E             Use -v to get more diff
+
+tests/test_proposal_page_sheets.py:153: AssertionError
+---------------------------- Captured stdout setup -----------------------------
+F1 10.4 km
+F2 6.0 km
+F3 0.0 km
+F4 24 pieces
+F5 100.0 points
+F6 30.0 points
+F7 0 spaces
+F8 0.0 km
+F9 0.0 km
+F10 1500.0 people
+F11 0 km
+F12 9 steps
+F13 2 projects
+F14 0 roads
+F15 1500.0 people
+F16 0 people
+F17 0 people
+F18 0 people
+F19 1500.0 people
+F20 0 people
+F21 0 people
+F22 0 people
+F23 0 vehicle spaces
+=========================== short test summary info ============================
+FAILED tests/test_proposal_page_sheets.py::test_fr16_1_selected_sheets_keep_their_own_working_evidence_links
+1 failed in 15.87s
