@@ -1,0 +1,130 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+______ test_fr16_1_script_free_works_read_selected_record_and_keep_nulls _______
+
+built = PosixPath('/tmp/pytest-of-oem/pytest-710/page-sheets0/out')
+
+    def test_fr16_1_script_free_works_read_selected_record_and_keep_nulls(built):
+        record = json.loads((built / "proposal.json").read_text())
+        frontier = json.loads((built / "frontier.json").read_text())
+        selected = copy.deepcopy(record["packages"][-1])
+        assert selected["works"]["crossing_upgrades"]
+        selected["works"]["crossing_upgrades"] = selected["works"]["crossing_upgrades"][1:]
+        selected["works"]["unique_roads"] = 123
+        selected["works"]["parking_spaces"]["before"]["value"] = None
+        record["selected"] = selected
+        page = Works()
+>       page.feed(works_section(frontier, record))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: works_section() takes 1 positional argument but 2 were given
+
+tests/test_proposal_works_selection.py:69: TypeError
+---------------------------- Captured stdout setup -----------------------------
+F1 10.4 km
+F2 6.0 km
+F3 0.0 km
+F4 24 pieces
+F5 100.0 points
+F6 30.0 points
+F7 0 spaces
+F8 0.0 km
+F9 0.0 km
+F10 1500.0 people
+F11 0 km
+F12 9 steps
+F13 2 projects
+F14 0 roads
+F15 1500.0 people
+F16 0 people
+F17 0 people
+F18 0 people
+F19 1500.0 people
+F20 0 people
+F21 0 people
+F22 0 people
+F23 0 vehicle spaces
+_ test_fr15_2_works_totals_and_rows_follow_saved_package_offline_and_print[light] _
+
+browser = <selenium.webdriver.chrome.webdriver.WebDriver (session="0c62f73d3cb4d3e4b7b3c08bcab10b1a")>
+built = PosixPath('/tmp/pytest-of-oem/pytest-710/page-sheets0/out')
+name = 'light'
+
+    @pytest.mark.parametrize("name", ["light", "heavy"])
+    def test_fr15_2_works_totals_and_rows_follow_saved_package_offline_and_print(browser, built, name):
+        record = json.loads((built / "proposal.json").read_text())
+        browser.find_element(By.ID, f"scenario-{name}").click()
+        changed = next(p for p in record["packages"] if p["identity"] == {"scenario": name, "rank": 2})
+        assert len(changed["works"]["crossing_upgrades"]) >= 2
+        changed["works"]["unique_roads"] = 123
+        changed["works"]["crossing_upgrades"] = changed["works"]["crossing_upgrades"][1:]
+        browser.execute_script(
+            "const node=document.getElementById('package-export-data');"
+            "const data=JSON.parse(node.textContent);"
+            "data.packages[arguments[0]].record=arguments[1];"
+            "node.textContent=JSON.stringify(data);",
+            f"{name}:2",
+            changed,
+        )
+        for rank in (0, 1, 2, 0):
+            move(browser, rank)
+            identity = {"scenario": name, "rank": rank}
+            package = next(p for p in record["packages"] if p["identity"] == identity)
+            key = f"{name}:{rank}"
+            for media in ("screen", "print"):
+                browser.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": media})
+>               assert (
+                    browser.find_element(By.ID, "physical-works").get_attribute("data-package") == key
+                )
+E               assert None == 'light:0'
+E                +  where None = get_attribute('data-package')
+E                +    where get_attribute = <selenium.webdriver.remote.webelement.WebElement (session="0c62f73d3cb4d3e4b7b3c08bcab10b1a", element="f.ECE5B1E75E2876505B719343906F7781.d.85E9F19AEA32F4A5D26BA8865585E81E.e.3")>.get_attribute
+E                +      where <selenium.webdriver.remote.webelement.WebElement (session="0c62f73d3cb4d3e4b7b3c08bcab10b1a", element="f.ECE5B1E75E2876505B719343906F7781.d.85E9F19AEA32F4A5D26BA8865585E81E.e.3")> = find_element('id', 'physical-works')
+E                +        where find_element = <selenium.webdriver.chrome.webdriver.WebDriver (session="0c62f73d3cb4d3e4b7b3c08bcab10b1a")>.find_element
+E                +        and   'id' = By.ID
+
+tests/test_proposal_works_selection.py:100: AssertionError
+_ test_fr15_2_works_totals_and_rows_follow_saved_package_offline_and_print[heavy] _
+
+browser = <selenium.webdriver.chrome.webdriver.WebDriver (session="0c62f73d3cb4d3e4b7b3c08bcab10b1a")>
+built = PosixPath('/tmp/pytest-of-oem/pytest-710/page-sheets0/out')
+name = 'heavy'
+
+    @pytest.mark.parametrize("name", ["light", "heavy"])
+    def test_fr15_2_works_totals_and_rows_follow_saved_package_offline_and_print(browser, built, name):
+        record = json.loads((built / "proposal.json").read_text())
+        browser.find_element(By.ID, f"scenario-{name}").click()
+        changed = next(p for p in record["packages"] if p["identity"] == {"scenario": name, "rank": 2})
+        assert len(changed["works"]["crossing_upgrades"]) >= 2
+        changed["works"]["unique_roads"] = 123
+        changed["works"]["crossing_upgrades"] = changed["works"]["crossing_upgrades"][1:]
+        browser.execute_script(
+            "const node=document.getElementById('package-export-data');"
+            "const data=JSON.parse(node.textContent);"
+            "data.packages[arguments[0]].record=arguments[1];"
+            "node.textContent=JSON.stringify(data);",
+            f"{name}:2",
+            changed,
+        )
+        for rank in (0, 1, 2, 0):
+            move(browser, rank)
+            identity = {"scenario": name, "rank": rank}
+            package = next(p for p in record["packages"] if p["identity"] == identity)
+            key = f"{name}:{rank}"
+            for media in ("screen", "print"):
+                browser.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": media})
+>               assert (
+                    browser.find_element(By.ID, "physical-works").get_attribute("data-package") == key
+                )
+E               assert None == 'heavy:0'
+E                +  where None = get_attribute('data-package')
+E                +    where get_attribute = <selenium.webdriver.remote.webelement.WebElement (session="0c62f73d3cb4d3e4b7b3c08bcab10b1a", element="f.ECE5B1E75E2876505B719343906F7781.d.85E9F19AEA32F4A5D26BA8865585E81E.e.3")>.get_attribute
+E                +      where <selenium.webdriver.remote.webelement.WebElement (session="0c62f73d3cb4d3e4b7b3c08bcab10b1a", element="f.ECE5B1E75E2876505B719343906F7781.d.85E9F19AEA32F4A5D26BA8865585E81E.e.3")> = find_element('id', 'physical-works')
+E                +        where find_element = <selenium.webdriver.chrome.webdriver.WebDriver (session="0c62f73d3cb4d3e4b7b3c08bcab10b1a")>.find_element
+E                +        and   'id' = By.ID
+
+tests/test_proposal_works_selection.py:100: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_proposal_works_selection.py::test_fr16_1_script_free_works_read_selected_record_and_keep_nulls
+FAILED tests/test_proposal_works_selection.py::test_fr15_2_works_totals_and_rows_follow_saved_package_offline_and_print[light]
+FAILED tests/test_proposal_works_selection.py::test_fr15_2_works_totals_and_rows_follow_saved_package_offline_and_print[heavy]
+3 failed in 55.62s

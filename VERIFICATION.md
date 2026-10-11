@@ -1351,3 +1351,26 @@ Artifact: `artifacts/Q1.6/archive-map-totals.json`,
 `artifacts/Q1.6/map-totals-time-full.txt`,
 `artifacts/Q1.6/map-totals-red.txt`,
 `artifacts/Q1.6/map-totals-green.txt`.
+
+### Q1.6 shared physical works selection
+
+```bash
+uv run --frozen pytest tests/test_proposal_works_selection.py -q
+/usr/bin/time -v -o /tmp/q16-works-selection-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.6-works-selection
+uv run --frozen python artifacts/Q1.6/collect_works_selection.py
+```
+
+Expect: Physical works totals and exact table rows use the saved package.
+The package label stays the same across works, map, opening, list, sheets
+and exports. Print keeps that choice; scripts off shows the saved choice.
+Parking nulls and reasons stay intact. The browser tests change a saved
+works total and set to prove that the table reads the record. The real
+archive uses shipped settings. Empty confirmed choices prove honest empty
+records, not real local works or field safety. Goal and stage packages,
+other shared views and full browser proof remain open. This run does not
+prove the time or memory limit.
+
+Artifact: `artifacts/Q1.6/archive-works-selection.json`,
+`artifacts/Q1.6/works-selection-time-full.txt`,
+`artifacts/Q1.6/works-selection-red.txt`,
+`artifacts/Q1.6/works-selection-green.txt`.
