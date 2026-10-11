@@ -156,7 +156,7 @@ def projects_section(records: list[dict]) -> str:
     return f'<section id="projects"><h2>Projects, ranked</h2>{table(head, rows)}</section>'
 
 
-def project_map(record: dict, features: list[dict]) -> str:
+def project_map(record: dict, features: list[dict], namespace: str = "") -> str:
     selected = [item for item in features if item["properties"]["project"] == record["id"]]
     points = []
     lines = []
@@ -201,12 +201,12 @@ def project_map(record: dict, features: list[dict]) -> str:
         for point in [feature["geometry"]["coordinates"]]
     )
     return (
-        f'<svg class="project-map" id="project-map-{html.escape(record["id"])}" '
+        f'<svg class="project-map" id="project-map-{namespace}{html.escape(record["id"])}" '
         f'data-project-id="{html.escape(record["id"])}" width="600" height="140" '
         'viewBox="0,0,600,140" '
         f'role="img" aria-label="Map of {html.escape(record["name"])}">'
         f"<title>Map of {html.escape(record['name'])}</title>{paths}{dots}</svg>"
-        f'<table data-for="project-map-{html.escape(record["id"])}">'
+        f'<table data-for="project-map-{namespace}{html.escape(record["id"])}">'
         "<caption>The same map as a table</caption>"
         "<tr><th>Street</th><th>Fix</th></tr>"
         + "".join(
@@ -218,7 +218,9 @@ def project_map(record: dict, features: list[dict]) -> str:
     )
 
 
-def cross_section(project_id: str, element_id: str, item: dict, phase: str) -> str:
+def cross_section(
+    project_id: str, element_id: str, item: dict, phase: str, namespace: str = ""
+) -> str:
     strips = item[phase]
     total = sum(strip["width_m"] for strip in strips)
     cursor = 0.0
@@ -246,7 +248,9 @@ def cross_section(project_id: str, element_id: str, item: dict, phase: str) -> s
             cursor += scaled
         labels.append(label)
     view_width = max(cursor, total * 40, 1.0)
-    drawing_id = html.escape(f"xs-{project_id}-{element_id}-{item['id']}-{phase}", quote=True)
+    drawing_id = html.escape(
+        f"xs-{namespace}{project_id}-{element_id}-{item['id']}-{phase}", quote=True
+    )
     label_rows = "".join(f"<tr><td><code>{html.escape(label)}</code></td></tr>" for label in labels)
     return (
         '<figure class="cross-section-figure">'
@@ -274,7 +278,7 @@ def check_links(element: dict) -> str:
     )
 
 
-def sheet(record: dict, features: list[dict]) -> str:
+def sheet(record: dict, features: list[dict], namespace: str = "") -> str:
     elements = [
         [
             item["id"],
@@ -296,7 +300,10 @@ def sheet(record: dict, features: list[dict]) -> str:
         "Width confidence / Source confidence",
         "Length m",
     ]
-    disruption = [[label, record["totals"][key]] for key, label in DISRUPTION_LABELS]
+    disruption = [
+        [label, f"{record['totals'][key]:.1f}" if namespace else record["totals"][key]]
+        for key, label in DISRUPTION_LABELS
+    ]
     fixes = [[fix, km] for fix, km in sorted(record["totals"]["km_by_fix"].items())]
     drawings = []
     for element in record["elements"]:
@@ -309,7 +316,7 @@ def sheet(record: dict, features: list[dict]) -> str:
                 f"<code>{html.escape(source)}</code>, source confidence "
                 f"<code>{html.escape(confidence)}</code></h5>"
                 + "".join(
-                    cross_section(record["id"], element["id"], section, phase)
+                    cross_section(record["id"], element["id"], section, phase, namespace)
                     for phase in ("before", "after")
                 )
             )
@@ -333,13 +340,17 @@ def sheet(record: dict, features: list[dict]) -> str:
             f"{exact_counts}</details>"
         )
     return (
-        f'<article id="project-{html.escape(record["id"])}">'
+        f'<article id="project-{namespace}{html.escape(record["id"])}" '
+        f'data-project-id="{html.escape(record["id"])}">'
         f"<h3>{html.escape(record['name'])}</h3>"
         f"<p>Gain {record['gain']:.1f}. Score after {record['score_after']:.1f}.</p>"
-        f"{project_map(record, features)}"
+        f"{project_map(record, features, namespace)}"
         f"{table(head, elements)}"
-        f"<h4>Disruption totals</h4>{table(['Item', 'Total'], disruption)}"
-        f"<h4>Kilometres by fix</h4>{table(['Fix', 'km'], fixes or [['none', 0.0]])}"
+        "<h4>Disruption totals</h4>"
+        + table(["Item", "Total"], disruption).replace(
+            "<table>", '<table data-for="sheet-impacts">'
+        )
+        + f"<h4>Kilometres by fix</h4>{table(['Fix', 'km'], fixes or [['none', 0.0]])}"
         f"<h4>Street cross-sections</h4>{sections}{links}"
         f"{sheet_delivery(record)}"
         f"{gains_table(record['totals'].get('access_gains'))}{exact_counts}</article>"
