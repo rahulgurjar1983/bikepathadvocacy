@@ -1374,3 +1374,26 @@ Artifact: `artifacts/Q1.6/archive-works-selection.json`,
 `artifacts/Q1.6/works-selection-time-full.txt`,
 `artifacts/Q1.6/works-selection-red.txt`,
 `artifacts/Q1.6/works-selection-green.txt`.
+
+### Q1.6 shared resident outcome selection
+
+```bash
+uv run --frozen pytest tests/test_proposal_resident_selection.py tests/test_report.py::test_fr13_1_figures_are_sorted_with_every_field tests/test_report.py::test_fr13_2_the_figure_links_hold_the_numbers_and_resolve_to_one_entry -q
+/usr/bin/time -v -o /tmp/q16-resident-selection-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.6-resident-selection
+uv run --frozen python artifacts/Q1.6/collect_resident_selection.py
+```
+
+Expect: The selected resident view reads the saved proposal record. It keeps
+strict return trips apart from calm first-leg model access, with source scope,
+before, after, newly gained, place types and unknown reasons. The offline view
+and print name the same package as works, map, totals, plans and exports.
+Scripts off shows the saved choice. The figure recipe rebuilds the saved
+strict resident gain. The real run uses shipped settings. Empty confirmed
+choices prove honest empty records, not field safety or measured trip demand.
+Other shared views, goal and stage packages and full browser proof remain open.
+This run does not prove the time or memory limit.
+
+Artifact: `artifacts/Q1.6/archive-resident-selection.json`,
+`artifacts/Q1.6/resident-selection-time-full.txt`,
+`artifacts/Q1.6/resident-selection-red.txt`,
+`artifacts/Q1.6/resident-selection-green.txt`.

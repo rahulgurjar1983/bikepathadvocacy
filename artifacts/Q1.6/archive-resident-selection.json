@@ -1,0 +1,1561 @@
+{
+  "build_command": "/usr/bin/time -v -o /tmp/q16-resident-selection-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.6-resident-selection",
+  "build_commit": "4f5e6a63fc1225d3448935a9f93e3292b94ca6ca",
+  "cases": [
+    {
+      "element_ids": [],
+      "identity": {
+        "rank": 0,
+        "scenario": "light"
+      },
+      "project_ids": [],
+      "resident_outcomes": {
+        "evidence_status": "modelled_with_missing_trip_evidence",
+        "first_leg_model": {
+          "by_place_type": {},
+          "evidence_status": "unknown",
+          "gains_counted_by_type": null,
+          "reason": "Unknown entrance links",
+          "unique_residents": {
+            "after": null,
+            "before": null,
+            "newly_gained": null
+          }
+        },
+        "limit": "Population nodes model origins, not home addresses. These estimates are not a forecast of rides, modal shift, crashes avoided or traffic reduction. First-leg model access is separate and does not prove a complete return trip. Unknown trip evidence leaves unproved opportunities out of confirmed counts.",
+        "method": "Union population-node shares with at least one complete trip. Newly gained means at least one new destination, even with prior access; it is not after minus before. Type gains union nodes per type before summing types.",
+        "missing_groups": {
+          "age": {
+            "reason": "No sourced group counts and joins",
+            "value": null
+          },
+          "disability": {
+            "reason": "No sourced group counts and joins",
+            "value": null
+          },
+          "household": {
+            "reason": "No sourced group counts and joins",
+            "value": null
+          },
+          "pupil": {
+            "reason": "No sourced group counts and joins",
+            "value": null
+          }
+        },
+        "population": {
+          "allocation": "equal shares at residential bike nodes, then other bike nodes, then nearest within 300 m",
+          "buffer_excluded": 702516.0,
+          "partial_cell_rule": "whole count when centroid is inside council",
+          "scope": "council population cells by centroid; destinations may be in the buffer",
+          "snapped": 171068.0,
+          "source": {
+            "licence": "CC BY 4.0",
+            "path": "population.gpkg",
+            "sha256": "7228344d8fad1e6995db2c42c2dc7de2119d7175c5c4a7022824021541697897",
+            "source": "Kontur Population via the Humanitarian Data Exchange",
+            "url": "https://geodata-eu-central-1-kontur-public.s3.amazonaws.com/kontur_datasets/kontur_population_AU_20231101.gpkg.gz"
+          },
+          "unit": "estimated residents",
+          "unsnapped": 8.0
+        },
+        "strict": {
+          "by_place_type": {
+            "aged_care": {
+              "after": 0,
+              "before": 0,
+              "newly_gained": 0
+            },
+            "college": {
+              "after": 0,
+              "before": 0,
+              "newly_gained": 0
+            },
+            "library": {
+              "after": 0,
+              "before": 0,
+              "newly_gained": 0
+            },
+            "school": {
+              "after": 0,
+              "before": 0,
+              "newly_gained": 0
+            },
+            "station": {
+              "after": 0,
+              "before": 0,
+              "newly_gained": 0
+            },
+            "town_centre": {
+              "after": 0,
+              "before": 0,
+              "newly_gained": 0
+            },
+            "university": {
+              "after": 0,
+              "before": 0,
+              "newly_gained": 0
+            }
+          },
+          "evidence_status": "confirmed_route_model",
+          "gains_counted_by_type": 0,
+          "unique_residents": {
+            "after": 0,
+            "before": 0,
+            "newly_gained": 0
+          }
+        }
+      },
+      "works_ids": [],
+      "works_summary": {
+        "crossing_upgrades": [],
+        "distinct_sections": 0,
+        "existing_links_retained": {
+          "element_ids": [],
+          "length_m": 0,
+          "scope": "Links in complete proved return trips, excluding new works."
+        },
+        "gap_records": 294,
+        "km_by_design": {
+          "design_unknown": 0.0,
+          "path_use_unknown": 0.0,
+          "protected_cycleway": 0.0,
+          "quiet_street": 0.0,
+          "shared_path": 0.0
+        },
+        "parking_spaces": {
+          "added": {
+            "evidence_status": "derived",
+            "known_element_ids": [],
+            "known_subtotal": 0,
+            "method": "Sum disjoint physical link values; special uses are not added again.",
+            "missing_element_ids": [],
+            "reason": null,
+            "scope": "Selected physical works links and crossings; each work counted once.",
+            "source": "Works catalog parking records",
+            "unit": "vehicle spaces",
+            "value": 0
+          },
+          "after": {
+            "evidence_status": "derived",
+            "known_element_ids": [],
+            "known_subtotal": 0,
+            "method": "Sum disjoint physical link values; special uses are not added again.",
+            "missing_element_ids": [],
+            "reason": null,
+            "scope": "Selected physical works links and crossings; each work counted once.",
+            "source": "Works catalog parking records",
+            "unit": "vehicle spaces",
+            "value": 0
+          },
+          "before": {
+            "evidence_status": "derived",
+            "known_element_ids": [],
+            "known_subtotal": 0,
+            "method": "Sum disjoint physical link values; special uses are not added again.",
+            "missing_element_ids": [],
+            "reason": null,
+            "scope": "Selected physical works links and crossings; each work counted once.",
+            "source": "Works catalog parking records",
+            "unit": "vehicle spaces",
+            "value": 0
+          },
+          "net": {
+            "evidence_status": "derived",
+            "known_element_ids": [],
+            "known_subtotal": 0,
+            "method": "Sum disjoint physical link values; special uses are not added again.",
+            "missing_element_ids": [],
+            "reason": null,
+            "scope": "Selected physical works links and crossings; each work counted once.",
+            "source": "Works catalog parking records",
+            "unit": "vehicle spaces",
+            "value": 0
+          },
+          "removed": {
+            "evidence_status": "derived",
+            "known_element_ids": [],
+            "known_subtotal": 0,
+            "method": "Sum disjoint physical link values; special uses are not added again.",
+            "missing_element_ids": [],
+            "reason": null,
+            "scope": "Selected physical works links and crossings; each work counted once.",
+            "source": "Works catalog parking records",
+            "unit": "vehicle spaces",
+            "value": 0
+          },
+          "special_uses": {
+            "accessible": {
+              "added": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "after": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "before": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "net": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "removed": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              }
+            },
+            "bike_parking": {
+              "added": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "bike spaces",
+                "value": 0
+              },
+              "after": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "bike spaces",
+                "value": 0
+              },
+              "before": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "bike spaces",
+                "value": 0
+              },
+              "net": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "bike spaces",
+                "value": 0
+              },
+              "removed": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "bike spaces",
+                "value": 0
+              }
+            },
+            "loading": {
+              "added": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "after": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "before": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "net": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "removed": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              }
+            },
+            "school_drop_off": {
+              "added": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "after": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "before": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "net": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "removed": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              }
+            },
+            "short_stay": {
+              "added": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "after": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "before": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "net": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "removed": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              }
+            }
+          }
+        },
+        "unique_roads": 0,
+        "unnamed_roads": 0
+      }
+    },
+    {
+      "element_ids": [],
+      "identity": {
+        "rank": 0,
+        "scenario": "shipped"
+      },
+      "project_ids": [],
+      "resident_outcomes": {
+        "evidence_status": "modelled_with_missing_trip_evidence",
+        "first_leg_model": {
+          "by_place_type": {},
+          "evidence_status": "unknown",
+          "gains_counted_by_type": null,
+          "reason": "Unknown entrance links",
+          "unique_residents": {
+            "after": null,
+            "before": null,
+            "newly_gained": null
+          }
+        },
+        "limit": "Population nodes model origins, not home addresses. These estimates are not a forecast of rides, modal shift, crashes avoided or traffic reduction. First-leg model access is separate and does not prove a complete return trip. Unknown trip evidence leaves unproved opportunities out of confirmed counts.",
+        "method": "Union population-node shares with at least one complete trip. Newly gained means at least one new destination, even with prior access; it is not after minus before. Type gains union nodes per type before summing types.",
+        "missing_groups": {
+          "age": {
+            "reason": "No sourced group counts and joins",
+            "value": null
+          },
+          "disability": {
+            "reason": "No sourced group counts and joins",
+            "value": null
+          },
+          "household": {
+            "reason": "No sourced group counts and joins",
+            "value": null
+          },
+          "pupil": {
+            "reason": "No sourced group counts and joins",
+            "value": null
+          }
+        },
+        "population": {
+          "allocation": "equal shares at residential bike nodes, then other bike nodes, then nearest within 300 m",
+          "buffer_excluded": 702516.0,
+          "partial_cell_rule": "whole count when centroid is inside council",
+          "scope": "council population cells by centroid; destinations may be in the buffer",
+          "snapped": 171068.0,
+          "source": {
+            "licence": "CC BY 4.0",
+            "path": "population.gpkg",
+            "sha256": "7228344d8fad1e6995db2c42c2dc7de2119d7175c5c4a7022824021541697897",
+            "source": "Kontur Population via the Humanitarian Data Exchange",
+            "url": "https://geodata-eu-central-1-kontur-public.s3.amazonaws.com/kontur_datasets/kontur_population_AU_20231101.gpkg.gz"
+          },
+          "unit": "estimated residents",
+          "unsnapped": 8.0
+        },
+        "strict": {
+          "by_place_type": {
+            "aged_care": {
+              "after": 0,
+              "before": 0,
+              "newly_gained": 0
+            },
+            "college": {
+              "after": 0,
+              "before": 0,
+              "newly_gained": 0
+            },
+            "library": {
+              "after": 0,
+              "before": 0,
+              "newly_gained": 0
+            },
+            "school": {
+              "after": 0,
+              "before": 0,
+              "newly_gained": 0
+            },
+            "station": {
+              "after": 0,
+              "before": 0,
+              "newly_gained": 0
+            },
+            "town_centre": {
+              "after": 0,
+              "before": 0,
+              "newly_gained": 0
+            },
+            "university": {
+              "after": 0,
+              "before": 0,
+              "newly_gained": 0
+            }
+          },
+          "evidence_status": "confirmed_route_model",
+          "gains_counted_by_type": 0,
+          "unique_residents": {
+            "after": 0,
+            "before": 0,
+            "newly_gained": 0
+          }
+        }
+      },
+      "works_ids": [],
+      "works_summary": {
+        "crossing_upgrades": [],
+        "distinct_sections": 0,
+        "existing_links_retained": {
+          "element_ids": [],
+          "length_m": 0,
+          "scope": "Links in complete proved return trips, excluding new works."
+        },
+        "gap_records": 294,
+        "km_by_design": {
+          "design_unknown": 0.0,
+          "path_use_unknown": 0.0,
+          "protected_cycleway": 0.0,
+          "quiet_street": 0.0,
+          "shared_path": 0.0
+        },
+        "parking_spaces": {
+          "added": {
+            "evidence_status": "derived",
+            "known_element_ids": [],
+            "known_subtotal": 0,
+            "method": "Sum disjoint physical link values; special uses are not added again.",
+            "missing_element_ids": [],
+            "reason": null,
+            "scope": "Selected physical works links and crossings; each work counted once.",
+            "source": "Works catalog parking records",
+            "unit": "vehicle spaces",
+            "value": 0
+          },
+          "after": {
+            "evidence_status": "derived",
+            "known_element_ids": [],
+            "known_subtotal": 0,
+            "method": "Sum disjoint physical link values; special uses are not added again.",
+            "missing_element_ids": [],
+            "reason": null,
+            "scope": "Selected physical works links and crossings; each work counted once.",
+            "source": "Works catalog parking records",
+            "unit": "vehicle spaces",
+            "value": 0
+          },
+          "before": {
+            "evidence_status": "derived",
+            "known_element_ids": [],
+            "known_subtotal": 0,
+            "method": "Sum disjoint physical link values; special uses are not added again.",
+            "missing_element_ids": [],
+            "reason": null,
+            "scope": "Selected physical works links and crossings; each work counted once.",
+            "source": "Works catalog parking records",
+            "unit": "vehicle spaces",
+            "value": 0
+          },
+          "net": {
+            "evidence_status": "derived",
+            "known_element_ids": [],
+            "known_subtotal": 0,
+            "method": "Sum disjoint physical link values; special uses are not added again.",
+            "missing_element_ids": [],
+            "reason": null,
+            "scope": "Selected physical works links and crossings; each work counted once.",
+            "source": "Works catalog parking records",
+            "unit": "vehicle spaces",
+            "value": 0
+          },
+          "removed": {
+            "evidence_status": "derived",
+            "known_element_ids": [],
+            "known_subtotal": 0,
+            "method": "Sum disjoint physical link values; special uses are not added again.",
+            "missing_element_ids": [],
+            "reason": null,
+            "scope": "Selected physical works links and crossings; each work counted once.",
+            "source": "Works catalog parking records",
+            "unit": "vehicle spaces",
+            "value": 0
+          },
+          "special_uses": {
+            "accessible": {
+              "added": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "after": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "before": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "net": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "removed": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              }
+            },
+            "bike_parking": {
+              "added": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "bike spaces",
+                "value": 0
+              },
+              "after": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "bike spaces",
+                "value": 0
+              },
+              "before": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "bike spaces",
+                "value": 0
+              },
+              "net": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "bike spaces",
+                "value": 0
+              },
+              "removed": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "bike spaces",
+                "value": 0
+              }
+            },
+            "loading": {
+              "added": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "after": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "before": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "net": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "removed": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              }
+            },
+            "school_drop_off": {
+              "added": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "after": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "before": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "net": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "removed": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              }
+            },
+            "short_stay": {
+              "added": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "after": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "before": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "net": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "removed": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              }
+            }
+          }
+        },
+        "unique_roads": 0,
+        "unnamed_roads": 0
+      }
+    },
+    {
+      "element_ids": [],
+      "identity": {
+        "rank": 0,
+        "scenario": "heavy"
+      },
+      "project_ids": [],
+      "resident_outcomes": {
+        "evidence_status": "modelled_with_missing_trip_evidence",
+        "first_leg_model": {
+          "by_place_type": {},
+          "evidence_status": "unknown",
+          "gains_counted_by_type": null,
+          "reason": "Unknown entrance links",
+          "unique_residents": {
+            "after": null,
+            "before": null,
+            "newly_gained": null
+          }
+        },
+        "limit": "Population nodes model origins, not home addresses. These estimates are not a forecast of rides, modal shift, crashes avoided or traffic reduction. First-leg model access is separate and does not prove a complete return trip. Unknown trip evidence leaves unproved opportunities out of confirmed counts.",
+        "method": "Union population-node shares with at least one complete trip. Newly gained means at least one new destination, even with prior access; it is not after minus before. Type gains union nodes per type before summing types.",
+        "missing_groups": {
+          "age": {
+            "reason": "No sourced group counts and joins",
+            "value": null
+          },
+          "disability": {
+            "reason": "No sourced group counts and joins",
+            "value": null
+          },
+          "household": {
+            "reason": "No sourced group counts and joins",
+            "value": null
+          },
+          "pupil": {
+            "reason": "No sourced group counts and joins",
+            "value": null
+          }
+        },
+        "population": {
+          "allocation": "equal shares at residential bike nodes, then other bike nodes, then nearest within 300 m",
+          "buffer_excluded": 702516.0,
+          "partial_cell_rule": "whole count when centroid is inside council",
+          "scope": "council population cells by centroid; destinations may be in the buffer",
+          "snapped": 171068.0,
+          "source": {
+            "licence": "CC BY 4.0",
+            "path": "population.gpkg",
+            "sha256": "7228344d8fad1e6995db2c42c2dc7de2119d7175c5c4a7022824021541697897",
+            "source": "Kontur Population via the Humanitarian Data Exchange",
+            "url": "https://geodata-eu-central-1-kontur-public.s3.amazonaws.com/kontur_datasets/kontur_population_AU_20231101.gpkg.gz"
+          },
+          "unit": "estimated residents",
+          "unsnapped": 8.0
+        },
+        "strict": {
+          "by_place_type": {
+            "aged_care": {
+              "after": 0,
+              "before": 0,
+              "newly_gained": 0
+            },
+            "college": {
+              "after": 0,
+              "before": 0,
+              "newly_gained": 0
+            },
+            "library": {
+              "after": 0,
+              "before": 0,
+              "newly_gained": 0
+            },
+            "school": {
+              "after": 0,
+              "before": 0,
+              "newly_gained": 0
+            },
+            "station": {
+              "after": 0,
+              "before": 0,
+              "newly_gained": 0
+            },
+            "town_centre": {
+              "after": 0,
+              "before": 0,
+              "newly_gained": 0
+            },
+            "university": {
+              "after": 0,
+              "before": 0,
+              "newly_gained": 0
+            }
+          },
+          "evidence_status": "confirmed_route_model",
+          "gains_counted_by_type": 0,
+          "unique_residents": {
+            "after": 0,
+            "before": 0,
+            "newly_gained": 0
+          }
+        }
+      },
+      "works_ids": [],
+      "works_summary": {
+        "crossing_upgrades": [],
+        "distinct_sections": 0,
+        "existing_links_retained": {
+          "element_ids": [],
+          "length_m": 0,
+          "scope": "Links in complete proved return trips, excluding new works."
+        },
+        "gap_records": 294,
+        "km_by_design": {
+          "design_unknown": 0.0,
+          "path_use_unknown": 0.0,
+          "protected_cycleway": 0.0,
+          "quiet_street": 0.0,
+          "shared_path": 0.0
+        },
+        "parking_spaces": {
+          "added": {
+            "evidence_status": "derived",
+            "known_element_ids": [],
+            "known_subtotal": 0,
+            "method": "Sum disjoint physical link values; special uses are not added again.",
+            "missing_element_ids": [],
+            "reason": null,
+            "scope": "Selected physical works links and crossings; each work counted once.",
+            "source": "Works catalog parking records",
+            "unit": "vehicle spaces",
+            "value": 0
+          },
+          "after": {
+            "evidence_status": "derived",
+            "known_element_ids": [],
+            "known_subtotal": 0,
+            "method": "Sum disjoint physical link values; special uses are not added again.",
+            "missing_element_ids": [],
+            "reason": null,
+            "scope": "Selected physical works links and crossings; each work counted once.",
+            "source": "Works catalog parking records",
+            "unit": "vehicle spaces",
+            "value": 0
+          },
+          "before": {
+            "evidence_status": "derived",
+            "known_element_ids": [],
+            "known_subtotal": 0,
+            "method": "Sum disjoint physical link values; special uses are not added again.",
+            "missing_element_ids": [],
+            "reason": null,
+            "scope": "Selected physical works links and crossings; each work counted once.",
+            "source": "Works catalog parking records",
+            "unit": "vehicle spaces",
+            "value": 0
+          },
+          "net": {
+            "evidence_status": "derived",
+            "known_element_ids": [],
+            "known_subtotal": 0,
+            "method": "Sum disjoint physical link values; special uses are not added again.",
+            "missing_element_ids": [],
+            "reason": null,
+            "scope": "Selected physical works links and crossings; each work counted once.",
+            "source": "Works catalog parking records",
+            "unit": "vehicle spaces",
+            "value": 0
+          },
+          "removed": {
+            "evidence_status": "derived",
+            "known_element_ids": [],
+            "known_subtotal": 0,
+            "method": "Sum disjoint physical link values; special uses are not added again.",
+            "missing_element_ids": [],
+            "reason": null,
+            "scope": "Selected physical works links and crossings; each work counted once.",
+            "source": "Works catalog parking records",
+            "unit": "vehicle spaces",
+            "value": 0
+          },
+          "special_uses": {
+            "accessible": {
+              "added": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "after": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "before": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "net": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "removed": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              }
+            },
+            "bike_parking": {
+              "added": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "bike spaces",
+                "value": 0
+              },
+              "after": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "bike spaces",
+                "value": 0
+              },
+              "before": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "bike spaces",
+                "value": 0
+              },
+              "net": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "bike spaces",
+                "value": 0
+              },
+              "removed": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "bike spaces",
+                "value": 0
+              }
+            },
+            "loading": {
+              "added": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "after": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "before": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "net": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "removed": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              }
+            },
+            "school_drop_off": {
+              "added": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "after": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "before": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "net": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "removed": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              }
+            },
+            "short_stay": {
+              "added": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "after": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "before": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "net": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              },
+              "removed": {
+                "evidence_status": "derived",
+                "known_element_ids": [],
+                "known_subtotal": 0,
+                "method": "Sum disjoint physical link values; special uses are not added again.",
+                "missing_element_ids": [],
+                "reason": null,
+                "scope": "Selected physical works links and crossings; each work counted once.",
+                "source": "Works catalog parking records",
+                "unit": "vehicle spaces",
+                "value": 0
+              }
+            }
+          }
+        },
+        "unique_roads": 0,
+        "unnamed_roads": 0
+      }
+    }
+  ],
+  "check_command": "uv run --frozen python artifacts/Q1.6/collect_resident_selection.py",
+  "code": {
+    "method": "Sorted package paths and bytes, length-prefixed; excludes bytecode caches",
+    "sha256": "5bcf81cdda56a32b8dba64337e998189d61807f91a7167d4804643b2ee9165df",
+    "version": "0.1.0"
+  },
+  "input_hashes": {
+    "region_and_profile": "6b7cd7698f58145f6669419dd0e4fba0cd4378fab2e1430a32df0a772127b665"
+  },
+  "outputs": [
+    {
+      "path": "access_homes.geojson",
+      "sha256": "64e5ee7d19083b024fdadaba43c37caa6ca5f72a1ce0ef2cf4123d7c914752ff"
+    },
+    {
+      "path": "frontier.json",
+      "sha256": "cfcfc958051333790e5075c0204dc0e61bfe77ee54999e1ec3bcea24853bf0f2"
+    },
+    {
+      "path": "network.geojson",
+      "sha256": "956f6c9c40e9364bb9984f41f7b5294e28a4a3120d7b61af815011f4bd61ca6f"
+    },
+    {
+      "path": "places.geojson",
+      "sha256": "b275748f27eb07121541c246e22a64058d21b81e39bff4d3d823ccffeaa23803"
+    },
+    {
+      "path": "projects.csv",
+      "sha256": "6e49858dbb626819ba2f361646d9efcd37d6d9558126c14ac8bbf026dfa59c40"
+    },
+    {
+      "path": "projects.geojson",
+      "sha256": "e4914e1531bd5ca936715cf6e777265c7039ec62846f7388269bca0bc2fc0977"
+    },
+    {
+      "path": "projects.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "proposal.json",
+      "sha256": "6efd815f2ad9ea10ac413b58654ce8150349d4d9087a0946d10ec53185b9bb90"
+    },
+    {
+      "path": "report.html",
+      "sha256": "b34edb62830671e5812766df15ec2ebc02b2c9d7814ac2185e23204c8de34cd0"
+    },
+    {
+      "path": "summary.json",
+      "sha256": "7b05483eb6e7875cdb105e8cdffa152515ac349be69950637dd592b42f1521d9"
+    }
+  ],
+  "report_bytes": 7620426,
+  "resident_recipe": {
+    "command": "import json;p=json.load(open('proposal.json'))['selected'];print(p['outcomes']['resident_outcomes']['strict']['unique_residents']['newly_gained'])",
+    "value": 0.0
+  },
+  "scope": "Selected curve resident outcomes, works summary and exact rows, map, totals, list, sheets and JSON/CSV exports. Empty real curves prove honest empty selection, not local works or field safety. Two disconnected test-only grids prove nonempty crossing rank selection and sheet plans. Goal/stage packages and full browser acceptance remain open. This run does not prove performance.",
+  "snapshot": {
+    "id": "2026-10-01",
+    "sha256": "2eaf0b00832565765c42e07b48ad7c6117436194487f45931e348f6772964bba"
+  }
+}

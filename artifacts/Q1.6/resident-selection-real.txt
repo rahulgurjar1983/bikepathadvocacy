@@ -1,0 +1,1 @@
+Fresh offline resident and works views agree with selected packages; output hashes match
