@@ -53,7 +53,10 @@ saved = {
     "input_hashes": record["input_hashes"],
     "counts": counts,
     "outputs": outputs,
-    "scope": "Archive sheet records only; shared page selection, exports and goal/stage packages remain open",
+    "scope": (
+        "Archive sheet records only; shared page selection, exports "
+        "and goal/stage packages remain open"
+    ),
 }
 (proof / "archive-sheets.json").write_text(json.dumps(saved, sort_keys=True, indent=2) + "\n")
 shutil.copyfile("/tmp/q16-sheets-time.txt", proof / "sheets-time-full.txt")
