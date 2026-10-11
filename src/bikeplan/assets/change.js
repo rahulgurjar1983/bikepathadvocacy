@@ -73,6 +73,12 @@ window.addEventListener("load", function () {
     const pick = Object.fromEntries(Object.entries(saved.model_totals).map(([name, metric]) => [name, metric.value]));
     draw(saved, key);
     document.getElementById("change-totals").dataset.package = key;
+    const residents = document.getElementById("selected-residents");
+    if (residents) {
+      residents.dataset.package = key;
+      document.getElementById("resident-package").textContent = key;
+      document.getElementById("resident-summary").textContent = JSON.stringify(saved.outcomes.resident_outcomes);
+    }
     const worksData = document.getElementById("works-data");
     if (worksData) {
       const plans = JSON.parse(worksData.textContent)[current];

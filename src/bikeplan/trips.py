@@ -1,3 +1,4 @@
+import hashlib
 import html
 import json
 from itertools import combinations, pairwise
@@ -472,5 +473,59 @@ def resident_outcomes(before, after, population, destinations):
             "forecast of rides, modal shift, crashes avoided or traffic reduction. First-leg "
             "model access is separate and does not prove a complete return trip. Unknown trip "
             "evidence leaves unproved opportunities out of confirmed counts."
+        ),
+    }
+
+
+def resident_section(proposal):
+    package = proposal["selected"]
+    identity = package["identity"]
+    key = f"{identity['scenario']}:{identity['rank']}"
+    outcomes = package["outcomes"]["resident_outcomes"]
+    return (
+        f'<section id="selected-residents" data-package="{html.escape(key, quote=True)}">'
+        "<h2>Residents in the selected package</h2>"
+        '<p id="resident-package"><code>' + html.escape(key) + "</code></p>"
+        "<p>I count each population share once per route rule. Before, after and newly "
+        "gained use this package. Place-type counts overlap. Strict return trips stay "
+        "apart from calm first-leg model access. Unknown counts keep their reasons.</p>"
+        '<p><a href="#F24">Resident unions and their source rule</a>: '
+        '<code id="resident-summary">'
+        + html.escape(json.dumps(outcomes, sort_keys=True))
+        + "</code></p>"
+        "<p>The full curve tables below are separate evidence for all packages. "
+        "Zero proved trips can reflect missing route evidence; it does not prove "
+        "that no useful trip exists. These are model origins, not home addresses "
+        "or a forecast of rides, crashes or traffic.</p></section>"
+    )
+
+
+def resident_figure(proposal, text):
+    return {
+        "id": "F24",
+        "spec": "spec 16",
+        "label": "Unique estimated residents gaining a strict return trip",
+        "value": proposal["selected"]["outcomes"]["resident_outcomes"]["strict"][
+            "unique_residents"
+        ]["newly_gained"],
+        "unit": "estimated residents",
+        "inputs": [{"name": "proposal.json", "sha256": hashlib.sha256(text).hexdigest()}],
+        "sources": [
+            {
+                "name": "Snapshot population and OpenStreetMap contributors",
+                "licence": "See snapshot manifest for population; ODbL 1.0 for OpenStreetMap",
+                "request": "population and network.osm.gz in the snapshot folder",
+            }
+        ],
+        "method": (
+            "I union population-node shares gaining at least one new confirmed return trip "
+            "in the saved choice. Several places or works do not multiply a share. "
+            "The archived resident record keeps before, after, place types, source scope "
+            "and evidence limits. First-leg model access stays separate. Zero proved "
+            "gains can reflect missing evidence; it does not mean no useful trips exist."
+        ),
+        "recipe": (
+            "import json;p=json.load(open('proposal.json'))['selected'];"
+            "print(p['outcomes']['resident_outcomes']['strict']['unique_residents']['newly_gained'])"
         ),
     }
