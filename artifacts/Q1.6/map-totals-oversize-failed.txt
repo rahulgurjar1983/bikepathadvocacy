@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/oem/claude/bikepathadvocacy/artifacts/Q1.6/collect_map_totals.py", line 15, in <module>
+    assert (out / "report.html").stat().st_size <= 8_000_000
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

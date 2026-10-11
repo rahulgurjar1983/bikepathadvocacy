@@ -1,0 +1,79 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+__ test_fr16_1_saved_model_totals_have_full_precision_units_scope_and_sources __
+
+built = PosixPath('/tmp/pytest-of-oem/pytest-703/page-sheets0/out')
+
+    def test_fr16_1_saved_model_totals_have_full_precision_units_scope_and_sources(built):
+        record = json.loads((built / "proposal.json").read_text())
+        frontier = json.loads((built / "frontier.json").read_text())
+        for package in record["packages"]:
+            identity = package["identity"]
+            curve = next(c for c in frontier["scenarios"] if c["id"] == identity["scenario"])
+            pick = curve["picks"][identity["rank"]]
+>           assert set(package["model_totals"]) == set(TOTAL_KEYS)
+                       ^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'model_totals'
+
+tests/test_proposal_map_totals.py:32: KeyError
+---------------------------- Captured stdout setup -----------------------------
+F1 10.4 km
+F2 6.0 km
+F3 0.0 km
+F4 24 pieces
+F5 100.0 points
+F6 30.0 points
+F7 0 spaces
+F8 0.0 km
+F9 0.0 km
+F10 1500.0 people
+F11 0 km
+F12 9 steps
+F13 2 projects
+F14 0 roads
+F15 1500.0 people
+F16 0 people
+F17 0 people
+F18 0 people
+F19 1500.0 people
+F20 0 people
+F21 0 people
+F22 0 people
+F23 0 vehicle spaces
+_____ test_fr15_2_map_opening_and_totals_use_saved_package_offline[light] ______
+
+browser = <selenium.webdriver.chrome.webdriver.WebDriver (session="51bb4b5a043fc4a3ad82c30fdae52ddb")>
+built = PosixPath('/tmp/pytest-of-oem/pytest-703/page-sheets0/out')
+name = 'light'
+
+    @pytest.mark.parametrize("name", ["light", "heavy"])
+    def test_fr15_2_map_opening_and_totals_use_saved_package_offline(browser, built, name):
+        record = json.loads((built / "proposal.json").read_text())
+        browser.find_element(By.ID, f"scenario-{name}").click()
+        changed = next(p for p in record["packages"] if p["identity"] == {"scenario": name, "rank": 1})
+>       changed["model_totals"]["score"]["value"] = 12.345678901
+        ^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'model_totals'
+
+tests/test_proposal_map_totals.py:50: KeyError
+_____ test_fr15_2_map_opening_and_totals_use_saved_package_offline[heavy] ______
+
+browser = <selenium.webdriver.chrome.webdriver.WebDriver (session="51bb4b5a043fc4a3ad82c30fdae52ddb")>
+built = PosixPath('/tmp/pytest-of-oem/pytest-703/page-sheets0/out')
+name = 'heavy'
+
+    @pytest.mark.parametrize("name", ["light", "heavy"])
+    def test_fr15_2_map_opening_and_totals_use_saved_package_offline(browser, built, name):
+        record = json.loads((built / "proposal.json").read_text())
+        browser.find_element(By.ID, f"scenario-{name}").click()
+        changed = next(p for p in record["packages"] if p["identity"] == {"scenario": name, "rank": 1})
+>       changed["model_totals"]["score"]["value"] = 12.345678901
+        ^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'model_totals'
+
+tests/test_proposal_map_totals.py:50: KeyError
+=========================== short test summary info ============================
+FAILED tests/test_proposal_map_totals.py::test_fr16_1_saved_model_totals_have_full_precision_units_scope_and_sources
+FAILED tests/test_proposal_map_totals.py::test_fr15_2_map_opening_and_totals_use_saved_package_offline[light]
+FAILED tests/test_proposal_map_totals.py::test_fr15_2_map_opening_and_totals_use_saved_package_offline[heavy]
+3 failed in 134.06s (0:02:14)

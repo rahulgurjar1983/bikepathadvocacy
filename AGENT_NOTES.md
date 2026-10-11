@@ -861,3 +861,41 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 - When adding sheet links, also run the old no-network cases in
   test_run_report.py and test_report_map.py. A dead proxy alone does not
   check the saved HTML contract. The new case checks the generated page.
+
+### Q1.6 shared curve map and model totals
+
+- Save each curve's full model totals as scoped metrics in the proposal
+  record. Keep units, method and source with each value. The curve and
+  its recipes stay in the archive. Shared works, delivery and strict
+  outcome views still need a full join to the selected record; keep
+  the shared-view pending flag until all those views use it.
+- Use the record's exact project and element sets for the orange map.
+  Draw each shared element once. Mark each path with its package,
+  project and element IDs. The purple layer is the old minimum-gain
+  shortlist; name it so readers can tell the two choices apart.
+- Use the existing [Leaflet GeoJSON layer](https://leafletjs.com/reference.html#geojson)
+  and its add event to mark rendered paths. No new package is needed.
+  A visible map choice has a figure link, like the opening's rank.
+- The new browser case changes a saved model total in the embedded
+  record, then checks the displayed score and JSON export. This checks
+  that the views read the record, rather than a second copy of the curve.
+- Run `uv run --frozen python artifacts/Q1.6/collect_map_totals.py` after
+  the fresh full build in the verification entry. Empty real choices
+  prove honest empty records, not local works or field safety. Goal
+  and stage choices and full browser proof remain open.
+- The first test run timed out in Chromium before opening the report.
+  Keep `artifacts/Q1.6/map-totals-browser-start-failed.txt`. A fresh
+  session reached the new assertions; no browser check was waived.
+- The first full build failed the report size check before browser proof.
+  Its digest and limits are in `artifacts/Q1.6/map-totals-oversize.json`.
+  Keep that failed run's time and check log too. Embed the CSV bytes as
+  gzip data with a fixed date and decode them with the browser's built-in
+  [DecompressionStream](https://developer.mozilla.org/en-US/docs/Web/API/DecompressionStream).
+  Python still writes the CSV. This keeps its quoting, nulls and full
+  values, while cutting repeated text from the page. The archive keeps
+  every record. A fresh full run must pass the same size check.
+- After the size fix, the old export checks passed, including CSV field
+  equality. The new browser fixture timed out before loading its page;
+  that log is `artifacts/Q1.6/map-totals-regression-start-failed.txt`.
+  Keep startup errors separate from assertion failures and rerun the
+  affected cases in a fresh session. Do not treat a timeout as a pass.
