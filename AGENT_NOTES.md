@@ -1051,3 +1051,12 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 - Browser startup timed out twice while the host load was over 100. A fresh
   session passed with no check waived. Goal and stage packages, other shared
   views and full browser proof remain open.
+
+### Q1.6 goal and stage option packages
+
+- Sourced stages and route options save as `option_packages` in the record.
+  Their identity is the option ID and type, never a scenario or rank. They are
+  concept packages with null trip outcomes until a recompute exists.
+- The old record test pins `pending`, so it still lists the two open items.
+  Selecting these packages in the views is the next part.
+- Run `uv run --frozen python artifacts/Q1.6/collect_option_packages.py`.
