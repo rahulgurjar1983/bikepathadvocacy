@@ -38,7 +38,11 @@ def check(browser, package):
     identity = package["identity"]
     key = f"{identity['scenario']}:{identity['rank']}"
     assert browser.find_element(By.ID, "delivery").get_attribute("data-package") == key
-    assert browser.find_element(By.ID, "delivery-package").text == key
+    label = browser.find_element(By.ID, "delivery-package")
+    assert label.text == key
+    link = label.find_element(By.XPATH, "ancestor::a[1]")
+    assert link.get_attribute("href").split("#")[-1] == "F13"
+    assert browser.find_elements(By.ID, "F13")
     for selector in ("delivery-choice", "opening-delivery"):
         view = browser.find_element(By.ID, selector)
         assert view.is_displayed()

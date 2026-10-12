@@ -956,3 +956,10 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 - Ruff format can leave long strings over the lint limit. Use Ruff check on
   the changed files too. The push hook caught long strings in the opening
   and proof script. Split strings without changing their rendered text.
+- Keep a package label before the appendix inside a figure link. Put its
+  live label ID on the code node so text updates keep the link. The CI run
+  caught a bare delivery rank; the retained number-link tests now run with
+  the new delivery cases. Labels after the appendix use its evidence scope.
+- The first regression browser session timed out before its assertions.
+  Keep `artifacts/Q1.6/delivery-selection-regression-start-failed.txt`.
+  A fresh session runs the same cases and time limits; no checks are waived.
