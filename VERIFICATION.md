@@ -1441,3 +1441,26 @@ Artifact: `artifacts/Q1.6/archive-trip-selection.json`,
 `artifacts/Q1.6/trip-selection-time-full.txt`,
 `artifacts/Q1.6/trip-selection-red.txt`,
 `artifacts/Q1.6/trip-selection-green.txt`.
+
+### Q1.6 selected evidence gaps
+
+```sh
+uv run --frozen pytest tests/test_proposal_evidence_selection.py tests/test_report.py::test_fr13_2_no_number_outside_a_figure_link_or_the_appendix -q
+/usr/bin/time -v -o /tmp/q16-evidence-selection-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.6-evidence-selection
+uv run --frozen python artifacts/Q1.6/collect_evidence_selection.py
+```
+
+Expect: The selected evidence view reads the proposal record on load and
+when the choice changes. Its route gaps and missing blocks match the offline
+JSON/CSV exports on screen and in print. Null values keep their reasons.
+Evidence text stays plain text, even with markup in a source reason.
+The script-free page keeps the saved choice. The real archive keeps the
+shipped settings and each gap matches its frontier record. Route gaps are
+unproved trips, not a ranked survey plan or proof of field safety.
+Other shared views, goal and stage packages and full browser proof remain
+open. This part does not prove useful new trips or run limits.
+
+Artifact: `artifacts/Q1.6/archive-evidence-selection.json`,
+`artifacts/Q1.6/evidence-selection-time-full.txt`,
+`artifacts/Q1.6/evidence-selection-red.txt`,
+`artifacts/Q1.6/evidence-selection-green.txt`.

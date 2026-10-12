@@ -53,3 +53,22 @@ def project_views(record, frontier):
         f"<script>{(ASSETS / 'proposal_views.js').read_text()}</script>"
     )
     return section, scripts
+
+
+def evidence_view(record):
+    selected = record["selected"]
+    identity = selected["identity"]
+    key = f"{identity['scenario']}:{identity['rank']}"
+    return (
+        f'<section id="selected-evidence" data-package="{html.escape(key, quote=True)}">'
+        "<h2>Evidence gaps in the selected package</h2>"
+        '<p id="evidence-package"><code>' + html.escape(key) + "</code></p>"
+        "<p>These limits belong to this choice. Route gaps name unproved trips, not "
+        "a ranked survey plan. Missing school and area proof stays unknown. Model "
+        "criteria do not prove field safety. The full curve tables are separate "
+        "evidence for all packages.</p>"
+        '<p><a href="#F25">Route gap scope and source</a></p>'
+        '<p><code id="evidence-summary">'
+        + html.escape(json.dumps(selected["evidence_limits"], sort_keys=True))
+        + "</code></p></section>"
+    )

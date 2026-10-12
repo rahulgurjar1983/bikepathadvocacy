@@ -983,3 +983,18 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   real counts with frontier witnesses, checks offline view identities and
   exports, and replays the figure recipe. Empty choices do not prove useful
   new trips. Goal and stage packages and full browser acceptance stay open.
+
+### Q1.6 selected evidence gaps
+
+- Read route gaps and missing blocks from the selected record's evidence
+  limits. These gaps describe unproved trips; they are not the focused
+  survey queue. Keep the full curve tables as separate evidence.
+- Reuse native [textContent](https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent)
+  for live text, as the shared outcome views do. It preserves null and
+  reasons without treating source text as HTML. No new package is needed.
+- Run `uv run --frozen python artifacts/Q1.6/collect_evidence_selection.py`
+  after the fresh full build in the verification entry. It checks evidence
+  limits, shared view identities, offline exports, print and scripts off.
+  Each real route gap must match its frontier package. Empty choices show
+  missing evidence, not proof of no useful trips. Goal and stage packages,
+  other shared views and full browser acceptance remain open.
