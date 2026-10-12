@@ -98,6 +98,29 @@ def package_record(curve, package, region_id):
         },
         "outcomes": {
             "strict_complete_trips": len(package["strict"]),
+            "trip_summary": {
+                key: metric(value, unit, scope, source, method)
+                for key, value, unit, method in (
+                    (
+                        "strict_return_trips",
+                        len(package["strict"]),
+                        "return trips",
+                        "Count saved complete confirmed return-trip witnesses; not residents",
+                    ),
+                    (
+                        "route_groups",
+                        len(package["groups"]),
+                        "route groups",
+                        "Count saved route groups; separate groups are not one joined network",
+                    ),
+                    (
+                        "route_gaps",
+                        len(package["gaps"]),
+                        "route gaps",
+                        "Count saved unproved route records; not distinct street works",
+                    ),
+                )
+            },
             "continuous_network": package["continuous_network"],
             "resident_outcomes": {
                 key: {name: value for name, value in item.items() if name != "membership"}

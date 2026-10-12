@@ -41,7 +41,13 @@ from bikeplan.report import (
 )
 from bikeplan.snapshot import verify_snapshot
 from bikeplan.stress import score_edges, stress_features, stress_summary
-from bikeplan.trips import resident_figure, resident_section, trip_section
+from bikeplan.trips import (
+    resident_figure,
+    resident_section,
+    selected_trip_section,
+    trip_figure,
+    trip_section,
+)
 from bikeplan.width import fuse
 from bikeplan.works import works_figures, works_section
 
@@ -265,6 +271,7 @@ def build_all(
     priced_figures, cost_links = cost_figures(frontier, frontier_bytes.decode())
     figures = [
         resident_figure(proposal, proposal_bytes),
+        trip_figure(proposal, proposal_bytes),
         *priced_figures,
         *figure_list(text, map_text),
         *change_figures(frontier, frontier_bytes.decode()),
@@ -288,6 +295,7 @@ def build_all(
         selected_projects
         + details(payload["summary"], canon(sheets), profile, payload)
         + resident_section(proposal)
+        + selected_trip_section(proposal)
         + trip_section(frontier)
         + works_body
         + metadata_records(frontier),
