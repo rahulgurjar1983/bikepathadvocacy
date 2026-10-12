@@ -937,3 +937,32 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   for the recipe proof; do not assume both archive layouts match. The first
   collector's missing-file error stays in
   `artifacts/Q1.6/resident-selection-collector-failed.txt`.
+
+### Q1.6 shared delivery selection
+
+- Read costs and the next decision from the selected proposal record in both
+  the opening and delivery view. Save owner, approvals, funding and budget
+  blocks in each package too. Do not use a second set of rendered curve
+  answers for selection. The embedded delivery data now holds figure links.
+- Reuse the browser's native
+  [replaceChildren](https://developer.mozilla.org/en-US/docs/Web/API/Element/replaceChildren)
+  to render text and links. Missing prices and partial owner scope stay visible.
+  Sourced cost groups retain their own figure links and exclusions.
+- Run `uv run --frozen python artifacts/Q1.6/collect_delivery_selection.py`
+  after the fresh full build in the verification entry. It checks delivery,
+  opening, print and exports offline, plus the saved choice with scripts off.
+  Empty real packages prove truthful gaps. Goal and stage packages, other
+  shared views and full browser acceptance remain open.
+- Ruff format can leave long strings over the lint limit. Use Ruff check on
+  the changed files too. The push hook caught long strings in the opening
+  and proof script. Split strings without changing their rendered text.
+- Keep a package label before the appendix inside a figure link. Put its
+  live label ID on the code node so text updates keep the link. The CI run
+  caught a bare delivery rank; the retained number-link tests now run with
+  the new delivery cases. Labels after the appendix use its evidence scope.
+- The first regression browser session timed out before its assertions.
+  Keep `artifacts/Q1.6/delivery-selection-regression-start-failed.txt`.
+  A fresh session runs the same cases and time limits; no checks are waived.
+- A figure-link repair changes the real report bytes. Rebuild the full
+  archive before the offline collector; do not patch an old report or reuse
+  its digest. Keep the empty confirmed result and unknown delivery fields.

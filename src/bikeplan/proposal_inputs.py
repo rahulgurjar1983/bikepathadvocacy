@@ -601,19 +601,28 @@ def cost_figures(frontier, text):
     return figures, links
 
 
-def delivery_section(frontier, links):
-    curve = next(c for c in frontier["scenarios"] if c["id"] == frontier["default"])
-    rank = curve["recommended_stop"] or 0
+def delivery_section(frontier, links, proposal):
+    selected = proposal["selected"]
+    identity = selected["identity"]
+    key = f"{identity['scenario']}:{identity['rank']}"
     data = {
-        f"{c['id']}:{p['package']['rank']}": delivery_text(
-            p["delivery"], links[f"{c['id']}:{p['package']['rank']}"]
-        )
+        f"{c['id']}:{p['package']['rank']}": {
+            kind: [
+                links[f"{c['id']}:{p['package']['rank']}"][(kind, index)]
+                for index, _ in enumerate(p["delivery"]["costs"][kind]["groups"])
+            ]
+            for kind in ("capital", "upkeep")
+        }
         for c in frontier["scenarios"]
         for p in c["trip_packages"]
     }
     body = (
-        '<section id="delivery"><h2>Delivery and next decision</h2>'
-        '<div id="delivery-choice">' + data[f"{curve['id']}:{rank}"] + "</div>"
+        f'<section id="delivery" data-package="{html.escape(key, quote=True)}">'
+        "<h2>Delivery and next decision</h2>"
+        '<p><a href="#F13"><code id="delivery-package">' + html.escape(key) + "</code></a></p>"
+        f'<div id="delivery-choice" data-package="{html.escape(key, quote=True)}">'
+        + delivery_text(selected, links[key])
+        + "</div>"
         '<p><a href="#proposal-metadata">Cost and delivery source records</a></p></section>'
     )
     script = (

@@ -426,7 +426,8 @@ def proposal_opening(frontier: dict, delivery: str = "", selected: dict | None =
         f"<dl>{impacts}</dl>"
         "<p>Parking before, after, added and net change are unknown without an inventory. "
         "These loss estimates do not prove the full parking impact.</p>"
-        f'<div id="opening-delivery"><p id="council-ask">I ask council to take '
+        f'<div id="opening-delivery" data-package="{chosen["id"]}:{rank}">'
+        '<p id="council-ask">I ask council to take '
         "the next evidence and design step.</p>"
         f"{delivery}</div>"
         "<p>First delivery stage is unknown without sourced stage records. "

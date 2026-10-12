@@ -271,11 +271,11 @@ def build_all(
         *works_figures(frontier, frontier_bytes.decode()),
     ]
     figures.sort(key=lambda item: int(item["id"][1:]))
-    delivery_body, delivery_script = delivery_section(frontier, cost_links)
+    delivery_body, delivery_script = delivery_section(frontier, cost_links, proposal)
     selected_curve = next(c for c in frontier["scenarios"] if c["id"] == frontier["default"])
     selected_rank = selected_curve["recommended_stop"] or 0
     selected_delivery = delivery_text(
-        selected_curve["trip_packages"][selected_rank]["delivery"],
+        proposal["selected"],
         cost_links[f"{selected_curve['id']}:{selected_rank}"],
     )
     works_page = works_section(frontier, proposal)

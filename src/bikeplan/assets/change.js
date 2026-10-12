@@ -66,6 +66,48 @@ window.addEventListener("load", function () {
     document.getElementById("map-package-label").textContent = key;
   }
 
+  function deliveryContent(record, links) {
+    const content = document.createDocumentFragment();
+    function paragraph(text) {
+      const p = document.createElement("p");
+      p.textContent = text;
+      content.append(p);
+      return p;
+    }
+    const decision = record.decision;
+    paragraph("Next decision: " + decision.ask + ". " + decision.reason + ".");
+    for (const [key, label] of [["owner", "Owner"], ["approvals", "Approvals"], ["funding", "Funding"]]) {
+      const block = record[key];
+      let shown = block.value == null ? "unknown" : block.value.map(row =>
+        (row.organization || row.authority || "") + (row.status ? " (" + row.status + ")" : "")
+      ).join("; ");
+      if (block.status === "partial") shown += "; remaining scope unknown";
+      const p = paragraph(label + ": ");
+      const code = document.createElement("code");
+      code.textContent = shown;
+      p.append(code, ".");
+    }
+    for (const [kind, label] of [["capital", "Capital"], ["upkeep", "Upkeep"]]) {
+      const total = record.costs[kind];
+      paragraph(label + " cost: " + (total.low == null ? "unknown" : "sourced range") + ". " + total.reason + ".");
+      total.groups.forEach(function (group, index) {
+        const p = paragraph((total.low == null ? "Partial known scope" : "Whole selected scope") + ": ");
+        for (const [part, join] of [["low", " to "], ["high", " "]]) {
+          const a = document.createElement("a");
+          a.href = "#" + links[kind][index][part === "low" ? 0 : 1];
+          a.textContent = String(group[part]);
+          p.append(a, join);
+        }
+        p.append(group.currency + (kind === "upkeep" ? " per year" : " capital") + ". Source exclusions still apply; this is not proof of affordability.");
+      });
+    }
+    paragraph("Spending, parking loss and weighted disruption are separate measures. Dates are proposed, not funded commitments. Stage trips remain unproved.");
+    paragraph("Proposed stages: " + (record.stages.map(row => row.kind.replaceAll("_", " ")).join("; ") || "unknown") + ". Order and trip outcomes need proof.");
+    paragraph("Spending bound: " + record.budget.status + ". See the source record for scope and exclusions.");
+    paragraph("Required evidence: " + decision.required_evidence.join("; ") + ".");
+    return content;
+  }
+
   function show(step) {
     const chosen = scenario();
     const key = current + ":" + step;
@@ -106,9 +148,18 @@ window.addEventListener("load", function () {
     }
     const deliveryData = document.getElementById("delivery-data");
     if (deliveryData) {
-      const text = JSON.parse(deliveryData.textContent)[current + ":" + step];
-      document.getElementById("delivery-choice").innerHTML = text;
-      document.getElementById("opening-delivery").innerHTML = '<p id="council-ask">I ask council to take the next evidence and design step.</p>' + text;
+      const links = JSON.parse(deliveryData.textContent)[key];
+      document.getElementById("delivery").dataset.package = key;
+      document.getElementById("delivery-package").textContent = key;
+      const choice = document.getElementById("delivery-choice");
+      choice.dataset.package = key;
+      choice.replaceChildren(deliveryContent(saved, links));
+      const openingDelivery = document.getElementById("opening-delivery");
+      openingDelivery.dataset.package = key;
+      const ask = document.createElement("p");
+      ask.id = "council-ask";
+      ask.textContent = "I ask council to take the next evidence and design step.";
+      openingDelivery.replaceChildren(ask, deliveryContent(saved, links));
     }
     const opening = document.getElementById("opening");
     opening.dataset.package = current + ":" + step;
