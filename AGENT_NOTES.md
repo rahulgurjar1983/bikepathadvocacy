@@ -1060,3 +1060,13 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 - The old record test pins `pending`, so it still lists the two open items.
   Selecting these packages in the views is the next part.
 - Run `uv run --frozen python artifacts/Q1.6/collect_option_packages.py`.
+
+### Q1.6 goal and stage package view
+
+- `option_view` renders the record's option packages as a script-free section.
+  A small handler in `proposal_views.js` shows the chosen package using the
+  native [change event](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/change_event).
+  Choosing one here does not change the curve package; the text says so.
+- The real test grid has no sourced options, so the archive shows the empty
+  state. Packages with sets come from the unit and browser cases. Making the
+  other shared views follow an option package, and full browser proof, remain.
