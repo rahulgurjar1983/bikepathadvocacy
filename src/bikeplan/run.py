@@ -27,7 +27,7 @@ from bikeplan.proposal_inputs import (
     metadata_records,
 )
 from bikeplan.proposal_record import proposal_record
-from bikeplan.proposal_views import evidence_view, project_views
+from bikeplan.proposal_views import evidence_view, option_view, project_views
 from bikeplan.propose import KINDS, csv_fields, csv_row, write_propose
 from bikeplan.report import (
     KEEP,
@@ -298,6 +298,7 @@ def build_all(
         + resident_section(proposal)
         + selected_trip_section(proposal)
         + evidence_view(proposal)
+        + option_view(proposal)
         + trip_section(frontier)
         + works_body
         + metadata_records(frontier),

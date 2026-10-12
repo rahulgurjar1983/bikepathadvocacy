@@ -15,3 +15,14 @@ window.addEventListener("package-selected", function (event) {
   for (const article of sheets.querySelectorAll("article")) article.dataset.package = key;
   for (const link of sheets.querySelectorAll("[data-selected-check-link]")) link.href = link.dataset.selectedCheckLink;
 });
+function showOption(select) {
+  const key = select.value;
+  document.getElementById("option-package-label").textContent = key;
+  for (const article of document.querySelectorAll("article[data-option-id]"))
+    article.hidden = article.dataset.optionType + ":" + article.dataset.optionId !== key;
+}
+document.addEventListener("change", function (event) {
+  if (event.target.id === "option-package-select") showOption(event.target);
+});
+const optionSelect = document.getElementById("option-package-select");
+if (optionSelect) showOption(optionSelect);
