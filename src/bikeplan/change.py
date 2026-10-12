@@ -385,6 +385,40 @@ def capped_note(chosen: dict, note_id: str = "change-capped") -> str:
     )
 
 
+def opening_outcomes(selected):
+    trips = selected["outcomes"]["trip_summary"]["strict_return_trips"]
+    residents = selected["outcomes"]["resident_outcomes"]["strict"]
+    fields = (
+        ("trips", "Complete confirmed return-trip witnesses", trips["value"], trips, "F25"),
+        (
+            "residents",
+            "Estimated residents gaining at least one new confirmed return trip",
+            residents["unique_residents"]["newly_gained"],
+            residents,
+            "F24",
+        ),
+    )
+    items = ""
+    for key, label, value, block, figure in fields:
+        shown = "unknown" if value is None else str(value)
+        reason = block.get("reason", "") if value is None else ""
+        items += (
+            f'<dt>{label}</dt><dd><a href="#{figure}" id="opening-outcome-{key}">'
+            f"{html.escape(shown)}</a> "
+            f'<a href="#{figure}"><span id="opening-outcome-{key}-reason">'
+            f"{html.escape(reason)}</span></a></dd>"
+        )
+    return (
+        '<dl id="opening-outcomes">' + items + "</dl>"
+        "<p>Trip witnesses are not residents or school sites. Resident gains union "
+        "population-node shares, including people with prior access who gain a new "
+        "destination. These are confirmed route model results, not measured rides "
+        "or field safety. Calm first-leg model access is a separate measure. "
+        "Zero proved gains can reflect missing evidence; it does not mean no useful "
+        "trips exist.</p>"
+    )
+
+
 def proposal_opening(frontier: dict, delivery: str = "", selected: dict | None = None) -> str:
     chosen = default_scenario(frontier)
     rank = chosen["recommended_stop"] or 0
@@ -415,9 +449,9 @@ def proposal_opening(frontier: dict, delivery: str = "", selected: dict | None =
         f'<p id="package-status" role="status" aria-live="polite" aria-atomic="true">'
         f'{html.escape(status)}<a href="#F13">{rank}</a></p>'
         f'<p id="proposal-state">{state}</p>'
-        "<p>I checked the modelled route choices. Useful complete trips and school sites served "
-        "before, after and newly served are unknown. "
-        "Entrance links and return trips still need proof. "
+        + (opening_outcomes(selected) if selected else "")
+        + "<p>I checked the modelled route choices. School sites served "
+        "before, after and newly served are unknown. School-site coverage is not yet built. "
         "Schools, stations and other places are model goals, not a proved joined network.</p>"
         "<p>Modelled route works are in the "
         '<a href="#change-totals">selected model totals</a>. '
@@ -431,7 +465,7 @@ def proposal_opening(frontier: dict, delivery: str = "", selected: dict | None =
         "the next evidence and design step.</p>"
         f"{delivery}</div>"
         "<p>First delivery stage is unknown without sourced stage records. "
-        "Key gaps: useful trips, school coverage, unique resident gains, usable widths, "
+        "Key gaps: school coverage, usable widths, "
         "safe crossing movements and local walking, tree, bus and driveway effects need checks.</p>"
         '<p>Please see the <a href="#street-plans">local works and their limits</a> '
         'and <a href="#delivery">next decision</a>.</p></section>'
