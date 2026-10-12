@@ -1464,3 +1464,29 @@ Artifact: `artifacts/Q1.6/archive-evidence-selection.json`,
 `artifacts/Q1.6/evidence-selection-time-full.txt`,
 `artifacts/Q1.6/evidence-selection-red.txt`,
 `artifacts/Q1.6/evidence-selection-green.txt`.
+
+
+### Q1.6 opening trip and resident outcomes
+
+```sh
+uv run --frozen pytest -q tests/test_proposal_opening_outcomes.py tests/test_community_opening.py tests/test_report.py::test_fr13_2_no_number_outside_a_figure_link_or_the_appendix
+/usr/bin/time -v -o /tmp/q16-opening-outcomes-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.6-opening-outcomes
+uv run --frozen python artifacts/Q1.6/collect_opening_outcomes.py
+```
+
+Expect: The opening reads complete return-trip witnesses and unique resident
+gains from the saved selected record. Offline rank and scenario changes,
+print and scripts off agree with that record and exports. Unknown counts
+keep null and their reasons. Figure links retain the source and union rule;
+fresh plain-Python recipes match the saved choice. School coverage stays
+unknown. Zero proved gains do not mean no useful trips exist.
+
+This ships the opening outcome view as part of the row. Other shared views,
+goal and stage packages and full browser acceptance remain open. Empty real
+packages do not prove useful local works, field safety or funded delivery.
+This is not a performance claim.
+
+Artifact: `artifacts/Q1.6/archive-opening-outcomes.json`,
+`artifacts/Q1.6/opening-outcomes-time-full.txt`,
+`artifacts/Q1.6/opening-outcomes-red.txt`,
+`artifacts/Q1.6/opening-outcomes-green.txt`.

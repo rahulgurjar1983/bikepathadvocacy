@@ -998,3 +998,20 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   Each real route gap must match its frontier package. Empty choices show
   missing evidence, not proof of no useful trips. Goal and stage packages,
   other shared views and full browser acceptance remain open.
+
+
+### Q1.6 opening trip and resident outcomes
+
+- The opening must use the same trip and resident outcomes as the selected
+  record and detailed views. Keep strict return-trip witnesses apart from
+  unique residents and school sites. A zero proved gain does not prove that
+  no useful route exists. Unknown counts keep their reason and figure link.
+- Use native [textContent](https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent)
+  for live values and reasons, as the shared views do. No new package is needed.
+  Escape saved HTML too. The new cases change the embedded record to check
+  the data flow, print and exports without inventing source observations.
+- Run `uv run --frozen python artifacts/Q1.6/collect_opening_outcomes.py`
+  after the fresh full build in the verification entry. It checks the opening
+  against the detailed views and exports offline and replays both figure
+  recipes. Goal and stage packages, other shared views and full browser
+  acceptance remain open.
