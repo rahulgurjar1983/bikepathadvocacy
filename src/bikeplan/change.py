@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from bikeplan.report import SOURCES, link
+from bikeplan.works import WORKS_OUTCOMES, works_values
 
 ASSETS = Path(__file__).parent / "assets"
 PRELUDE = (
@@ -412,6 +413,11 @@ def opening_outcomes(selected):
             parking,
             "F23",
         ),
+    )
+    values = works_values(selected["works"])
+    fields += tuple(
+        (key, label, values[key], {}, f"F{26 + index}")
+        for index, (key, label, _) in enumerate(WORKS_OUTCOMES)
     )
     items = ""
     for key, label, value, block, figure in fields:
