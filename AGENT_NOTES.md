@@ -1015,3 +1015,26 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   against the detailed views and exports offline and replays both figure
   recipes. Goal and stage packages, other shared views and full browser
   acceptance remain open.
+
+### Q1.6 opening roads and parking loss
+
+- Read unique roads from the selected works and the known parking-loss
+  subtotal from its impacts. Keep the partial coverage reason beside the
+  loss. A known subtotal is not a complete inventory. The curve's loss
+  estimate remains a separate model measure with its own figure link.
+- Reuse native [textContent](https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent)
+  for live text and escape saved HTML. The new cases change the embedded
+  record to check that the opening and exports use the same source, with
+  unknown values and source text retained as text.
+- Run `uv run --frozen python artifacts/Q1.6/collect_opening_impacts.py`
+  after the fresh full build in the verification entry. It checks road
+  counts and scoped parking loss offline, print and scripts off. It also
+  replays both existing figure recipes in a clean folder. Empty real
+  choices do not prove useful works or a known parking inventory.
+  Other shared views, goal and stage packages and full browser proof stay
+  open.
+- A full run embeds the figure recipes in its report; it does not write
+  `figures.json`. The first collector tried to read that file and failed.
+  The failure log is `artifacts/Q1.6/opening-impacts-collector-failed.txt`.
+  Read the linked appendix recipes, check their source hashes and replay
+  them in a clean folder. Do not launch a second full build for that fix.

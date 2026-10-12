@@ -1,0 +1,371 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+___ test_fr16_1_script_free_opening_impacts_use_saved_record_and_keep_limits ___
+
+built = PosixPath('/tmp/pytest-of-oem/pytest-735/page-sheets0/out')
+
+    def test_fr16_1_script_free_opening_impacts_use_saved_record_and_keep_limits(built):
+        record = json.loads((built / "proposal.json").read_text())
+        frontier = json.loads((built / "frontier.json").read_text())
+        selected = copy.deepcopy(record["selected"])
+        selected["works"]["unique_roads"] = 17
+        loss = selected["impacts"]["parking_spaces"]["removed"]
+        loss.update(value=None, known_subtotal=12.345, reason="Unknown bay <script>unsafe</script>")
+        page = Opening()
+        page.feed(proposal_opening(frontier, selected=selected))
+>       assert {key: float(page.text[key]) for key in values(selected)} == values(selected)
+                           ^^^^^^^^^^^^^^
+E       KeyError: 'roads'
+
+tests/test_proposal_opening_impacts.py:30: KeyError
+---------------------------- Captured stdout setup -----------------------------
+F1 10.4 km
+F2 6.0 km
+F3 0.0 km
+F4 24 pieces
+F5 100.0 points
+F6 30.0 points
+F7 0 spaces
+F8 0.0 km
+F9 0.0 km
+F10 1500.0 people
+F11 0 km
+F12 9 steps
+F13 2 projects
+F14 0 roads
+F15 1500.0 people
+F16 0 people
+F17 0 people
+F18 0 people
+F19 1500.0 people
+F20 0 people
+F21 0 people
+F22 0 people
+F23 0 vehicle spaces
+F24 0 estimated residents
+F25 0 return trips
+______ test_fr15_2_opening_impacts_follow_record_exports_and_print[light] ______
+
+browser = <selenium.webdriver.chrome.webdriver.WebDriver (session="0c33718bfdb3ffba8856d980b1bacb99")>
+built = PosixPath('/tmp/pytest-of-oem/pytest-735/page-sheets0/out')
+name = 'light'
+
+    @pytest.mark.parametrize("name", ["light", "heavy"])
+    def test_fr15_2_opening_impacts_follow_record_exports_and_print(browser, built, name):
+        record = json.loads((built / "proposal.json").read_text())
+        browser.find_element(By.ID, f"scenario-{name}").click()
+        changed = next(p for p in record["packages"] if p["identity"] == {"scenario": name, "rank": 2})
+        changed["works"]["unique_roads"] = 17
+        changed["impacts"]["parking_spaces"]["removed"].update(
+            value=None, known_subtotal=12.345, reason="Unknown bay <script>unsafe</script>"
+        )
+        browser.execute_script(
+            "const n=document.getElementById('package-export-data');"
+            "const d=JSON.parse(n.textContent);d.packages[arguments[0]].record=arguments[1];"
+            "n.textContent=JSON.stringify(d);",
+            f"{name}:2",
+            changed,
+        )
+        for rank in (0, 1, 2, 0):
+            move(browser, rank)
+            package = next(
+                p for p in record["packages"] if p["identity"] == {"scenario": name, "rank": rank}
+            )
+            for media in ("screen", "print"):
+                browser.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": media})
+                assert (
+                    browser.find_element(By.ID, "opening").get_attribute("data-package")
+                    == f"{name}:{rank}"
+                )
+                for key, value in values(package).items():
+>                   element = browser.find_element(By.ID, f"opening-outcome-{key}")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_proposal_opening_impacts.py:81: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/selenium/webdriver/remote/webdriver.py:914: in find_element
+    return self.execute(Command.FIND_ELEMENT, {"using": by, "value": value})["value"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/selenium/webdriver/remote/webdriver.py:506: in execute
+    self.error_handler.check_response(response)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <selenium.webdriver.remote.errorhandler.ErrorHandler object at 0x721488d1dc70>
+response = {'status': 404, 'value': '{"value":{"error":"no such element","message":"no such element: Unable to locate element: {\...\\n#15 0x5cbfe2e23b63 \\u003Cunknown>\\n#16 0x71e59dc9cb84 \\u003Cunknown>\\n#17 0x71e59dd29ecc \\u003Cunknown>\\n"}}'}
+
+    def check_response(self, response: dict[str, Any]) -> None:
+        """Check that a JSON response from the WebDriver does not have an error.
+    
+        Args:
+            response: The JSON response from the WebDriver server as a dictionary
+                object.
+    
+        Raises:
+            WebDriverException: If the response contains an error message.
+        """
+        status = response.get("status", None)
+        if not status or status == ErrorCode.SUCCESS:
+            return
+        value = None
+        message = response.get("message", "")
+        screen: str = response.get("screen", "")
+        stacktrace = None
+        if isinstance(status, int):
+            value_json = response.get("value", None)
+            if value_json and isinstance(value_json, str):
+                try:
+                    value = json.loads(value_json)
+                    if isinstance(value, dict):
+                        if len(value) == 1:
+                            value = value["value"]
+                        status = value.get("error", None)
+                        if not status:
+                            status = value.get("status", ErrorCode.UNKNOWN_ERROR)
+                            message = value.get("value") or value.get("message")
+                            if not isinstance(message, str):
+                                value = message
+                                message = message.get("message") if isinstance(message, dict) else None
+                        else:
+                            message = value.get("message", None)
+                except ValueError:
+                    pass
+    
+        exception_class: type[WebDriverException]
+        e = ErrorCode()
+        error_codes = [item for item in dir(e) if not item.startswith("__")]
+        for error_code in error_codes:
+            error_info = getattr(ErrorCode, error_code)
+            if isinstance(error_info, list) and status in error_info:
+                exception_class = getattr(ExceptionMapping, error_code, WebDriverException)
+                break
+        else:
+            exception_class = WebDriverException
+    
+        if not value:
+            value = response["value"]
+        if isinstance(value, str):
+            raise exception_class(value)
+        if message == "" and "message" in value:
+            message = value["message"]
+    
+        screen = None  # type: ignore[assignment]
+        if "screen" in value:
+            screen = value["screen"]
+    
+        stacktrace = None
+        st_value = value.get("stackTrace") or value.get("stacktrace")
+        if st_value:
+            if isinstance(st_value, str):
+                stacktrace = st_value.split("\n")
+            else:
+                stacktrace = []
+                try:
+                    for frame in st_value:
+                        line = frame.get("lineNumber", "")
+                        file = frame.get("fileName", "<anonymous>")
+                        if line:
+                            file = f"{file}:{line}"
+                        meth = frame.get("methodName", "<anonymous>")
+                        if "className" in frame:
+                            meth = f"{frame['className']}.{meth}"
+                        msg = "    at %s (%s)"
+                        msg = msg % (meth, file)
+                        stacktrace.append(msg)
+                except TypeError:
+                    pass
+        if exception_class == UnexpectedAlertPresentException:
+            alert_text = None
+            if "data" in value:
+                alert_text = value["data"].get("text")
+            elif "alert" in value:
+                alert_text = value["alert"].get("text")
+            raise exception_class(message, screen, stacktrace, alert_text)
+>       raise exception_class(message, screen, stacktrace)
+E       selenium.common.exceptions.NoSuchElementException: Message: no such element: Unable to locate element: {"method":"css selector","selector":"[id="opening-outcome-roads"]"}
+E         (Session info: chrome=155.0.8059.39); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception
+E       Stacktrace:
+E       #0 0x5cbfe2e251da <unknown>
+E       #1 0x5cbfe27445c9 <unknown>
+E       #2 0x5cbfe279b60f <unknown>
+E       #3 0x5cbfe279b891 <unknown>
+E       #4 0x5cbfe27ecb04 <unknown>
+E       #5 0x5cbfe27e9d6e <unknown>
+E       #6 0x5cbfe278e2f8 <unknown>
+E       #7 0x5cbfe278f0d1 <unknown>
+E       #8 0x5cbfe2de7cec <unknown>
+E       #9 0x5cbfe2de6505 <unknown>
+E       #10 0x5cbfe2dd13b5 <unknown>
+E       #11 0x5cbfe2de715a <unknown>
+E       #12 0x5cbfe2db9939 <unknown>
+E       #13 0x5cbfe2e0f898 <unknown>
+E       #14 0x5cbfe2e0fa35 <unknown>
+E       #15 0x5cbfe2e23b63 <unknown>
+E       #16 0x71e59dc9cb84 <unknown>
+E       #17 0x71e59dd29ecc <unknown>
+
+.venv/lib/python3.12/site-packages/selenium/webdriver/remote/errorhandler.py:232: NoSuchElementException
+______ test_fr15_2_opening_impacts_follow_record_exports_and_print[heavy] ______
+
+browser = <selenium.webdriver.chrome.webdriver.WebDriver (session="0c33718bfdb3ffba8856d980b1bacb99")>
+built = PosixPath('/tmp/pytest-of-oem/pytest-735/page-sheets0/out')
+name = 'heavy'
+
+    @pytest.mark.parametrize("name", ["light", "heavy"])
+    def test_fr15_2_opening_impacts_follow_record_exports_and_print(browser, built, name):
+        record = json.loads((built / "proposal.json").read_text())
+        browser.find_element(By.ID, f"scenario-{name}").click()
+        changed = next(p for p in record["packages"] if p["identity"] == {"scenario": name, "rank": 2})
+        changed["works"]["unique_roads"] = 17
+        changed["impacts"]["parking_spaces"]["removed"].update(
+            value=None, known_subtotal=12.345, reason="Unknown bay <script>unsafe</script>"
+        )
+        browser.execute_script(
+            "const n=document.getElementById('package-export-data');"
+            "const d=JSON.parse(n.textContent);d.packages[arguments[0]].record=arguments[1];"
+            "n.textContent=JSON.stringify(d);",
+            f"{name}:2",
+            changed,
+        )
+        for rank in (0, 1, 2, 0):
+            move(browser, rank)
+            package = next(
+                p for p in record["packages"] if p["identity"] == {"scenario": name, "rank": rank}
+            )
+            for media in ("screen", "print"):
+                browser.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": media})
+                assert (
+                    browser.find_element(By.ID, "opening").get_attribute("data-package")
+                    == f"{name}:{rank}"
+                )
+                for key, value in values(package).items():
+>                   element = browser.find_element(By.ID, f"opening-outcome-{key}")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_proposal_opening_impacts.py:81: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/selenium/webdriver/remote/webdriver.py:914: in find_element
+    return self.execute(Command.FIND_ELEMENT, {"using": by, "value": value})["value"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/selenium/webdriver/remote/webdriver.py:506: in execute
+    self.error_handler.check_response(response)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <selenium.webdriver.remote.errorhandler.ErrorHandler object at 0x721488d1dc70>
+response = {'status': 404, 'value': '{"value":{"error":"no such element","message":"no such element: Unable to locate element: {\...\\n#15 0x5cbfe2e23b63 \\u003Cunknown>\\n#16 0x71e59dc9cb84 \\u003Cunknown>\\n#17 0x71e59dd29ecc \\u003Cunknown>\\n"}}'}
+
+    def check_response(self, response: dict[str, Any]) -> None:
+        """Check that a JSON response from the WebDriver does not have an error.
+    
+        Args:
+            response: The JSON response from the WebDriver server as a dictionary
+                object.
+    
+        Raises:
+            WebDriverException: If the response contains an error message.
+        """
+        status = response.get("status", None)
+        if not status or status == ErrorCode.SUCCESS:
+            return
+        value = None
+        message = response.get("message", "")
+        screen: str = response.get("screen", "")
+        stacktrace = None
+        if isinstance(status, int):
+            value_json = response.get("value", None)
+            if value_json and isinstance(value_json, str):
+                try:
+                    value = json.loads(value_json)
+                    if isinstance(value, dict):
+                        if len(value) == 1:
+                            value = value["value"]
+                        status = value.get("error", None)
+                        if not status:
+                            status = value.get("status", ErrorCode.UNKNOWN_ERROR)
+                            message = value.get("value") or value.get("message")
+                            if not isinstance(message, str):
+                                value = message
+                                message = message.get("message") if isinstance(message, dict) else None
+                        else:
+                            message = value.get("message", None)
+                except ValueError:
+                    pass
+    
+        exception_class: type[WebDriverException]
+        e = ErrorCode()
+        error_codes = [item for item in dir(e) if not item.startswith("__")]
+        for error_code in error_codes:
+            error_info = getattr(ErrorCode, error_code)
+            if isinstance(error_info, list) and status in error_info:
+                exception_class = getattr(ExceptionMapping, error_code, WebDriverException)
+                break
+        else:
+            exception_class = WebDriverException
+    
+        if not value:
+            value = response["value"]
+        if isinstance(value, str):
+            raise exception_class(value)
+        if message == "" and "message" in value:
+            message = value["message"]
+    
+        screen = None  # type: ignore[assignment]
+        if "screen" in value:
+            screen = value["screen"]
+    
+        stacktrace = None
+        st_value = value.get("stackTrace") or value.get("stacktrace")
+        if st_value:
+            if isinstance(st_value, str):
+                stacktrace = st_value.split("\n")
+            else:
+                stacktrace = []
+                try:
+                    for frame in st_value:
+                        line = frame.get("lineNumber", "")
+                        file = frame.get("fileName", "<anonymous>")
+                        if line:
+                            file = f"{file}:{line}"
+                        meth = frame.get("methodName", "<anonymous>")
+                        if "className" in frame:
+                            meth = f"{frame['className']}.{meth}"
+                        msg = "    at %s (%s)"
+                        msg = msg % (meth, file)
+                        stacktrace.append(msg)
+                except TypeError:
+                    pass
+        if exception_class == UnexpectedAlertPresentException:
+            alert_text = None
+            if "data" in value:
+                alert_text = value["data"].get("text")
+            elif "alert" in value:
+                alert_text = value["alert"].get("text")
+            raise exception_class(message, screen, stacktrace, alert_text)
+>       raise exception_class(message, screen, stacktrace)
+E       selenium.common.exceptions.NoSuchElementException: Message: no such element: Unable to locate element: {"method":"css selector","selector":"[id="opening-outcome-roads"]"}
+E         (Session info: chrome=155.0.8059.39); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception
+E       Stacktrace:
+E       #0 0x5cbfe2e251da <unknown>
+E       #1 0x5cbfe27445c9 <unknown>
+E       #2 0x5cbfe279b60f <unknown>
+E       #3 0x5cbfe279b891 <unknown>
+E       #4 0x5cbfe27ecb04 <unknown>
+E       #5 0x5cbfe27e9d6e <unknown>
+E       #6 0x5cbfe278e2f8 <unknown>
+E       #7 0x5cbfe278f0d1 <unknown>
+E       #8 0x5cbfe2de7cec <unknown>
+E       #9 0x5cbfe2de6505 <unknown>
+E       #10 0x5cbfe2dd13b5 <unknown>
+E       #11 0x5cbfe2de715a <unknown>
+E       #12 0x5cbfe2db9939 <unknown>
+E       #13 0x5cbfe2e0f898 <unknown>
+E       #14 0x5cbfe2e0fa35 <unknown>
+E       #15 0x5cbfe2e23b63 <unknown>
+E       #16 0x71e59dc9cb84 <unknown>
+E       #17 0x71e59dd29ecc <unknown>
+
+.venv/lib/python3.12/site-packages/selenium/webdriver/remote/errorhandler.py:232: NoSuchElementException
+=========================== short test summary info ============================
+FAILED tests/test_proposal_opening_impacts.py::test_fr16_1_script_free_opening_impacts_use_saved_record_and_keep_limits
+FAILED tests/test_proposal_opening_impacts.py::test_fr15_2_opening_impacts_follow_record_exports_and_print[light]
+FAILED tests/test_proposal_opening_impacts.py::test_fr15_2_opening_impacts_follow_record_exports_and_print[heavy]
+3 failed in 234.50s (0:03:54)
