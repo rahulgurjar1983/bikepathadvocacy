@@ -186,9 +186,10 @@ saved = {
     "outputs": outputs,
     "recipes": recipes,
     "scope": (
-        "Selected opening protected, shared, quiet, unclassified, crossing and retained works, offline exports, "
+        "Selected opening protected, shared, quiet, unclassified, crossing and "
+        "retained works, offline exports, "
         "print and scripts off. Empty real choices prove truthful scope, not useful works. "
-        " Nonempty fixture choices are unit-tested. Goal/stage packages, "
+        "Nonempty fixture choices are unit-tested. Goal/stage packages, "
         "other shared views and full browser acceptance remain open. "
         "This is not performance proof."
     ),
