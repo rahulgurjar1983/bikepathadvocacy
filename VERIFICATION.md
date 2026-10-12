@@ -1539,3 +1539,21 @@ Artifact: `artifacts/Q1.6/archive-opening-works.json`,
 `artifacts/Q1.6/opening-works-time-full.txt`,
 `artifacts/Q1.6/opening-works-red.txt`,
 `artifacts/Q1.6/opening-works-green.txt`.
+
+### Q1.6 goal and stage option packages
+
+```sh
+uv run --frozen pytest -q tests/test_proposal_option_packages.py tests/test_proposal_record.py
+uv run --frozen python artifacts/Q1.6/collect_option_packages.py
+```
+
+Expect: Each sourced stage or route option becomes a concept package in
+`proposal.json` with a stable option ID, parent links, its exact sorted project
+and element IDs and no curve rank. Its trip outcome is null with a reason. The
+test-grid archive has none and keeps its curve packages and the old shortlist
+apart.
+
+This part saves the packages only. Views that select them and the full
+offline browser proof remain open.
+
+Artifact: `artifacts/Q1.6/option-packages.json`.

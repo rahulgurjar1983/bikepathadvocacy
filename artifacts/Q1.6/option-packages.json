@@ -1,0 +1,82 @@
+{
+ "archive_option_packages": [],
+ "archive_curve_packages": 6,
+ "stage_example": [
+  {
+   "identity": {
+    "option": "study",
+    "type": "stage"
+   },
+   "label": "studies",
+   "kind": "concept",
+   "evidence_mode": "sourced_unproved",
+   "parents": [],
+   "project_ids": [],
+   "element_ids": [
+    "segment:a"
+   ],
+   "source": {
+    "source": "council plan",
+    "date": "2026-01-01"
+   },
+   "outcomes": {
+    "strict_return_trips": {
+     "value": null,
+     "unit": "return trips",
+     "scope": {
+      "package": {
+       "option": "study",
+       "type": "stage"
+      }
+     },
+     "source": {
+      "source": "council plan",
+      "date": "2026-01-01"
+     },
+     "method": "Recompute complete confirmed return trips with this exact works set",
+     "evidence_status": "unknown",
+     "reason": "Trip outcomes for this sourced option are not yet recomputed"
+    }
+   }
+  },
+  {
+   "identity": {
+    "option": "build",
+    "type": "stage"
+   },
+   "label": "construction",
+   "kind": "concept",
+   "evidence_mode": "sourced_unproved",
+   "parents": [
+    "study"
+   ],
+   "project_ids": [],
+   "element_ids": [
+    "segment:b"
+   ],
+   "source": {
+    "source": "council plan",
+    "date": "2026-01-01"
+   },
+   "outcomes": {
+    "strict_return_trips": {
+     "value": null,
+     "unit": "return trips",
+     "scope": {
+      "package": {
+       "option": "build",
+       "type": "stage"
+      }
+     },
+     "source": {
+      "source": "council plan",
+      "date": "2026-01-01"
+     },
+     "method": "Recompute complete confirmed return trips with this exact works set",
+     "evidence_status": "unknown",
+     "reason": "Trip outcomes for this sourced option are not yet recomputed"
+    }
+   }
+  }
+ ]
+}

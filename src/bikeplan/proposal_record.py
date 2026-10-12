@@ -150,6 +150,44 @@ def package_record(curve, package, region_id):
     }
 
 
+def option_packages(metadata):
+    contents = metadata.get("contents") or {}
+    rows = [
+        ("stage", row, row["depends_on"], row["kind"]) for row in contents.get("stages", [])
+    ] + [
+        ("route_option", row, row.get("goal_ids", []), row["name"])
+        for row in contents.get("route_options", [])
+    ]
+    packages = []
+    for kind, row, parents, label in rows:
+        identity = {"option": row["id"], "type": kind}
+        scope = {"package": identity}
+        source = {"source": row["source"], "date": row["date"]}
+        packages.append(
+            {
+                "identity": identity,
+                "label": label,
+                "kind": "concept",
+                "evidence_mode": "sourced_unproved",
+                "parents": list(parents),
+                "project_ids": sorted(set(row.get("project_ids", []))),
+                "element_ids": sorted(set(row.get("element_ids", []))),
+                "source": source,
+                "outcomes": {
+                    "strict_return_trips": metric(
+                        None,
+                        "return trips",
+                        scope,
+                        source,
+                        "Recompute complete confirmed return trips with this exact works set",
+                        reason="Trip outcomes for this sourced option are not yet recomputed",
+                    )
+                },
+            }
+        )
+    return packages
+
+
 def code_record():
     root = Path(__file__).parent
     digest = hashlib.sha256()
@@ -198,6 +236,7 @@ def proposal_record(region, profile, snapshot, frontier, shortlist):
             {"id": c["id"], "label": c["label"], "kind": "weight_sensitivity"}
             for c in frontier["scenarios"]
         ],
+        "option_packages": option_packages(metadata),
         "shortlist": {
             "id": "legacy-min-gain",
             "label": "Old minimum-gain shortlist",
