@@ -484,7 +484,7 @@ def parking_figure(curve, text):
 
 
 WORKS_OUTCOMES = (
-    ("protected", "Protected cycleway km in the selected works", "km"),
+    ("protected", "Protected bike path km in the selected works", "km"),
     ("shared", "Shared path km in the selected works", "km"),
     ("quiet", "Quiet street km in the selected works", "km"),
     ("unclassified", "Works km with unknown path use or design", "km"),
