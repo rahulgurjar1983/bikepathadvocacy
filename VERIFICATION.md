@@ -1490,3 +1490,28 @@ Artifact: `artifacts/Q1.6/archive-opening-outcomes.json`,
 `artifacts/Q1.6/opening-outcomes-time-full.txt`,
 `artifacts/Q1.6/opening-outcomes-red.txt`,
 `artifacts/Q1.6/opening-outcomes-green.txt`.
+
+### Q1.6 opening roads and parking loss
+
+```sh
+uv run --frozen pytest -q tests/test_proposal_opening_impacts.py tests/test_proposal_opening_outcomes.py tests/test_community_opening.py tests/test_report.py::test_fr13_2_no_number_outside_a_figure_link_or_the_appendix
+/usr/bin/time -v -o /tmp/q16-opening-impacts-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.6-opening-impacts
+uv run --frozen python artifacts/Q1.6/collect_opening_impacts.py
+```
+
+Expect: The opening reads unique roads and known parking loss from the
+selected record. Offline choices, print and scripts off agree with exports.
+Partial loss keeps its coverage reason; unknown values stay unknown.
+Both linked figure recipes replay with plain Python in a clean folder.
+The fresh real archive uses shipped settings. The curve's model loss is
+shown as a separate measure, with a link to its own source.
+
+This part adds the opening impact view. Other shared views, goal and stage
+packages and full browser acceptance remain open. Empty real choices do
+not prove useful works, a complete parking inventory or field safety.
+This is not a performance claim.
+
+Artifact: `artifacts/Q1.6/archive-opening-impacts.json`,
+`artifacts/Q1.6/opening-impacts-time-full.txt`,
+`artifacts/Q1.6/opening-impacts-red.txt`,
+`artifacts/Q1.6/opening-impacts-green.txt`.
