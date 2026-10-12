@@ -121,6 +121,12 @@ window.addEventListener("load", function () {
       document.getElementById("trip-package").textContent = key;
       document.getElementById("trip-summary").textContent = JSON.stringify(saved.outcomes.trip_summary);
     }
+    const evidence = document.getElementById("selected-evidence");
+    if (evidence) {
+      evidence.dataset.package = key;
+      document.getElementById("evidence-package").textContent = key;
+      document.getElementById("evidence-summary").textContent = JSON.stringify(saved.evidence_limits);
+    }
     const residents = document.getElementById("selected-residents");
     if (residents) {
       residents.dataset.package = key;
