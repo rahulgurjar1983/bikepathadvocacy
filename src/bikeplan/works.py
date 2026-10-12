@@ -481,3 +481,67 @@ def parking_figure(curve, text):
             "c['works_catalog'][k]['parking_spaces']['removed'] is not None))"
         ),
     }
+
+
+WORKS_OUTCOMES = (
+    ("protected", "Protected bike path km in the selected works", "km"),
+    ("shared", "Shared path km in the selected works", "km"),
+    ("quiet", "Quiet street km in the selected works", "km"),
+    ("unclassified", "Works km with unknown path use or design", "km"),
+    ("crossings", "Crossing upgrades in the selected works", "crossings"),
+    ("retained", "Existing link km retained by the selected works", "km"),
+)
+
+
+def works_values(works):
+    design = works["km_by_design"]
+    return {
+        "protected": design["protected_cycleway"],
+        "shared": design["shared_path"],
+        "quiet": design["quiet_street"],
+        "unclassified": design["path_use_unknown"] + design["design_unknown"],
+        "crossings": len(works["crossing_upgrades"]),
+        "retained": works["existing_links_retained"]["length_m"] / 1000,
+    }
+
+
+RECIPES = {
+    "protected": "w['km_by_design']['protected_cycleway']",
+    "shared": "w['km_by_design']['shared_path']",
+    "quiet": "w['km_by_design']['quiet_street']",
+    "unclassified": "w['km_by_design']['path_use_unknown']+w['km_by_design']['design_unknown']",
+    "crossings": "len(w['crossing_upgrades'])",
+    "retained": "w['existing_links_retained']['length_m']/1000",
+}
+
+
+def works_detail_figures(proposal, text):
+    values = works_values(proposal["selected"]["works"])
+    return [
+        {
+            "id": f"F{26 + index}",
+            "spec": "spec 16",
+            "label": label,
+            "value": values[key],
+            "unit": unit,
+            "inputs": [{"name": "proposal.json", "sha256": hashlib.sha256(text).hexdigest()}],
+            "sources": [
+                {
+                    "name": "OpenStreetMap contributors and saved works catalog",
+                    "licence": "ODbL 1.0",
+                    "request": "network.osm.gz in the snapshot folder",
+                }
+            ],
+            "method": (
+                "I read this figure from the works of the selected package in the saved "
+                "proposal record. Each link counts once. Unknown path use or design stays "
+                "in its own total; it is not assigned to a design. Crossings and retained "
+                "links need field checks before delivery."
+            ),
+            "recipe": (
+                "import json;w=json.load(open('proposal.json'))['selected']['works'];"
+                f"print({RECIPES[key]})"
+            ),
+        }
+        for index, (key, label, unit) in enumerate(WORKS_OUTCOMES)
+    ]

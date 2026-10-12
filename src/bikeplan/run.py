@@ -49,7 +49,7 @@ from bikeplan.trips import (
     trip_section,
 )
 from bikeplan.width import fuse
-from bikeplan.works import works_figures, works_section
+from bikeplan.works import works_detail_figures, works_figures, works_section
 
 FILES = [
     "access_homes.geojson",
@@ -276,6 +276,7 @@ def build_all(
         *figure_list(text, map_text),
         *change_figures(frontier, frontier_bytes.decode()),
         *works_figures(frontier, frontier_bytes.decode()),
+        *works_detail_figures(proposal, proposal_bytes),
     ]
     figures.sort(key=lambda item: int(item["id"][1:]))
     delivery_body, delivery_script = delivery_section(frontier, cost_links, proposal)

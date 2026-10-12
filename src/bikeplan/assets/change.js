@@ -121,6 +121,12 @@ window.addEventListener("load", function () {
       ["residents", saved.outcomes.resident_outcomes.strict.unique_residents.newly_gained, saved.outcomes.resident_outcomes.strict],
       ["roads", saved.works.unique_roads, {}],
       ["parking", parkingLoss.known_subtotal, parkingLoss],
+      ["protected", saved.works.km_by_design.protected_cycleway, {}],
+      ["shared", saved.works.km_by_design.shared_path, {}],
+      ["quiet", saved.works.km_by_design.quiet_street, {}],
+      ["unclassified", saved.works.km_by_design.path_use_unknown + saved.works.km_by_design.design_unknown, {}],
+      ["crossings", saved.works.crossing_upgrades.length, {}],
+      ["retained", saved.works.existing_links_retained.length_m / 1000, {}],
     ];
     for (const [name, value, block] of outcomeFields) {
       document.getElementById("opening-outcome-" + name).textContent = value == null ? "unknown" : String(value);

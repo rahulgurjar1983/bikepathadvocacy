@@ -1,0 +1,40 @@
+                        msg = msg % (meth, file)
+                        stacktrace.append(msg)
+                except TypeError:
+                    pass
+        if exception_class == UnexpectedAlertPresentException:
+            alert_text = None
+            if "data" in value:
+                alert_text = value["data"].get("text")
+            elif "alert" in value:
+                alert_text = value["alert"].get("text")
+            raise exception_class(message, screen, stacktrace, alert_text)
+>       raise exception_class(message, screen, stacktrace)
+E       selenium.common.exceptions.NoSuchElementException: Message: no such element: Unable to locate element: {"method":"css selector","selector":"[id="opening-outcome-protected"]"}
+E         (Session info: chrome=155.0.8059.39); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception
+E       Stacktrace:
+E       #0 0x5ebc541e21da <unknown>
+E       #1 0x5ebc53b015c9 <unknown>
+E       #2 0x5ebc53b5860f <unknown>
+E       #3 0x5ebc53b58891 <unknown>
+E       #4 0x5ebc53ba9b04 <unknown>
+E       #5 0x5ebc53ba6d6e <unknown>
+E       #6 0x5ebc53b4b2f8 <unknown>
+E       #7 0x5ebc53b4c0d1 <unknown>
+E       #8 0x5ebc541a4cec <unknown>
+E       #9 0x5ebc541a3505 <unknown>
+E       #10 0x5ebc5418e3b5 <unknown>
+E       #11 0x5ebc541a415a <unknown>
+E       #12 0x5ebc54176939 <unknown>
+E       #13 0x5ebc541cc898 <unknown>
+E       #14 0x5ebc541cca35 <unknown>
+E       #15 0x5ebc541e0b63 <unknown>
+E       #16 0x704da409cb84 <unknown>
+E       #17 0x704da4129ecc <unknown>
+
+/home/oem/claude/bikepathadvocacy/.venv/lib/python3.12/site-packages/selenium/webdriver/remote/errorhandler.py:232: NoSuchElementException
+=========================== short test summary info ============================
+FAILED tests/test_proposal_opening_works.py::test_fr16_1_script_free_opening_works_read_record_with_figure_links
+FAILED tests/test_proposal_opening_works.py::test_fr15_2_opening_works_match_saved_record_detailed_view_exports_and_print[light]
+FAILED tests/test_proposal_opening_works.py::test_fr15_2_opening_works_match_saved_record_detailed_view_exports_and_print[heavy]
+3 failed in 566.79s (0:09:26)
