@@ -94,7 +94,7 @@ def option_view(record):
         return f'<p>{name}: <code data-option-field="{name.lower()}">{text}</code></p>'
 
     articles = "".join(
-        f'<article data-option-id="{html.escape(p["identity"]["option"], quote=True)}" '
+        f'<div data-option-id="{html.escape(p["identity"]["option"], quote=True)}" '
         f'data-option-type="{html.escape(p["identity"]["type"], quote=True)}"'
         ">"
         f"<h3>{html.escape(p['label'])}</h3>"
@@ -106,7 +106,7 @@ def option_view(record):
         + field("Elements", p["element_ids"])
         + '<p>Return trips: unknown. <code data-option-field="outcome">Not yet recomputed. '
         + html.escape(p["outcomes"]["strict_return_trips"]["reason"])
-        + "</code></p></article>"
+        + "</code></p></div>"
         for p in packages
     )
     return (

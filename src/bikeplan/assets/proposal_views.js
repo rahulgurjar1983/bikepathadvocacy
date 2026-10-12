@@ -18,7 +18,7 @@ window.addEventListener("package-selected", function (event) {
 function showOption(select) {
   const key = select.value;
   document.getElementById("option-package-label").textContent = key;
-  for (const article of document.querySelectorAll("article[data-option-id]"))
+  for (const article of document.querySelectorAll("div[data-option-id]"))
     article.hidden = article.dataset.optionType + ":" + article.dataset.optionId !== key;
 }
 document.addEventListener("change", function (event) {
