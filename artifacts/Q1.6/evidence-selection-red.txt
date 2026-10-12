@@ -1,0 +1,130 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+_ test_fr16_1_script_free_evidence_uses_selected_record_and_keeps_missing_blocks _
+
+built = PosixPath('/tmp/pytest-of-oem/pytest-729/page-sheets0/out')
+
+    def test_fr16_1_script_free_evidence_uses_selected_record_and_keeps_missing_blocks(built):
+        record = json.loads((built / "proposal.json").read_text())
+        default = record["selected"]
+        selected = copy.deepcopy(record["packages"][-1])
+        selected["evidence_limits"]["school_sites"] = {
+            "value": None,
+            "reason": "School entrance unknown <script>throw Error('unsafe')</script>",
+        }
+        record["selected"] = selected
+        page = Evidence()
+>       page.feed(proposal_views.evidence_view(record))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'bikeplan.proposal_views' has no attribute 'evidence_view'
+
+tests/test_proposal_evidence_selection.py:50: AttributeError
+---------------------------- Captured stdout setup -----------------------------
+F1 10.4 km
+F2 6.0 km
+F3 0.0 km
+F4 24 pieces
+F5 100.0 points
+F6 30.0 points
+F7 0 spaces
+F8 0.0 km
+F9 0.0 km
+F10 1500.0 people
+F11 0 km
+F12 9 steps
+F13 2 projects
+F14 0 roads
+F15 1500.0 people
+F16 0 people
+F17 0 people
+F18 0 people
+F19 1500.0 people
+F20 0 people
+F21 0 people
+F22 0 people
+F23 0 vehicle spaces
+F24 0 estimated residents
+F25 0 return trips
+__ test_fr15_2_evidence_limits_follow_record_offline_exports_and_print[light] __
+
+browser = <selenium.webdriver.chrome.webdriver.WebDriver (session="a7f0c315f72823b42e428ba54c8f87c1")>
+built = PosixPath('/tmp/pytest-of-oem/pytest-729/page-sheets0/out')
+name = 'light'
+
+    @pytest.mark.parametrize("name", ["light", "heavy"])
+    def test_fr15_2_evidence_limits_follow_record_offline_exports_and_print(browser, built, name):
+        record = json.loads((built / "proposal.json").read_text())
+        browser.find_element(By.ID, f"scenario-{name}").click()
+        changed = next(p for p in record["packages"] if p["identity"] == {"scenario": name, "rank": 2})
+        changed["evidence_limits"]["route_gaps"] = [
+            {"destination": "test-destination", "reason": "unknown_entrance_link"}
+        ]
+        changed["evidence_limits"]["school_sites"] = {
+            "value": None,
+            "reason": "Unknown <script>throw Error('unsafe')</script>",
+        }
+        browser.execute_script(
+            "const n=document.getElementById('package-export-data');"
+            "const d=JSON.parse(n.textContent);d.packages[arguments[0]].record=arguments[1];"
+            "n.textContent=JSON.stringify(d);",
+            f"{name}:2",
+            changed,
+        )
+        for rank in (0, 1, 2, 0):
+            move(browser, rank)
+            package = next(
+                p for p in record["packages"] if p["identity"] == {"scenario": name, "rank": rank}
+            )
+            key = f"{name}:{rank}"
+            for media in ("screen", "print"):
+                browser.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": media})
+                sections = browser.find_elements(By.ID, "selected-evidence")
+>               assert sections, "Selected evidence limits need their own view"
+E               AssertionError: Selected evidence limits need their own view
+E               assert []
+
+tests/test_proposal_evidence_selection.py:91: AssertionError
+__ test_fr15_2_evidence_limits_follow_record_offline_exports_and_print[heavy] __
+
+browser = <selenium.webdriver.chrome.webdriver.WebDriver (session="a7f0c315f72823b42e428ba54c8f87c1")>
+built = PosixPath('/tmp/pytest-of-oem/pytest-729/page-sheets0/out')
+name = 'heavy'
+
+    @pytest.mark.parametrize("name", ["light", "heavy"])
+    def test_fr15_2_evidence_limits_follow_record_offline_exports_and_print(browser, built, name):
+        record = json.loads((built / "proposal.json").read_text())
+        browser.find_element(By.ID, f"scenario-{name}").click()
+        changed = next(p for p in record["packages"] if p["identity"] == {"scenario": name, "rank": 2})
+        changed["evidence_limits"]["route_gaps"] = [
+            {"destination": "test-destination", "reason": "unknown_entrance_link"}
+        ]
+        changed["evidence_limits"]["school_sites"] = {
+            "value": None,
+            "reason": "Unknown <script>throw Error('unsafe')</script>",
+        }
+        browser.execute_script(
+            "const n=document.getElementById('package-export-data');"
+            "const d=JSON.parse(n.textContent);d.packages[arguments[0]].record=arguments[1];"
+            "n.textContent=JSON.stringify(d);",
+            f"{name}:2",
+            changed,
+        )
+        for rank in (0, 1, 2, 0):
+            move(browser, rank)
+            package = next(
+                p for p in record["packages"] if p["identity"] == {"scenario": name, "rank": rank}
+            )
+            key = f"{name}:{rank}"
+            for media in ("screen", "print"):
+                browser.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": media})
+                sections = browser.find_elements(By.ID, "selected-evidence")
+>               assert sections, "Selected evidence limits need their own view"
+E               AssertionError: Selected evidence limits need their own view
+E               assert []
+
+tests/test_proposal_evidence_selection.py:91: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_proposal_evidence_selection.py::test_fr16_1_script_free_evidence_uses_selected_record_and_keeps_missing_blocks
+FAILED tests/test_proposal_evidence_selection.py::test_fr15_2_evidence_limits_follow_record_offline_exports_and_print[light]
+FAILED tests/test_proposal_evidence_selection.py::test_fr15_2_evidence_limits_follow_record_offline_exports_and_print[heavy]
+3 failed in 13.90s
