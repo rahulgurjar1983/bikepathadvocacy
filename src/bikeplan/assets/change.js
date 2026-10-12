@@ -115,6 +115,12 @@ window.addEventListener("load", function () {
     const pick = Object.fromEntries(Object.entries(saved.model_totals).map(([name, metric]) => [name, metric.value]));
     draw(saved, key);
     document.getElementById("change-totals").dataset.package = key;
+    const trips = document.getElementById("selected-trips");
+    if (trips) {
+      trips.dataset.package = key;
+      document.getElementById("trip-package").textContent = key;
+      document.getElementById("trip-summary").textContent = JSON.stringify(saved.outcomes.trip_summary);
+    }
     const residents = document.getElementById("selected-residents");
     if (residents) {
       residents.dataset.package = key;

@@ -1418,3 +1418,26 @@ Artifact: `artifacts/Q1.6/archive-delivery-selection.json`,
 `artifacts/Q1.6/delivery-selection-time-full.txt`,
 `artifacts/Q1.6/delivery-selection-red.txt`,
 `artifacts/Q1.6/delivery-selection-green.txt`.
+
+
+### Q1.6 selected complete-trip summary
+
+```sh
+uv run --frozen pytest tests/test_proposal_trip_selection.py tests/test_report.py::test_fr13_1_figures_are_sorted_with_every_field tests/test_report.py::test_fr13_2_the_figure_links_hold_the_numbers_and_resolve_to_one_entry tests/test_report.py::test_fr13_2_no_number_outside_a_figure_link_or_the_appendix -q --tb=short
+/usr/bin/time -v -o /tmp/q16-trip-selection-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.6-trip-selection
+uv run --frozen python artifacts/Q1.6/collect_trip_selection.py
+```
+
+Expect: The selected trip summary uses the proposal record on screen and
+in print. Each count keeps its unit, package scope, source and method.
+Unknown counts keep null and a reason. The offline browser checks shared
+view identities and JSON/CSV exports against that record. The script-free
+page keeps the saved choice. The figure recipe runs from the archive.
+The real empty choices show missing evidence, not proof of no useful trips.
+Other shared views, goal and stage packages and full browser proof remain
+open. This part does not prove field safety or run limits.
+
+Artifact: `artifacts/Q1.6/archive-trip-selection.json`,
+`artifacts/Q1.6/trip-selection-time-full.txt`,
+`artifacts/Q1.6/trip-selection-red.txt`,
+`artifacts/Q1.6/trip-selection-green.txt`.

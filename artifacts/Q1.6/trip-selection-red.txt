@@ -1,0 +1,95 @@
+FFFFFF                                                                   [100%]
+=================================== FAILURES ===================================
+_____ test_fr16_1_trip_record_and_script_free_view_keep_scope_and_unknowns _____
+tests/test_proposal_trip_selection.py:47: in test_fr16_1_trip_record_and_script_free_view_keep_scope_and_unknowns
+    metrics = package["outcomes"]["trip_summary"]
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'trip_summary'
+---------------------------- Captured stdout setup -----------------------------
+F1 10.4 km
+F2 6.0 km
+F3 0.0 km
+F4 24 pieces
+F5 100.0 points
+F6 30.0 points
+F7 0 spaces
+F8 0.0 km
+F9 0.0 km
+F10 1500.0 people
+F11 0 km
+F12 9 steps
+F13 2 projects
+F14 0 roads
+F15 1500.0 people
+F16 0 people
+F17 0 people
+F18 0 people
+F19 1500.0 people
+F20 0 people
+F21 0 people
+F22 0 people
+F23 0 vehicle spaces
+F24 0 estimated residents
+___ test_fr15_2_selected_trip_summary_reads_record_offline_and_print[light] ____
+tests/test_proposal_trip_selection.py:77: in test_fr15_2_selected_trip_summary_reads_record_offline_and_print
+    changed["outcomes"]["trip_summary"]["route_groups"]["value"] = 123
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'trip_summary'
+___ test_fr15_2_selected_trip_summary_reads_record_offline_and_print[heavy] ____
+tests/test_proposal_trip_selection.py:77: in test_fr15_2_selected_trip_summary_reads_record_offline_and_print
+    changed["outcomes"]["trip_summary"]["route_groups"]["value"] = 123
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'trip_summary'
+_______________ test_fr16_1_trip_figure_replays_selected_record ________________
+tests/test_proposal_trip_selection.py:111: in test_fr16_1_trip_figure_replays_selected_record
+    figure = next(f for f in figures if f["id"] == "F25")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   StopIteration
+_______________ test_fr13_1_figures_are_sorted_with_every_field ________________
+tests/test_report.py:61: in test_fr13_1_figures_are_sorted_with_every_field
+    assert [item["id"] for item in figures] == [f"F{n}" for n in range(1, 26)]
+E   AssertionError: assert ['F1', 'F2', ...5', 'F6', ...] == ['F1', 'F2', ...5', 'F6', ...]
+E     
+E     Right contains one more item: 'F25'
+E     Use -v to get more diff
+---------------------------- Captured stdout setup -----------------------------
+F1 5.2 km
+F2 3.0 km
+F3 0.0 km
+F4 12 pieces
+F5 100.0 points
+F6 15.0 points
+F7 0 spaces
+F8 0.0 km
+F9 0.0 km
+F10 750.0 people
+F11 0 km
+F12 6 steps
+F13 1 projects
+F14 0 roads
+F15 750.0 people
+F16 0 people
+F17 0 people
+F18 0 people
+F19 750.0 people
+F20 0 people
+F21 0 people
+F22 0 people
+F23 0 vehicle spaces
+F24 0 estimated residents
+____ test_fr13_2_the_figure_links_hold_the_numbers_and_resolve_to_one_entry ____
+tests/test_report.py:191: in test_fr13_2_the_figure_links_hold_the_numbers_and_resolve_to_one_entry
+    assert sorted(set(page.links)) == sorted(f"F{n}" for n in range(1, 26))
+E   AssertionError: assert ['F1', 'F10',...', 'F14', ...] == ['F1', 'F10',...', 'F14', ...]
+E     
+E     At index 17 diff: 'F3' != 'F25'
+E     Right contains one more item: 'F9'
+E     Use -v to get more diff
+=========================== short test summary info ============================
+FAILED tests/test_proposal_trip_selection.py::test_fr16_1_trip_record_and_script_free_view_keep_scope_and_unknowns
+FAILED tests/test_proposal_trip_selection.py::test_fr15_2_selected_trip_summary_reads_record_offline_and_print[light]
+FAILED tests/test_proposal_trip_selection.py::test_fr15_2_selected_trip_summary_reads_record_offline_and_print[heavy]
+FAILED tests/test_proposal_trip_selection.py::test_fr16_1_trip_figure_replays_selected_record
+FAILED tests/test_report.py::test_fr13_1_figures_are_sorted_with_every_field
+FAILED tests/test_report.py::test_fr13_2_the_figure_links_hold_the_numbers_and_resolve_to_one_entry
+6 failed in 10.54s

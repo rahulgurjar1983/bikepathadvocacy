@@ -529,3 +529,52 @@ def resident_figure(proposal, text):
             "print(p['outcomes']['resident_outcomes']['strict']['unique_residents']['newly_gained'])"
         ),
     }
+
+
+def selected_trip_section(proposal):
+    package = proposal["selected"]
+    identity = package["identity"]
+    key = f"{identity['scenario']}:{identity['rank']}"
+    return (
+        f'<section id="selected-trips" data-package="{html.escape(key, quote=True)}">'
+        "<h2>Complete trips in the selected package</h2>"
+        '<p id="trip-package"><code>' + html.escape(key) + "</code></p>"
+        '<p><a href="#F25">Return trips, route groups and gaps</a>: '
+        '<code id="trip-summary">'
+        + html.escape(json.dumps(package["outcomes"]["trip_summary"], sort_keys=True))
+        + "</code></p>"
+        "<p>I count route witnesses, not residents or school sites. Separate groups "
+        "are not one joined network. Gaps count unproved route records, not distinct "
+        "street works. Zero proved trips may reflect missing evidence. The full "
+        "route witnesses and gaps stay in frontier.json for this same package. "
+        "Model proof does not prove field safety. The folded tables below are "
+        "separate evidence for all curve packages.</p></section>"
+    )
+
+
+def trip_figure(proposal, text):
+    return {
+        "id": "F25",
+        "spec": "spec 16",
+        "label": "Complete confirmed return trips in the selected package",
+        "value": proposal["selected"]["outcomes"]["trip_summary"]["strict_return_trips"]["value"],
+        "unit": "return trips",
+        "inputs": [{"name": "proposal.json", "sha256": hashlib.sha256(text).hexdigest()}],
+        "sources": [
+            {
+                "name": "Snapshot trip evidence and OpenStreetMap contributors",
+                "licence": "See snapshot manifest; OpenStreetMap ODbL 1.0",
+                "request": "Snapshot network, destinations and trip evidence",
+            }
+        ],
+        "method": (
+            "Count saved complete confirmed return-trip witnesses in the selected record. "
+            "These are origin and destination pairs, not unique residents or school sites. "
+            "Route groups and unproved gap records retain the same package scope and source. "
+            "Missing evidence may leave no proved trips; model proof is not field safety."
+        ),
+        "recipe": (
+            "import json;p=json.load(open('proposal.json'))['selected'];"
+            "print(p['outcomes']['trip_summary']['strict_return_trips']['value'])"
+        ),
+    }
