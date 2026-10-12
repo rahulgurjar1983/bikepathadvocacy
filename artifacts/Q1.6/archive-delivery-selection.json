@@ -1,6 +1,6 @@
 {
   "build_command": "/usr/bin/time -v -o /tmp/q16-delivery-selection-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.6-delivery-selection",
-  "build_commit": "b8a081c6435ebb962a2f03799694b68b98c72bf3",
+  "build_commit": "d7336c63727c996dcf4d3af8289bdfb597ee5f3d",
   "cases": [
     {
       "costs": {
@@ -150,7 +150,7 @@
   "check_command": "uv run --frozen python artifacts/Q1.6/collect_delivery_selection.py",
   "code": {
     "method": "Sorted package paths and bytes, length-prefixed; excludes bytecode caches",
-    "sha256": "ff0da0c3e0bd07bcfc962980bb9fc10ee1da502982d54252e616e179a046b67a",
+    "sha256": "cc361e418cc43aabaf21c2f2573501ce82d126bada51edc3ab62d1f16cef422d",
     "version": "0.1.0"
   },
   "input_hashes": {
@@ -187,18 +187,18 @@
     },
     {
       "path": "proposal.json",
-      "sha256": "fd7f76052e7b443d555b5c2406358660671ce4401bdad4c99fb59ee3eb915504"
+      "sha256": "d153bda06e23c3341ba9fcb4df8bd5d11ae93166b34c3dc4803f68fb42b08bab"
     },
     {
       "path": "report.html",
-      "sha256": "f93206318c4551c97cbeda590c7b86682d19e8c23fbb732d2af9545daa9b89dd"
+      "sha256": "0c03e75d8db733aafc8329e0ad819a5239b99e0604ea463645f050e795c9d520"
     },
     {
       "path": "summary.json",
       "sha256": "7b05483eb6e7875cdb105e8cdffa152515ac349be69950637dd592b42f1521d9"
     }
   ],
-  "report_bytes": 7621513,
+  "report_bytes": 7621532,
   "scope": "Selected curve delivery, opening, print and JSON/CSV exports; scripts-off default. Empty real packages prove honest unknowns, not useful works, known costs or funding. Nonempty fixture rank changes are unit-tested. Other shared views, goal/stage packages and full browser acceptance remain open. This is not performance proof.",
   "snapshot": {
     "id": "2026-10-01",

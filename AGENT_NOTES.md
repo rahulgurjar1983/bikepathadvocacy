@@ -963,3 +963,6 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 - The first regression browser session timed out before its assertions.
   Keep `artifacts/Q1.6/delivery-selection-regression-start-failed.txt`.
   A fresh session runs the same cases and time limits; no checks are waived.
+- A figure-link repair changes the real report bytes. Rebuild the full
+  archive before the offline collector; do not patch an old report or reuse
+  its digest. Keep the empty confirmed result and unknown delivery fields.
