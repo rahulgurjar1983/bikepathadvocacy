@@ -1515,3 +1515,27 @@ Artifact: `artifacts/Q1.6/archive-opening-impacts.json`,
 `artifacts/Q1.6/opening-impacts-time-full.txt`,
 `artifacts/Q1.6/opening-impacts-red.txt`,
 `artifacts/Q1.6/opening-impacts-green.txt`.
+
+### Q1.6 opening physical works
+
+```sh
+uv run --frozen pytest -q tests/test_proposal_opening_works.py tests/test_proposal_opening_outcomes.py tests/test_report.py::test_fr13_2_no_number_outside_a_figure_link_or_the_appendix
+/usr/bin/time -v -o /tmp/q16-opening-works-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.6-opening-works
+uv run --frozen python artifacts/Q1.6/collect_opening_works.py
+```
+
+Expect: The opening shows protected, shared, quiet and unclassified works km,
+crossing upgrades and retained link km from the selected record, each linked
+to figures F26 to F31. Offline rank and scenario changes, print and scripts
+off agree with the record and exports. Plain-Python recipes for the six
+figures replay from `proposal.json` and match. Unknown design km stays in its
+own total.
+
+This part adds physical works to the opening. Other shared views, goal and
+stage packages and full browser acceptance remain open. Empty real choices
+do not prove useful works or field safety. This is not a performance claim.
+
+Artifact: `artifacts/Q1.6/archive-opening-works.json`,
+`artifacts/Q1.6/opening-works-time-full.txt`,
+`artifacts/Q1.6/opening-works-red.txt`,
+`artifacts/Q1.6/opening-works-green.txt`.

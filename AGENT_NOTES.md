@@ -1038,3 +1038,16 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   The failure log is `artifacts/Q1.6/opening-impacts-collector-failed.txt`.
   Read the linked appendix recipes, check their source hashes and replay
   them in a clean folder. Do not launch a second full build for that fix.
+
+### Q1.6 opening physical works
+
+- The opening shows six work totals from the selected record, linked to
+  figures F26 to F31 built from `proposal.json`. Unknown path use and unknown
+  design add into one unclassified total. Python and `change.js` compute it
+  the same way, so rank changes match the record.
+- Run `uv run --frozen python artifacts/Q1.6/collect_opening_works.py` after
+  the fresh build in the verification entry. It needs the time file copied to
+  `/tmp/q16-opening-works-time.txt` if the build wrote it elsewhere.
+- Browser startup timed out twice while the host load was over 100. A fresh
+  session passed with no check waived. Goal and stage packages, other shared
+  views and full browser proof remain open.
