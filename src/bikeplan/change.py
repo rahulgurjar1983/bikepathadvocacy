@@ -388,6 +388,7 @@ def capped_note(chosen: dict, note_id: str = "change-capped") -> str:
 def opening_outcomes(selected):
     trips = selected["outcomes"]["trip_summary"]["strict_return_trips"]
     residents = selected["outcomes"]["resident_outcomes"]["strict"]
+    parking = selected["impacts"]["parking_spaces"]["removed"]
     fields = (
         ("trips", "Complete confirmed return-trip witnesses", trips["value"], trips, "F25"),
         (
@@ -397,11 +398,29 @@ def opening_outcomes(selected):
             residents,
             "F24",
         ),
+        (
+            "roads",
+            "Unique roads with new physical works",
+            selected["works"]["unique_roads"],
+            {},
+            "F14",
+        ),
+        (
+            "parking",
+            "Parking spaces removed in the known physical works subset",
+            parking["known_subtotal"],
+            parking,
+            "F23",
+        ),
     )
     items = ""
     for key, label, value, block, figure in fields:
         shown = "unknown" if value is None else str(value)
-        reason = block.get("reason", "") if value is None else ""
+        reason = (
+            block.get("reason", "") or ""
+            if value is None or (key == "parking" and block["value"] is None)
+            else ""
+        )
         items += (
             f'<dt>{label}</dt><dd><a href="#{figure}" id="opening-outcome-{key}">'
             f"{html.escape(shown)}</a> "
@@ -416,6 +435,11 @@ def opening_outcomes(selected):
         "or field safety. Calm first-leg model access is a separate measure. "
         "Zero proved gains can reflect missing evidence; it does not mean no useful "
         "trips exist.</p>"
+        "<p>Physical works count shared links once. Road names and IDs group the works; "
+        "graph pieces are not roads. The known parking loss can be a partial subtotal. "
+        "Its coverage gaps stay visible. Curve loss estimates below use a separate "
+        'model measure. See the <a href="#physical-works">physical works and parking '
+        "inventory</a> for their scope and unknowns.</p>"
     )
 
 
