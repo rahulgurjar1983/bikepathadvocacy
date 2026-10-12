@@ -966,3 +966,20 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 - A figure-link repair changes the real report bytes. Rebuild the full
   archive before the offline collector; do not patch an old report or reuse
   its digest. Keep the empty confirmed result and unknown delivery fields.
+
+
+### Q1.6 selected complete-trip summary
+
+- Save trip, route-group and gap counts as scoped metrics in each proposal
+  package. A route witness is not a resident or a school site. A gap record
+  is not a distinct street work. Separate route groups do not prove one
+  joined network. The full witnesses stay in the frontier archive.
+- The selected view reads the saved record on load, after a choice and in
+  print. Unknown metrics keep null and their reason. Use native
+  [textContent](https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent)
+  to update text, as the other shared views do. No new package is needed.
+- Run `uv run --frozen python artifacts/Q1.6/collect_trip_selection.py`
+  after the fresh full build in the verification entry. It compares the
+  real counts with frontier witnesses, checks offline view identities and
+  exports, and replays the figure recipe. Empty choices do not prove useful
+  new trips. Goal and stage packages and full browser acceptance stay open.

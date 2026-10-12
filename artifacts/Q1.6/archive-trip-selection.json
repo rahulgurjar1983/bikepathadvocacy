@@ -1,0 +1,252 @@
+{
+  "build_command": "/usr/bin/time -v -o /tmp/q16-trip-selection-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/bikeplan-Q1.6-trip-selection",
+  "build_commit": "518aabce81c8ae3bba6e721431f2ca39b2c11f66",
+  "cases": [
+    {
+      "identity": {
+        "rank": 0,
+        "scenario": "light"
+      },
+      "project_ids": [],
+      "trip_summary": {
+        "route_gaps": {
+          "evidence_status": "modelled",
+          "method": "Count saved unproved route records; not distinct street works",
+          "scope": {
+            "package": {
+              "rank": 0,
+              "scenario": "light"
+            },
+            "region": "au-nsw-bayside"
+          },
+          "source": {
+            "file": "frontier.json",
+            "rank": 0,
+            "scenario": "light"
+          },
+          "unit": "route gaps",
+          "value": 294
+        },
+        "route_groups": {
+          "evidence_status": "modelled",
+          "method": "Count saved route groups; separate groups are not one joined network",
+          "scope": {
+            "package": {
+              "rank": 0,
+              "scenario": "light"
+            },
+            "region": "au-nsw-bayside"
+          },
+          "source": {
+            "file": "frontier.json",
+            "rank": 0,
+            "scenario": "light"
+          },
+          "unit": "route groups",
+          "value": 0
+        },
+        "strict_return_trips": {
+          "evidence_status": "modelled",
+          "method": "Count saved complete confirmed return-trip witnesses; not residents",
+          "scope": {
+            "package": {
+              "rank": 0,
+              "scenario": "light"
+            },
+            "region": "au-nsw-bayside"
+          },
+          "source": {
+            "file": "frontier.json",
+            "rank": 0,
+            "scenario": "light"
+          },
+          "unit": "return trips",
+          "value": 0
+        }
+      }
+    },
+    {
+      "identity": {
+        "rank": 0,
+        "scenario": "shipped"
+      },
+      "project_ids": [],
+      "trip_summary": {
+        "route_gaps": {
+          "evidence_status": "modelled",
+          "method": "Count saved unproved route records; not distinct street works",
+          "scope": {
+            "package": {
+              "rank": 0,
+              "scenario": "shipped"
+            },
+            "region": "au-nsw-bayside"
+          },
+          "source": {
+            "file": "frontier.json",
+            "rank": 0,
+            "scenario": "shipped"
+          },
+          "unit": "route gaps",
+          "value": 294
+        },
+        "route_groups": {
+          "evidence_status": "modelled",
+          "method": "Count saved route groups; separate groups are not one joined network",
+          "scope": {
+            "package": {
+              "rank": 0,
+              "scenario": "shipped"
+            },
+            "region": "au-nsw-bayside"
+          },
+          "source": {
+            "file": "frontier.json",
+            "rank": 0,
+            "scenario": "shipped"
+          },
+          "unit": "route groups",
+          "value": 0
+        },
+        "strict_return_trips": {
+          "evidence_status": "modelled",
+          "method": "Count saved complete confirmed return-trip witnesses; not residents",
+          "scope": {
+            "package": {
+              "rank": 0,
+              "scenario": "shipped"
+            },
+            "region": "au-nsw-bayside"
+          },
+          "source": {
+            "file": "frontier.json",
+            "rank": 0,
+            "scenario": "shipped"
+          },
+          "unit": "return trips",
+          "value": 0
+        }
+      }
+    },
+    {
+      "identity": {
+        "rank": 0,
+        "scenario": "heavy"
+      },
+      "project_ids": [],
+      "trip_summary": {
+        "route_gaps": {
+          "evidence_status": "modelled",
+          "method": "Count saved unproved route records; not distinct street works",
+          "scope": {
+            "package": {
+              "rank": 0,
+              "scenario": "heavy"
+            },
+            "region": "au-nsw-bayside"
+          },
+          "source": {
+            "file": "frontier.json",
+            "rank": 0,
+            "scenario": "heavy"
+          },
+          "unit": "route gaps",
+          "value": 294
+        },
+        "route_groups": {
+          "evidence_status": "modelled",
+          "method": "Count saved route groups; separate groups are not one joined network",
+          "scope": {
+            "package": {
+              "rank": 0,
+              "scenario": "heavy"
+            },
+            "region": "au-nsw-bayside"
+          },
+          "source": {
+            "file": "frontier.json",
+            "rank": 0,
+            "scenario": "heavy"
+          },
+          "unit": "route groups",
+          "value": 0
+        },
+        "strict_return_trips": {
+          "evidence_status": "modelled",
+          "method": "Count saved complete confirmed return-trip witnesses; not residents",
+          "scope": {
+            "package": {
+              "rank": 0,
+              "scenario": "heavy"
+            },
+            "region": "au-nsw-bayside"
+          },
+          "source": {
+            "file": "frontier.json",
+            "rank": 0,
+            "scenario": "heavy"
+          },
+          "unit": "return trips",
+          "value": 0
+        }
+      }
+    }
+  ],
+  "check_command": "uv run --frozen python artifacts/Q1.6/collect_trip_selection.py",
+  "code": {
+    "method": "Sorted package paths and bytes, length-prefixed; excludes bytecode caches",
+    "sha256": "f05b6e7bfc0a55b77bf9ea77107ed5463f86ccf47717544ca5a7a025130da066",
+    "version": "0.1.0"
+  },
+  "input_hashes": {
+    "region_and_profile": "6b7cd7698f58145f6669419dd0e4fba0cd4378fab2e1430a32df0a772127b665"
+  },
+  "outputs": [
+    {
+      "path": "access_homes.geojson",
+      "sha256": "64e5ee7d19083b024fdadaba43c37caa6ca5f72a1ce0ef2cf4123d7c914752ff"
+    },
+    {
+      "path": "frontier.json",
+      "sha256": "cfcfc958051333790e5075c0204dc0e61bfe77ee54999e1ec3bcea24853bf0f2"
+    },
+    {
+      "path": "network.geojson",
+      "sha256": "956f6c9c40e9364bb9984f41f7b5294e28a4a3120d7b61af815011f4bd61ca6f"
+    },
+    {
+      "path": "places.geojson",
+      "sha256": "b275748f27eb07121541c246e22a64058d21b81e39bff4d3d823ccffeaa23803"
+    },
+    {
+      "path": "projects.csv",
+      "sha256": "6e49858dbb626819ba2f361646d9efcd37d6d9558126c14ac8bbf026dfa59c40"
+    },
+    {
+      "path": "projects.geojson",
+      "sha256": "e4914e1531bd5ca936715cf6e777265c7039ec62846f7388269bca0bc2fc0977"
+    },
+    {
+      "path": "projects.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "proposal.json",
+      "sha256": "855098046d860407ebf9fdd8b09ddfcba1491a35addc45c573f5434287c39cfb"
+    },
+    {
+      "path": "report.html",
+      "sha256": "c37e67f041fdf806e2f9aca3b141b598e6326729a2207e46659465fba1cbabf0"
+    },
+    {
+      "path": "summary.json",
+      "sha256": "7b05483eb6e7875cdb105e8cdffa152515ac349be69950637dd592b42f1521d9"
+    }
+  ],
+  "report_bytes": 7628888,
+  "scope": "Selected curve trip summary, shared identities, print and JSON/CSV exports; scripts-off default. Empty real packages prove honest unknowns, not useful works, known costs or funding. Nonempty fixture rank changes are unit-tested. Other shared views, goal/stage packages and full browser acceptance remain open. This is not performance proof.",
+  "snapshot": {
+    "id": "2026-10-01",
+    "sha256": "2eaf0b00832565765c42e07b48ad7c6117436194487f45931e348f6772964bba"
+  }
+}
