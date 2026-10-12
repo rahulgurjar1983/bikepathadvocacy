@@ -28,7 +28,7 @@ class Options(HTMLParser):
             self.empty = True
         if tag == "option":
             self.options.append(attrs.get("value"))
-        if "data-option-id" in attrs and tag == "article":
+        if "data-option-id" in attrs and tag == "div":
             self.current = f"{attrs['data-option-type']}:{attrs['data-option-id']}"
             self.items[self.current] = {"text": "", "hidden": "hidden" in attrs}
         if attrs.get("data-option-field") and self.current:
@@ -104,7 +104,7 @@ def test_fr15_2_option_selector_shows_one_package_and_leaves_curve_choice(browse
         )
         shown = [
             a.get_attribute("data-option-type") + ":" + a.get_attribute("data-option-id")
-            for a in browser.find_elements(By.CSS_SELECTOR, "article[data-option-id]")
+            for a in browser.find_elements(By.CSS_SELECTOR, "div[data-option-id]")
             if a.is_displayed()
         ]
         assert shown == [key]
