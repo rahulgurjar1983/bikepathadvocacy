@@ -15,6 +15,7 @@ Tags: [reasoning] needs deep checks, with no larger model by default; [routine] 
 - [x] **Q1.5** [reasoning] Count unique people and type gains separately in every output, including route reviews (FR-15.6)
 - [~] **Q1.6** [reasoning] One package and versioned proposal record drive headline, map, totals, list, sheets and exports; allow explicit goal/stage identities and keep the old shortlist named. Archive record, curve sheets, offline exports, selected page lists/sheets and shared curve map/model totals and physical works, resident outcome, delivery, complete-trip summary, evidence-gap views and opening trip/resident outcomes, road/parking impacts and physical works built; other shared views, goal/stage option packages saved in the record; views that select them and full offline browser proof remain (FR-15.2, FR-16.1)
 - [x] **Q1.7** [routine] Community outcome and trade-offs first, with costs, stage, gaps and council ask; reorder sections, fold tables and test selection, phone, keyboard and print views (FR-15.3, FR-16.2)
+- [ ] **C1.11** [reasoning] First councillor edition: each number in the Bayside opening (proposal, people and school sites gaining complete safe trips, parking and lane changes, first stage, key unknowns, council ask) shows "met" in `checks.html`, from a check run on this release's own Bayside outputs, not tests alone; any other section that is not proved yet says so in one plain line (FR-13.14, FR-16.2, FR-13.11)
 
 ## Community proposal: before the remaining phases
 
