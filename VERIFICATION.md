@@ -1574,3 +1574,20 @@ centres, and lists 8 places it could not join. The four options hold 4101,
 3420, 3884 and 9253 links.
 
 Artifact: `artifacts/N1.1/bayside-options.json`.
+
+### N1.2
+
+```sh
+uv run --frozen pytest -q tests/test_option_rating.py
+uv run --frozen python artifacts/N1.2/collect_totals.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 artifacts/N1.2/bayside-totals.json
+```
+
+Expect: Each link gets a modelled rating from the stress score, with its
+level, whether it is all-ages, and whether assumed inputs support it. Each
+option reports safe trips and all trips, the safety score, km by level, km
+rated all-ages, places with a safe trip by type, and the share of km rated
+from assumed inputs. On Bayside the run gives 4, 3, 3 and 3 safe trips of
+25878 for the calm, shortest, separated and mesh options. It takes about 16
+minutes. This row covers step 0 only. The ladder of steps is N1.3.
+
+Artifact: `artifacts/N1.2/bayside-totals.json`.

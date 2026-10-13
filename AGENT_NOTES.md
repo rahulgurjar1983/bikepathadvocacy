@@ -1075,3 +1075,16 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   shuffled input give the same links.
 - The Bayside run takes about 285 seconds, mostly the stress and fit scoring.
 
+
+### N1.2 modelled rating and option totals
+
+- `bikeplan.rating.model_ratings(graph, scores, fits)` gives the rating of each
+  directed edge. `fits` must hold every segment ID, with `None` for streets
+  that need no fix. Link IDs are sorted pairs, so a link is `(3, 6, 0)`.
+- A link is all-ages only if both directions are. It is assumed if either
+  direction is. On Bayside nearly every link is assumed, because traffic counts
+  are all defaults.
+- `option_totals(table, links, joined, fixed)` takes `fixed` links as level 1
+  and all-ages. N1.3 uses it for each step of the ladder.
+- The Bayside run takes about 16 minutes, mostly stress scoring and the
+  25878 trips.
