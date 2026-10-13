@@ -46,24 +46,37 @@ def trip_links(graph: nx.Graph, first: int, second: int) -> list | None:
         return []
     if first not in graph or second not in graph:
         return None
-    path = nx.dijkstra_path(graph, first, second, weight="weight")
+    try:
+        path = nx.dijkstra_path(graph, first, second, weight="weight")
+    except nx.NetworkXNoPath:
+        return None
     return [graph[a][b]["link"] for a, b in pairwise(path)]
 
 
-def option_totals(table: dict, links: list, joined: list, fixed=frozenset()) -> dict:
+def option_trips(table: dict, links: list, joined: list) -> list:
     graph = link_graph(table, links)
+    people = sorted(joined, key=lambda item: item["id"])
+    return [
+        (first, second, trip_links(graph, first["node"], second["node"]))
+        for index, first in enumerate(people)
+        for second in people[index + 1 :]
+    ]
+
+
+def option_totals(
+    table: dict, links: list, joined: list, fixed=frozenset(), trips: list | None = None
+) -> dict:
     people = sorted(joined, key=lambda item: item["id"])
     types = sorted({item["type"] for item in people})
     places_safe = dict.fromkeys(types, 0)
     served: set = set()
-    trips = safe = 0
-    for index, first in enumerate(people):
-        for second in people[index + 1 :]:
-            trips += 1
-            path = trip_links(graph, first["node"], second["node"])
-            if path is not None and all(link in fixed or table[link]["all_ages"] for link in path):
-                safe += 1
-                served |= {first["id"], second["id"]}
+    safe = 0
+    found = option_trips(table, links, joined) if trips is None else trips
+    trip_count = len(found)
+    for first, second, path in found:
+        if path is not None and all(link in fixed or table[link]["all_ages"] for link in path):
+            safe += 1
+            served |= {first["id"], second["id"]}
     for item in people:
         places_safe[item["type"]] += item["id"] in served
     km_by_level = dict.fromkeys(LEVELS, 0.0)
@@ -77,9 +90,9 @@ def option_totals(table: dict, links: list, joined: list, fixed=frozenset()) -> 
         assumed_km += km if found["assumed"] else 0.0
         total_km += km
     return {
-        "trips": trips,
+        "trips": trip_count,
         "safe_trips": safe,
-        "score": 100 * safe / trips if trips else 0.0,
+        "score": 100 * safe / trip_count if trip_count else 0.0,
         "km_by_level": km_by_level,
         "km_all_ages": km_all_ages,
         "places_safe": places_safe,
