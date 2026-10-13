@@ -44,11 +44,12 @@ This spec governs the report's opening, map, options and slider. Where spec 13, 
 | FR-17.10 | A chart plots safety score against disruption score, one line per option, with a dot at the slider's step. A table gives the same values for each option at each tenth of its full disruption. With scripts off, the page shows the opening, the table and the recommended step's totals. | MUST |
 | FR-17.11 | The report holds no survey: no survey plan, survey ask, survey layer, survey count or "needs survey" label. A link with an unknown input shows "modelled" and its rating. This retires FR-16.15 and replaces the ask of FR-16.2. | MUST |
 | FR-17.12 | The Bayside report built from the shipped settings shows the four options, my pick, its recommended step and its works. Each number in the opening is a figure with a recipe, and its `checks.html` entry shows "met" from a check run on that release's own outputs. If no option reaches a safety score above its step 0 value, the row stays open and names the links with no fix. | MUST |
+| FR-17.13 | The map also has overlay switches, as the report of PR 120 had under FR-13.9. "Street calmness today" draws every bike-legal street inside the boundary, merged as FR-13.13 says, coloured by its current stress level: blue for levels 1 and 2, red for 3 and 4, with busier streets drawn thicker. Each level has its own switch, and one switch shows only the streets rated all-ages. Schools, stations and town centres each have a switch, with a marker shape and a text label in the key, so colour is never the only clue. Hover or tap names the street, its type, its level and its all-ages rating, or the place and its type. The overlays sit under the option's links, so the chosen network stays on top. Places and the chosen option open switched on; the street overlay opens switched off. The overlays work with every option and every slider step. | MUST |
 
 ## 5. Report order
 
 1. My pick, my ask and the options side by side (FR-17.8)
-2. The map with the option switch and the slider (FR-17.9)
+2. The map with the option switch, the slider and the overlays (FR-17.9, FR-17.13)
 3. The chart and its table (FR-17.10)
 4. Works of my pick up to the recommended step, by street, with each one's fix and disruption
 5. Links with no fix, by option
@@ -73,6 +74,7 @@ Earlier report parts that this order leaves out move to the data archive and lea
 | FR-17.10 | The chart has one line per option and the dot at the step; the table holds the tenths; with scripts off the opening, table and step totals show |
 | FR-17.11 | The test-grid and Bayside reports hold no visible "survey" text and no survey layer |
 | FR-17.12 | Artifact: the Bayside release report, its `figures.json` and `checks.html`, with every opening figure "met" |
+| FR-17.13 | In headless Chromium with network calls blocked, each overlay switch draws and removes its layer; the street overlay paints in each level colour and its km add up to F1; place markers match the place counts; overlays stay under the option's links when the option or the step changes |
 
 ## 7. Loop work
 
