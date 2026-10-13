@@ -40,6 +40,18 @@ def number(value, places_shown):
     return round(value) if places_shown == 0 else round(value, places_shown)
 
 
+def street_overlay(pieces: list[dict], rows: list[list]) -> dict:
+    metres = {str(level): 0.0 for level in (1, 2, 3, 4)} | {"aaa": 0.0}
+    for row in rows:
+        metres[str(row[2])] += float(row[1])
+        if row[3]:
+            metres["aaa"] += float(row[1])
+    return {
+        "pieces": [{key: value for key, value in item.items() if key != "fix"} for item in pieces],
+        "km": {key: round(value / 1000, 3) for key, value in metres.items()},
+    }
+
+
 def option_data(item: dict) -> dict:
     return {
         "id": item["id"],
@@ -357,11 +369,11 @@ def checked(old: list[dict]) -> str:
     )
 
 
-def edition(region, options, marks, joined, share, old) -> tuple[str, str, list, str]:
+def edition(region, options, marks, joined, share, old, streets=None) -> tuple[str, str, list, str]:
     text = options_text(options, share, joined)
     first = max(int(item["id"][1:]) for item in old) + 1
     figures = Figures(options, share, joined, text, first)
-    head, body = network_report(options, share, marks, figures.ref)
+    head, body = network_report(options, share, marks, figures.ref, streets)
     body += left_out(joined, figures.ref) + archive_figures(old)
     cut = body.index("</section>") + len("</section>")
     body = f'<section id="opening">{checked(old)}{body[:cut]}</section>{body[cut:]}'

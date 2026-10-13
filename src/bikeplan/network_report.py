@@ -11,6 +11,17 @@ COUNTS = (
     ("score", "disruption score", "{:.1f}"),
 )
 PLOT = (40, 10, 350, 200)
+LEVELS = (
+    (1, "#5aa9e6", "blue"),
+    (2, "#16407a", "dark blue"),
+    (3, "#f08080", "light red"),
+    (4, "#a01010", "dark red"),
+)
+KINDS = (
+    ("school", "Schools", "#e0b000", '<circle cx="7" cy="7" r="5"'),
+    ("station", "Stations", "#ffffff", '<rect x="2" y="2" width="10" height="10"'),
+    ("town_centre", "Town centres", "#7b3fa0", '<polygon points="7,1 13,13 1,13"'),
+)
 
 
 def plain(key: tuple, text: str) -> str:
@@ -272,7 +283,36 @@ def quality_section(options: list[dict], ref=plain) -> str:
     )
 
 
-def map_section(options: list[dict], choice: dict, ref=plain) -> str:
+def overlay_controls(streets: dict | None) -> str:
+    levels = ""
+    if streets:
+        km = streets["km"]
+        rows = "".join(
+            f'<li><label><input type="checkbox" id="overlay-lts-{level}" checked> '
+            f"Level {level} ({name}), {km[str(level)]:.2f} km</label></li>"
+            for level, _, name in LEVELS
+        )
+        levels = (
+            '<label><input type="checkbox" id="overlay-streets"> Street calmness today</label>'
+            "<p>Blue streets are levels 1 and 2. Red streets are levels 3 and 4. Busier streets "
+            f"are thicker. The km of all levels together are figure "
+            f'<a href="#F1">F1</a>.</p><ul>{rows}<li><label><input type="checkbox" '
+            f'id="overlay-aaa"> Only streets rated all ages, {km["aaa"]:.2f} km</label></li></ul>'
+        )
+    places = "".join(
+        f'<li><label><input type="checkbox" id="overlay-{kind}" checked> '
+        f'<svg data-kind="{kind}" width="14" height="14" viewBox="0 0 14 14" role="img" '
+        f'aria-label="{label}">{shape} fill="{fill}" stroke="#222222" stroke-width="1.5"/></svg> '
+        f"{label}</label></li>"
+        for kind, label, fill, shape in KINDS
+    )
+    return (
+        f'<fieldset id="overlay-key"><legend>Overlays under the option</legend>{levels}'
+        f"<ul>{places}</ul></fieldset>"
+    )
+
+
+def map_section(options: list[dict], choice: dict, ref=plain, streets=None) -> str:
     switch = "".join(
         f'<label><input type="radio" name="option" id="option-{item["id"]}"'
         f"{' checked' if item['id'] == choice['pick'] else ''}> {html.escape(item['name'])}</label>"
@@ -283,6 +323,7 @@ def map_section(options: list[dict], choice: dict, ref=plain) -> str:
         '<section id="map"><h2>Map of the network options</h2>'
         '<div id="map-controls" hidden><fieldset><legend>Option</legend>'
         f"{switch}</fieldset>"
+        f"{overlay_controls(streets)}"
         '<label>How much disruption: <input type="range" id="disruption-slider" min="0" '
         f'max="{len(pick["steps"]) - 1}" value="{choice["step"]}"></label></div>'
         "<p>Green: all ages today. Blue: made all ages by works up to the step. Red: still not "
@@ -294,9 +335,15 @@ def map_section(options: list[dict], choice: dict, ref=plain) -> str:
 
 
 def map_data(
-    options: list[dict], choice: dict, top: float, places: list[dict], share: float
+    options: list[dict],
+    choice: dict,
+    top: float,
+    places: list[dict],
+    share: float,
+    streets: dict | None = None,
 ) -> str:
     saved = {
+        "streets": streets or {"pieces": [], "km": {}},
         "pick": choice["pick"],
         "places": places,
         "options": [
@@ -320,7 +367,11 @@ def map_data(
 
 
 def network_report(
-    options: list[dict], share: float, places: list[dict] | None = None, ref=plain
+    options: list[dict],
+    share: float,
+    places: list[dict] | None = None,
+    ref=plain,
+    streets: dict | None = None,
 ) -> tuple[str, str]:
     choice = choose(options, share)
     top = max(item["steps"][-1]["disruption"]["score"] for item in options)
@@ -330,12 +381,12 @@ def network_report(
         "#network-map{height:24rem;border:1px solid #444}</style>"
         f"<script>{(ASSETS / 'leaflet.js').read_text()}</script>"
         '<script type="application/json" id="network-data">'
-        f"{map_data(options, choice, top, places or [], share)}</script>"
+        f"{map_data(options, choice, top, places or [], share, streets)}</script>"
         f"<script>{(ASSETS / 'network.js').read_text()}</script>"
     )
     body = (
         opening(options, choice, ref)
-        + map_section(options, choice, ref)
+        + map_section(options, choice, ref, streets)
         + chart(options, choice, top, ref)
         + works_section(pick, choice, ref)
         + no_fix_section(options, ref)
