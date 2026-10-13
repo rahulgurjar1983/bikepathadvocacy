@@ -7,10 +7,10 @@ from urllib.parse import parse_qs, urlsplit
 
 import geopandas
 import pytest
-from bikeplan.adapters.nsw_road_segment import nsw_road_segment
 from pyproj import Transformer
 from shapely.geometry import LineString
 
+from bikeplan.adapters.nsw_road_segment import nsw_road_segment
 from bikeplan.config import load_profile, load_region
 from bikeplan.network import build
 from bikeplan.snapshot import ADAPTERS, OverpassError
@@ -234,8 +234,10 @@ def test_fr10_3_edges_with_no_segment_keep_the_class_default(tmp_path):
     graph = build_grid(folder)
 
     far = edges_at(graph, east0, north0, 400, -1, 601)
+    plain = edges_at(build_grid(GRID), east0, north0, 400, -1, 601)
     assert far
-    assert all(d["adt_source"] == "default" and d["adt"] == 750 for d in far)
+    assert [d["adt"] for d in far] == [d["adt"] for d in plain]
+    assert all(d["adt_source"] == "default" for d in far)
 
 
 def test_fr10_3_a_segment_at_a_right_angle_does_not_match(tmp_path):
