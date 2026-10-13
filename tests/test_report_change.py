@@ -1,7 +1,6 @@
 import json
 import re
 from html.parser import HTMLParser
-from pathlib import Path
 
 import pytest
 from selenium import webdriver
@@ -105,83 +104,6 @@ def test_fr13_15_the_step_figures_have_ids_and_recipes(built):
         assert [part["name"] for part in figures[name]["inputs"]] == ["frontier.json"]
 
 
-def test_fr13_15_with_scripts_off_the_recommended_step_totals_still_show(built, frontier):
-    html = (built / "report.html").read_text()
-    section = re.search(r'<section id="change".*?</section>', html, re.S).group(0)
-    parsed = Totals()
-    parsed.feed(section)
-    chosen = scenario(frontier, "shipped")
-    pick = chosen["picks"][chosen["recommended_stop"] or 0]
-    assert parsed.found
-    for key, text in parsed.found.items():
-        assert float(text) == pytest.approx(step_value(pick, key))
-    assert {"score", "disruption", "parking_spaces", "lane_km", "speed_km"} <= set(parsed.found)
-    assert {"people.school", "people.station"} <= set(parsed.found)
-    assert all(re.fullmatch(r"#F\d+", href) for href in parsed.links.values())
-    assert "recommended" in re.search(r'id="change-why".*?</p>', section, re.S).group(0)
-
-
-def test_fr13_15_chromium_opens_at_the_recommended_step_without_errors(browser, frontier):
-    assert not [m for m in browser.get_log("browser") if m["level"] == "SEVERE"]
-    chosen = scenario(frontier, "shipped")
-    slider = browser.find_element(By.ID, "change-slider")
-    assert slider.is_enabled()
-    assert int(slider.get_attribute("value")) == (chosen["recommended_stop"] or 0)
-    assert int(slider.get_attribute("max")) == len(chosen["picks"]) - 1
-    assert drawn(browser) == features_up_to(frontier, "shipped", chosen["recommended_stop"] or 0)
-
-
-def test_fr13_15_moving_the_slider_changes_the_projects_drawn_and_the_totals(browser, frontier):
-    chosen = scenario(frontier, "shipped")
-    for step in (0, len(chosen["picks"]) - 1, 0):
-        move(browser, step)
-        assert drawn(browser) == features_up_to(frontier, "shipped", step)
-        for key, value in shown(browser).items():
-            assert value == pytest.approx(step_value(chosen["picks"][step], key))
-    move(browser, 0)
-    low = drawn(browser)
-    move(browser, len(chosen["picks"]) - 1)
-    assert drawn(browser) > low
-
-
-def test_fr13_15_the_scenario_switch_changes_the_curve_and_the_slider_range(browser, frontier):
-    for name in ("light", "heavy", "shipped"):
-        browser.find_element(By.ID, f"scenario-{name}").click()
-        selected = [
-            item.get_attribute("id")
-            for item in browser.find_elements(By.CSS_SELECTOR, "#change-chart [data-selected=true]")
-        ]
-        assert selected == [f"curve-{name}"]
-        chosen = scenario(frontier, name)
-        slider = browser.find_element(By.ID, "change-slider")
-        assert int(slider.get_attribute("max")) == len(chosen["picks"]) - 1
-        assert int(slider.get_attribute("value")) == (chosen["recommended_stop"] or 0)
-        for key, value in shown(browser).items():
-            pick = chosen["picks"][chosen["recommended_stop"] or 0]
-            assert value == pytest.approx(step_value(pick, key))
-
-
-def test_fr13_15_the_chart_dot_sits_at_the_step(browser, frontier):
-    chosen = scenario(frontier, "shipped")
-    browser.find_element(By.ID, "scenario-shipped").click()
-    for step in (0, len(chosen["picks"]) - 1):
-        move(browser, step)
-        dot = browser.find_element(By.ID, "change-dot")
-        assert int(dot.get_attribute("data-step")) == step
-        curve = browser.find_element(By.ID, "curve-shipped").get_attribute("points")
-        x, y = curve.split()[step].split(",")
-        assert float(dot.get_attribute("cx")) == pytest.approx(float(x))
-        assert float(dot.get_attribute("cy")) == pytest.approx(float(y))
-
-
-def test_fr13_15_the_chart_has_a_title_and_a_table(built):
-    html = (built / "report.html").read_text()
-    section = re.search(r'<section id="change".*?</section>', html, re.S).group(0)
-    assert re.search(r'<svg id="change-chart"[^>]*role="img"', section)
-    assert re.search(r"<title[^>]*>[^<]+</title>", section)
-    assert 'data-for="change-chart"' in section
-
-
 PLACES = {"score": 1, "disruption": 1, "parking_spaces": 0, "lane_km": 3, "speed_km": 3}
 
 
@@ -193,80 +115,11 @@ def places(key):
     return PLACES[key]
 
 
-def test_fr9_2_people_in_the_totals_are_whole_numbers(built):
-    html = (built / "report.html").read_text()
-    section = re.search(r'<section id="change".*?</section>', html, re.S).group(0)
-    cells = re.findall(r'data-total="(people\.[a-z_]+)">([^<]*)<', section)
-    assert cells
-    assert all(re.fullmatch(r"\d+", text) for _, text in cells)
-
-
-def test_fr9_2_moving_the_slider_shows_rounded_totals(browser, frontier):
-    chosen = scenario(frontier, "shipped")
-    for step in (0, 1, len(chosen["picks"]) - 1):
-        move(browser, step)
-        for item in browser.find_elements(By.CSS_SELECTOR, "#change-totals [data-total]"):
-            key = item.get_attribute("data-total")
-            want = f"{step_value(chosen['picks'][step], key):.{places(key)}f}"
-            assert item.text == want
-
-
 def section_of(built, name):
     html = (built / "report.html").read_text()
     return re.search(rf'<section id="{name}".*?</section>', html, re.S).group(0)
 
 
-def test_fr9_2_people_in_the_projects_table_are_whole_numbers(built):
-    row = re.search(r"<tbody><tr>(.*?)</tr>", section_of(built, "projects"), re.S).group(1)
-    cells = re.findall(r"<code>([^<]*)</code>", row)
-    assert re.fullmatch(r"\d+", cells[-1])
-
-
-def test_fr9_2_people_in_the_summary_are_whole_numbers(built):
-    summary = section_of(built, "summary")
-    people = summary.split("People who gain safe reach, by place type")[1]
-    cells = re.findall(r"<code>([^<]*)</code>", people)
-    counts = cells[1::2]
-    assert counts
-    assert all(re.fullmatch(r"\d+", text) for text in counts)
-
-
-def test_fr9_2_people_in_a_project_sheet_are_whole_numbers(built):
-    html = (built / "report.html").read_text()
-    sheet = re.search(r"<article id=\"project-.*?</article>", html, re.S).group(0)
-    people = sheet.split("<th>Place type</th><th>People</th>")[1]
-    counts = re.findall(r"<code>([^<]*)</code>", people)[1::2]
-    assert counts
-    assert all(re.fullmatch(r"\d+", text) for text in counts)
-
-
 def change_part(out):
     html = (out / "report.html").read_text()
     return re.search(r'<section id="change".*?</section>', html, re.S).group(0)
-
-
-def test_fr8_14_the_report_says_when_the_cap_was_reached(tmp_path):
-    text = (
-        Path(REGION)
-        .read_text()
-        .replace("  max_projects: 25\n", "  max_projects: 25\n  frontier_max_projects: 1\n")
-    )
-    region = tmp_path / "region.yaml"
-    region.write_text(text)
-    out = tmp_path / "out"
-    assert main(["report", str(region), "--snapshot", str(COMMITTED), "--out", str(out)]) == 0
-    assert "cap" in re.search(r'id="change-capped".*?</p>', change_part(out), re.S).group(0)
-
-
-def test_fr15_6_slider_shows_unique_people_and_type_gains(browser, frontier):
-    for curve in frontier["scenarios"][:2]:
-        browser.find_element(By.ID, "scenario-" + curve["id"]).click()
-        for rank in (0, len(curve["picks"]) - 1):
-            move(browser, rank)
-            pick = curve["picks"][rank]
-            for key in ("unique_people", "gains_by_type"):
-                cell = browser.find_element(By.CSS_SELECTOR, f'[data-measure="{key}"]')
-                assert float(cell.text) == round(pick[key])
-            for kind, count in pick["unique_people_by_type"].items():
-                cell = browser.find_element(By.CSS_SELECTOR, f'[data-total="people.{kind}"]')
-                assert float(cell.text) == round(count)

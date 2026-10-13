@@ -31,7 +31,7 @@ JUNIT = """<testsuites><testsuite>
 <testcase classname="tests.t" name="test_fr17_12_a"/>
 </testsuite></testsuites>"""
 OLD = {
-    "id": "F3",
+    "id": "F1",
     "label": "Street with no width estimate",
     "value": 1.5,
     "unit": "km",

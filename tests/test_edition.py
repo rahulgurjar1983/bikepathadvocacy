@@ -111,6 +111,6 @@ def test_fr17_8_the_ask_folds_its_streets_below_one_plain_sentence():
     _, body = network_report([calm(), shortest(95.0)], 0.9)
     opening = body.split('id="map"')[0]
     sentence, folded = opening.split("<details>")
-    assert "Council adopts Calm streets as its bike network plan" in sentence
+    assert "I ask council to adopt Calm streets as its bike network plan" in sentence
     assert "Ash St" not in sentence
     assert "Ash St, Elm St, Oak St" in folded.split("</details>")[0]

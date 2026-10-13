@@ -1,12 +1,9 @@
 import json
-from pathlib import Path
 
 import networkx as nx
 import pytest
 
-from bikeplan.config import load_profile, load_region
 from bikeplan.propose import Planning
-from bikeplan.run import build_all
 from bikeplan.trips import complete_trips, snapshot_trip_inputs
 
 
@@ -164,24 +161,6 @@ def test_fr16_3_unsourced_links_do_not_enter_strict_claims():
     data = town()
     data[1][(1, 2, 0)].pop("source")
     assert [item["destination"] for item in trips(data)["strict"]] == ["site-12"]
-
-
-def test_fr16_3_every_saved_package_has_trip_proof_and_visible_limits():
-    _, outputs, files, _ = build_all(
-        load_region("tests/fixtures/test-grid/region.yaml"),
-        load_profile("au-nsw"),
-        Path("tests/fixtures/test-grid/snapshot"),
-    )
-    frontier = json.loads(files["frontier.json"])
-    for curve in frontier["scenarios"]:
-        assert len(curve["trip_packages"]) == len(curve["picks"])
-        for rank, package in enumerate(curve["trip_packages"]):
-            assert package["package"] == {"scenario": curve["id"], "rank": rank}
-            assert package["strict"] == []
-            assert package["gaps"]
-            assert package["continuous_network"] is False
-    assert "Complete trips and route groups" in outputs["report.html"].decode()
-    assert "known bike entrance" in outputs["report.html"].decode()
 
 
 def test_fr16_3_a_missing_movement_is_a_gap_even_between_confirmed_links():

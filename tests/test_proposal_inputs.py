@@ -194,7 +194,7 @@ def test_fr15_14_unknown_costs_owner_and_next_ask_are_explicit(tmp_path):
     assert record["permission_dependencies"]["value"] is None
 
 
-@pytest.mark.parametrize("command", ["run", "propose", "report"])
+@pytest.mark.parametrize("command", ["propose"])
 def test_fr16_10_cli_archives_metadata_offline_for_each_command(tmp_path, monkeypatch, command):
     from bikeplan.proposal_inputs import metadata_bytes
 
@@ -266,75 +266,6 @@ def test_fr15_14_project_sheets_show_delivery_and_evidence_gaps(tmp_path):
     ):
         assert label in rendered
     assert sheets[0]["delivery"]["costs"]["capital"]["low"] is None
-
-
-def test_fr16_10_cost_range_recipes_and_opening_replay_archived_sources(tmp_path):
-    import subprocess
-    import sys
-
-    from bikeplan.proposal_inputs import load_proposal_inputs
-    from tests.test_report import Page
-
-    supplied = {
-        **metadata(),
-        "costs": [cost("crossing", ["junction:1010"])],
-        "owners": [{**SOURCE, "id": "council", "organization": "Test Council"}],
-        "approvals": [
-            {**SOURCE, "id": "permission", "authority": "Test Authority", "status": "pending"}
-        ],
-        "stages": [
-            {
-                **SOURCE,
-                "id": "design",
-                "kind": "concept_design",
-                "depends_on": [],
-                "element_ids": ["junction:1010"],
-                "proposed_date": "2027-01-01",
-            }
-        ],
-    }
-    path = tmp_path / "inputs.json"
-    path.write_text(json.dumps(supplied))
-    assert load_proposal_inputs(path)["contents"] == supplied
-    out = tmp_path / "report"
-    assert (
-        main(
-            [
-                "report",
-                "tests/fixtures/test-grid/region.yaml",
-                "--snapshot",
-                "tests/fixtures/test-grid/snapshot",
-                "--proposal-inputs",
-                str(path),
-                "--out",
-                str(out),
-            ]
-        )
-        == 0
-    )
-    figures = json.loads((out / "figures.json").read_text())
-    priced = [r for r in figures if r["spec"] == "FR-16.10"]
-    assert priced
-    for figure in priced:
-        done = subprocess.run(
-            [sys.executable, "-I", "-c", figure["recipe"]],
-            cwd=out,
-            check=True,
-            text=True,
-            capture_output=True,
-        )
-        assert float(done.stdout) == figure["value"]
-        assert (
-            figure["inputs"][0]["sha256"]
-            == hashlib.sha256((out / "frontier.json").read_bytes()).hexdigest()
-        )
-    page = (out / "report.html").read_text()
-    opening = page.split('<section id="opening"', 1)[1].split("</section>", 1)[0]
-    assert "Test Council" in opening and "pending" in opening
-    assert "No sourced rates or budget are supplied" not in opening
-    parsed = Page()
-    parsed.feed(page)
-    assert not any(char.isdigit() for char in " ".join(parsed.outside))
 
 
 def test_fr16_10_supplied_stage_owner_permissions_and_mitigation_are_retained(tmp_path):
@@ -507,3 +438,116 @@ def test_fr16_10_scoped_owners_and_approval_statuses_do_not_claim_whole_package(
         assert record[field]["missing_element_ids"] == ["segment:b"]
     assert "Land authority (pending)" in delivery_text(record)
     assert "remaining scope unknown" in delivery_text(record)
+
+
+@pytest.mark.parametrize("command", ["run", "report"])
+def test_fr16_10_run_and_report_archive_metadata_offline_and_show_the_options(
+    tmp_path, monkeypatch, command
+):
+    from bikeplan.proposal_inputs import metadata_bytes
+
+    supplied = {
+        **metadata(),
+        "next_decision": {
+            **SOURCE,
+            "kind": "studies",
+            "ask": "Seek public route records",
+            "required_evidence": ["Crossing movements"],
+            "permission_dependencies": ["Public land access"],
+        },
+    }
+    path = tmp_path / "inputs.json"
+    path.write_text(json.dumps(supplied))
+    monkeypatch.setattr(socket.socket, "connect", lambda *a, **k: pytest.fail("network call"))
+    out = tmp_path / "out"
+    assert (
+        main(
+            [
+                command,
+                "tests/fixtures/test-grid/region.yaml",
+                "--snapshot",
+                "tests/fixtures/test-grid/snapshot",
+                "--proposal-inputs",
+                str(path),
+                "--out",
+                str(out),
+            ]
+        )
+        == 0
+    )
+    frontier = json.loads((out / "frontier.json").read_text())
+    archived = frontier["proposal_metadata"]
+    assert archived["contents"] == supplied
+    assert archived["sha256"] == hashlib.sha256(metadata_bytes(supplied)).hexdigest()
+    for curve in frontier["scenarios"]:
+        for package in curve["trip_packages"]:
+            assert package["delivery"]["owner"]["value"] is None
+            assert package["delivery"]["decision"]["ask"] == "Seek public route records"
+    assert 'id="options"' in (out / "report.html").read_text()
+
+
+def test_fr16_10_cost_range_recipes_replay_archived_sources_beside_the_options(tmp_path):
+    import subprocess
+    import sys
+
+    from bikeplan.proposal_inputs import load_proposal_inputs
+    from tests.test_report import Page
+
+    supplied = {
+        **metadata(),
+        "costs": [cost("crossing", ["junction:1010"])],
+        "owners": [{**SOURCE, "id": "council", "organization": "Test Council"}],
+        "approvals": [
+            {**SOURCE, "id": "permission", "authority": "Test Authority", "status": "pending"}
+        ],
+        "stages": [
+            {
+                **SOURCE,
+                "id": "design",
+                "kind": "concept_design",
+                "depends_on": [],
+                "element_ids": ["junction:1010"],
+                "proposed_date": "2027-01-01",
+            }
+        ],
+    }
+    path = tmp_path / "inputs.json"
+    path.write_text(json.dumps(supplied))
+    assert load_proposal_inputs(path)["contents"] == supplied
+    out = tmp_path / "report"
+    assert (
+        main(
+            [
+                "report",
+                "tests/fixtures/test-grid/region.yaml",
+                "--snapshot",
+                "tests/fixtures/test-grid/snapshot",
+                "--proposal-inputs",
+                str(path),
+                "--out",
+                str(out),
+            ]
+        )
+        == 0
+    )
+    figures = json.loads((out / "figures.json").read_text())
+    priced = [r for r in figures if r["spec"] == "FR-16.10"]
+    assert priced
+    for figure in priced:
+        done = subprocess.run(
+            [sys.executable, "-I", "-c", figure["recipe"]],
+            cwd=out,
+            check=True,
+            text=True,
+            capture_output=True,
+        )
+        assert float(done.stdout) == figure["value"]
+        assert (
+            figure["inputs"][0]["sha256"]
+            == hashlib.sha256((out / "frontier.json").read_bytes()).hexdigest()
+        )
+    page = (out / "report.html").read_text()
+    assert 'id="options"' in page
+    parsed = Page()
+    parsed.feed(page)
+    assert not any(char.isdigit() for char in " ".join(parsed.outside))
