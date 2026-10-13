@@ -1,9 +1,9 @@
 from pathlib import Path
 
 import pytest
-from bikeplan.options import build_options, join_places
 
 from bikeplan.config import ConfigError, Network, load_profile
+from bikeplan.options import build_options, join_places
 from tests.option_helpers import (
     NODES,
     PATH_ROADS,
