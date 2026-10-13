@@ -114,3 +114,11 @@ def test_fr17_8_the_ask_folds_its_streets_below_one_plain_sentence():
     assert "I ask council to adopt Calm streets as its bike network plan" in sentence
     assert "Ash St" not in sentence
     assert "Ash St, Elm St, Oak St" in folded.split("</details>")[0]
+
+
+def test_fr9_4_the_page_holds_no_project_sheets_and_the_works_table_names_each_fix(page):
+    assert 'id="sheets"' not in page
+    assert "cross-section" not in page
+    works = page.split('id="works"')[1].split("</section>")[0]
+    for label in ("Street", "Fix", "Parking spaces", "Traffic-lane km", "Lower-speed km"):
+        assert f"<th>{label}</th>" in works
