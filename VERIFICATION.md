@@ -1646,7 +1646,7 @@ my pick and my ask, then the map, the chart, the works of my pick by street,
 the links with no fix and data quality. Every number in the opening is a link
 to a figure from F32 up, and each recipe prints the same value from
 `options.json`. The release checks show FR-17.12 and FR-17.11 as met. The page
-holds no survey text. The report is about 2 MB. The build takes about 47
+holds no survey text. The report is about 2 MB. The build takes about 51
 minutes and 6.6 GB of memory on this host.
 
 Limits: this part ships the page, the figures and the two output checks. The
