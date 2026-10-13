@@ -1,0 +1,319 @@
+{
+  "figures": 92,
+  "first_option_figure": "F32",
+  "last_option_figure": "F92",
+  "opening": {
+    "F32": [
+      "Calm streets: school places with a safe trip once every work is built",
+      128,
+      "places"
+    ],
+    "F33": [
+      "Calm streets: station places with a safe trip once every work is built",
+      30,
+      "places"
+    ],
+    "F34": [
+      "Calm streets: town_centre places with a safe trip once every work is built",
+      26,
+      "places"
+    ],
+    "F35": [
+      "Calm streets: parking spaces with every work built",
+      22726,
+      "spaces"
+    ],
+    "F36": [
+      "Calm streets: traffic-lane km with every work built",
+      1.82,
+      "km"
+    ],
+    "F37": [
+      "Calm streets: lower-speed km with every work built",
+      1.86,
+      "km"
+    ],
+    "F38": [
+      "Calm streets: path km with every work built",
+      0.0,
+      "km"
+    ],
+    "F39": [
+      "Calm streets: disruption score with every work built",
+      22802.6,
+      "points"
+    ],
+    "F40": [
+      "Calm streets: length",
+      209.2,
+      "km"
+    ],
+    "F41": [
+      "Calm streets: safety score today",
+      0.0,
+      "points"
+    ],
+    "F42": [
+      "Calm streets: safety score with every work built",
+      5.9,
+      "points"
+    ],
+    "F43": [
+      "Shortest: school places with a safe trip once every work is built",
+      91,
+      "places"
+    ],
+    "F44": [
+      "Shortest: station places with a safe trip once every work is built",
+      24,
+      "places"
+    ],
+    "F45": [
+      "Shortest: town_centre places with a safe trip once every work is built",
+      22,
+      "places"
+    ],
+    "F46": [
+      "Shortest: parking spaces with every work built",
+      14658,
+      "spaces"
+    ],
+    "F47": [
+      "Shortest: traffic-lane km with every work built",
+      2.52,
+      "km"
+    ],
+    "F48": [
+      "Shortest: lower-speed km with every work built",
+      0.76,
+      "km"
+    ],
+    "F49": [
+      "Shortest: path km with every work built",
+      0.0,
+      "km"
+    ],
+    "F50": [
+      "Shortest: disruption score with every work built",
+      14760.4,
+      "points"
+    ],
+    "F51": [
+      "Shortest: length",
+      161.2,
+      "km"
+    ],
+    "F52": [
+      "Shortest: safety score today",
+      0.0,
+      "points"
+    ],
+    "F53": [
+      "Shortest: safety score with every work built",
+      1.7,
+      "points"
+    ],
+    "F54": [
+      "Main roads with separation: school places with a safe trip once every work is built",
+      130,
+      "places"
+    ],
+    "F55": [
+      "Main roads with separation: station places with a safe trip once every work is built",
+      30,
+      "places"
+    ],
+    "F56": [
+      "Main roads with separation: town_centre places with a safe trip once every work is built",
+      29,
+      "places"
+    ],
+    "F57": [
+      "Main roads with separation: parking spaces with every work built",
+      26053,
+      "spaces"
+    ],
+    "F58": [
+      "Main roads with separation: traffic-lane km with every work built",
+      3.25,
+      "km"
+    ],
+    "F59": [
+      "Main roads with separation: lower-speed km with every work built",
+      0.55,
+      "km"
+    ],
+    "F60": [
+      "Main roads with separation: path km with every work built",
+      0.0,
+      "km"
+    ],
+    "F61": [
+      "Main roads with separation: disruption score with every work built",
+      26184.2,
+      "points"
+    ],
+    "F62": [
+      "Main roads with separation: length",
+      194.5,
+      "km"
+    ],
+    "F63": [
+      "Main roads with separation: safety score today",
+      0.0,
+      "points"
+    ],
+    "F64": [
+      "Main roads with separation: safety score with every work built",
+      10.6,
+      "points"
+    ],
+    "F65": [
+      "Mesh: school places with a safe trip once every work is built",
+      111,
+      "places"
+    ],
+    "F66": [
+      "Mesh: station places with a safe trip once every work is built",
+      29,
+      "places"
+    ],
+    "F67": [
+      "Mesh: town_centre places with a safe trip once every work is built",
+      23,
+      "places"
+    ],
+    "F68": [
+      "Mesh: parking spaces with every work built",
+      38455,
+      "spaces"
+    ],
+    "F69": [
+      "Mesh: traffic-lane km with every work built",
+      3.78,
+      "km"
+    ],
+    "F70": [
+      "Mesh: lower-speed km with every work built",
+      1.83,
+      "km"
+    ],
+    "F71": [
+      "Mesh: path km with every work built",
+      0.0,
+      "km"
+    ],
+    "F72": [
+      "Mesh: disruption score with every work built",
+      38609.9,
+      "points"
+    ],
+    "F73": [
+      "Mesh: length",
+      465.9,
+      "km"
+    ],
+    "F74": [
+      "Mesh: safety score today",
+      0.0,
+      "points"
+    ],
+    "F75": [
+      "Mesh: safety score with every work built",
+      4.1,
+      "points"
+    ],
+    "F76": [
+      "Recommended step of my pick",
+      56,
+      "step"
+    ],
+    "F77": [
+      "Streets named in my ask",
+      285,
+      "streets"
+    ],
+    "F78": [
+      "Safety score of my pick at the recommended step",
+      9.7,
+      "points"
+    ],
+    "F79": [
+      "Highest safety score in the table, at the full disruption of an option",
+      10.6,
+      "points"
+    ],
+    "F80": [
+      "Works of my pick up to the recommended step",
+      550,
+      "works"
+    ],
+    "F81": [
+      "Km of links with no fix, all options",
+      124.48,
+      "km"
+    ],
+    "F82": [
+      "Calm streets: share of km rated from assumed or unknown inputs",
+      99.7,
+      "%"
+    ],
+    "F83": [
+      "Shortest: share of km rated from assumed or unknown inputs",
+      100.0,
+      "%"
+    ],
+    "F84": [
+      "Main roads with separation: share of km rated from assumed or unknown inputs",
+      99.9,
+      "%"
+    ],
+    "F85": [
+      "Mesh: share of km rated from assumed or unknown inputs",
+      100.0,
+      "%"
+    ],
+    "F86": [
+      "Places of type school, joined",
+      154,
+      "places"
+    ],
+    "F87": [
+      "Places of type school, unjoined",
+      4,
+      "places"
+    ],
+    "F88": [
+      "Places of type station, joined",
+      41,
+      "places"
+    ],
+    "F89": [
+      "Places of type station, unjoined",
+      3,
+      "places"
+    ],
+    "F90": [
+      "Places of type town_centre, joined",
+      33,
+      "places"
+    ],
+    "F91": [
+      "Places of type town_centre, unjoined",
+      1,
+      "places"
+    ],
+    "F92": [
+      "Places left out of the options",
+      8,
+      "places"
+    ]
+  },
+  "option_figures": 61,
+  "report_bytes": 2211976,
+  "report_sha256": "80a390e104a77cfd7f850ebef6fdf5ab4966b172d0574ea0f6496ec92e08db83",
+  "status": {
+    "FR-17.11": "met",
+    "FR-17.12": "met"
+  }
+}

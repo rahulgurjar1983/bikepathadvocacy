@@ -9,33 +9,29 @@ from pathlib import Path
 from bikeplan.access import write_access
 from bikeplan.change import (
     change_figures,
-    change_scripts,
-    change_section,
     frontier_data,
-    proposal_opening,
 )
 from bikeplan.config import ConfigError, config_hash
+from bikeplan.edition import build_options_report, edition, edition_page
 from bikeplan.fit import segment_fit
 from bikeplan.network import bike_segments, build
-from bikeplan.page import calendar_dates, credits_for, details, page_scripts
-from bikeplan.proposal_exports import export_scripts
+from bikeplan.page import (
+    assumptions_section,
+    credits_for,
+    credits_section,
+    method_section,
+    rebuild_section,
+)
 from bikeplan.proposal_inputs import (
     cost_figures,
-    delivery_section,
-    delivery_text,
     load_proposal_inputs,
-    metadata_records,
 )
 from bikeplan.proposal_record import proposal_record
-from bikeplan.proposal_views import evidence_view, project_views
 from bikeplan.propose import KINDS, csv_fields, csv_row, write_propose
 from bikeplan.report import (
-    KEEP,
-    chart,
     check_leaks,
     figure_list,
     map_data,
-    page,
     segment_rows,
     segments_text,
 )
@@ -43,13 +39,10 @@ from bikeplan.snapshot import verify_snapshot
 from bikeplan.stress import score_edges, stress_features, stress_summary
 from bikeplan.trips import (
     resident_figure,
-    resident_section,
-    selected_trip_section,
     trip_figure,
-    trip_section,
 )
 from bikeplan.width import fuse
-from bikeplan.works import works_detail_figures, works_figures, works_section
+from bikeplan.works import works_detail_figures, works_figures
 
 FILES = [
     "access_homes.geojson",
@@ -114,8 +107,8 @@ def collection(features: list[dict], places: int = 7) -> dict:
     }
 
 
-def network_features(graph, profile, weights) -> tuple[list[dict], dict]:
-    scores = score_edges(graph, profile)
+def network_features(graph, profile, weights, scores=None) -> tuple[list[dict], dict]:
+    scores = score_edges(graph, profile) if scores is None else scores
     fits = {
         name: segment_fit(segment, profile, weights, confirmed_only=True)
         for name, segment in bike_segments(graph).items()
@@ -203,7 +196,8 @@ def build_all(
     manifest = read_json(Path(snapshot) / "manifest.json")
     graph = build(snapshot, region, profile)
     weights = {name: item.weight for name, item in region.destinations.items()}
-    features, stress = network_features(graph, profile, region.proposals.disruption_weights)
+    scores = score_edges(graph, profile)
+    features, stress = network_features(graph, profile, region.proposals.disruption_weights, scores)
     with tempfile.TemporaryDirectory() as scratch:
         base = Path(scratch)
         access = write_access(graph, region, profile, snapshot, base)
@@ -263,12 +257,9 @@ def build_all(
     fixes = {item["properties"]["segment_id"]: item["properties"]["fix"] for item in features}
     rows = segment_rows(graph, profile, fixes)
     text = segments_text(rows)
-    surveys = canon(stats["survey_options"])
-    network["survey_options"] = surveys
     map_payload = map_data(graph, rows, Path(snapshot), payload["project_shapes"])
-    map_payload["survey_options"] = surveys
     map_text = json.dumps(map_payload, sort_keys=True) + "\n"
-    priced_figures, cost_links = cost_figures(frontier, frontier_bytes.decode())
+    priced_figures, _ = cost_figures(frontier, frontier_bytes.decode())
     figures = [
         resident_figure(proposal, proposal_bytes),
         trip_figure(proposal, proposal_bytes),
@@ -278,63 +269,21 @@ def build_all(
         *works_figures(frontier, frontier_bytes.decode()),
         *works_detail_figures(proposal, proposal_bytes),
     ]
-    figures.sort(key=lambda item: int(item["id"][1:]))
-    delivery_body, delivery_script = delivery_section(frontier, cost_links, proposal)
-    selected_curve = next(c for c in frontier["scenarios"] if c["id"] == frontier["default"])
-    selected_rank = selected_curve["recommended_stop"] or 0
-    selected_delivery = delivery_text(
-        proposal["selected"],
-        cost_links[f"{selected_curve['id']}:{selected_rank}"],
+    figures = sorted(figures, key=lambda item: int(item["id"][1:]))
+    options, marks, joined = build_options_report(graph, region, profile, snapshot, scores)
+    head, body, option_figures, options_json = edition(
+        region, options, marks, joined, profile.network.recommend_share, figures
     )
-    works_page = works_section(frontier, proposal)
-    works_body, _, works_data = works_page.partition("<script")
-    selected_projects, project_scripts = project_views(proposal, frontier)
-    page_text = page(
+    figures = sorted([*figures, *option_figures], key=lambda item: int(item["id"][1:]))
+    page_text = edition_page(
         region,
+        head,
+        body,
         figures,
-        json.dumps(calendar_dates(map_payload), sort_keys=True) + "\n",
-        selected_projects
-        + details(payload["summary"], canon(sheets), profile, payload)
-        + resident_section(proposal)
-        + selected_trip_section(proposal)
-        + evidence_view(proposal)
-        + trip_section(frontier)
-        + works_body
-        + metadata_records(frontier),
-        page_scripts(payload),
-        change_section(
-            frontier,
-            {item["id"]: item for item in figures},
-            chart([item for item in figures if item["id"] in KEEP])
-            .replace('<section id="chart">', '<div id="chart">')
-            .replace("</section>", "</div>"),
-            proposal["selected"],
-        ),
-        change_scripts(calendar_dates(frontier))
-        + export_scripts(proposal, frontier)
-        + project_scripts
-        + ("<script" + works_data if works_data else "")
-        + delivery_script,
-        proposal_opening(frontier, selected_delivery, proposal["selected"]),
-        delivery_body,
-    )
-    identity = proposal["selected"]["identity"]
-    key = f"{identity['scenario']}:{identity['rank']}"
-    page_text = page_text.replace(
-        '<section id="report-map">',
-        f'<section id="report-map" data-package="{key}">'
-        f'<p>Map of the selected package: <a href="#F13"><code id="map-package-label">'
-        f"{key}</code></a>.</p>",
-    )
-    page_text = page_text.replace(
-        " Proposed changes</label>", " Old minimum-gain shortlist</label>"
-    )
-    survey_note = "Survey options need site checks. They are kept out of the confirmed picks."
-    if summary["shortlist_reason"]:
-        survey_note = summary["shortlist_reason"] + " " + survey_note
-    page_text = page_text.replace(
-        '<div id="report-map-canvas"',
-        f'<p id="survey-note">{survey_note}</p><div id="report-map-canvas"',
+        method_section()
+        + assumptions_section(profile)
+        + credits_section(summary["credits"])
+        + rebuild_section(summary),
     )
     outputs = {
         "access_homes.geojson": dump(
@@ -354,6 +303,7 @@ def build_all(
         "figures.json": (json.dumps(figures, indent=2, sort_keys=True) + "\n").encode(),
         "frontier.json": frontier_bytes,
         "map.json": map_text.encode(),
+        "options.json": options_json.encode(),
         "proposal.json": proposal_bytes,
         "segments.csv": text.encode(),
     }

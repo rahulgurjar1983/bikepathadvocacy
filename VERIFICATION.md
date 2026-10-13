@@ -1632,3 +1632,26 @@ old report parts and survey views are still in the page, and the opening
 figures with recipes are still open.
 
 Artifact: `artifacts/N1.4/bayside-network.html`.
+
+### C1.11
+
+```sh
+uv run --frozen bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out out
+artifacts/C1.11/prove.sh out artifacts/C1.11
+uv run --frozen pytest -q tests/test_edition.py tests/test_edition_browser.py tests/test_checks_opening.py
+```
+
+Expect: The Bayside report opens with the four network options side by side,
+my pick and my ask, then the map, the chart, the works of my pick by street,
+the links with no fix and data quality. Every number in the opening is a link
+to a figure from F32 up, and each recipe prints the same value from
+`options.json`. The release checks show FR-17.12 and FR-17.11 as met. The page
+holds no survey text. The report is about 2 MB. The build takes about 51
+minutes and 6.6 GB of memory on this host.
+
+Limits: this part ships the page, the figures and the two output checks. The
+row stays open until a release run builds Bayside with these checks and the
+owner has the release links. The old figures F1 to F31 stay because the
+contracts gate keeps the range from F1.
+
+Artifact: `artifacts/C1.11/edition-proof.json`

@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
       group.addLayer(layer);
       layer.getElement().setAttribute("data-state", state);
     }
-    totals.textContent = current.steps[step].text;
+    (totals.querySelector("a") || totals).textContent = current.steps[step].text;
     const spot = current.steps[step].dot;
     dot.setAttribute("cx", spot[0]);
     dot.setAttribute("cy", spot[1]);

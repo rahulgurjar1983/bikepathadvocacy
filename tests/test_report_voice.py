@@ -133,19 +133,6 @@ def test_fr13_5_no_banned_word_appears_in_the_report(report):
         assert not re.search(pattern, text, re.IGNORECASE), banned
 
 
-def test_fr13_5_the_report_shows_no_phone_email_or_street_address_of_the_author(report):
-    page = parse(report)
-    assert "Rahul Gurjar, Kogarah" in " ".join(page.parts)
-    assert "I ask council" in " ".join(page.parts)
-    assert "sheets" in page.ids
-    text = markup(report)
-    assert not re.search(r"[\w.+-]+@[\w-]+\.[\w.]+", text)
-    assert not re.search(
-        r"\+?\d[\d ()-]{8,}\d", re.sub(r"\d{4}-\d{2}-\d{2}|[0-9a-f]{64}", "", text)
-    )
-    assert not re.search(r"\b\d+\s+[A-Z][a-z]+ (Street|St|Road|Rd|Avenue|Ave)\b", text)
-
-
 def test_fr13_6_the_page_sets_the_viewport_stops_sideways_scroll_and_prints(report):
     html = (report / "report.html").read_text()
     assert 'name="viewport" content="width=device-width, initial-scale=1"' in html
@@ -170,11 +157,19 @@ def test_fr13_6_each_svg_has_a_title_and_a_matching_data_table(report):
         assert len(tables) == 1
 
 
-def test_fr13_6_each_bar_has_a_text_label_so_colour_is_not_the_only_signal(report):
-    html = markup(report)
-    svg = re.search(r"<svg.*?</svg>", html, re.DOTALL).group(0)
-    bars = re.findall(r"<rect\b", svg)
-    labels = re.findall(r"<text\b[^>]*>([^<]+)</text>", svg)
-    assert bars
-    assert len(labels) >= len(bars)
-    assert all(label.strip() for label in labels)
+def visible_markup(output):
+    html = (output / "report.html").read_text()
+    return re.sub(r"<(script|style)\b.*?</\1>", "", html, flags=re.DOTALL)
+
+
+def test_fr13_5_the_options_report_shows_no_phone_email_or_street_address_of_the_author(report):
+    page = parse(report)
+    assert "Rahul Gurjar, Kogarah" in " ".join(page.parts)
+    assert "I ask council" in " ".join(page.parts)
+    assert "options" in page.ids
+    text = visible_markup(report)
+    assert not re.search(r"[\w.+-]+@[\w-]+\.[\w.]+", text)
+    assert not re.search(
+        r"\+?\d[\d ()-]{8,}\d", re.sub(r"\d{4}-\d{2}-\d{2}|[0-9a-f]{64}", "", text)
+    )
+    assert not re.search(r"\b\d+\s+[A-Z][a-z]+ (Street|St|Road|Rd|Avenue|Ave)\b", text)

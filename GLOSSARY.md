@@ -69,3 +69,10 @@ Each term below is a project word. The reading gate swaps these words for a plai
 - **quietway** — a local street made calm for bikes with a low speed limit and few cars.
 - **width** — how wide a road or lane is, in metres.
 - **verdict** — a finding on whether a claim holds.
+- **contributor** — a person who adds data to a shared map or data set.
+- **folder** — a place on a computer that holds files.
+- **licence** — the terms that say how you may use a piece of data.
+- **network** — streets and paths that join up, drawn as a map of links.
+- **option** — one connected set of streets that joins every school, station and town centre.
+- **recipe** — a short program that rebuilds one number from the release files.
+- **request** — the question that the tool sends to a data service to get data.

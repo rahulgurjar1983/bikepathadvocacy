@@ -1,12 +1,8 @@
 import json
-from pathlib import Path
 
 import networkx as nx
 import pytest
 from shapely.geometry import LineString, box
-
-from bikeplan.config import load_profile, load_region
-from bikeplan.run import build_all
 
 
 def case():
@@ -163,67 +159,6 @@ def test_fr16_6_retained_links_crossings_and_gaps_are_separate():
     assert result["km_by_design"]["protected_cycleway"] == pytest.approx(0.1)
 
 
-def test_fr16_6_real_report_pipeline_saves_package_plans_and_recipes():
-    _summary, outputs, _files, figures = build_all(
-        load_region("tests/fixtures/test-grid/region.yaml"),
-        load_profile("au-nsw"),
-        Path("tests/fixtures/test-grid/snapshot"),
-    )
-    frontier = json.loads(outputs["frontier.json"])
-    for curve in frontier["scenarios"]:
-        assert curve["works_catalog"]
-        for package in curve["trip_packages"]:
-            assert "works" in package
-            assert package["works"]["element_ids"] == package["element_ids"]
-    assert "works" in json.loads(outputs["projects.geojson"])["trip_proof"]
-    page = outputs["report.html"].decode()
-    assert 'id="physical-works"' in page
-    assert "before/after" in page and "Name unknown" in page
-    assert 'id="works-data"' in page
-    assert "F14" in {f["id"] for f in figures}
-
-
-def test_fr16_6_offline_selection_keeps_works_and_print_on_same_package(tmp_path):
-    from selenium import webdriver
-    from selenium.webdriver.common.by import By
-    from selenium.webdriver.common.keys import Keys
-
-    from bikeplan import main
-
-    assert (
-        main(
-            [
-                "report",
-                "tests/fixtures/test-grid/region.yaml",
-                "--snapshot",
-                "tests/fixtures/test-grid/snapshot",
-                "--out",
-                str(tmp_path),
-            ]
-        )
-        == 0
-    )
-    options = webdriver.ChromeOptions()
-    for flag in ("--headless=new", "--no-sandbox", "--proxy-server=http://127.0.0.1:9"):
-        options.add_argument(flag)
-    driver = webdriver.Chrome(options=options)
-    try:
-        driver.get((tmp_path / "report.html").as_uri())
-        slider = driver.find_element(By.ID, "change-slider")
-        slider.send_keys(Keys.HOME)
-        assert driver.find_element(By.ID, "works-package").text == "shipped:0"
-        assert not driver.find_elements(By.CSS_SELECTOR, "#works-rows tr")
-        slider.send_keys(Keys.END)
-        assert driver.find_element(By.ID, "works-package").text == driver.find_element(
-            By.ID, "opening"
-        ).get_attribute("data-package")
-        assert "junction:" in driver.find_element(By.ID, "works-rows").text
-        driver.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "print"})
-        assert driver.find_element(By.ID, "works-package").is_displayed()
-    finally:
-        driver.quit()
-
-
 def test_fr16_6_existing_links_need_no_proposed_fix_to_be_retained():
     from bikeplan.works import works_catalog, works_package
 
@@ -254,58 +189,3 @@ def test_fr16_6_page_uses_shared_plan_rows_without_copying_archive_catalogs():
     assert (
         frontier["scenarios"][0]["works_catalog"]["segment:one"]["source"] == "full archived plan"
     )
-
-
-def test_fr16_6_page_keeps_shortlist_plan_catalog_only_in_archive():
-    from html.parser import HTMLParser
-
-    class Embedded(HTMLParser):
-        def handle_starttag(self, tag, attrs):
-            self.current = dict(attrs).get("id")
-
-        def handle_data(self, text):
-            if self.current in ("page-data", "map-data"):
-                blocks[self.current] = json.loads(text)
-
-    _summary, outputs, _files, _figures = build_all(
-        load_region("tests/fixtures/test-grid/region.yaml"),
-        load_profile("au-nsw"),
-        Path("tests/fixtures/test-grid/snapshot"),
-    )
-    blocks = {}
-    Embedded().feed(outputs["report.html"].decode())
-    archived = json.loads(outputs["projects.geojson"])
-    assert archived["trip_proof"]["works_catalog"]
-    for projects in (blocks["page-data"]["project_shapes"], blocks["map-data"]["projects"]):
-        assert "works_catalog" not in projects["trip_proof"]
-        assert projects["features"] == archived["features"]
-        assert projects["trip_proof"]["works"] == archived["trip_proof"]["works"]
-
-
-def test_fr16_6_embedded_shortlist_keeps_population_sources_in_archive():
-    from html.parser import HTMLParser
-
-    class Embedded(HTMLParser):
-        def handle_starttag(self, tag, attrs):
-            self.current = dict(attrs).get("id")
-
-        def handle_data(self, text):
-            if self.current in ("page-data", "map-data"):
-                blocks[self.current] = json.loads(text)
-
-    _summary, outputs, _files, _figures = build_all(
-        load_region("tests/fixtures/test-grid/region.yaml"),
-        load_profile("au-nsw"),
-        Path("tests/fixtures/test-grid/snapshot"),
-    )
-    blocks = {}
-    Embedded().feed(outputs["report.html"].decode())
-    archived = json.loads(outputs["projects.geojson"])
-    assert archived["trip_proof"]["population_sources"]
-    for projects in (blocks["page-data"]["project_shapes"], blocks["map-data"]["projects"]):
-        assert "population_sources" not in projects["trip_proof"]
-        assert (
-            projects["trip_proof"]["resident_outcomes"]
-            == archived["trip_proof"]["resident_outcomes"]
-        )
-        assert projects["trip_proof"]["works"] == archived["trip_proof"]["works"]

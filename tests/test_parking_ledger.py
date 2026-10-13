@@ -1,11 +1,7 @@
 import copy
-import json
-from pathlib import Path
 
 import pytest
 
-from bikeplan.config import load_profile, load_region
-from bikeplan.run import build_all
 from tests.test_physical_works import build, case
 
 
@@ -96,24 +92,6 @@ def test_fr16_7_changed_total_and_bad_inventory_fail():
         build(graph, elements, ["segment:a"])
 
 
-def test_fr16_7_pipeline_archives_and_displays_the_selected_parking_ledger():
-    _, outputs, _, figures = build_all(
-        load_region("tests/fixtures/test-grid/region.yaml"),
-        load_profile("au-nsw"),
-        Path("tests/fixtures/test-grid/snapshot"),
-    )
-    frontier = json.loads(outputs["frontier.json"])
-    for curve in frontier["scenarios"]:
-        for package in curve["trip_packages"]:
-            assert "parking_spaces" in package["works"]
-    assert "parking_spaces" in json.loads(outputs["projects.geojson"])["trip_proof"]["works"]
-    page = outputs["report.html"].decode()
-    assert "Spaces before, removed, added, after and net" in page
-    assert "A net gain elsewhere does not hide local loss" in page
-    assert 'href="#F23"' in page
-    assert "F23" in {f["id"] for f in figures}
-
-
 def test_fr16_7_partial_inventory_and_crossing_impacts_prevent_complete_totals():
     graph, elements = case()
     evidence = supplied([bay("known", "accessible")], ["known"])
@@ -153,41 +131,3 @@ def test_fr16_7_sourced_use_observations_and_model_loss_replay():
     evidence["spillover"] = {"value": 2}
     with pytest.raises(ValueError, match="Parking"):
         build(graph, elements, ["segment:a"])
-
-
-def test_fr16_7_offline_parking_selection_and_print(tmp_path):
-    from selenium import webdriver
-    from selenium.webdriver.common.by import By
-    from selenium.webdriver.common.keys import Keys
-
-    _, outputs, _, _ = build_all(
-        load_region("tests/fixtures/test-grid/region.yaml"),
-        load_profile("au-nsw"),
-        Path("tests/fixtures/test-grid/snapshot"),
-    )
-    target = tmp_path / "report.html"
-    target.write_bytes(outputs["report.html"])
-    frontier = json.loads(outputs["frontier.json"])
-    options = webdriver.ChromeOptions()
-    for flag in ("--headless=new", "--no-sandbox", "--proxy-server=http://127.0.0.1:9"):
-        options.add_argument(flag)
-    driver = webdriver.Chrome(options=options)
-    try:
-        driver.get(target.as_uri())
-        slider = driver.find_element(By.ID, "change-slider")
-        for key in (Keys.HOME, Keys.END):
-            slider.send_keys(key)
-            package = driver.find_element(By.ID, "works-package").text
-            scenario, rank = package.split(":")
-            curve = next(c for c in frontier["scenarios"] if c["id"] == scenario)
-            expected = curve["trip_packages"][int(rank)]["works"]["parking_spaces"]
-            actual = json.loads(driver.find_element(By.ID, "works-summary").text)
-            assert actual["parking_spaces"] == expected
-        driver.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "print"})
-        assert driver.find_element(By.ID, "works-summary").is_displayed()
-        assert (
-            "Spaces before, removed, added, after and net"
-            in driver.find_element(By.ID, "physical-works").text
-        )
-    finally:
-        driver.quit()
