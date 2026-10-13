@@ -1609,3 +1609,26 @@ lower-speed km, path km and disruption score. On Bayside the run gives 1207,
 separated and mesh options. It takes about 35 minutes.
 
 Artifact: `artifacts/N1.3/bayside-ladder.json`.
+
+### N1.4
+
+```sh
+uv run --frozen pytest -q tests/test_network_report.py tests/test_network_share.py
+uv run --frozen python artifacts/N1.4/collect_report.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 artifacts/N1.4/bayside-network.html
+```
+
+Expect: The network report body follows the spec 17 order: the options side by
+side, my pick and my ask, the map with an option switch and a disruption
+slider, the chart and its table, the works of my pick by street, links with no
+fix, and data quality. The switch opens on my pick and the slider on the first
+step that reaches 0.9 of the full gain. With scripts off, the opening, the
+table and the step totals still show. The page holds no survey text. On
+Bayside the pick is Main roads with separation at step 56, with safety scores
+of 5.9, 1.7, 10.6 and 4.1 for the other options in order. The run takes about
+25 minutes.
+
+Limits: this part is a new module, not yet wired into `bikeplan report`. The
+old report parts and survey views are still in the page, and the opening
+figures with recipes are still open.
+
+Artifact: `artifacts/N1.4/bayside-network.html`.

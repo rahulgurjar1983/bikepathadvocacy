@@ -1102,3 +1102,18 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   `trips`, or each step repeats thousands of shortest paths.
 - The Bayside run takes about 35 minutes. Few trips become safe because no-fix
   links block most of them.
+
+
+### N1.4 network report body
+
+- `bikeplan.network_report.network_report(options, share, places)` gives a
+  head and a body. An option is the N1.3 ladder plus `id`, `name`, `km`,
+  `same_as` and `lines`. A line is `{work, ok, line}` with lon/lat points.
+- The step texts, chart dots and tenths come from the server, so the script
+  only moves the slider and redraws links.
+- The pick ask names every street up to the recommended step. On Bayside that
+  is 285 streets, so the next part should fold it.
+- Not done: the build in `run.py` still makes the old page. Next part wires
+  this body in, moves the old parts and figures to the archive, and drops the
+  survey layer, `survey-note` and `survey_options`.
+- The Bayside collector takes about 25 minutes.
