@@ -106,7 +106,7 @@ def test_fr17_8_an_option_with_no_gain_recommends_step_zero():
 
 
 def test_fr17_8_the_opening_lists_every_option_with_its_numbers():
-    head, body = network_report([calm(), shortest(95.0)], 0.9)
+    _, body = network_report([calm(), shortest(95.0)], 0.9)
     opening = body.split('id="map"')[0]
     for text in ("Calm streets", "Shortest", "My pick", "My ask"):
         assert text in opening
@@ -117,12 +117,12 @@ def test_fr17_8_the_opening_lists_every_option_with_its_numbers():
 def test_fr17_8_a_second_equal_option_reads_same_as_the_first():
     twin = shortest()
     twin["id"], twin["name"], twin["same_as"] = "mesh", "Mesh", "shortest"
-    head, body = network_report([shortest(), twin], 0.9)
+    _, body = network_report([shortest(), twin], 0.9)
     assert "same as Shortest" in body
 
 
 def test_fr17_8_the_report_follows_the_spec_17_order():
-    head, body = network_report([calm(), shortest()], 0.9)
+    _, body = network_report([calm(), shortest()], 0.9)
     marks = ['id="options"', 'id="map"', 'id="chart"', 'id="works"', 'id="no-fix"', 'id="quality"']
     spots = [body.index(mark) for mark in marks]
     assert spots == sorted(spots)
@@ -138,7 +138,7 @@ def test_fr17_10_tenths_hold_the_best_score_within_each_tenth_of_the_disruption(
 
 
 def test_fr17_10_the_chart_has_one_line_per_option_and_the_dot_at_the_step():
-    head, body = network_report([calm(), shortest()], 0.9)
+    _, body = network_report([calm(), shortest()], 0.9)
     chart = body.split('id="chart"')[1].split('id="works"')[0]
     assert len(re.findall(r"<polyline", chart)) == 2
     assert 'id="chart-dot"' in chart
@@ -154,7 +154,7 @@ def test_fr17_11_the_report_holds_no_survey_text():
 
 def test_fr17_5_no_fix_links_are_listed_by_option_and_street():
     gap = {"street": "Rail Rd", "links": [[1, 2, 0]], "km": 0.4}
-    head, body = network_report(
+    _, body = network_report(
         [option("Calm streets", [0, 50], [0, 1], ["Ash St"], no_fix=[gap])], 0.9
     )
     section = body.split('id="no-fix"')[1].split('id="quality"')[0]
@@ -163,7 +163,7 @@ def test_fr17_5_no_fix_links_are_listed_by_option_and_street():
 
 
 def test_fr17_6_works_of_the_pick_are_listed_by_street_to_the_recommended_step():
-    head, body = network_report([shortest(99.5)], 0.9)
+    _, body = network_report([shortest(99.5)], 0.9)
     section = body.split('id="works"')[1].split('id="no-fix"')[0]
     assert "Bay St" in section
     assert "Elm St" in section
