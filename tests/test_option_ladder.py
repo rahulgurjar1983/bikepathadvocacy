@@ -1,3 +1,5 @@
+from itertools import pairwise
+
 import networkx as nx
 import pytest
 
@@ -149,7 +151,7 @@ def test_fr17_7_every_step_makes_at_least_one_more_trip_safe():
     fixes = {(i, i + 1, 0): fix(f"Street {i}", parking=i + 1) for i in range(3)}
     ladder = build_ladder(table, sorted(table), people((1, 0), (2, 1), (3, 3)), fixes, WEIGHTS)
     safe = [step["totals"]["safe_trips"] for step in ladder["steps"]]
-    assert all(later > earlier for earlier, later in zip(safe, safe[1:], strict=False))
+    assert all(later > earlier for earlier, later in pairwise(safe))
     assert safe[-1] == 3
 
 
