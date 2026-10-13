@@ -13,7 +13,7 @@ Tags: [reasoning] needs deep checks, with no larger model by default; [routine] 
 - [x] **Q1.3** [reasoning] Keep reserve, carriageway and usable verge apart; remove circular fit proof; split model margin from source confidence; allow an empty confirmed shortlist with explicit survey options when no eligible project gains enough (FR-15.4)
 - [x] **Q1.4** [reasoning] Crossing movements and confirmed, assumed or unknown safety; no absolute child-safety claims (FR-15.5)
 - [x] **Q1.5** [reasoning] Count unique people and type gains separately in every output, including route reviews (FR-15.6)
-- [ ] **N1.1** [reasoning] Network options: join each school, station and town centre to the network; build the four connected options with networkx Steiner trees and the greedy triangulation; deterministic, with "same as" (FR-17.1, FR-17.2, FR-17.3)
+- [x] **N1.1** [reasoning] Network options: join each school, station and town centre to the network; build the four connected options with networkx Steiner trees and the greedy triangulation; deterministic, with "same as" (FR-17.1, FR-17.2, FR-17.3)
 - [ ] **N1.2** [reasoning] Modelled all-ages rating per option link with the assumed share, and the safety score, safe trips, km by level and places served (FR-17.4, FR-17.5)
 - [ ] **N1.3** [reasoning] Least disruptive all-ages fix per link, works by street, links with no fix, and each option's ladder with running safety and disruption totals (FR-17.6, FR-17.7)
 - [ ] **N1.4** [reasoning] Redo the report in the spec 17 order: options side by side, my pick and ask, map with option switch and disruption slider, chart and table, works by street; move old parts to the archive; remove every survey view (FR-17.8, FR-17.9, FR-17.10, FR-17.11)

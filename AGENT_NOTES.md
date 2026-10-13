@@ -1060,3 +1060,18 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 - The old record test pins `pending`, so it still lists the two open items.
   Selecting these packages in the views is the next part.
 - Run `uv run --frozen python artifacts/Q1.6/collect_option_packages.py`.
+
+### N1.1 network options
+
+- `bikeplan.options` takes a rating for each directed edge: `lts`, `separated`
+  and `no_fix`. N1.2 and N1.3 fill these from the model. The collector in
+  `artifacts/N1.1` fills them from the stress score and the fit choice.
+- A link joins both directions of one street. Its level is the worst of the
+  two, and it counts as separated only if both directions are.
+- networkx `steiner_tree` with `mehlhorn` fails with a `KeyError` when the
+  graph has more than one component. The code cuts the graph to the
+  terminals' component first, and `join_places` drops islands with a reason.
+- Build each weighted graph with sorted nodes and links. That is what makes
+  shuffled input give the same links.
+- The Bayside run takes about 285 seconds, mostly the stress and fit scoring.
+

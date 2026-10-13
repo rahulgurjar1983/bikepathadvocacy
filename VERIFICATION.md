@@ -1557,3 +1557,20 @@ This part saves the packages only. Views that select them and the full
 offline browser proof remain open.
 
 Artifact: `artifacts/Q1.6/option-packages.json`.
+
+### N1.1
+
+```sh
+uv run --frozen pytest -q tests/test_network_options.py
+uv run --frozen python artifacts/N1.1/collect_options.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 artifacts/N1.1/bayside-options.json
+```
+
+Expect: Every school, station and town centre joins the nearest bike-legal
+node, or its confirmed entrance. Places that cannot join are listed with a
+reason. The four options are connected and hold every joined place. A second
+build gives the same links, and an option equal to an earlier one is marked
+"same as". On Bayside the run joins 154 schools, 41 stations and 33 town
+centres, and lists 8 places it could not join. The four options hold 4101,
+3420, 3884 and 9253 links.
+
+Artifact: `artifacts/N1.1/bayside-options.json`.
