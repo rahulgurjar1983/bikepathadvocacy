@@ -32,7 +32,13 @@ SPENT = {
 }
 TERMS = {
     "safety score": "a number from zero to one hundred for how many trips are safe for all ages.",
+    "contributor": "a person who adds data to a shared map or data set.",
+    "folder": "a place on a computer that holds files.",
+    "licence": "the terms that say how you may use a piece of data.",
+    "network": "streets and paths that join up, drawn as a map of links.",
     "option": "one connected set of streets that joins every school, station and town centre.",
+    "recipe": "a short program that rebuilds one number from the release files.",
+    "request": "the question that the tool sends to a data service to get data.",
     "step": "one stage of works for an option; each step makes at least one more trip safe.",
 }
 
@@ -340,13 +346,21 @@ def left_out(joined, ref) -> str:
 
 def archive_figures(old: list[dict]) -> str:
     items = "".join(
-        f'<li><a href="#{item["id"]}">{item["value"]} {html.escape(item["unit"])}</a> '
-        f"{html.escape(item['label'])}</li>"
+        f'<li><a href="#{item["id"]}">{item["value"]} {html.escape(item["unit"])}, '
+        f"{html.escape(item['label'])}</a></li>"
         for item in old
     )
     return (
         '<section id="archive-figures"><h2>More figures from the data archive</h2>'
         f"<ul>{items}</ul></section>"
+    )
+
+
+def checked(old: list[dict]) -> str:
+    street = next(item for item in old if item["id"] == "F1")
+    return (
+        f'<p>I checked <a href="#F1">{street["value"]} {html.escape(street["unit"])}</a> of '
+        "street that a bike may use. I joined every school, station and town centre to it.</p>"
     )
 
 
@@ -356,6 +370,8 @@ def edition(region, options, marks, joined, share, old) -> tuple[str, str, list,
     figures = Figures(options, share, joined, text, first)
     head, body = network_report(options, share, marks, figures.ref)
     body += left_out(joined, figures.ref) + archive_figures(old)
+    cut = body.index("</section>") + len("</section>")
+    body = f'<section id="opening">{checked(old)}{body[:cut]}</section>{body[cut:]}'
     return head, body, figures.listed(), text
 
 

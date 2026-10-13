@@ -141,7 +141,7 @@ def opening_problems(release: Path) -> list[str]:
         for option in names:
             if f"<td>{html.escape(option)}" not in opening_of(text):
                 problems.append(f"{name}: the opening does not list {option}")
-        if "My pick:" not in opening_of(text) or "My ask:" not in opening_of(text):
+        if "My pick:" not in opening_of(text) or "My ask" not in opening_of(text):
             problems.append(f"{name}: the opening has no pick or ask")
         if not any(
             option["steps"][-1]["score"] > option["steps"][0]["score"] for option in data["options"]

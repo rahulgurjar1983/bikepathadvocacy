@@ -41,12 +41,12 @@ def asked(option: dict, step: int) -> dict:
     streets = sorted({option["works"][index]["street"] for index in built})
     names = ", ".join(streets) if streets else "no street"
     intro = (
-        f"Council adopts {option['name']} as its bike network plan and funds the design of "
-        f"the works up to step {step}, on the streets below."
+        f"I ask council to adopt {option['name']} as its bike network plan and to fund the "
+        f"design of the works up to step {step}, on the streets below."
     )
     ask = (
-        f"Council adopts {option['name']} as its bike network plan and funds the design of "
-        f"the works up to step {step}: {names}."
+        f"I ask council to adopt {option['name']} as its bike network plan and to fund the "
+        f"design of the works up to step {step}: {names}."
     )
     return {"streets": streets, "ask": ask, "built": built, "intro": intro, "names": names}
 
@@ -123,7 +123,7 @@ def opening(options: list[dict], choice: dict, ref=plain) -> str:
         '<section id="options"><h2>Network options</h2>'
         f"<p>My pick: <strong>{html.escape(pick)}</strong>, built up to step "
         f"{ref(('pickstep',), str(choice['step']))}.</p>"
-        f"<p>My ask: {ref(('ask',), html.escape(choice['intro']))}</p>"
+        f"<h3>My ask</h3><p>{ref(('ask',), html.escape(choice['intro']))}</p>"
         f"<details><summary>The streets of the works</summary>"
         f"<p>{ref(('ask',), html.escape(choice['names']))}</p></details>"
         f"<table><caption>The options side by side</caption><thead><tr>{top}</tr></thead>"
@@ -172,14 +172,15 @@ def chart(options: list[dict], choice: dict, top: float, ref=plain) -> str:
         body += f"<tr><td>{ref(('tenths',), f'{tenth * 10}%')}</td>{cells}</tr>"
     return (
         '<section id="chart"><h2>Safety against disruption</h2>'
-        f'<svg id="chart-safety" role="img" viewBox="0 0 400 230" width="100%" '
+        f'<svg id="chart-safety" role="img" viewBox="0,0,400,230" width="100%" '
         'aria-labelledby="chart-safety-title"><title id="chart-safety-title">Safety score '
         "against disruption score for each option</title>"
         f'<line x1="{left}" y1="{up + high}" x2="{left + wide}" y2="{up + high}" stroke="#444"/>'
         f'<line x1="{left}" y1="{up}" x2="{left}" y2="{up + high}" stroke="#444"/>'
         f'{lines}<circle id="chart-dot" cx="{x}" cy="{y}" r="5" fill="#a01010"/></svg>'
         f"<ul>{keys}</ul>"
-        "<table><caption>Safety score and disruption score at each tenth of the full "
+        '<table data-for="chart-safety"><caption>Safety score and disruption score at each tenth '
+        "of the full "
         f"disruption of each option</caption><tr><th>Share of full disruption</th>{head}</tr>"
         f"{body}</table></section>"
     )
