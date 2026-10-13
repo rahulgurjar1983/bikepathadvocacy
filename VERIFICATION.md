@@ -1656,3 +1656,17 @@ with `au-nsw-bayside-report.html` and `checks.html`. Check it with
 `gh release download v2026.10.13-pr149 -p checks.html`.
 
 Artifact: `artifacts/C1.11/edition-proof.json`
+
+### P11.2
+
+```bash
+uv run --frozen pytest -q tests/test_road_segment.py
+cat artifacts/P11.2/summary.json
+```
+
+Expect: 17 tests pass. The summary comes from one real tile of the NSW Road
+Segment service (box -33.935,151.115 to -33.925,151.125): 163 segments in 2
+requests, and 1670 of 189386 Bayside edges take the function's ADT with
+`adt_source` set to `nsw_road_segment`. The full Bayside fetch is not run.
+
+Artifact: `artifacts/P11.2/summary.json`
