@@ -9,6 +9,7 @@ from shapely.geometry import LineString
 
 from bikeplan.access import SNAP_M, bike_nodes, snap_points, sort_key
 from bikeplan.config import Network
+from bikeplan.rating import option_totals
 
 NAMES = {
     "calm": "Calm streets",
@@ -109,12 +110,16 @@ def link_table(graph, ratings: dict) -> dict:
                 "level": rating["lts"],
                 "separated": rating["separated"],
                 "no_fix": rating["no_fix"],
+                "all_ages": rating.get("all_ages", rating["lts"] == 1),
+                "assumed": rating.get("assumed", False),
             },
         )
         found["length_m"] = min(found["length_m"], data["length_m"])
         found["level"] = max(found["level"], rating["lts"])
         found["separated"] = found["separated"] and rating["separated"]
         found["no_fix"] = found["no_fix"] or rating["no_fix"]
+        found["all_ages"] = found["all_ages"] and rating.get("all_ages", rating["lts"] == 1)
+        found["assumed"] = found["assumed"] or rating.get("assumed", False)
     return dict(sorted(table.items()))
 
 
@@ -208,6 +213,7 @@ def build_options(graph, joined: Joined, ratings: dict, network: Network) -> lis
                 "links": links,
                 "km": sum(table[link]["length_m"] for link in links) / 1000,
                 "same_as": same,
+                "totals": option_totals(table, links, joined.joined),
             }
         )
     return options
