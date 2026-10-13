@@ -1649,9 +1649,10 @@ to a figure from F32 up, and each recipe prints the same value from
 holds no survey text. The report is about 2 MB. The build takes about 51
 minutes and 6.6 GB of memory on this host.
 
-Limits: this part ships the page, the figures and the two output checks. The
-row stays open until a release run builds Bayside with these checks and the
-owner has the release links. The old figures F1 to F31 stay because the
-contracts gate keeps the range from F1.
+Release proof: run 38461441413 on main built Bayside and `checks.html` shows
+FR-17.12 and FR-17.11 as met. The owner's links are the release
+https://github.com/rahulgurjar1983/bikepathadvocacy/releases/tag/v2026.10.13-pr149
+with `au-nsw-bayside-report.html` and `checks.html`. Check it with
+`gh release download v2026.10.13-pr149 -p checks.html`.
 
 Artifact: `artifacts/C1.11/edition-proof.json`
