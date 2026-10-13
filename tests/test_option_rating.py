@@ -1,9 +1,9 @@
 import networkx as nx
 import pytest
+from bikeplan.rating import model_ratings, option_totals
 
 from bikeplan.config import load_profile
 from bikeplan.options import build_options, join_places, link_table
-from bikeplan.rating import model_ratings, option_totals
 from bikeplan.stress import score_edges
 from tests.option_helpers import NODES, PATH_ROADS, place, street_graph
 
