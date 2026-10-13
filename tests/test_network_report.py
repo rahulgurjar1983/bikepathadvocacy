@@ -1,9 +1,10 @@
 import re
 
 import pytest
-from bikeplan.network_report import choose, network_report, tenths
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+
+from bikeplan.network_report import choose, network_report, tenths
 
 COLOURS = {"today": "#2e7d32", "made": "#1b5e8a", "still": "#a01010"}
 
