@@ -207,7 +207,7 @@ def click_text(browser, selector, index=0):
         selector,
         index,
     )
-    return browser.find_element(By.CSS_SELECTOR, ".leaflet-tooltip").text
+    return browser.find_element(By.CSS_SELECTOR, ".leaflet-tooltip").get_attribute("textContent")
 
 
 def test_fr17_13_a_street_names_its_type_level_and_all_ages_rating(browser):
