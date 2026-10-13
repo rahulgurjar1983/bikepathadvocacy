@@ -176,6 +176,7 @@ class Network:
     place_types: tuple[str, ...] = ("school", "station", "town_centre")
     stress_factor: tuple[float, ...] = (1.0, 1.2, 3.0, 6.0)
     no_fix_factor: float = 10.0
+    recommend_share: float = 0.9
 
 
 @dataclass(frozen=True)
@@ -393,7 +394,7 @@ class ProfileReader(Reader):
         )
 
     def network(self, raw: Any) -> Network:
-        keys = {"place_types", "stress_factor", "no_fix_factor"}
+        keys = {"place_types", "stress_factor", "no_fix_factor", "recommend_share"}
         data = self.mapping(raw, "network", keys, set())
         found = {}
         if "place_types" in data:
@@ -412,6 +413,11 @@ class ProfileReader(Reader):
             found["no_fix_factor"] = float(
                 self.number(data["no_fix_factor"], "network.no_fix_factor")
             )
+        if "recommend_share" in data:
+            share = float(self.number(data["recommend_share"], "network.recommend_share"))
+            if not 0 < share <= 1:
+                raise self.fail("network.recommend_share", "must be above 0 and at most 1")
+            found["recommend_share"] = share
         return Network(**found)
 
     def width(self, raw: Any, key: str) -> Width:
