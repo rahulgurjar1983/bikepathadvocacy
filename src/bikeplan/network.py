@@ -380,6 +380,10 @@ def build(snapshot: str | Path, region: Region, profile: Profile) -> nx.MultiDiG
         from bikeplan.width import set_reserves
 
         set_reserves(graph, folder / "parcels.gpkg", crs)
+    if (folder / "road_segments.gpkg").is_file() and profile.road_functions:
+        from bikeplan.traffic import set_segment_traffic
+
+        set_segment_traffic(graph, folder / "road_segments.gpkg", crs, profile)
     if (folder / "elevation.tif").is_file():
         from bikeplan.elevation import set_grades
 
