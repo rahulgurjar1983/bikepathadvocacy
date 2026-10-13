@@ -1,7 +1,9 @@
+from pathlib import Path
+
 import pytest
+from bikeplan.options import build_options, join_places
 
 from bikeplan.config import ConfigError, Network, load_profile
-from bikeplan.options import build_options, join_places
 from tests.option_helpers import (
     NODES,
     PATH_ROADS,
@@ -46,7 +48,7 @@ def test_fr17_2_profile_defaults_and_explicit_network_block(tmp_path):
     assert found.no_fix_factor == 10.0
     assert found.place_types == ("school", "station", "town_centre")
     assert isinstance(found, Network)
-    text = open("profiles/au-nsw.yaml").read()
+    text = Path("profiles/au-nsw.yaml").read_text()
     text += "network:\n  stress_factor: [1, 2, 4, 8]\n  no_fix_factor: 20\n"
     text += "  place_types: [school, library]\n"
     (tmp_path / "au-nsw.yaml").write_text(text)
@@ -55,7 +57,7 @@ def test_fr17_2_profile_defaults_and_explicit_network_block(tmp_path):
     assert custom.no_fix_factor == 20.0
     assert custom.place_types == ("school", "library")
     (tmp_path / "au-nsw.yaml").write_text(text.replace("[1, 2, 4, 8]", "[1, 2, 4]"))
-    with pytest.raises(ConfigError, match="network.stress_factor"):
+    with pytest.raises(ConfigError, match=r"network\.stress_factor"):
         load_profile("au-nsw", tmp_path)
 
 
