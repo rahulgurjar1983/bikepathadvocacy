@@ -40,7 +40,7 @@ def pieces(count):
 
 @pytest.fixture
 def segment_server():
-    state = {"requests": [], "lines": pieces(CLUSTER), "reply": None}
+    state = {"requests": [], "lines": pieces(CLUSTER), "reply": None, "id_key": "objectid"}
 
     class Handler(BaseHTTPRequestHandler):
         def do_GET(self):
@@ -68,7 +68,7 @@ def segment_server():
                             "coordinates": [[x, y, -1000] for x, y in line],
                         },
                         "properties": {
-                            "objectid": number,
+                            state["id_key"]: number,
                             "functionhi": "5",
                             "function": "DistributorRoad",
                             "lanecount": "2",
@@ -311,3 +311,14 @@ def test_fr10_3_snapshot_without_segments_keeps_every_default():
     graph = build_grid(GRID)
 
     assert all(d["adt_source"] == "default" for _, _, d in graph.edges(data=True))
+
+
+def test_fr10_3_the_service_spells_its_id_field_in_capitals(segment_server, tmp_path):
+    endpoint, state = segment_server
+    state["lines"] = pieces(10)
+    state["id_key"] = "OBJECTID"
+
+    nsw_road_segment(bayside(), BOX, tmp_path, endpoint)
+
+    stored = geopandas.read_file(tmp_path / "road_segments.gpkg")
+    assert sorted(stored["objectid"]) == list(range(1, 11))
