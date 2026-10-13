@@ -26,7 +26,7 @@ def road_segment_url(endpoint: str, tile: tuple[float, float, float, float]) -> 
             "geometryType": "esriGeometryEnvelope",
             "inSR": 4326,
             "spatialRel": "esriSpatialRelIntersects",
-            "outFields": "objectid,functionhi,function,lanecount",
+            "outFields": "OBJECTID,functionhi,function,lanecount",
             "returnGeometry": "true",
             "outSR": 4326,
             "f": "geojson",
@@ -42,7 +42,8 @@ def fetch_segment_tile(endpoint: str, tile: tuple[float, float, float, float], f
     features = reply["features"]
     if len(features) < ROAD_SEGMENT_LIMIT:
         for feature in features:
-            found[feature["properties"]["objectid"]] = feature
+            properties = feature["properties"]
+            found[properties.get("OBJECTID", properties.get("objectid"))] = feature
         return 1
     south, west, north, east = tile
     if east - west < CADASTRE_MIN_TILE_DEGREES:
