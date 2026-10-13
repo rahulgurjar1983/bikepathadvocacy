@@ -287,7 +287,8 @@ def map_section(options: list[dict], choice: dict, ref=plain) -> str:
         f'max="{len(pick["steps"]) - 1}" value="{choice["step"]}"></label></div>'
         "<p>Green: all ages today. Blue: made all ages by works up to the step. Red: still not "
         'all ages.</p><div id="network-map" role="region" aria-label="Map of the option"></div>'
-        f'<p id="step-totals">{ref(("step",), html.escape(totals_text(pick, choice["step"])))}</p>'
+        f'<p id="step-totals" aria-live="polite">'
+        f"{ref(('step',), html.escape(totals_text(pick, choice['step'])))}</p>"
         "</section>"
     )
 
