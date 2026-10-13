@@ -18,6 +18,14 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Spec issues
 
+### C1.11 old figures stay
+
+- Spec 17 section 5 says the old figures leave `figures.json`. FR-0.35 and the
+  contracts gate keep the range from F1 and only let it grow. Both cannot hold.
+  The build keeps F1 to F31 and links them from one archive list.
+  Proof: `uv run python -m gates.contracts --base origin/main` rejects a range
+  that does not start at 1.
+
 ### Q1.6 prior report archive contract (resolved)
 
 FR-0.35 now allows the report file list to grow. The proof below is
@@ -1117,3 +1125,28 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   this body in, moves the old parts and figures to the archive, and drops the
   survey layer, `survey-note` and `survey_options`.
 - The Bayside collector takes about 25 minutes.
+
+
+### C1.11 first edition
+
+- `bikeplan report` now builds the spec 17 page. `bikeplan.edition` builds the
+  four options, the ladders and the page; `run.py` calls it. The old sections
+  (summary, projects, sheets, change, trips, works, delivery and the survey
+  layer) no longer show on the page. Their data stays in `frontier.json` and
+  `proposal.json`.
+- Every number in the options, map text, chart table, works table, links with no
+  fix and data quality is a link to a figure. Figures from F32 up come from
+  `options.json`, and each recipe reads only that file. `Figures.ref` hands out
+  the IDs in the order the page first uses them.
+- `network_report` takes a `ref(key, text)` function. The default returns the
+  text, so the N1.4 tests still read plain numbers.
+- Figures F1 to F31 stay in `figures.json`, each linked from "More figures from
+  the data archive". The contracts gate only lets the old figure range grow, so
+  they cannot leave yet.
+- `bikeplan checks` has two new output checks. FR-17.12 opens each region
+  archive, runs every spec 17 recipe on its `options.json`, and checks the hash,
+  the four option names and the figure links in the opening. FR-17.11 looks for
+  the word survey in each `-report.html`.
+- A test grid report has one school and no works, so every option scores 0. The
+  FR-17.12 check fails a release where no option gains safety.
+- Host load was above 20 on 4 cores, so one report test file took 4 minutes.
