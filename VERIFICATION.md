@@ -1591,3 +1591,21 @@ from assumed inputs. On Bayside the run gives 4, 3, 3 and 3 safe trips of
 minutes. This row covers step 0 only. The ladder of steps is N1.3.
 
 Artifact: `artifacts/N1.2/bayside-totals.json`.
+
+### N1.3
+
+```sh
+uv run --frozen pytest -q tests/test_option_ladder.py
+uv run --frozen python artifacts/N1.3/collect_ladder.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 artifacts/N1.3/bayside-ladder.json
+```
+
+Expect: Each link that is not all-ages gets the least disruptive fix of spec
+06, counted for that link. Next links on one street with one fix form one
+work. Links with no fix are listed by street. Each option has a ladder: every
+step makes at least one more trip safe, and records the works added with the
+running safety totals and the running parking spaces, traffic-lane km,
+lower-speed km, path km and disruption score. On Bayside the run gives 1207,
+858, 1134 and 2213 works in 98, 66, 92 and 161 steps for the calm, shortest,
+separated and mesh options. It takes about 35 minutes.
+
+Artifact: `artifacts/N1.3/bayside-ladder.json`.

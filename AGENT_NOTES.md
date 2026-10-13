@@ -1088,3 +1088,17 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   and all-ages. N1.3 uses it for each step of the ladder.
 - The Bayside run takes about 16 minutes, mostly stress scoring and the
   25878 trips.
+
+
+### N1.3 fix ladder
+
+- `bikeplan.ladder.link_fixes` counts disruption for each link with
+  `disruption_counts` on the link length, so it ignores the whole segment
+  count. `build_ladder` takes those fixes, the option links and the places.
+- Works are numbered by their first link. Steps list work numbers.
+- A trip in an option with no path inside it counts as blocked. A non-all-ages
+  link with no spec 06 fix blocks every trip that crosses it.
+- `option_trips` finds each trip path once. Pass it to `option_totals` as
+  `trips`, or each step repeats thousands of shortest paths.
+- The Bayside run takes about 35 minutes. Few trips become safe because no-fix
+  links block most of them.
