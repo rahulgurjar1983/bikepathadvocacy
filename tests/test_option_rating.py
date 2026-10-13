@@ -1,17 +1,17 @@
 import networkx as nx
 import pytest
-from bikeplan.rating import model_ratings, option_totals
 
 from bikeplan.config import load_profile
 from bikeplan.options import build_options, join_places, link_table
+from bikeplan.rating import model_ratings, option_totals
 from bikeplan.stress import score_edges
 from tests.option_helpers import NODES, PATH_ROADS, place, street_graph
 
 PROFILE = load_profile("au-nsw")
 NETWORK = PROFILE.network
 FIX = {"status": "fix", "fix": "cycleway_in_spare"}
-CALM = [(0, 4, 0), (4, 5, 0), (5, 6, 0), (6, 3, 0)]
-DETOUR = [(0, 7, 0), (7, 3, 0)]
+CALM = [(0, 4, 0), (4, 5, 0), (5, 6, 0), (3, 6, 0)]
+DETOUR = [(0, 7, 0), (3, 7, 0)]
 
 
 def rated_graph():
@@ -52,7 +52,7 @@ def three_places():
 
 def test_fr17_4_model_rating_uses_defaults_and_counts_assumed_inputs():
     graph = rated_graph()
-    fits = {"s12": FIX, "s23": {"status": "no_fit"}}
+    fits = {"s01": None, "s12": FIX, "s23": {"status": "no_fit"}}
     found = model_ratings(graph, score_edges(graph, PROFILE), fits)
     assert found[0, 1, 0] == {
         "lts": 1,
@@ -80,7 +80,7 @@ def test_fr17_4_model_rating_uses_defaults_and_counts_assumed_inputs():
 
 def test_fr17_4_a_quietway_fix_is_not_a_separated_fix():
     graph = rated_graph()
-    fits = {"s12": {"status": "fix", "fix": "quietway"}}
+    fits = {"s01": None, "s12": {"status": "fix", "fix": "quietway"}, "s23": None}
     found = model_ratings(graph, score_edges(graph, PROFILE), fits)
     assert found[1, 2, 0]["separated"] is False
 
