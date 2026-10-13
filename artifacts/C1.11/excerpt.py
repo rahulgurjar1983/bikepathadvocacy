@@ -30,7 +30,7 @@ summary = {
     "last_option_figure": opening[-1]["id"],
     "opening": {item["id"]: [item["label"], item["value"], item["unit"]] for item in opening},
 }
-(proof / "proof.json").write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n")
+(proof / "edition-proof.json").write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n")
 for name in ("figures.json", "options.json", "report.html"):
     (proof / ("bayside-" + name)).write_bytes((out / name).read_bytes())
 print(json.dumps({key: summary[key] for key in summary if key != "opening"}, indent=2))

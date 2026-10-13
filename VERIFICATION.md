@@ -1654,4 +1654,4 @@ row stays open until a release run builds Bayside with these checks and the
 owner has the release links. The old figures F1 to F31 stay because the
 contracts gate keeps the range from F1.
 
-Artifact: `artifacts/C1.11/proof.json`
+Artifact: `artifacts/C1.11/edition-proof.json`
