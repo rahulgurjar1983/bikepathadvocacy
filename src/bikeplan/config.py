@@ -172,6 +172,13 @@ class RoadClass:
 
 
 @dataclass(frozen=True)
+class Network:
+    place_types: tuple[str, ...] = ("school", "station", "town_centre")
+    stress_factor: tuple[float, ...] = (1.0, 1.2, 3.0, 6.0)
+    no_fix_factor: float = 10.0
+
+
+@dataclass(frozen=True)
 class Profile:
     id: str
     name: str
@@ -185,6 +192,7 @@ class Profile:
     grade: Grade
     road_classes: dict[str, RoadClass]
     implicit_speeds: dict[str, Num]
+    network: Network = Network()
 
 
 ROAD_CLASS_NAMES = {
@@ -384,6 +392,28 @@ class ProfileReader(Reader):
             Num(text, source, source.startswith("assumption:")),
         )
 
+    def network(self, raw: Any) -> Network:
+        keys = {"place_types", "stress_factor", "no_fix_factor"}
+        data = self.mapping(raw, "network", keys, set())
+        found = {}
+        if "place_types" in data:
+            types = data["place_types"]
+            if not isinstance(types, list) or not types:
+                raise self.fail("network.place_types", "must be a list with at least one item")
+            found["place_types"] = tuple(self.text(item, "network.place_types") for item in types)
+        if "stress_factor" in data:
+            factors = data["stress_factor"]
+            if not isinstance(factors, list) or len(factors) != 4:
+                raise self.fail("network.stress_factor", "must be a list of four numbers")
+            found["stress_factor"] = tuple(
+                float(self.number(item, "network.stress_factor")) for item in factors
+            )
+        if "no_fix_factor" in data:
+            found["no_fix_factor"] = float(
+                self.number(data["no_fix_factor"], "network.no_fix_factor")
+            )
+        return Network(**found)
+
     def width(self, raw: Any, key: str) -> Width:
         data = self.mapping(raw, key, {"min", "desirable"}, {"min"})
         desirable = data.get("desirable")
@@ -443,7 +473,7 @@ def load_profile(id: str, directory: str | Path | None = None) -> Profile:
     except (OSError, yaml.YAMLError) as error:
         raise ConfigError(f"{path}: cannot read: {error}") from error
     names = {f.name for f in dataclasses.fields(Profile)}
-    data = reader.mapping(raw, "", names, names)
+    data = reader.mapping(raw, "", names, names - {"network"})
     return Profile(
         reader.text(data["id"], "id"),
         reader.text(data["name"], "name"),
@@ -457,6 +487,7 @@ def load_profile(id: str, directory: str | Path | None = None) -> Profile:
         reader.group(data["grade"], "grade", Grade),
         reader.road_classes(data["road_classes"]),
         reader.implicit_speeds(data["implicit_speeds"]),
+        reader.network(data.get("network", {})),
     )
 
 
