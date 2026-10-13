@@ -18,6 +18,7 @@ Every step that spends model tokens must show its value in numbers, or it goes.
 
 ## Review work
 
+- Read spec 17 when a row cites FR-17: network options, safety score and the disruption slider. It wins over specs 13, 15 and 16 for the report opening, map, options and slider. The report holds no survey.
 - Read spec 16 when a row cites FR-16: community outcome and trade-offs, local works, delivery and honest unknowns. It amends the older report rules. The owner's example counts are never targets.
 - Read spec 15 for a review row. It amends the earlier rules it names. Its case table states what tests and real proof must show.
 - FR-0.35 permits the named legacy report tests to require added figure IDs and the FILES fixtures in report and full-run tests to require added public files. Keep the full-run exact file list and byte-hash test body intact. Keep old entries, order and all field, recipe, hash and link checks. Other old test bodies and cases stay intact. The contracts and red-green gates prove this narrow change.
