@@ -13,5 +13,10 @@
     "region": "au-nsw-lane-cove",
     "seconds": 3337.4,
     "peak_rss_mb": 442.3
+  },
+  {
+    "region": "au-nsw-mosman",
+    "seconds": 2955.6,
+    "peak_rss_mb": 415.9
   }
 ]
