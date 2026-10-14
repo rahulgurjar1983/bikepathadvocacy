@@ -412,6 +412,8 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 `artifacts/Q1.3/fresh-main-audit.txt`. No source or test was changed.
 
 
+- Speed zones come from `https://portal.data.nsw.gov.au/arcgis/rest/services/Hosted/TFNSW_Speed_Zones_Public/FeatureServer/0` with no key. The service lowercases its fields (`objectid`, `type`, `speed` such as `50 km/h`). Only permanent types are kept; school, variable, road work and wet weather zones are dropped. A tile fetch is fast (28 s for 266 tiles) but the Bayside build takes 21 minutes.
+
 ## BLOCKED
 
 - P10.1: resolved by the input proof-only gate path. Prior operator ask: add a rule and gate path for proof rows whose real tests pass on base code. The loop cannot edit `PROMPT.md` or `gates/redgreen.py`. Fresh base proof is in `artifacts/P10.1/main-audit.txt`; the gate marks a passing result as fake. Once that input fix ships, clear the hold and run the saved Bayside tests. Do not change code just to make a test fail.

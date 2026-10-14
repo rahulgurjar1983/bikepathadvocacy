@@ -384,6 +384,10 @@ def build(snapshot: str | Path, region: Region, profile: Profile) -> nx.MultiDiG
         from bikeplan.traffic import set_segment_traffic
 
         set_segment_traffic(graph, folder / "road_segments.gpkg", crs, profile)
+    if (folder / "speed_zones.gpkg").is_file():
+        from bikeplan.traffic import set_zone_speeds
+
+        set_zone_speeds(graph, folder / "speed_zones.gpkg", crs)
     if (folder / "elevation.tif").is_file():
         from bikeplan.elevation import set_grades
 
