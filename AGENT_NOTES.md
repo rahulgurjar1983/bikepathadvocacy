@@ -1152,3 +1152,23 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 - Host load was above 20 on 4 cores, so one report test file took 4 minutes.
 
 - P11.2: `nsw_road_segment` writes `road_segments.gpkg`; the real service names its id field `OBJECTID` and returns Z of -1000, so the adapter reads either case and drops Z. A 0.01 degree tile takes about 30 s, so the whole Bayside box is hours; a full-box run dies at the one hour turn limit. `build` calls `bikeplan.traffic.set_segment_traffic` when the file and the profile `road_functions` exist. Not yet in the Bayside region adapters.
+
+### N1.5 map overlays
+
+- `edition.street_overlay(pieces, rows)` keeps the merged street pieces of
+  `map.json` without the fix, and the km by stress level and all-ages from
+  `segments.csv`. `run.py` passes it to `edition`, and the page holds it in
+  `network-data` under `streets`.
+- The level km in the key are plain text. New figures would break the exact
+  figure count test of FR-17.12, so the key links the total to F1.
+- Streets and places have their own Leaflet panes (390 and 395) under the
+  option links (400). Place markers are `divIcon` copies of the key shapes.
+- Selenium `.text` of a Leaflet tooltip is empty. Read `textContent`.
+- A stale Chromium from a timed out run makes the next one hang. Do not run
+  `find /` or `pkill -f chrome` from the shell.
+
+
+### N1.4 close
+
+- C1.11 finished the open parts of N1.4. On main, `uv run --frozen pytest -q tests/test_edition.py tests/test_network_report.py tests/test_checks_opening.py` gives 39 passed. Release v2026.10.13-pr149 `checks.html` shows FR-17.11 met.
+- The old branch `loop/N1.4-report-order` is stale: it drops old tests and conflicts with main. Do not merge it.

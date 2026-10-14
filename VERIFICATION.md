@@ -1670,3 +1670,34 @@ requests, and 1670 of 189386 Bayside edges take the function's ADT with
 `adt_source` set to `nsw_road_segment`. The full Bayside fetch is not run.
 
 Artifact: `artifacts/P11.2/summary.json`
+
+### N1.5
+
+```sh
+uv run --frozen pytest -q tests/test_overlays.py
+uv run --frozen bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out out
+uv run --frozen python artifacts/N1.5/prove.py out artifacts/N1.5
+```
+
+Expect: The map has an overlay box under the option switch. The street switch
+opens off and the place switches open on. Street calmness draws every street
+in blue for levels 1 and 2 and red for levels 3 and 4, busier streets thicker,
+with a switch for each level and one for streets rated all ages. Schools,
+stations and town centres have a circle, a square and a triangle in the key.
+Hover or tap names the street, its type, its level and its all-ages rating, or
+the place and its type. The overlays stay under the option links for every
+option and step. On Bayside the drawn pieces are 1529, 1213, 660 and 237 for
+levels 1 to 4, the level km add up to the 591.1 km of figure F1, and the place
+markers are 154 schools, 41 stations and 33 town centres. The report is 3.0 MB.
+The build takes about 45 minutes. The level km shown in the key come from `segments.csv`, run in the report folder:
+
+```sh
+python3 -c "import csv,collections;c=collections.Counter()
+for r in csv.DictReader(open('segments.csv')):c[r['lts']]+=float(r['length_m'])/1000
+print(c)"
+```
+
+Limits: the proof ran on a fresh build from this branch in headless Chromium
+with network calls blocked. The release run after the merge builds the same page.
+
+Artifact: `artifacts/N1.5/overlay-proof.json`
