@@ -1186,4 +1186,5 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - The published Bayside manifest lists only 5 files. Its region file lists 5 adapters, so the elevation, road segment and speed zone files are missing from it. `tests/test_snapshot_set.py` expects every council, Bayside too, to hold the files of all 5 adapters. Bayside needs a refetch under this row.
 - The real data tests in that file stay red until all 33 manifests and runs exist. The PR stays a draft until then.
 - A first `gh release upload` of many files may answer HTTP 400. Run the script again.
+- Canada Bay hit an Overpass 504 once, then a rerun used the 1 hour foreground limit and a 10 minute background limit and was stopped. Its tiles are in `data/cache/au-nsw-canada-bay/`, so run the script again. Strathfield, the smallest, took 507 s. Pick small councils first.
 - New snapshot releases now pass `--latest=false`, so they never take the latest release from the weekly report release.
