@@ -1166,3 +1166,8 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 - A stale Chromium from a timed out run makes the next one hang. Do not run
   `find /` or `pkill -f chrome` from the shell.
 
+
+### N1.4 close
+
+- C1.11 finished the open parts of N1.4. On main, `uv run --frozen pytest -q tests/test_edition.py tests/test_network_report.py tests/test_checks_opening.py` gives 39 passed. Release v2026.10.13-pr149 `checks.html` shows FR-17.11 met.
+- The old branch `loop/N1.4-report-order` is stale: it drops old tests and conflicts with main. Do not merge it.
