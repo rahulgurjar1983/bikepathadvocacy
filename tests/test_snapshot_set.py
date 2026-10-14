@@ -15,9 +15,24 @@ def set_problems(*args):
     return found(*args)
 
 
+FILES = {
+    "kontur_population": "population.gpkg",
+    "nsw_cadastre": "parcels.gpkg",
+    "copernicus_glo30": "elevation.tif",
+    "nsw_road_segment": "road_segments.gpkg",
+    "tfnsw_speed_zones": "speed_zones.gpkg",
+}
+
+
 def bayside_manifest():
-    found = sorted((ROOT / "snapshots" / BASE).glob("*/manifest.json"))
-    return json.loads(found[-1].read_text())
+    region = yaml.safe_load((ROOT / "regions" / f"{BASE}.yaml").read_text())
+    names = ["boundary.geojson", "network.osm.gz", "places.json"]
+    names += [FILES[a] for a in region["snapshot"]["adapters"]]
+    return {
+        "snapshot_id": region["snapshot"]["osm_date"][:10],
+        "osm_date": region["snapshot"]["osm_date"],
+        "files": [{"name": n, "path": n} for n in names],
+    }
 
 
 def tree(tmp_path, names):
