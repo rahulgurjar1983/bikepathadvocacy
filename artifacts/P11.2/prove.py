@@ -1,6 +1,11 @@
-import collections, json, sys, time
+import collections
+import json
+import sys
+import time
 from pathlib import Path
+
 import geopandas
+
 from bikeplan.config import load_profile, load_region
 from bikeplan.network import build
 
