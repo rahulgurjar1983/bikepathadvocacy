@@ -18,6 +18,7 @@ Every step that spends model tokens must show its value in numbers, or it goes.
 
 ## Review work
 
+- Read spec 18 when a row cites FR-18: every council in Greater Sydney, the index and joins, the Corridors first option and the Superhighway review. No council gets its own tuned settings.
 - Read spec 17 when a row cites FR-17: network options, safety score and the disruption slider. It wins over specs 13, 15 and 16 for the report opening, map, options and slider. The report holds no survey.
 - Read spec 16 when a row cites FR-16: community outcome and trade-offs, local works, delivery and honest unknowns. It amends the older report rules. The owner's example counts are never targets.
 - Read spec 15 for a review row. It amends the earlier rules it names. Its case table states what tests and real proof must show.
