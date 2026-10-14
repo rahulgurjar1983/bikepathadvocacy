@@ -5,6 +5,11 @@
     "peak_rss_mb": 470.5
   },
   {
+    "region": "au-nsw-canada-bay",
+    "seconds": 1293.3,
+    "peak_rss_mb": 590.6
+  },
+  {
     "region": "au-nsw-hunters-hill",
     "seconds": 2951.5,
     "peak_rss_mb": 466.9
