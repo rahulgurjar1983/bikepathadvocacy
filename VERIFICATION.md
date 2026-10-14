@@ -1747,6 +1747,6 @@ differs from the Bayside file only in id, name and boundary. The tests pass. `re
 only in id, name and boundary. This needs the network for the first two commands.
 The artifact lists the 33 ids with their relations and the keys that differ.
 
-Limits: FR-1.12, legal default speeds by country, stays with P10.4.
+Limits: legal default speeds by country stay with P10.4.
 
 Artifact: `artifacts/G1.1/set.json`
