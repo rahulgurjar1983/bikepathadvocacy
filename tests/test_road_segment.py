@@ -138,6 +138,7 @@ def test_fr10_3_segments_keep_function_level_and_lane_count_as_lines_in_degrees(
     assert set(stored["function"]) == {"DistributorRoad"}
     assert set(stored["functionhi"]) == {"5"}
     assert set(stored["lanecount"]) == {"2"}
+    assert set(stored["adt_source"]) == {"nsw_road_segment"}
 
 
 def test_fr10_3_adapter_is_registered():
@@ -191,6 +192,7 @@ def grid_with_segments(tmp_path, lines, functions):
             "functionhi": ["5"] * len(lines),
             "function": functions,
             "lanecount": ["2"] * len(lines),
+            "adt_source": ["nsw_road_segment"] * len(lines),
         },
         geometry=shifted,
         crs=4326,
