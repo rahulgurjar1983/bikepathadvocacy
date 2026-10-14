@@ -1,0 +1,17 @@
+{
+ "adt_source": {
+  "default": 56106,
+  "nsw_road_segment": 133280
+ },
+ "build_s": 477,
+ "edges": 189386,
+ "functions": {
+  "AccessWay": 402,
+  "ArterialRoad": 23724,
+  "DistributorRoad": 23040,
+  "LocalRoad": 79827,
+  "PrimaryRoad": 2341,
+  "UrbanServiceLane": 3946
+ },
+ "segments": 26702
+}

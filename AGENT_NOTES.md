@@ -1174,3 +1174,4 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 - The old branch `loop/N1.4-report-order` is stale: it drops old tests and conflicts with main. Do not merge it.
 
 - P11.2: `nsw_road_segment` caches each top-level tile in `road_segment_tiles/` of its output folder. `bash artifacts/P11.2/fetch.sh` resumes into `data/cache/road-segment-work` (git ignores it). 219 of 266 tiles done after two turns, so about one more turn. When all 266 exist, copy `road_segments.gpkg` into the snapshot, rebuild and run the edge matching proof.
+- P11.2: the full Bayside road segment file (266 tiles, 26702 segments, 5.8 MB) is in the cached snapshot; the service answers 504 now and then, so rerun `artifacts/P11.2/fetch.sh` until 266 tiles are cached. The graph build with it takes about 8 minutes; 133280 of 189386 edges match a segment.
