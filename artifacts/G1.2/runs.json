@@ -23,5 +23,10 @@
     "region": "au-nsw-strathfield",
     "seconds": 507.1,
     "peak_rss_mb": 500.6
+  },
+  {
+    "region": "au-nsw-waverley",
+    "seconds": 2481.3,
+    "peak_rss_mb": 418.2
   }
 ]
