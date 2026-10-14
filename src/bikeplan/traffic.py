@@ -68,7 +68,7 @@ def set_zone_speeds(graph, zones_path, crs) -> None:
     for data, found in edge_matches(
         graph,
         list(frame.geometry),
-        lambda data: data["speed_source"] == "default" and data["speed_kmh"] is not None,
+        lambda data: data.get("speed_source") == "default" and data.get("speed_kmh") is not None,
     ):
         data["speed_kmh"] = float(speeds[found])
         data["speed_source"] = sources[found]
