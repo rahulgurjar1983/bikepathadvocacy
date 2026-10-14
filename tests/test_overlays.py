@@ -185,17 +185,23 @@ def test_fr17_13_the_key_names_each_place_type_with_a_shape_beside_the_colour(br
     for label in ("Schools", "Stations", "Town centres"):
         assert label in key.text
     shapes = browser.execute_script(
-        "return Array.from(document.querySelectorAll('#overlay-key svg[data-kind]'))"
-        ".map(s => [s.getAttribute('data-kind'), s.firstElementChild.tagName.toLowerCase()])"
+        "return Array.from(document.querySelectorAll('#overlay-key .key-shape[data-kind]'))"
+        ".map(s => [s.getAttribute('data-kind'), s.textContent])"
     )
     assert sorted(kind for kind, _ in shapes) == sorted(COUNTS)
     assert len({shape for _, shape in shapes}) == 3
     on_map = browser.execute_script(
-        "return Array.from(document.querySelectorAll('#network-map .place-marker svg'))"
-        ".map(s => [s.closest('.place-marker').getAttribute('data-kind'),"
-        " s.firstElementChild.tagName.toLowerCase()])"
+        "return Array.from(document.querySelectorAll('#network-map .place-marker .key-shape'))"
+        ".map(s => [s.closest('.place-marker').getAttribute('data-kind'), s.textContent])"
     )
     assert {tuple(item) for item in on_map} == {tuple(item) for item in shapes}
+
+
+def test_fr17_13_the_key_holds_no_digit_outside_a_figure_link(built):
+    text = built.read_text()
+    key = re.search(r'<fieldset id="overlay-key">(.*?)</fieldset>', text, re.S).group(1)
+    assert not re.findall(r"\d", re.sub(r"<[^>]*>", "", re.sub(r"<a [^>]*>.*?</a>", "", key)))
+    assert "svg" not in key
 
 
 def click_text(browser, selector, index=0):
