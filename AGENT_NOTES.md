@@ -1177,3 +1177,5 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 
 - P11.2: `nsw_road_segment` caches each top-level tile in `road_segment_tiles/` of its output folder. `bash artifacts/P11.2/fetch.sh` resumes into `data/cache/road-segment-work` (git ignores it). 219 of 266 tiles done after two turns, so about one more turn. When all 266 exist, copy `road_segments.gpkg` into the snapshot, rebuild and run the edge matching proof.
 - P11.2: the full Bayside road segment file (266 tiles, 26702 segments, 5.8 MB) is in the cached snapshot; the service answers 504 now and then, so rerun `artifacts/P11.2/fetch.sh` until 266 tiles are cached. The graph build with it takes about 8 minutes; 133280 of 189386 edges match a segment.
+
+G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au-nsw-<slug> --like regions/au-nsw-bayside.yaml` made the 33 council files. Nominatim gives one match for most queries; "Sydney" needs "City of Sydney New South Wales". Keep a 1.3 s pause between calls. `scripts/release.sh` skips regions with no published snapshot, so the new files do not enter a release until G1.2.

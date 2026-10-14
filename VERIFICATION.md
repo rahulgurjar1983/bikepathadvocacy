@@ -1731,3 +1731,22 @@ Limits: the proof ran on a fresh build from this branch in headless Chromium
 with network calls blocked. The release run after the merge builds the same page.
 
 Artifact: `artifacts/N1.5/overlay-proof.json`
+
+### G1.1
+
+```sh
+uv run bikeplan region new "Blacktown Council New South Wales"
+uv run bikeplan region new "Blacktown Council New South Wales" --pick 1 --id au-nsw-blacktown --like regions/au-nsw-bayside.yaml --out /tmp/regions
+uv run pytest tests/test_region_new.py tests/test_region_set.py -q
+```
+
+Expect: The first command lists one match with its admin level and relation
+6217858 and writes nothing. The second writes a region file that loads and
+differs from the Bayside file only in id, name and boundary. The tests pass. `regions/sets/greater-sydney.yaml` lists the
+33 councils in the spec order. Each of the 33 region files differs from Bayside
+only in id, name and boundary. This needs the network for the first two commands.
+The artifact lists the 33 ids with their relations and the keys that differ.
+
+Limits: FR-1.12, legal default speeds by country, stays with P10.4.
+
+Artifact: `artifacts/G1.1/set.json`

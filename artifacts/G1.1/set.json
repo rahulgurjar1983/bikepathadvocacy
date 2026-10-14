@@ -1,0 +1,298 @@
+{
+ "councils": 33,
+ "rows": [
+  {
+   "id": "au-nsw-bayside",
+   "osm_relation": 7038238,
+   "differs_in": []
+  },
+  {
+   "id": "au-nsw-blacktown",
+   "osm_relation": 6217858,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-blue-mountains",
+   "osm_relation": 6299568,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-burwood",
+   "osm_relation": 2161967,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-camden",
+   "osm_relation": 6290069,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-campbelltown",
+   "osm_relation": 6290704,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-canada-bay",
+   "osm_relation": 6217271,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-canterbury-bankstown",
+   "osm_relation": 2162244,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-cumberland",
+   "osm_relation": 6210859,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-fairfield",
+   "osm_relation": 6212438,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-georges-river",
+   "osm_relation": 6205809,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-hawkesbury",
+   "osm_relation": 6222206,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-hornsby",
+   "osm_relation": 6218957,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-hunters-hill",
+   "osm_relation": 6273237,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-inner-west",
+   "osm_relation": 1251053,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-ku-ring-gai",
+   "osm_relation": 6228261,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-lane-cove",
+   "osm_relation": 6275980,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-liverpool",
+   "osm_relation": 6212442,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-mosman",
+   "osm_relation": 6276645,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-north-sydney",
+   "osm_relation": 6275976,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-northern-beaches",
+   "osm_relation": 2978550,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-parramatta",
+   "osm_relation": 6217262,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-penrith",
+   "osm_relation": 6282698,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-randwick",
+   "osm_relation": 6201664,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-ryde",
+   "osm_relation": 6218884,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-strathfield",
+   "osm_relation": 6210847,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-sutherland",
+   "osm_relation": 6206752,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-sydney",
+   "osm_relation": 1251066,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-the-hills",
+   "osm_relation": 6219220,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-waverley",
+   "osm_relation": 6203556,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-willoughby",
+   "osm_relation": 6230051,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-wollondilly",
+   "osm_relation": 6287823,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  },
+  {
+   "id": "au-nsw-woollahra",
+   "osm_relation": 6203650,
+   "differs_in": [
+    "boundary",
+    "id",
+    "name"
+   ]
+  }
+ ]
+}
