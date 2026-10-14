@@ -342,7 +342,7 @@ def region_corridor(route: str, region_id: str, like: str, out: str) -> int:
     return 0
 
 
-def region_new(place: str, pick, region_id, like, out: str, endpoint: str) -> int:
+def region_new_command(place: str, pick, region_id, like, out: str, endpoint: str) -> int:
     try:
         matches = search(place, endpoint)
         if pick is None:
@@ -443,7 +443,9 @@ def main(argv: list[str] | None = None) -> int:
     if (args.command, getattr(args, "subcommand", None)) == ("region", "corridor"):
         return region_corridor(args.route, args.id, args.like, args.out)
     if (args.command, getattr(args, "subcommand", None)) == ("region", "new"):
-        return region_new(args.place, args.pick, args.id, args.like, args.out, args.endpoint)
+        return region_new_command(
+            args.place, args.pick, args.id, args.like, args.out, args.endpoint
+        )
     if (args.command, getattr(args, "subcommand", None)) == ("route", "figures"):
         return route_figures_command(args.route, args.region, args.snapshot, args.out, args.claims)
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "fetch"):

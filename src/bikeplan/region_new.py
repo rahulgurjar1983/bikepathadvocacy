@@ -23,43 +23,7 @@ PLACE_WORDS = {
     "district",
     "county",
 }
-NEW_SETTINGS = {
-    "analysis_buffer_m": 2680,
-    "snapshot": {"osm_date": "2026-10-01T00:00:00Z", "adapters": ["kontur_population"]},
-    "population": {"source": "kontur_population"},
-    "destinations": {
-        "school": {"weight": 3},
-        "college": {"weight": 1},
-        "university": {"weight": 1},
-        "aged_care": {"weight": 1},
-        "library": {"weight": 1},
-        "town_centre": {"weight": 2},
-        "station": {"weight": 2},
-    },
-    "access": {"reach_m": 2680, "detour_max": 1.25},
-    "proposals": {
-        "max_projects": 25,
-        "budget_km": 40,
-        "candidate_pool": 20,
-        "min_gain": 0.05,
-        "metres_per_point": 10,
-        "disruption_weights": {
-            "parking_space": 1.0,
-            "lane_km": 40.0,
-            "speed_km": 2.0,
-            "signal": 15.0,
-            "refuge": 3.0,
-            "path_km": 5.0,
-        },
-    },
-}
-AU_NSW_ADAPTERS = [
-    "kontur_population",
-    "nsw_cadastre",
-    "copernicus_glo30",
-    "nsw_road_segment",
-    "tfnsw_speed_zones",
-]
+TEMPLATE = Path(__file__).resolve().parents[2] / "regions" / "templates" / "new-region.yaml"
 
 
 class RegionNewError(Exception):
@@ -108,10 +72,14 @@ def profile_for(country: str, subdivision: str) -> str:
 
 
 def settings_for(profile: str) -> dict:
-    settings = json.loads(json.dumps(NEW_SETTINGS))
-    if profile == "au-nsw":
-        settings["snapshot"]["adapters"] = AU_NSW_ADAPTERS
-    return settings
+    template = yaml.safe_load(TEMPLATE.read_text())
+    adapters = template["adapters"].get(profile, template["adapters"]["default"])
+    settings = template["settings"]
+    return {
+        "analysis_buffer_m": settings.pop("analysis_buffer_m"),
+        "snapshot": {"osm_date": template["snapshot_date"], "adapters": adapters},
+        **settings,
+    }
 
 
 def write_region(
