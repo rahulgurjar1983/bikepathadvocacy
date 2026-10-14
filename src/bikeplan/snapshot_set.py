@@ -3,21 +3,14 @@ from pathlib import Path
 
 import yaml
 
+from bikeplan.adapters import OUTPUT_FILES
 from bikeplan.config import load_region
 
-BASE = "au-nsw-bayside"
 CORE_FILES = ["boundary.geojson", "network.osm.gz", "places.json"]
-ADAPTER_FILES = {
-    "kontur_population": "population.gpkg",
-    "nsw_cadastre": "parcels.gpkg",
-    "copernicus_glo30": "elevation.tif",
-    "nsw_road_segment": "road_segments.gpkg",
-    "tfnsw_speed_zones": "speed_zones.gpkg",
-}
 
 
 def expected_files(adapters: list[str]) -> list[str]:
-    return CORE_FILES + [ADAPTER_FILES[name] for name in adapters]
+    return CORE_FILES + [OUTPUT_FILES[name] for name in adapters]
 
 
 def council_problems(council: str, base_region, root: Path) -> list[str]:
@@ -41,8 +34,8 @@ def council_problems(council: str, base_region, root: Path) -> list[str]:
 
 def set_problems(set_file: str | Path, root: str | Path) -> list[str]:
     root = Path(root)
-    base_region = load_region(root / "regions" / f"{BASE}.yaml")
     councils = yaml.safe_load(Path(set_file).read_text())["councils"]
+    base_region = load_region(root / "regions" / f"{councils[0]['id']}.yaml")
     problems = []
     for council in councils:
         problems.extend(council_problems(council["id"], base_region, root))
