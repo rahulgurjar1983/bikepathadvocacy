@@ -5,13 +5,41 @@ import yaml
 from bikeplan.config import load_region
 
 ROOT = Path(__file__).resolve().parents[1]
-COUNCILS = (
-    "Bayside, Blacktown, Blue Mountains, Burwood, Camden, Campbelltown, Canada Bay, "
-    "Canterbury-Bankstown, Cumberland, Fairfield, Georges River, Hawkesbury, Hornsby, "
-    "Hunters Hill, Inner West, Ku-ring-gai, Lane Cove, Liverpool, Mosman, North Sydney, "
-    "Northern Beaches, Parramatta, Penrith, Randwick, Ryde, Strathfield, Sutherland, Sydney, "
-    "The Hills, Waverley, Willoughby, Wollondilly, Woollahra"
-).split(", ")
+COUNCILS = [
+    "Bayside",
+    "Blacktown",
+    "Blue Mountains",
+    "Burwood",
+    "Camden",
+    "Campbelltown",
+    "Canada Bay",
+    "Canterbury-Bankstown",
+    "Cumberland",
+    "Fairfield",
+    "Georges River",
+    "Hawkesbury",
+    "Hornsby",
+    "Hunters Hill",
+    "Inner West",
+    "Ku-ring-gai",
+    "Lane Cove",
+    "Liverpool",
+    "Mosman",
+    "North Sydney",
+    "Northern Beaches",
+    "Parramatta",
+    "Penrith",
+    "Randwick",
+    "Ryde",
+    "Strathfield",
+    "Sutherland",
+    "Sydney",
+    "The Hills",
+    "Waverley",
+    "Willoughby",
+    "Wollondilly",
+    "Woollahra",
+]
 SETTINGS_APART = ("id", "name", "boundary")
 
 
