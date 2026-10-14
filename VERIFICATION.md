@@ -1673,10 +1673,16 @@ requests, and 1670 of 189386 Bayside edges take the function's ADT with
 Part 3 adds a per-tile cache under `road_segment_tiles/` in the output folder.
 Run `bash artifacts/P11.2/fetch.sh` again and again; each run skips finished
 tiles. Count them with `ls data/cache/road-segment-work/road_segment_tiles | wc -l`.
-The Bayside box holds 266 tiles; 113 are cached after one 50 minute turn.
-20 tests pass. The edge matching on the full snapshot is not proved yet.
+The Bayside box holds 266 tiles; all 266 are cached after three turns.
+20 tests pass.
 
-Artifact: `artifacts/P11.2/summary.json`
+Part 4 copies `data/cache/road-segment-work/road_segments.gpkg` into the snapshot
+folder and builds the graph: `uv run --frozen python artifacts/P11.2/prove.py
+data/cache/au-nsw-bayside/2026-10-01 artifacts/P11.2/summary-full.json`.
+Expect: 26702 segments; 133280 of 189386 edges take `adt_source`
+`nsw_road_segment` and 56106 keep `default`. The build takes about 8 minutes.
+
+Artifact: `artifacts/P11.2/summary-full.json`
 
 ### N1.5
 
