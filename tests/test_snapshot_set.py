@@ -3,11 +3,16 @@ import shutil
 from pathlib import Path
 
 import yaml
-from bikeplan.snapshot_set import set_problems
 
 ROOT = Path(__file__).resolve().parents[1]
 SET = ROOT / "regions" / "sets" / "greater-sydney.yaml"
 BASE = "au-nsw-bayside"
+
+
+def set_problems(*args):
+    from bikeplan.snapshot_set import set_problems as found
+
+    return found(*args)
 
 
 def bayside_manifest():
