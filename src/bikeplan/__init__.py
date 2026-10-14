@@ -10,6 +10,7 @@ from bikeplan.network import build, summarise
 from bikeplan.page import profile_rows
 from bikeplan.proposal_inputs import load_proposal_inputs
 from bikeplan.propose import write_propose
+from bikeplan.region_new import NOMINATIM_ENDPOINT, RegionNewError, describe, search, write_region
 from bikeplan.review import ClaimError, write_route_figures
 from bikeplan.review_report import write_review
 from bikeplan.route import RouteError, write_corridor
@@ -43,7 +44,10 @@ GROUPS = {
     "network": {"summary": "Summarise the road network"},
     "width": {"summary": "Summarise road widths"},
     "fit": {"summary": "Summarise cycleway fit"},
-    "region": {"corridor": "Make a region from a route file"},
+    "region": {
+        "corridor": "Make a region from a route file",
+        "new": "Make a region file for a council or city",
+    },
     "route": {"figures": "Measure a route: facilities, stress levels, breaks, crossings, flags"},
     "snapshot": {
         "fetch": "Fetch the input data of a region",
@@ -129,6 +133,13 @@ def build_parser() -> argparse.ArgumentParser:
                 leaf.add_argument("--id", required=True, help="Region ID")
                 leaf.add_argument("--like", required=True, help="Region file to copy")
                 leaf.add_argument("--out", default="regions", help="Output directory")
+            if (name, sub) == ("region", "new"):
+                leaf.add_argument("place", help="Place name to search for")
+                leaf.add_argument("--pick", type=int, help="Number of the match to write")
+                leaf.add_argument("--id", help="Region ID")
+                leaf.add_argument("--like", help="Region file whose settings to copy")
+                leaf.add_argument("--out", default="regions", help="Output directory")
+                leaf.add_argument("--endpoint", default=NOMINATIM_ENDPOINT, help="Search endpoint")
             if (name, sub) == ("route", "figures"):
                 leaf.add_argument("route", help="Route file")
                 leaf.add_argument("--region", required=True, help="Region file")
@@ -331,6 +342,23 @@ def region_corridor(route: str, region_id: str, like: str, out: str) -> int:
     return 0
 
 
+def region_new_command(place: str, pick, region_id, like, out: str, endpoint: str) -> int:
+    try:
+        matches = search(place, endpoint)
+        if pick is None:
+            for number, item in enumerate(matches, 1):
+                print(describe(number, item))
+            return 0
+        if not 1 <= pick <= len(matches):
+            raise RegionNewError(f"pick {pick} is not one of the {len(matches)} matches")
+        target = write_region(matches[pick - 1], out, region_id, like)
+    except (RegionNewError, OSError) as error:
+        print(error, file=sys.stderr)
+        return 1
+    print(target)
+    return 0
+
+
 def route_figures_command(route: str, region: str, snapshot: str, out: str, claims) -> int:
     try:
         target = write_route_figures(route, load_region(region), snapshot, out, claims)
@@ -414,6 +442,10 @@ def main(argv: list[str] | None = None) -> int:
         return network_summary(args.region, args.snapshot)
     if (args.command, getattr(args, "subcommand", None)) == ("region", "corridor"):
         return region_corridor(args.route, args.id, args.like, args.out)
+    if (args.command, getattr(args, "subcommand", None)) == ("region", "new"):
+        return region_new_command(
+            args.place, args.pick, args.id, args.like, args.out, args.endpoint
+        )
     if (args.command, getattr(args, "subcommand", None)) == ("route", "figures"):
         return route_figures_command(args.route, args.region, args.snapshot, args.out, args.claims)
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "fetch"):

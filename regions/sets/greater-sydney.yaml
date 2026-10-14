@@ -1,0 +1,101 @@
+name: Greater Sydney
+councils:
+- id: au-nsw-bayside
+  name: Bayside
+  osm_relation: 7038238
+- id: au-nsw-blacktown
+  name: Blacktown
+  osm_relation: 6217858
+- id: au-nsw-blue-mountains
+  name: Blue Mountains
+  osm_relation: 6299568
+- id: au-nsw-burwood
+  name: Burwood
+  osm_relation: 2161967
+- id: au-nsw-camden
+  name: Camden
+  osm_relation: 6290069
+- id: au-nsw-campbelltown
+  name: Campbelltown
+  osm_relation: 6290704
+- id: au-nsw-canada-bay
+  name: Canada Bay
+  osm_relation: 6217271
+- id: au-nsw-canterbury-bankstown
+  name: Canterbury-Bankstown
+  osm_relation: 2162244
+- id: au-nsw-cumberland
+  name: Cumberland
+  osm_relation: 6210859
+- id: au-nsw-fairfield
+  name: Fairfield
+  osm_relation: 6212438
+- id: au-nsw-georges-river
+  name: Georges River
+  osm_relation: 6205809
+- id: au-nsw-hawkesbury
+  name: Hawkesbury
+  osm_relation: 6222206
+- id: au-nsw-hornsby
+  name: Hornsby
+  osm_relation: 6218957
+- id: au-nsw-hunters-hill
+  name: Hunters Hill
+  osm_relation: 6273237
+- id: au-nsw-inner-west
+  name: Inner West
+  osm_relation: 1251053
+- id: au-nsw-ku-ring-gai
+  name: Ku-ring-gai
+  osm_relation: 6228261
+- id: au-nsw-lane-cove
+  name: Lane Cove
+  osm_relation: 6275980
+- id: au-nsw-liverpool
+  name: Liverpool
+  osm_relation: 6212442
+- id: au-nsw-mosman
+  name: Mosman
+  osm_relation: 6276645
+- id: au-nsw-north-sydney
+  name: North Sydney
+  osm_relation: 6275976
+- id: au-nsw-northern-beaches
+  name: Northern Beaches
+  osm_relation: 2978550
+- id: au-nsw-parramatta
+  name: Parramatta
+  osm_relation: 6217262
+- id: au-nsw-penrith
+  name: Penrith
+  osm_relation: 6282698
+- id: au-nsw-randwick
+  name: Randwick
+  osm_relation: 6201664
+- id: au-nsw-ryde
+  name: Ryde
+  osm_relation: 6218884
+- id: au-nsw-strathfield
+  name: Strathfield
+  osm_relation: 6210847
+- id: au-nsw-sutherland
+  name: Sutherland
+  osm_relation: 6206752
+- id: au-nsw-sydney
+  name: Sydney
+  osm_relation: 1251066
+- id: au-nsw-the-hills
+  name: The Hills
+  osm_relation: 6219220
+- id: au-nsw-waverley
+  name: Waverley
+  osm_relation: 6203556
+- id: au-nsw-willoughby
+  name: Willoughby
+  osm_relation: 6230051
+- id: au-nsw-wollondilly
+  name: Wollondilly
+  osm_relation: 6287823
+- id: au-nsw-woollahra
+  name: Woollahra
+  osm_relation: 6203650
