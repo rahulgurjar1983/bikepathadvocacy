@@ -253,11 +253,23 @@ def test_fr10_4_an_untagged_edge_takes_the_zone_speed(tmp_path):
         assert data["speed_source"] == "zone"
 
 
+CONTROL = [(5, -50), (5, 210)]
+
+
+def assert_control_took_the_zone(graph, east0, north0):
+    first = edges_at(graph, east0, north0, 0, -1, 201)
+    assert first
+    assert all(d["speed_kmh"] == 45.0 and d["speed_source"] == "zone" for d in first)
+
+
 def test_fr10_4_a_tagged_edge_keeps_its_tag(tmp_path):
-    folder, east0, north0 = grid_with_zones(tmp_path, [[(205, -50), (205, 650)]], [40.0])
+    folder, east0, north0 = grid_with_zones(
+        tmp_path, [CONTROL, [(205, -50), (205, 650)]], [45.0, 40.0]
+    )
 
     graph = build_grid(folder)
 
+    assert_control_took_the_zone(graph, east0, north0)
     along = edges_at(graph, east0, north0, 200, -1, 601)
     assert along
     for data in along:
@@ -266,32 +278,42 @@ def test_fr10_4_a_tagged_edge_keeps_its_tag(tmp_path):
 
 
 def test_fr10_4_an_untagged_edge_with_no_zone_keeps_the_default(tmp_path):
-    folder, east0, north0 = grid_with_zones(tmp_path, [[(405, -50), (405, 650)]], [40.0])
+    folder, east0, north0 = grid_with_zones(
+        tmp_path, [CONTROL, [(405, -50), (405, 650)]], [45.0, 40.0]
+    )
 
     graph = build_grid(folder)
 
-    along = edges_at(graph, east0, north0, 0, -1, 601)
-    assert along
-    assert all(d["speed_source"] == "default" for d in along)
+    assert_control_took_the_zone(graph, east0, north0)
+    rest = edges_at(graph, east0, north0, 0, 399, 601)
+    assert rest
+    assert all(d["speed_source"] == "default" for d in rest)
 
 
 def test_fr10_4_a_zone_at_a_right_angle_does_not_match(tmp_path):
-    folder, east0, north0 = grid_with_zones(tmp_path, [[(-300, 100), (300, 100)]], [40.0])
+    folder, east0, north0 = grid_with_zones(
+        tmp_path, [CONTROL, [(-300, 300), (300, 300)]], [45.0, 40.0]
+    )
 
     graph = build_grid(folder)
 
-    along = edges_at(graph, east0, north0, 0, -1, 201)
-    assert along
-    assert all(d["speed_source"] == "default" for d in along)
+    assert_control_took_the_zone(graph, east0, north0)
+    across = edges_at(graph, east0, north0, 0, 199, 401)
+    assert across
+    assert all(d["speed_source"] == "default" for d in across)
 
 
 def test_fr10_4_a_zone_30_m_off_the_edge_does_not_match(tmp_path):
-    folder, east0, north0 = grid_with_zones(tmp_path, [[(30, -50), (30, 650)]], [40.0])
+    folder, east0, north0 = grid_with_zones(
+        tmp_path, [CONTROL, [(30, 190), (30, 650)]], [45.0, 40.0]
+    )
 
     graph = build_grid(folder)
 
-    along = edges_at(graph, east0, north0, 0, -1, 601)
-    assert all(d["speed_source"] == "default" for d in along)
+    assert_control_took_the_zone(graph, east0, north0)
+    rest = edges_at(graph, east0, north0, 0, 199, 601)
+    assert rest
+    assert all(d["speed_source"] == "default" for d in rest)
 
 
 def test_fr10_4_the_longest_overlap_wins_between_two_zones(tmp_path):
@@ -307,9 +329,9 @@ def test_fr10_4_the_longest_overlap_wins_between_two_zones(tmp_path):
 
 
 def test_fr10_9_without_zones_the_generic_path_keeps_every_default(tmp_path):
-    folder = tmp_path / "snapshot"
-    shutil.copytree(GRID, folder)
-    untag_first_way(folder)
+    folder, east0, north0 = grid_with_zones(tmp_path, [CONTROL], [45.0])
+    assert_control_took_the_zone(build_grid(folder), east0, north0)
+    (folder / "speed_zones.gpkg").unlink()
 
     graph = build_grid(folder)
 
