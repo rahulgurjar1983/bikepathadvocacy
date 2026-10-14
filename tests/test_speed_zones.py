@@ -9,10 +9,10 @@ from urllib.parse import parse_qs, urlsplit
 
 import geopandas
 import pytest
+from bikeplan.adapters.tfnsw_speed_zones import tfnsw_speed_zones
 from pyproj import Transformer
 from shapely.geometry import LineString
 
-from bikeplan.adapters.tfnsw_speed_zones import tfnsw_speed_zones
 from bikeplan.config import load_profile, load_region
 from bikeplan.network import build
 from bikeplan.snapshot import ADAPTERS, OverpassError
@@ -182,7 +182,7 @@ def test_fr10_9_a_key_error_names_the_sign_up_step(zone_server, tmp_path, code):
     endpoint, state = zone_server
     state["reply"] = {"error": {"code": code, "message": "Token Required", "details": []}}
 
-    with pytest.raises(OverpassError, match="needs a key.*sign up"):
+    with pytest.raises(OverpassError, match=r"needs a key.*sign up"):
         tfnsw_speed_zones(bayside(), BOX, tmp_path, endpoint)
 
 
