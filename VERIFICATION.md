@@ -1750,3 +1750,11 @@ The artifact lists the 33 ids with their relations and the keys that differ.
 Limits: legal default speeds by country stay with P10.4.
 
 Artifact: `artifacts/G1.1/set.json`
+
+### G1.2
+
+Command: `bash scripts/snapshot-set.sh au-nsw-burwood` for each council in `regions/sets/greater-sydney.yaml`, then `uv run --frozen pytest -q tests/test_snapshot_set.py`.
+Expect: each run fetches, verifies and publishes one snapshot, adds its run time and peak memory to `artifacts/G1.2/runs.json`, and copies its manifest into `snapshots/`. The test passes only when all 33 councils have a manifest with the Bayside date and adapters and a recorded run.
+Artifact: `artifacts/G1.2/runs.json`
+
+Part 1: Burwood is published (8 files, 2570 s, 470 MB). The other 32 councils are not fetched yet, so the row stays open.
