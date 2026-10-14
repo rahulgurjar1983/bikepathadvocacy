@@ -1667,7 +1667,8 @@ cat artifacts/P11.2/summary.json
 Expect: 17 tests pass. The summary comes from one real tile of the NSW Road
 Segment service (box -33.935,151.115 to -33.925,151.125): 163 segments in 2
 requests, and 1670 of 189386 Bayside edges take the function's ADT with
-`adt_source` set to `nsw_road_segment`. The full Bayside fetch is not run.
+`adt_source` set to `nsw_road_segment`. The Bayside region file lists the adapter
+(18 tests now). The full Bayside fetch is not run.
 
 Artifact: `artifacts/P11.2/summary.json`
 

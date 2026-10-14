@@ -324,3 +324,7 @@ def test_fr10_3_the_service_spells_its_id_field_in_capitals(segment_server, tmp_
 
     stored = geopandas.read_file(tmp_path / "road_segments.gpkg")
     assert sorted(stored["objectid"]) == list(range(1, 11))
+
+
+def test_fr10_3_the_bayside_region_turns_on_the_road_segment_adapter():
+    assert "nsw_road_segment" in bayside().snapshot.adapters
