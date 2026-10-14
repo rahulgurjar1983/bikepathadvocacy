@@ -11,6 +11,7 @@ from bikeplan.adapters.nsw_cadastre import CADASTRE_MIN_TILE_DEGREES, cadastre_t
 from bikeplan.config import Region
 from bikeplan.snapshot import ADAPTERS, ManifestEntry, OverpassError, read_url, timestamp
 
+ADT_SOURCE = "nsw_road_segment"
 ROAD_SEGMENT_ENDPOINT = (
     "https://portal.data.nsw.gov.au/arcgis/rest/services/RoadSegment/MapServer/0"
 )
@@ -78,6 +79,7 @@ def nsw_road_segment(
                 name: [item["properties"].get(name) for item in found.values()]
                 for name in ("functionhi", "function", "lanecount")
             },
+            "adt_source": [ADT_SOURCE] * len(found),
         },
         geometry=[force_2d(shape(item["geometry"])) for item in found.values()],
         crs=4326,

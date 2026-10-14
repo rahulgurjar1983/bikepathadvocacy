@@ -51,6 +51,7 @@ def set_segment_traffic(graph, segments_path, crs, profile: Profile) -> None:
     frame = frame[frame["function"].isin(profile.road_functions)]
     lines = list(frame.geometry)
     names = list(frame["function"])
+    sources = list(frame["adt_source"])
     index = STRtree(lines)
     for u, v, data in graph.edges(data=True):
         line = data.get("geometry")
@@ -62,5 +63,5 @@ def set_segment_traffic(graph, segments_path, crs, profile: Profile) -> None:
         if found is None:
             continue
         data["adt"] = profile.road_functions[names[found]].value
-        data["adt_source"] = "nsw_road_segment"
+        data["adt_source"] = sources[found]
         data["road_function"] = names[found]
