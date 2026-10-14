@@ -15,16 +15,95 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   if (points.length) map.fitBounds(L.latLngBounds(points));
   else map.setView([0, 0], 1);
+  map.createPane("streets").style.zIndex = 390;
+  map.createPane("places").style.zIndex = 395;
+  const colours_by_level = { 1: "#5aa9e6", 2: "#16407a", 3: "#f08080", 4: "#a01010" };
+  const widths = {
+    path: 2, footway: 2, cycleway: 2, pedestrian: 2, living_street: 2, service: 2, track: 2,
+    residential: 3, unclassified: 3, tertiary: 4, tertiary_link: 4,
+    secondary: 5, secondary_link: 5, primary: 6, primary_link: 6, trunk: 7, trunk_link: 7,
+  };
+
+  function describe(text) {
+    const box = document.createElement("div");
+    box.textContent = text;
+    return box;
+  }
+
+  function mark(layer, attributes, text) {
+    layer.on("add", function () {
+      for (const name in attributes) layer.getElement().setAttribute(name, attributes[name]);
+    });
+    layer.bindTooltip(describe(text), { sticky: true });
+    layer.on("click", function () {
+      layer.openTooltip();
+    });
+  }
+
+  const streetLayers = data.streets.pieces.map(function (piece) {
+    const layer = L.polyline(piece.lines, {
+      pane: "streets",
+      className: "street-line",
+      color: colours_by_level[piece.lts],
+      weight: widths[piece.highway] || 3,
+      opacity: 1,
+    });
+    mark(
+      layer,
+      { "data-level": String(piece.lts) },
+      (piece.name || "Unnamed street") + ", " + piece.highway + ". Stress level " + piece.lts +
+        ", modelled. " + (piece.aaa ? "Rated all ages." : "Not rated all ages."),
+    );
+    return { layer: layer, piece: piece };
+  });
+  const levels = { 1: true, 2: true, 3: true, 4: true };
+  const overlay = { streets: false, aaa: false };
+
+  function refreshStreets() {
+    for (const street of streetLayers) {
+      const shown =
+        overlay.streets && levels[street.piece.lts] && (!overlay.aaa || street.piece.aaa);
+      if (shown) street.layer.addTo(map);
+      else street.layer.remove();
+    }
+  }
+
+  const placeLayers = {};
   for (const place of data.places) {
-    L.circleMarker([place.lat, place.lon], {
-      radius: 4,
-      color: "#222222",
-      weight: 1,
-      fillColor: kinds[place.type] || "#888888",
-      fillOpacity: 1,
-    })
-      .bindTooltip(place.name + " (" + place.type + ")")
-      .addTo(map);
+    const key = document.querySelector('#overlay-key .key-shape[data-kind="' + place.type + '"]');
+    const label = place.type.replace("_", " ");
+    const marker = L.marker([place.lat, place.lon], {
+      pane: "places",
+      icon: L.divIcon({
+        className: "place-marker",
+        html: key ? key.outerHTML : "",
+        iconSize: [16, 16],
+      }),
+    });
+    mark(marker, { "data-kind": place.type }, place.name + ", " + label);
+    (placeLayers[place.type] = placeLayers[place.type] || L.layerGroup()).addLayer(marker);
+  }
+  for (const kind in placeLayers) {
+    placeLayers[kind].addTo(map);
+    document.getElementById("overlay-" + kind).addEventListener("change", function (event) {
+      if (event.target.checked) placeLayers[kind].addTo(map);
+      else placeLayers[kind].remove();
+    });
+  }
+  const switches = {
+    streets: function (on) { overlay.streets = on; },
+    aaa: function (on) { overlay.aaa = on; },
+  };
+  for (const level of [1, 2, 3, 4]) {
+    switches["lts-" + level] = function (on) { levels[level] = on; };
+  }
+  for (const name in switches) {
+    const input = document.getElementById("overlay-" + name);
+    if (!input) continue;
+    input.addEventListener("change", function () {
+      switches[name](input.checked);
+      refreshStreets();
+    });
   }
   let current = data.options.find(function (option) {
     return option.id === data.pick;

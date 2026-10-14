@@ -1150,3 +1150,19 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 - A test grid report has one school and no works, so every option scores 0. The
   FR-17.12 check fails a release where no option gains safety.
 - Host load was above 20 on 4 cores, so one report test file took 4 minutes.
+
+
+### N1.5 map overlays
+
+- `edition.street_overlay(pieces, rows)` keeps the merged street pieces of
+  `map.json` without the fix, and the km by stress level and all-ages from
+  `segments.csv`. `run.py` passes it to `edition`, and the page holds it in
+  `network-data` under `streets`.
+- The level km in the key are plain text. New figures would break the exact
+  figure count test of FR-17.12, so the key links the total to F1.
+- Streets and places have their own Leaflet panes (390 and 395) under the
+  option links (400). Place markers are `divIcon` copies of the key shapes.
+- Selenium `.text` of a Leaflet tooltip is empty. Read `textContent`.
+- A stale Chromium from a timed out run makes the next one hang. Do not run
+  `find /` or `pkill -f chrome` from the shell.
+

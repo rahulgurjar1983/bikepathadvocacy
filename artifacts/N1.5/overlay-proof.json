@@ -1,0 +1,77 @@
+{
+  "all_ages_pieces": 1,
+  "expected_levels": {
+    "1": 1529,
+    "2": 1213,
+    "3": 660,
+    "4": 237
+  },
+  "km": {
+    "1": 153.619,
+    "2": 265.721,
+    "3": 93.973,
+    "4": 77.786,
+    "aaa": 0.543
+  },
+  "level_hues": {
+    "1": "blue",
+    "2": "blue",
+    "3": "red",
+    "4": "red"
+  },
+  "levels_drawn": {
+    "1": 1529,
+    "2": 1213,
+    "3": 660,
+    "4": 237
+  },
+  "places_open": {
+    "school": 154,
+    "station": 41,
+    "town_centre": 33
+  },
+  "status": "met",
+  "street_km_f1": 591.099,
+  "under_links": [
+    [
+      "calm",
+      0,
+      true
+    ],
+    [
+      "calm",
+      97,
+      true
+    ],
+    [
+      "shortest",
+      0,
+      true
+    ],
+    [
+      "shortest",
+      65,
+      true
+    ],
+    [
+      "separated",
+      0,
+      true
+    ],
+    [
+      "separated",
+      91,
+      true
+    ],
+    [
+      "mesh",
+      0,
+      true
+    ],
+    [
+      "mesh",
+      160,
+      true
+    ]
+  ]
+}
