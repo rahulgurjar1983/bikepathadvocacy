@@ -102,3 +102,23 @@ def test_fr0_33_retained_launcher_saves_on_older_branch(repo):
     assert result.returncode == 0, result.stdout + result.stderr
     assert (repo.path / "README.md").read_text() == "main\n"
     assert len(list((repo.path / ".ralph/checkpoints").glob("*.json"))) == 1
+
+
+def test_fr0_40_saves_any_path_that_is_not_an_input(repo):
+    from gates.checkpoint import pending, save
+
+    repo.write("snapshots/au-nsw-bayside/2026-10-01/manifest.json", "{}\n")
+    repo.commit("baseline")
+    repo.branch("loop/G1.2-snapshots")
+    repo.write("snapshots/au-nsw-strathfield/2026-10-01/manifest.json", "{}\n")
+    repo.write("regions/au-nsw-strathfield.yaml", "id: au-nsw-strathfield\n")
+    repo.write("data/runs.json", "[]\n")
+    checkpoint = save()
+    assert checkpoint["row"] == "G1.2"
+    assert checkpoint["paths"] == [
+        "data/runs.json",
+        "regions/au-nsw-strathfield.yaml",
+        "snapshots/au-nsw-strathfield/2026-10-01/manifest.json",
+    ]
+    assert pending("G1.2") == [checkpoint]
+    assert not (repo.path / "regions/au-nsw-strathfield.yaml").exists()

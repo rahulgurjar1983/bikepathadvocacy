@@ -1015,3 +1015,22 @@ def test_fr0_37_failed_scope_cleanup_stops_before_any_other_provider(loop_repo, 
     assert not (state / "unexpected-fallback").exists()
     assert not (repo.path / ".ralph/stalls.json").exists()
     assert json.loads((repo.path / ".ralph/status.json").read_text())["phase"] == "worker_retry"
+
+
+def test_fr0_40_a_refused_save_runs_a_repair_turn_instead_of_waiting(loop_repo, tmp_path):
+    repo, env, state = loop_repo
+    remote = tmp_path / "origin.git"
+    subprocess.run(["git", "init", "--bare", "-q", str(remote)], check=True)
+    repo.git("remote", "add", "origin", str(remote))
+    repo.git("push", "-q", "origin", "main")
+    repo.branch("loop/P0.2-resume")
+    repo.write("PROMPT.md", "an input edited on a loop branch\n")
+    env.update(RALPH_SKIP_SYNC="0", RALPH_RESILIENT="1", RALPH_RETRY_SECS="0", RALPH_IDLE_SECS="0")
+    result = run_loop(repo, env, "1", timeout=30)
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert count(state) == 1
+    note = "\n".join(args_of(state, 1))
+    assert "Repair first" in note
+    assert "PROMPT.md" in note
+    assert "loop/P0.2-resume" in note
+    assert "repair turn" in result.stdout
