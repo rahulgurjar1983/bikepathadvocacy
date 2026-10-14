@@ -1670,6 +1670,12 @@ requests, and 1670 of 189386 Bayside edges take the function's ADT with
 `adt_source` set to `nsw_road_segment`. The Bayside region file lists the adapter
 (18 tests now). The full Bayside fetch is not run.
 
+Part 3 adds a per-tile cache under `road_segment_tiles/` in the output folder.
+Run `bash artifacts/P11.2/fetch.sh` again and again; each run skips finished
+tiles. Count them with `ls data/cache/road-segment-work/road_segment_tiles | wc -l`.
+The Bayside box holds 266 tiles; 113 are cached after one 50 minute turn.
+20 tests pass. The edge matching on the full snapshot is not proved yet.
+
 Artifact: `artifacts/P11.2/summary.json`
 
 ### N1.5

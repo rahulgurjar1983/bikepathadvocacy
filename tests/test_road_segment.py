@@ -328,3 +328,46 @@ def test_fr10_3_the_service_spells_its_id_field_in_capitals(segment_server, tmp_
 
 def test_fr10_3_the_bayside_region_turns_on_the_road_segment_adapter():
     assert "nsw_road_segment" in bayside().snapshot.adapters
+
+
+def test_fr10_3_a_second_run_reads_every_tile_from_the_cache(segment_server, tmp_path):
+    endpoint, state = segment_server
+    state["lines"] = pieces(10)
+    nsw_road_segment(bayside(), BOX, tmp_path, endpoint)
+    first = len(state["requests"])
+
+    entries = nsw_road_segment(bayside(), BOX, tmp_path, endpoint)
+
+    assert first == 9
+    assert len(state["requests"]) == first
+    assert json.loads(entries[0].request)["segments"] == 10
+    assert len(geopandas.read_file(tmp_path / "road_segments.gpkg")) == 10
+
+
+def test_fr10_3_a_stopped_fetch_resumes_without_refetching_finished_tiles(
+    segment_server, tmp_path, monkeypatch
+):
+    from bikeplan.adapters import nsw_road_segment as module
+
+    endpoint, state = segment_server
+    state["lines"] = pieces(10)
+    real = module.read_url
+    calls = {"count": 0}
+
+    def dying(url):
+        calls["count"] += 1
+        if calls["count"] > 4:
+            raise OverpassError("turn time bound")
+        return real(url)
+
+    monkeypatch.setattr(module, "read_url", dying)
+    with pytest.raises(OverpassError, match="turn time bound"):
+        nsw_road_segment(bayside(), BOX, tmp_path, endpoint)
+    assert len(state["requests"]) == 4
+    assert not (tmp_path / "road_segments.gpkg").exists()
+
+    monkeypatch.setattr(module, "read_url", real)
+    nsw_road_segment(bayside(), BOX, tmp_path, endpoint)
+
+    assert len(state["requests"]) == 9
+    assert len(geopandas.read_file(tmp_path / "road_segments.gpkg")) == 10

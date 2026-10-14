@@ -1172,3 +1172,5 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 
 - C1.11 finished the open parts of N1.4. On main, `uv run --frozen pytest -q tests/test_edition.py tests/test_network_report.py tests/test_checks_opening.py` gives 39 passed. Release v2026.10.13-pr149 `checks.html` shows FR-17.11 met.
 - The old branch `loop/N1.4-report-order` is stale: it drops old tests and conflicts with main. Do not merge it.
+
+- P11.2: `nsw_road_segment` caches each top-level tile in `road_segment_tiles/` of its output folder. `bash artifacts/P11.2/fetch.sh` resumes into `data/cache/road-segment-work` (git ignores it). 113 of 266 tiles done after 50 minutes, so about two more turns. When all 266 exist, copy `road_segments.gpkg` into the snapshot, rebuild and run the edge matching proof.

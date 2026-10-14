@@ -61,6 +61,21 @@ def fetch_segment_tile(endpoint: str, tile: tuple[float, float, float, float], f
     return 1 + sum(fetch_segment_tile(endpoint, quarter, found) for quarter in quarters)
 
 
+def cached_segment_tile(endpoint: str, tile: tuple, found: dict, cache: Path) -> int:
+    key = hashlib.sha256(f"{endpoint}{tile}".encode()).hexdigest()[:16]
+    stored = cache / f"{key}.json"
+    if stored.is_file():
+        record = json.loads(stored.read_text())
+        found.update({int(number): feature for number, feature in record["features"].items()})
+        return record["requests"]
+    local: dict = {}
+    requests = fetch_segment_tile(endpoint, tile, local)
+    cache.mkdir(parents=True, exist_ok=True)
+    stored.write_text(json.dumps({"requests": requests, "features": local}))
+    found.update(local)
+    return requests
+
+
 def nsw_road_segment(
     region: Region,
     box: tuple[float, float, float, float],
@@ -71,7 +86,10 @@ def nsw_road_segment(
     out_path.mkdir(parents=True, exist_ok=True)
     source = endpoint or ROAD_SEGMENT_ENDPOINT
     found: dict = {}
-    requests = sum(fetch_segment_tile(source, tile, found) for tile in cadastre_tiles(box))
+    requests = sum(
+        cached_segment_tile(source, tile, found, out_path / "road_segment_tiles")
+        for tile in cadastre_tiles(box)
+    )
     frame = geopandas.GeoDataFrame(
         {
             "objectid": list(found),
