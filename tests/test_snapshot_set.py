@@ -3,7 +3,6 @@ import shutil
 from pathlib import Path
 
 import yaml
-
 from bikeplan.snapshot_set import set_problems
 
 ROOT = Path(__file__).resolve().parents[1]
