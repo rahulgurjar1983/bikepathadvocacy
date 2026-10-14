@@ -7,14 +7,6 @@ import uuid
 from pathlib import Path
 
 ROOT = Path(".ralph/checkpoints")
-FILES = {
-    "README.md",
-    "AGENT_NOTES.md",
-    "PROGRESS.md",
-    "VERIFICATION.md",
-    "pyproject.toml",
-    "uv.lock",
-}
 LOCAL = {"ralph.log", "HOLD", "STOP"}
 
 
@@ -61,11 +53,6 @@ def save() -> dict | None:
         raise ValueError("unfinished work must stay on its loop branch")
     if any(is_input(path) for path in paths):
         raise ValueError("dirty input files need operator care; no checkpoint was made")
-    if any(
-        path not in FILES and not path.startswith(("src/", "tests/", "artifacts/"))
-        for path in paths
-    ):
-        raise ValueError("unknown dirty paths need operator care; no checkpoint was made")
     if any(record["branch"] == branch for _, record in records()):
         raise ValueError("restore the pending checkpoint before saving more work")
     head = git("rev-parse", "HEAD").strip()

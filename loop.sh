@@ -303,7 +303,8 @@ main() {
   local fingerprint
   fingerprint="$(cksum <"$self")"
 
-  local i=0 idle=0 row status stamp turn_log note prompt agent_status secs rung rung_log
+  local i=0 idle=0 row status stamp turn_log note prompt agent_status secs rung rung_log saved dirty
+  local repair_reason="" last_repair_reason="" repair_streak=0
   local model row_id before progress effort role codex_model codex_effort codex_skills recovery
   local limited_logs=()
   if [ ! -f .ralph/checkpoint.py ]; then
@@ -334,20 +335,32 @@ main() {
         bounded_backoff "${RALPH_RETRY_SECS:-30}" || exit 2
         continue
       fi
-      if ! control_module gates.checkpoint save >>ralph.log 2>&1; then
-        log "work needs recovery; waiting without a model turn"
-        status blocked --reason "checkpoint refused; saved work retained" --retry-seconds "$idle_secs" || exit 2
-        bounded_backoff "$idle_secs" || exit 2
-        continue
-      fi
-      if ! timeout --kill-after=10 "${RALPH_SYNC_SECS:-180}" git checkout -q main 2>>ralph.log ||
+      repair_reason=""
+      if ! saved="$(control_module gates.checkpoint save 2>&1)"; then
+        printf '%s\n' "$saved" >>ralph.log
+        repair_reason="the checkpoint was refused: ${saved##*checkpoint: }"
+      elif ! timeout --kill-after=10 "${RALPH_SYNC_SECS:-180}" git checkout -q main 2>>ralph.log ||
         ! timeout --kill-after=10 "${RALPH_SYNC_SECS:-180}" git merge -q --ff-only origin/main 2>>ralph.log; then
-        log "main sync needs recovery; waiting without a model turn"
-        status blocked --reason "main checkout or fast-forward failed" --retry-seconds "$idle_secs" || exit 2
-        bounded_backoff "$idle_secs" || exit 2
-        continue
+        repair_reason="main could not be checked out or fast-forwarded"
+      else
+        printf '%s\n' "$saved" >>ralph.log
       fi
-      if [ -n "${RALPH_CONTROL_DIR:-}" ]; then
+      if [ -n "$repair_reason" ]; then
+        if [ "$repair_reason" = "${last_repair_reason:-}" ]; then
+          repair_streak=$((repair_streak + 1))
+        else
+          repair_streak=1
+          last_repair_reason="$repair_reason"
+        fi
+        log "repair turn $repair_streak: $repair_reason"
+        if [ "$repair_streak" -eq 3 ]; then
+          notify "3 repair turns in a row failed: $repair_reason; inspect .ralph/status.json"
+        fi
+      else
+        repair_streak=0
+        last_repair_reason=""
+      fi
+      if [ -n "${RALPH_CONTROL_DIR:-}" ] && [ -z "$repair_reason" ]; then
         if [ -n "$(git -C "$RALPH_CONTROL_DIR" status --porcelain)" ] ||
           ! git -C "$RALPH_CONTROL_DIR" checkout -q --detach origin/main 2>>ralph.log; then
           log "controller update needs recovery; waiting without a model turn"
@@ -403,6 +416,10 @@ main() {
     turn_log=".ralph/iter-${stamp}-$((i + 1)).log"
     row_id="${row%% *}"
     note="$row_id"
+    if [ -n "${repair_reason:-}" ]; then
+      dirty="$(git status --porcelain=v1 --untracked-files=all | head -n 20 | cut -c4- | tr '\n' ' ')"
+      note+=$'\n'"Repair first: on branch $(git branch --show-current), $repair_reason. Dirty paths: ${dirty% }. Commit the work that belongs to its loop branch, move input edits to an operator note in AGENT_NOTES.md and restore them, then sync with origin/main and carry on with your row."
+    fi
     control_module gates.checkpoint install >>ralph.log 2>&1 || exit 2
     recovery="$(control_module gates.checkpoint pending "$row_id")" || exit 2
     if [ "$recovery" != "[]" ]; then
