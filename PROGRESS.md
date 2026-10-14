@@ -22,6 +22,12 @@ Tags: [reasoning] needs deep checks, with no larger model by default; [routine] 
 - [x] **C1.11** [reasoning] First councillor edition: the Bayside report from the shipped settings shows the four network options, my pick, its recommended step and its works, with every opening number "met" in `checks.html` from a check on this release's own outputs and no survey content (FR-17.12, FR-17.11, FR-13.14). Part 1 shipped: `bikeplan report` builds the spec 17 page, the opening numbers are figures F32 up with recipes over `options.json`, and `checks.html` runs output checks for FR-17.12 and FR-17.11. This also finishes the wiring that N1.4 left open. Open: a release run on main that builds Bayside and shows both as met, and the owner's links.
 - [x] **P11.2** [reasoning] NSW road segment function and lanes set ADT (FR-10.3). Part 1 shipped: the `nsw_road_segment` adapter, the `road_functions` map in the au-nsw profile and the edge matching in `bikeplan.traffic`, proved on one real Bayside tile. Part 2 shipped: the Bayside region file lists the adapter. Part 3 shipped: the per-tile cache. Part 4 shipped: the whole box is fetched and 133280 of 189386 Bayside edges take the function's ADT.
 - [x] **P11.3** [reasoning] TfNSW speed zones (FR-10.4, FR-10.9). The `tfnsw_speed_zones` adapter keeps permanent zones, the Bayside region lists it and 35640 of 189386 edges take the zone speed.
+- [ ] **G1.1** [reasoning] `bikeplan region new` (P10.4 rules) and the Greater Sydney set: 33 region files with Bayside settings except id, name and boundary (FR-18.1, FR-1.11)
+- [ ] **G1.2** [reasoning] Fetch, check and publish a snapshot for each of the 33 councils with the Bayside date and adapters; record each council's run time and memory (FR-18.2)
+- [ ] **G1.3** [reasoning] Greater Sydney index: council map shaded by today's safety score, table of picks, safety and disruption with figures and recipes, and where councils' networks meet or leave gaps (FR-18.4, FR-18.5)
+- [ ] **G1.4** [reasoning] Fifth network option, Corridors first, with paved-only all-ages corridor links and new path works (FR-18.6, FR-14.11)
+- [ ] **G1.5** [reasoning] Greater Sydney release proof: 33 reports, the index and joins, every opening "met", and every council within the time and memory limits (FR-18.8, FR-18.3)
+- [ ] **V1.8** [reasoning] Review the Active Transport Superhighway from its public CC BY 4.0 GeoJSON for each built council: every claim of spec 18 section 2 gets a verdict with figures; keep it private until the author has had two weeks to reply (FR-18.7, FR-14.7, FR-14.8, FR-14.12)
 - [~] **Q1.6** [reasoning] One package and versioned proposal record drive headline, map, totals, list, sheets and exports; allow explicit goal/stage identities and keep the old shortlist named. Archive record, curve sheets, offline exports, selected page lists/sheets and shared curve map/model totals and physical works, resident outcome, delivery, complete-trip summary, evidence-gap views and opening trip/resident outcomes, road/parking impacts and physical works built; other shared views, goal/stage option packages saved in the record; views that select them and full offline browser proof remain (FR-15.2, FR-16.1)
 
 ## Community proposal: before the remaining phases
@@ -169,7 +175,6 @@ The approved order is proposal and trade-offs, network map, options, neighbourho
 - [x] **V1.5** The review report, with the route layer and right of reply (FR-14.8)
 - [x] **V1.6** Corridor candidates in `bikeplan propose` (FR-14.11)
 - [ ] **V1.7** Track: RideWithGPS trip 351728076 (`https://ridewithgps.com/trips/351728076.json`, public, 15.4 km, 452 points; keep it under `data/private/`). Bayside pilot: review CycleSydney Ride 22 from its public RideWithGPS track, as a private review under `data/private/` (FR-14.1, FR-14.7, FR-14.8, FR-14.12)
-- [ ] **V1.8** 👤 Operator: get the Super-Highway route file from Daniel Morrison and permission from CycleSydney to publish; then review the Bayside part of the Super-Highway (FR-14.7, FR-14.8)
 
 ## Phase 10: End to end
 
