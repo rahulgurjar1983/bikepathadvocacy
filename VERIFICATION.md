@@ -1684,6 +1684,23 @@ Expect: 26702 segments; 133280 of 189386 edges take `adt_source`
 
 Artifact: `artifacts/P11.2/summary-full.json`
 
+### P11.3
+
+```bash
+uv run --frozen pytest -q tests/test_speed_zones.py
+bash artifacts/P11.3/fetch.sh
+cp data/cache/speed-zone-work/speed_zones.gpkg data/cache/au-nsw-bayside/2026-10-01/
+uv run --frozen python artifacts/P11.3/prove.py data/cache/au-nsw-bayside/2026-10-01 artifacts/P11.3/summary-full.json
+```
+
+Expect: 16 tests pass. The fetch reads the TfNSW Speed Zones service in 266
+tiles and keeps 14846 permanent zones. The build takes about 21 minutes: 35640
+of 189386 edges take `speed_source` `zone`, 31677 keep their `tag` and 122069
+keep `default`. The service needs no key, so the 👤 path (FR-10.9) shows only
+when the service answers with a key error; the test checks its text.
+
+Artifact: `artifacts/P11.3/summary-full.json`
+
 ### N1.5
 
 ```sh
