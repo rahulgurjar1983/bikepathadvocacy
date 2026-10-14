@@ -12,15 +12,15 @@ COUNTS = (
 )
 PLOT = (40, 10, 350, 200)
 LEVELS = (
-    (1, "#5aa9e6", "blue"),
-    (2, "#16407a", "dark blue"),
-    (3, "#f08080", "light red"),
-    (4, "#a01010", "dark red"),
+    (1, "one", "blue"),
+    (2, "two", "dark blue"),
+    (3, "three", "light red"),
+    (4, "four", "dark red"),
 )
 KINDS = (
-    ("school", "Schools", "#e0b000", '<circle cx="7" cy="7" r="5"'),
-    ("station", "Stations", "#ffffff", '<rect x="2" y="2" width="10" height="10"'),
-    ("town_centre", "Town centres", "#7b3fa0", '<polygon points="7,1 13,13 1,13"'),
+    ("school", "Schools", "#e0b000", "\u25cf"),
+    ("station", "Stations", "#ffffff", "\u25a0"),
+    ("town_centre", "Town centres", "#7b3fa0", "\u25b2"),
 )
 
 
@@ -286,25 +286,23 @@ def quality_section(options: list[dict], ref=plain) -> str:
 def overlay_controls(streets: dict | None) -> str:
     levels = ""
     if streets:
-        km = streets["km"]
         rows = "".join(
             f'<li><label><input type="checkbox" id="overlay-lts-{level}" checked> '
-            f"Level {level} ({name}), {km[str(level)]:.2f} km</label></li>"
-            for level, _, name in LEVELS
+            f"Level {word} ({name})</label></li>"
+            for level, word, name in LEVELS
         )
         levels = (
             '<label><input type="checkbox" id="overlay-streets"> Street calmness today</label>'
-            "<p>Blue streets are levels 1 and 2. Red streets are levels 3 and 4. Busier streets "
-            f"are thicker. The km of all levels together are figure "
+            "<p>Blue streets are levels one and two. Red streets are levels three and four. "
+            "Busier streets are thicker. The km of all levels together are figure "
             f'<a href="#F1">F1</a>.</p><ul>{rows}<li><label><input type="checkbox" '
-            f'id="overlay-aaa"> Only streets rated all ages, {km["aaa"]:.2f} km</label></li></ul>'
+            'id="overlay-aaa"> Only streets rated all ages</label></li></ul>'
         )
     places = "".join(
         f'<li><label><input type="checkbox" id="overlay-{kind}" checked> '
-        f'<svg data-kind="{kind}" width="14" height="14" viewBox="0 0 14 14" role="img" '
-        f'aria-label="{label}">{shape} fill="{fill}" stroke="#222222" stroke-width="1.5"/></svg> '
-        f"{label}</label></li>"
-        for kind, label, fill, shape in KINDS
+        f'<span class="key-shape" data-kind="{kind}" '
+        f'style="color:{fill};-webkit-text-stroke:1px #222222">{mark}</span> {label}</label></li>'
+        for kind, label, fill, mark in KINDS
     )
     return (
         f'<fieldset id="overlay-key"><legend>Overlays under the option</legend>{levels}'

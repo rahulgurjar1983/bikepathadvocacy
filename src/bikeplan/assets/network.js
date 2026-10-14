@@ -70,14 +70,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const placeLayers = {};
   for (const place of data.places) {
-    const key = document.querySelector('#overlay-key svg[data-kind="' + place.type + '"]');
+    const key = document.querySelector('#overlay-key .key-shape[data-kind="' + place.type + '"]');
     const label = place.type.replace("_", " ");
     const marker = L.marker([place.lat, place.lon], {
       pane: "places",
       icon: L.divIcon({
         className: "place-marker",
         html: key ? key.outerHTML : "",
-        iconSize: [14, 14],
+        iconSize: [16, 16],
       }),
     });
     mark(marker, { "data-kind": place.type }, place.name + ", " + label);
