@@ -194,6 +194,7 @@ class Profile:
     road_classes: dict[str, RoadClass]
     implicit_speeds: dict[str, Num]
     network: Network = Network()
+    road_functions: dict[str, Num] = dataclasses.field(default_factory=dict)
 
 
 ROAD_CLASS_NAMES = {
@@ -465,6 +466,11 @@ class ProfileReader(Reader):
             for name in sorted(ROAD_CLASS_NAMES)
         }
 
+    def road_functions(self, raw: Any) -> dict[str, Num]:
+        if not isinstance(raw, dict):
+            raise self.fail("road_functions", "must be a mapping of functions to ADT")
+        return {str(name): self.num(item, f"road_functions.{name}") for name, item in raw.items()}
+
     def implicit_speeds(self, raw: Any) -> dict[str, Num]:
         if not isinstance(raw, dict) or not raw:
             raise self.fail("implicit_speeds", "must be a mapping of codes to km/h")
@@ -479,7 +485,7 @@ def load_profile(id: str, directory: str | Path | None = None) -> Profile:
     except (OSError, yaml.YAMLError) as error:
         raise ConfigError(f"{path}: cannot read: {error}") from error
     names = {f.name for f in dataclasses.fields(Profile)}
-    data = reader.mapping(raw, "", names, names - {"network"})
+    data = reader.mapping(raw, "", names, names - {"network", "road_functions"})
     return Profile(
         reader.text(data["id"], "id"),
         reader.text(data["name"], "name"),
@@ -494,6 +500,7 @@ def load_profile(id: str, directory: str | Path | None = None) -> Profile:
         reader.road_classes(data["road_classes"]),
         reader.implicit_speeds(data["implicit_speeds"]),
         reader.network(data.get("network", {})),
+        reader.road_functions(data.get("road_functions", {})),
     )
 
 

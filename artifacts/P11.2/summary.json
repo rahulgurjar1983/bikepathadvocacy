@@ -1,0 +1,32 @@
+{
+ "adt_source": {
+  "default": 187716,
+  "nsw_road_segment": 1670
+ },
+ "box": [
+  -33.935,
+  151.115,
+  -33.925,
+  151.125
+ ],
+ "build_s": 175,
+ "edges": 189386,
+ "fetch_s": 64,
+ "functions": {
+  "AccessWay": 6,
+  "ArterialRoad": 195,
+  "DistributorRoad": 362,
+  "LocalRoad": 1050,
+  "UrbanServiceLane": 57
+ },
+ "request": {
+  "box": [
+   -33.935,
+   151.115,
+   -33.925,
+   151.125
+  ],
+  "requests": 2,
+  "segments": 163
+ }
+}

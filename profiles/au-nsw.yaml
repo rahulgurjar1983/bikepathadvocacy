@@ -214,3 +214,22 @@ implicit_speeds:
   GB:motorway:
     value: 112.65
     source: 'OpenStreetMap Wiki, Default speed limits: GB:motorway'
+road_functions:
+  PrimaryRoad:
+    value: 30000
+    source: 'assumption: typical daily traffic for the NSW road function'
+  ArterialRoad:
+    value: 20000
+    source: 'assumption: typical daily traffic for the NSW road function'
+  DistributorRoad:
+    value: 8000
+    source: 'assumption: typical daily traffic for the NSW road function'
+  LocalRoad:
+    value: 750
+    source: 'assumption: typical daily traffic for the NSW road function'
+  UrbanServiceLane:
+    value: 200
+    source: 'assumption: typical daily traffic for the NSW road function'
+  AccessWay:
+    value: 100
+    source: 'assumption: typical daily traffic for the NSW road function'

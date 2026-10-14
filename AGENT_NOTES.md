@@ -1151,6 +1151,7 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
   FR-17.12 check fails a release where no option gains safety.
 - Host load was above 20 on 4 cores, so one report test file took 4 minutes.
 
+- P11.2: `nsw_road_segment` writes `road_segments.gpkg`; the real service names its id field `OBJECTID` and returns Z of -1000, so the adapter reads either case and drops Z. A 0.01 degree tile takes about 30 s, so the whole Bayside box is hours; a full-box run dies at the one hour turn limit. `build` calls `bikeplan.traffic.set_segment_traffic` when the file and the profile `road_functions` exist. Not yet in the Bayside region adapters.
 
 ### N1.5 map overlays
 
