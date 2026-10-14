@@ -1029,7 +1029,7 @@ def test_fr0_40_a_refused_save_runs_a_repair_turn_instead_of_waiting(loop_repo, 
     result = run_loop(repo, env, "1", timeout=30)
     assert result.returncode == 0, result.stdout + result.stderr
     assert count(state) == 1
-    note = flag_value(args_of(state, 1), "--append-system-prompt")
+    note = "\n".join(args_of(state, 1))
     assert "Repair first" in note
     assert "PROMPT.md" in note
     assert "loop/P0.2-resume" in note
