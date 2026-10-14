@@ -9,7 +9,6 @@ from urllib.parse import parse_qs, urlsplit
 
 import geopandas
 import pytest
-from bikeplan.adapters.tfnsw_speed_zones import tfnsw_speed_zones
 from pyproj import Transformer
 from shapely.geometry import LineString
 
@@ -21,6 +20,12 @@ BOX = (-33.941, 151.1065, -33.919, 151.1335)
 LIMIT = 1000
 CLUSTER = 1300
 GRID = Path("tests/fixtures/test-grid/snapshot")
+
+
+def tfnsw_speed_zones(*args, **kwargs):
+    from bikeplan.adapters.tfnsw_speed_zones import tfnsw_speed_zones as adapter
+
+    return adapter(*args, **kwargs)
 
 
 def pieces(count):
@@ -153,7 +158,9 @@ def test_fr10_4_a_second_run_reads_the_tile_cache(zone_server, tmp_path):
 
 
 def test_fr10_4_adapter_is_registered_and_bayside_turns_it_on():
-    assert ADAPTERS["tfnsw_speed_zones"] is tfnsw_speed_zones
+    from bikeplan.adapters.tfnsw_speed_zones import tfnsw_speed_zones as adapter
+
+    assert ADAPTERS["tfnsw_speed_zones"] is adapter
     assert "tfnsw_speed_zones" in bayside().snapshot.adapters
 
 
