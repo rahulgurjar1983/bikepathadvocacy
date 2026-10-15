@@ -23,6 +23,7 @@ from bikeplan.snapshot import (
     pull_snapshot,
     verify_snapshot,
 )
+from bikeplan.snapshot_set import publish_missing
 from bikeplan.stress import write_stress
 from bikeplan.verify import verify_outputs
 from bikeplan.width import width_summary
@@ -54,6 +55,7 @@ GROUPS = {
         "verify": "Check a snapshot folder against its manifest",
         "publish": "Upload a snapshot to its release and copy its manifest",
         "pull": "Download a snapshot from its release and verify it",
+        "set": "Fetch, check and publish the snapshot of each council in a set not yet published",
     },
 }
 
@@ -152,6 +154,10 @@ def build_parser() -> argparse.ArgumentParser:
                 leaf.add_argument("--endpoint", default=OVERPASS_ENDPOINT, help="Overpass endpoint")
             if (name, sub) in {("snapshot", "verify"), ("snapshot", "publish")}:
                 leaf.add_argument("directory", help="Snapshot folder")
+            if (name, sub) == ("snapshot", "set"):
+                leaf.add_argument("set_file", help="Set file")
+                leaf.add_argument("--root", default=".", help="Repository folder")
+                leaf.add_argument("--cache", default="data/cache", help="Folder for fetched files")
             if (name, sub) == ("snapshot", "pull"):
                 leaf.add_argument("manifest", help="Manifest file")
     return parser
@@ -405,6 +411,15 @@ def snapshot_publish(directory: str) -> int:
     return 0
 
 
+def snapshot_set_command(set_file: str, root: str, cache: str) -> int:
+    try:
+        failed = publish_missing(set_file, root, cache)
+    except (ConfigError, OSError, ValueError) as error:
+        print(error, file=sys.stderr)
+        return 1
+    return 1 if failed else 0
+
+
 def snapshot_pull(manifest: str) -> int:
     try:
         target = pull_snapshot(manifest)
@@ -454,6 +469,8 @@ def main(argv: list[str] | None = None) -> int:
         return snapshot_verify(args.directory)
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "publish"):
         return snapshot_publish(args.directory)
+    if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "set"):
+        return snapshot_set_command(args.set_file, args.root, args.cache)
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "pull"):
         return snapshot_pull(args.manifest)
     return 0
