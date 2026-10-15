@@ -305,3 +305,44 @@ def test_fr18_2_a_council_over_its_seconds_limit_is_named_and_the_run_goes_on(
     assert ids[-2] in capsys.readouterr().err
     problems = set_problems(root / "regions" / "sets" / "greater-sydney.yaml", root)
     assert problems == [f"{ids[-2]}: no manifest"]
+
+
+def test_fr18_2_the_seconds_limit_ends_a_council_stuck_inside_the_retry_loop(
+    tmp_path, stand_ins, monkeypatch, capsys
+):
+    import time
+
+    ids = councils()
+    root = tree(tmp_path / "repo", ids[:-2])
+    from bikeplan import snapshot, snapshot_set
+
+    monkeypatch.setattr(snapshot, "RETRY_BASE_SECONDS", 0)
+    inner = snapshot_set.fetch_snapshot
+
+    def stuck(region, out, endpoint=None):
+        if region.id == ids[-2]:
+            snapshot.with_retries(lambda: time.sleep(6))
+        return inner(region, out, endpoint)
+
+    monkeypatch.setattr("bikeplan.snapshot_set.fetch_snapshot", stuck)
+
+    started = time.monotonic()
+    code = main(
+        [
+            "snapshot",
+            "set",
+            str(root / "regions" / "sets" / "greater-sydney.yaml"),
+            "--root",
+            str(root),
+            "--cache",
+            str(root / "cache"),
+            "--seconds",
+            "1",
+        ]
+    )
+
+    assert time.monotonic() - started < 5
+    assert code == 1
+    assert ids[-2] in capsys.readouterr().err
+    problems = set_problems(root / "regions" / "sets" / "greater-sydney.yaml", root)
+    assert problems == [f"{ids[-2]}: no manifest"]
