@@ -25,6 +25,11 @@
     "peak_rss_mb": 415.9
   },
   {
+    "region": "au-nsw-north-sydney",
+    "seconds": 1160.8,
+    "peak_rss_mb": 454.4
+  },
+  {
     "region": "au-nsw-strathfield",
     "seconds": 507.1,
     "peak_rss_mb": 500.6
