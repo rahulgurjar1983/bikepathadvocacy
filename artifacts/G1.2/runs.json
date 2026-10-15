@@ -35,6 +35,11 @@
     "peak_rss_mb": 418.2
   },
   {
+    "region": "au-nsw-willoughby",
+    "seconds": 866.7,
+    "peak_rss_mb": 520.8
+  },
+  {
     "region": "au-nsw-woollahra",
     "seconds": 2560.1,
     "peak_rss_mb": 499.8

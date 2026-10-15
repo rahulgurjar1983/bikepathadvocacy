@@ -1757,4 +1757,4 @@ Command: `bash scripts/snapshot-set.sh au-nsw-burwood` for each council in `regi
 Expect: each run fetches, verifies and publishes one snapshot, adds its run time and peak memory to `artifacts/G1.2/runs.json`, and copies its manifest into `snapshots/`. The test passes only when all 33 councils have a manifest with the Bayside date and adapters and a recorded run.
 Artifact: `artifacts/G1.2/runs.json`
 
-Part 1: Burwood, Hunters Hill, Lane Cove, Mosman and Strathfield are published, each with a run in `artifacts/G1.2/runs.json`. The other 28 councils are not published yet, so the row stays open.
+Part 1: Burwood, Canada Bay, Hunters Hill, Lane Cove, Mosman, Strathfield, Waverley, Willoughby and Woollahra are published, each with a run in `artifacts/G1.2/runs.json`. Bayside is published but needs a refetch. 23 other councils are not published yet, so the row stays open.
