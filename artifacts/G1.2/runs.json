@@ -30,6 +30,11 @@
     "peak_rss_mb": 454.4
   },
   {
+    "region": "au-nsw-randwick",
+    "seconds": 2096.9,
+    "peak_rss_mb": 530.4
+  },
+  {
     "region": "au-nsw-strathfield",
     "seconds": 507.1,
     "peak_rss_mb": 500.6
