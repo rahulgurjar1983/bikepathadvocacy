@@ -45,7 +45,7 @@ def set_problems(set_file: str | Path, root: str | Path) -> list[str]:
     return problems
 
 
-class CouncilTimeout(OSError):
+class CouncilTimeout(Exception):
     pass
 
 
@@ -85,7 +85,7 @@ def publish_missing(
             if bad:
                 raise OSError("; ".join(bad))
             publish_snapshot(out, root)
-        except (OSError, ValueError, OverpassError) as error:
+        except (OSError, ValueError, OverpassError, CouncilTimeout) as error:
             print(f"{name}: {error}", file=sys.stderr)
             failed.append(name)
             continue
