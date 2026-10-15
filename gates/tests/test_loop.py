@@ -1034,3 +1034,34 @@ def test_fr0_40_a_refused_save_runs_a_repair_turn_instead_of_waiting(loop_repo, 
     assert "PROMPT.md" in note
     assert "loop/P0.2-resume" in note
     assert "repair turn" in result.stdout
+
+
+def test_fr0_41_the_turn_after_a_time_bound_is_told_to_push_and_split(loop_repo):
+    repo, env, state = loop_repo
+    env["RALPH_TURN_SECS"] = "2"
+    env["FAKE_RUN"] = (
+        'if [ ! -f "$FAKE_STATE/slept" ]; then touch "$FAKE_STATE/slept"; sleep 30; fi'
+    )
+    result = run_loop(repo, env, "3", timeout=60)
+    assert result.returncode == 0, result.stdout + result.stderr
+    first = "\n".join(args_of(state, 1))
+    second = "\n".join(args_of(state, 2))
+    third = "\n".join(args_of(state, 3))
+    assert "hit the time bound" not in first
+    assert "hit the time bound" in second
+    assert "push" in second
+    assert "hit the time bound" not in third
+
+
+def test_fr0_41_a_repair_note_reaches_the_next_turn_once(loop_repo):
+    repo, env, state = loop_repo
+    (repo.path / ".ralph").mkdir(exist_ok=True)
+    (repo.path / ".ralph/repair-note").write_text("no model turn has finished for 4.2 hours\n")
+    result = run_loop(repo, env, "2")
+    assert result.returncode == 0, result.stdout + result.stderr
+    first = "\n".join(args_of(state, 1))
+    second = "\n".join(args_of(state, 2))
+    assert "Repair first" in first
+    assert "no model turn has finished for 4.2 hours" in first
+    assert "Repair first" not in second
+    assert not (repo.path / ".ralph/repair-note").exists()
