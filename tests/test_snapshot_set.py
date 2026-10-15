@@ -218,3 +218,27 @@ def test_fr18_2_a_snapshot_that_fails_its_check_is_not_published(tmp_path, stand
 
     assert run_set(root) == 1
     assert uploads() == []
+
+
+def test_fr18_2_an_overpass_error_on_one_council_does_not_stop_the_rest(
+    tmp_path, stand_ins, monkeypatch, capsys
+):
+    fetched, _, _ = stand_ins
+    ids = councils()
+    root = tree(tmp_path / "repo", ids[:-3])
+    from bikeplan import snapshot_set
+    from bikeplan.snapshot import OverpassError
+
+    inner = snapshot_set.fetch_snapshot
+
+    def flaky(region, out, endpoint=None):
+        if region.id == ids[-3]:
+            raise OverpassError("HTTP Error 502: Bad Gateway")
+        return inner(region, out, endpoint)
+
+    monkeypatch.setattr("bikeplan.snapshot_set.fetch_snapshot", flaky)
+
+    assert run_set(root) == 1
+
+    assert fetched == ids[-2:]
+    assert ids[-3] in capsys.readouterr().err
