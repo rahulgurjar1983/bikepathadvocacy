@@ -20,10 +20,15 @@ for tool in gh tar gzip sha256sum git python3; do
 done
 read -r -a bikeplan <<<"${BIKEPLAN:-uv run --frozen bikeplan}"
 read -r -a pytest <<<"${PYTEST:-uv run --frozen pytest}"
+release_out="${RELEASE_OUT:-}"
+release_built="${RELEASE_BUILT:-}"
+max_secs="${RELEASE_MAX_SECS:-3600}"
+max_mb="${RELEASE_MAX_MB:-14336}"
+unset RELEASE_OUT RELEASE_BUILT RELEASE_MAX_SECS RELEASE_MAX_MB
 commit="$(git rev-parse HEAD)"
 work="$(mktemp -d)"
-if [ -n "${RELEASE_OUT:-}" ]; then
-  out="$RELEASE_OUT"
+if [ -n "$release_out" ]; then
+  out="$release_out"
   mkdir -p "$out"
   trap 'rm -rf "$work"' EXIT
 else
@@ -92,7 +97,7 @@ needs_build() {
 measure() {
   local record="$1" ident="$2"
   shift 2
-  python3 - "$record" "$ident" "${RELEASE_MAX_SECS:-3600}" "${RELEASE_MAX_MB:-14336}" "$@" <<'PY'
+  python3 - "$record" "$ident" "$max_secs" "$max_mb" "$@" <<'PY'
 import json
 import os
 import resource
@@ -162,7 +167,7 @@ if [ "$mode" = build ]; then
   exit 0
 fi
 
-if [ "$changed" = 0 ] || [ -n "${RELEASE_BUILT:-}" ]; then
+if [ "$changed" = 0 ] || [ -n "$release_built" ]; then
   find_last
 fi
 
@@ -207,15 +212,15 @@ assemble() {
   local rid date record status
   rid="$(field id "$region")"
   date="$(snapshot_date "$region")"
-  record="$RELEASE_BUILT/report-$rid.json"
+  record="$release_built/report-$rid.json"
   if [ -f "$record" ]; then
     status="$(record_field "$record" status)"
     if [ "$status" != built ]; then
       fail_row report "$id" "$rid" "$date" "$status" "$(record_field "$record" seconds)" "$(record_field "$record" peak_mb)"
       return
     fi
-    (cd "$RELEASE_BUILT/report-$rid" && sha256sum --check --strict SHA256SUMS)
-    publish report "$id" "$rid" "$date" "$RELEASE_BUILT/report-$rid" "$html" "$archive" "$record"
+    (cd "$release_built/report-$rid" && sha256sum --check --strict SHA256SUMS)
+    publish report "$id" "$rid" "$date" "$release_built/report-$rid" "$html" "$archive" "$record"
   elif ! needs_build "$region"; then
     copy_last report "$id" "$rid" "$date" "$html" "$archive"
   else
@@ -233,7 +238,7 @@ build() {
     copy_last "$kind" "$id" "$rid" "$date" "$html" "$archive"
     return
   fi
-  if [ -n "${RELEASE_BUILT:-}" ] && [ "$kind" = report ]; then
+  if [ -n "$release_built" ] && [ "$kind" = report ]; then
     assemble "$id" "$region" "$html" "$archive"
     return
   fi
@@ -245,7 +250,7 @@ build() {
 
 for region in regions/*.yaml; do
   published "$region" || continue
-  [ -n "${RELEASE_BUILT:-}" ] || pull "$region"
+  [ -n "$release_built" ] || pull "$region"
   id="$(field id "$region")"
   build report "$id" "$region" "$id-report.html" "$id.tar.gz" "$region"
 done
