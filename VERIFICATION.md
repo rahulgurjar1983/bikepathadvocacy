@@ -1757,5 +1757,5 @@ Command: `uv run --frozen bikeplan snapshot set regions/sets/greater-sydney.yaml
 Expect: the command skips each council whose manifest in `snapshots/` has the Bayside date and adapters, and fetches, verifies and publishes the rest. It exits 1 and names the councils that failed, and a rerun resumes from the cached tiles. The last test passes once all 33 councils are published.
 Artifact: `snapshots/au-nsw-randwick/`
 
-Part 1: the command and its four tests. Run time and memory are no longer recorded in turns; the release jobs of FR-18.3 measure them. Eleven councils besides Bayside are published. Bayside and 21 others are not, so the row stays open.
+Part 1: the command and its four tests. Run time and memory are no longer recorded in turns; the release jobs of FR-18.3 measure them. Twelve councils besides Bayside are published. Bayside's refetch and 20 other councils are not, so the row stays open.
 
