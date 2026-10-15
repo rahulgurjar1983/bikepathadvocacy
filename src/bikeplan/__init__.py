@@ -158,6 +158,8 @@ def build_parser() -> argparse.ArgumentParser:
                 leaf.add_argument("set_file", help="Set file")
                 leaf.add_argument("--root", default=".", help="Repository folder")
                 leaf.add_argument("--cache", default="data/cache", help="Folder for fetched files")
+                leaf.add_argument("--only", action="append", help="Council id to run, repeatable")
+                leaf.add_argument("--seconds", type=float, help="Time limit for each council")
             if (name, sub) == ("snapshot", "pull"):
                 leaf.add_argument("manifest", help="Manifest file")
     return parser
@@ -411,9 +413,11 @@ def snapshot_publish(directory: str) -> int:
     return 0
 
 
-def snapshot_set_command(set_file: str, root: str, cache: str) -> int:
+def snapshot_set_command(
+    set_file: str, root: str, cache: str, only: list[str] | None, seconds: float | None
+) -> int:
     try:
-        failed = publish_missing(set_file, root, cache)
+        failed = publish_missing(set_file, root, cache, only, seconds)
     except (ConfigError, OSError, ValueError) as error:
         print(error, file=sys.stderr)
         return 1
@@ -470,7 +474,7 @@ def main(argv: list[str] | None = None) -> int:
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "publish"):
         return snapshot_publish(args.directory)
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "set"):
-        return snapshot_set_command(args.set_file, args.root, args.cache)
+        return snapshot_set_command(args.set_file, args.root, args.cache, args.only, args.seconds)
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "pull"):
         return snapshot_pull(args.manifest)
     return 0

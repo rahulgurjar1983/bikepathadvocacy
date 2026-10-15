@@ -1,4 +1,5 @@
 import json
+import signal
 import sys
 from pathlib import Path
 
@@ -44,20 +45,42 @@ def set_problems(set_file: str | Path, root: str | Path) -> list[str]:
     return problems
 
 
-def publish_missing(set_file: str | Path, root: str | Path, cache: str | Path) -> list[str]:
+class CouncilTimeout(OSError):
+    pass
+
+
+def _alarm(signum, frame):
+    raise CouncilTimeout("time limit reached; run again to resume from cached files")
+
+
+def publish_missing(
+    set_file: str | Path,
+    root: str | Path,
+    cache: str | Path,
+    only: list[str] | None = None,
+    seconds: float | None = None,
+) -> list[str]:
     root = Path(root)
     councils = yaml.safe_load(Path(set_file).read_text())["councils"]
     base_region = load_region(root / "regions" / f"{councils[0]['id']}.yaml")
     failed = []
     for council in councils:
         name = council["id"]
+        if only and name not in only:
+            continue
         if not council_problems(name, base_region, root):
             print(f"{name}: published, skipped")
             continue
         region = load_region(root / "regions" / f"{name}.yaml")
         out = Path(cache) / name / region.snapshot.osm_date[:10]
         try:
-            fetch_snapshot(region, out)
+            if seconds:
+                signal.signal(signal.SIGALRM, _alarm)
+                signal.setitimer(signal.ITIMER_REAL, seconds)
+            try:
+                fetch_snapshot(region, out)
+            finally:
+                signal.setitimer(signal.ITIMER_REAL, 0)
             _, bad = verify_snapshot(out)
             if bad:
                 raise OSError("; ".join(bad))
