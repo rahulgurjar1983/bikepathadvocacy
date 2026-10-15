@@ -27,7 +27,7 @@ def turns(folder, *rows):
     (ralph / "model-usage.jsonl").write_text("".join(line + "\n" for line in lines))
 
 
-def run(folder, minutes, fail_send=False):
+def run(folder, minutes, fail_send=False, restart=None):
     sent = folder / "sent.txt"
     sender = folder / "send.sh"
     code = "exit 1" if fail_send else f'printf "%s\\n---\\n" "$*" >> "{sent}"'
@@ -39,8 +39,11 @@ def run(folder, minutes, fail_send=False):
         WATCHDOG_NOTIFY=str(sender),
         PYTHONPATH=str(ROOT),
     )
+    command = [sys.executable, "-m", "gates.watchdog"]
+    if restart is not None:
+        command += ["--restart", restart]
     result = subprocess.run(
-        [sys.executable, "-m", "gates.watchdog"],
+        command,
         cwd=folder,
         env=env,
         capture_output=True,
@@ -145,3 +148,49 @@ def test_fr0_39_a_failed_send_fails_the_run(tmp_path):
     result, _ = run(tmp_path, 20, fail_send=True)
     assert result.returncode == 1
     assert "watchdog: send failed" in result.stderr
+
+
+def restarter(folder, code=0):
+    script = folder / "restart.sh"
+    script.write_text(
+        f'#!/usr/bin/env bash\necho restarted >> "{folder}/restarts.txt"\nexit {code}\n'
+    )
+    script.chmod(0o755)
+    return str(script)
+
+
+def test_fr0_41_a_stale_heartbeat_restarts_the_loop_once_and_leaves_a_repair_note(tmp_path):
+    turns(tmp_path, ("N1.5", 0))
+    status(tmp_path, 0)
+    command = restarter(tmp_path)
+    run(tmp_path, 1, restart=command)
+    result, notes = run(tmp_path, 20, restart=command)
+    assert result.returncode == 0, result.stderr
+    assert (tmp_path / "restarts.txt").read_text() == "restarted\n"
+    assert "restarted the loop" in notes[0]
+    note = (tmp_path / ".ralph/repair-note").read_text()
+    assert "heartbeat" in note
+    run(tmp_path, 30, restart=command)
+    assert (tmp_path / "restarts.txt").read_text() == "restarted\n"
+
+
+def test_fr0_41_four_hours_with_no_turn_restarts_the_loop(tmp_path):
+    turns(tmp_path, ("G1.2", 0))
+    status(tmp_path, 0, phase="waiting_ci", row="G1.2", pr=162)
+    command = restarter(tmp_path)
+    run(tmp_path, 0, restart=command)
+    status(tmp_path, 245, phase="waiting_ci", row="G1.2", pr=162)
+    result, _notes = run(tmp_path, 245, restart=command)
+    assert result.returncode == 0, result.stderr
+    assert (tmp_path / "restarts.txt").read_text() == "restarted\n"
+    assert "no model turn" in (tmp_path / ".ralph/repair-note").read_text()
+
+
+def test_fr0_41_a_failed_restart_is_reported_and_fails_the_run(tmp_path):
+    turns(tmp_path, ("N1.5", 0))
+    status(tmp_path, 0)
+    command = restarter(tmp_path, code=1)
+    run(tmp_path, 1, restart=command)
+    result, notes = run(tmp_path, 20, restart=command)
+    assert result.returncode == 1
+    assert "restart failed" in notes[0]
