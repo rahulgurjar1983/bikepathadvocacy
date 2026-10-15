@@ -242,3 +242,67 @@ def test_fr18_2_an_overpass_error_on_one_council_does_not_stop_the_rest(
 
     assert fetched == ids[-2:]
     assert ids[-3] in capsys.readouterr().err
+
+
+def test_fr18_2_only_fetches_just_the_named_councils(tmp_path, stand_ins):
+    fetched, _, _ = stand_ins
+    ids = councils()
+    root = tree(tmp_path / "repo", ids[:-3])
+
+    code = main(
+        [
+            "snapshot",
+            "set",
+            str(root / "regions" / "sets" / "greater-sydney.yaml"),
+            "--root",
+            str(root),
+            "--cache",
+            str(root / "cache"),
+            "--only",
+            ids[-1],
+        ]
+    )
+
+    assert code == 0
+    assert fetched == [ids[-1]]
+
+
+def test_fr18_2_a_council_over_its_seconds_limit_is_named_and_the_run_goes_on(
+    tmp_path, stand_ins, monkeypatch, capsys
+):
+    import time
+
+    fetched, _, _ = stand_ins
+    ids = councils()
+    root = tree(tmp_path / "repo", ids[:-2])
+    from bikeplan import snapshot_set
+
+    inner = snapshot_set.fetch_snapshot
+
+    def slow(region, out, endpoint=None):
+        if region.id == ids[-2]:
+            time.sleep(30)
+        return inner(region, out, endpoint)
+
+    monkeypatch.setattr("bikeplan.snapshot_set.fetch_snapshot", slow)
+
+    started = time.monotonic()
+    code = main(
+        [
+            "snapshot",
+            "set",
+            str(root / "regions" / "sets" / "greater-sydney.yaml"),
+            "--root",
+            str(root),
+            "--cache",
+            str(root / "cache"),
+            "--seconds",
+            "1",
+        ]
+    )
+
+    assert time.monotonic() - started < 20
+    assert code == 1
+    assert ids[-2] in capsys.readouterr().err
+    problems = set_problems(root / "regions" / "sets" / "greater-sydney.yaml", root)
+    assert problems == [f"{ids[-2]}: no manifest"]
