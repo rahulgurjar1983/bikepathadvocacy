@@ -228,3 +228,15 @@ def test_fr18_3_a_failed_or_missing_build_stays_in_the_index_as_failed(repo, tmp
     assert "failed: no build record" in gamma
     assert not (out / "beta-report.html").exists()
     assert (out / "alpha-report.html").exists()
+
+
+def test_fr18_3_a_region_file_with_a_single_quoted_date_is_planned(repo, tmp_path):
+    env = setup(repo, tmp_path)
+    repo.write("regions/gamma.yaml", "id: gamma\nsnapshot:\n  osm_date: '2026-10-01T00:00:00Z'\n")
+    repo.write("snapshots/gamma/2026-10-01/manifest.json", "{}")
+    repo.commit("baseline")
+    repo.write("src/code.py", "two\n")
+    repo.commit("code change")
+    result = run(repo, env, "--plan")
+    assert result.returncode == 0, result.stderr
+    assert "regions/gamma.yaml" in json.loads(result.stdout)
