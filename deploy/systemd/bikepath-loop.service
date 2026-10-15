@@ -15,6 +15,7 @@ MemoryMax=512M
 MemorySwapMax=0
 Restart=on-failure
 RestartSec=120
+EnvironmentFile=%h/.config/bikepathadvocacy/github.env
 Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
 Environment=RALPH_WORK_DIR=%h/claude/bikepathadvocacy
 Environment=RALPH_CONTROL_DIR=%h/claude/bikepathadvocacy/.ralph/control

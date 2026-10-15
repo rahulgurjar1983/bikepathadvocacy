@@ -1,3 +1,4 @@
+import argparse
 import datetime
 import json
 import os
@@ -8,6 +9,8 @@ from pathlib import Path
 STATUS = Path(".ralph/status.json")
 USAGE = Path(".ralph/model-usage.jsonl")
 STATE = Path(".ralph/watchdog.json")
+REPAIR_NOTE = Path(".ralph/repair-note")
+RESTART_KEYS = ("heartbeat", "turns")
 NOTIFY = Path(__file__).resolve().parents[1] / "scripts" / "notify.sh"
 PULLS = "https://github.com/rahulgurjar1983/bikepathadvocacy/pulls"
 HEARTBEAT_LIMIT = datetime.timedelta(minutes=15)
@@ -76,7 +79,17 @@ def save(state):
     temporary.replace(STATE)
 
 
+def restart(command, text):
+    REPAIR_NOTE.parent.mkdir(parents=True, exist_ok=True)
+    REPAIR_NOTE.write_text(f"the watchdog restarted the loop because {text}\n")
+    result = subprocess.run(["bash", "-c", command], capture_output=True)
+    return result.returncode == 0
+
+
 def main(argv=None):
+    parser = argparse.ArgumentParser(prog="gates.watchdog")
+    parser.add_argument("--restart")
+    args = parser.parse_args(argv)
     clock = now()
     status = read_json(STATUS, {})
     rows = usage_rows()
@@ -91,7 +104,14 @@ def main(argv=None):
     for key in sorted(found):
         if key in sent:
             continue
-        result = subprocess.run([sender, message(found[key], status)], capture_output=True)
+        text = found[key]
+        if args.restart and key in RESTART_KEYS:
+            if restart(args.restart, text):
+                text = f"{text}; restarted the loop"
+            else:
+                text = f"{text}; restart failed"
+                failed = True
+        result = subprocess.run([sender, message(text, status)], capture_output=True)
         if result.returncode != 0:
             sys.stderr.write(f"watchdog: send failed for {key}\n")
             failed = True
