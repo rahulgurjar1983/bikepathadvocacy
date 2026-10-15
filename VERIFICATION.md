@@ -1753,8 +1753,9 @@ Artifact: `artifacts/G1.1/set.json`
 
 ### G1.2
 
-Command: `bash scripts/snapshot-set.sh au-nsw-burwood` for each council in `regions/sets/greater-sydney.yaml`, then `uv run --frozen pytest -q tests/test_snapshot_set.py`.
-Expect: each run fetches, verifies and publishes one snapshot, adds its run time and peak memory to `artifacts/G1.2/runs.json`, and copies its manifest into `snapshots/`. The test passes only when all 33 councils have a manifest with the Bayside date and adapters and a recorded run.
-Artifact: `artifacts/G1.2/runs.json`
+Command: `uv run --frozen bikeplan snapshot set regions/sets/greater-sydney.yaml`, then `uv run --frozen pytest -q tests/test_snapshot_set.py`.
+Expect: the command skips each council whose manifest in `snapshots/` has the Bayside date and adapters, and fetches, verifies and publishes the rest. It exits 1 and names the councils that failed, and a rerun resumes from the cached tiles. The last test passes once all 33 councils are published.
+Artifact: `snapshots/au-nsw-randwick/`
 
-Part 1: Burwood, Canada Bay, Hunters Hill, Lane Cove, Mosman, North Sydney, Strathfield, Waverley, Willoughby and Woollahra are published, each with a run in `artifacts/G1.2/runs.json`. Bayside is published but needs a refetch. 22 other councils are not published yet, so the row stays open.
+Part 1: the command and its four tests. Run time and memory are no longer recorded in turns; the release jobs of FR-18.3 measure them. Eleven councils besides Bayside are published. Bayside and 21 others are not, so the row stays open.
+
