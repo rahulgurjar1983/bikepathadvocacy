@@ -272,7 +272,6 @@ def test_fr18_2_a_council_over_its_seconds_limit_is_named_and_the_run_goes_on(
 ):
     import time
 
-    stand_ins
     ids = councils()
     root = tree(tmp_path / "repo", ids[:-2])
     from bikeplan import snapshot_set
