@@ -5,4 +5,4 @@ Description=Tell the owner by Telegram when the bike path loop stalls
 Type=oneshot
 WorkingDirectory=%h/claude/bikepathadvocacy
 Environment=PYTHONPATH=%h/claude/bikepathadvocacy/.ralph/control
-ExecStart=/usr/bin/python3 -m gates.watchdog
+ExecStart=/usr/bin/python3 -m gates.watchdog --restart "systemctl --user restart bikepath-loop.service"

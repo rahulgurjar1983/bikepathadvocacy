@@ -416,6 +416,13 @@ main() {
     turn_log=".ralph/iter-${stamp}-$((i + 1)).log"
     row_id="${row%% *}"
     note="$row_id"
+    if [ -f .ralph/repair-note ]; then
+      note+=$'\n'"Repair first: $(cat .ralph/repair-note). Find why no turn finished, fix that cause on its branch, then carry on with your row."
+      rm -f .ralph/repair-note
+    fi
+    if [ "$(cat .ralph/timed-out 2>/dev/null)" = "$row_id" ]; then
+      note+=$'\n'"Your last turn on this row hit the time bound of ${RALPH_TURN_SECS}s. First commit and push what you have to its draft PR. Then work in steps that end well inside the bound: keep each build or command under half of it, and ship parts with the row kept open."
+    fi
     if [ -n "${repair_reason:-}" ]; then
       dirty="$(git status --porcelain=v1 --untracked-files=all | head -n 20 | cut -c4- | tr '\n' ' ')"
       note+=$'\n'"Repair first: on branch $(git branch --show-current), $repair_reason. Dirty paths: ${dirty% }. Commit the work that belongs to its loop branch, move input edits to an operator note in AGENT_NOTES.md and restore them, then sync with origin/main and carry on with your row."
@@ -526,8 +533,10 @@ main() {
       continue
     fi
 
+    rm -f .ralph/timed-out
     if [ "$agent_status" -eq 124 ] || [ "$agent_status" -eq 137 ]; then
       log "turn $((i + 1)) hit the time bound of ${RALPH_TURN_SECS}s"
+      printf '%s\n' "$row_id" >.ralph/timed-out
     elif [ "$agent_status" -ne 0 ]; then
       log "turn $((i + 1)) ended with exit $agent_status"
     fi
