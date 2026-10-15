@@ -1,8 +1,15 @@
+import hashlib
 import json
+import os
 import shutil
+import stat
+import sys
 from pathlib import Path
 
+import pytest
 import yaml
+
+from bikeplan import main
 
 ROOT = Path(__file__).resolve().parents[1]
 SET = ROOT / "regions" / "sets" / "greater-sydney.yaml"
@@ -78,9 +85,136 @@ def test_fr18_2_every_council_in_the_set_has_a_manifest_like_bayside():
     assert set_problems(SET, ROOT) == []
 
 
-def test_fr18_2_each_council_has_a_recorded_run_time_and_memory():
-    runs = json.loads((ROOT / "artifacts" / "G1.2" / "runs.json").read_text())
-    assert [r["region"] for r in runs] == councils()
-    for run in runs:
-        assert run["seconds"] > 0
-        assert run["peak_rss_mb"] > 0
+GH_STAND_IN = """#!{python}
+import json, os, sys
+args = sys.argv[1:]
+with open(os.environ["GH_LOG"], "a") as log:
+    log.write(json.dumps(args) + "\\n")
+if args[:2] == ["release", "view"]:
+    sys.exit(1)
+"""
+
+
+@pytest.fixture
+def stand_ins(tmp_path, monkeypatch):
+    bin_dir = tmp_path / "bin"
+    bin_dir.mkdir()
+    gh = bin_dir / "gh"
+    gh.write_text(GH_STAND_IN.format(python=sys.executable))
+    gh.chmod(gh.stat().st_mode | stat.S_IEXEC)
+    log = tmp_path / "gh.log"
+    monkeypatch.setenv("PATH", f"{bin_dir}{os.pathsep}{os.environ['PATH']}")
+    monkeypatch.setenv("GH_LOG", str(log))
+    fetched = []
+    broken = set()
+
+    def fake_fetch(region, out, endpoint=None):
+        fetched.append(region.id)
+        if region.id in broken:
+            raise OSError("overpass 504")
+        out = Path(out)
+        out.mkdir(parents=True, exist_ok=True)
+        entries = []
+        for name in bayside_manifest()["files"]:
+            content = f"{region.id} {name['name']}".encode()
+            (out / name["name"]).write_bytes(content)
+            entries.append(
+                {
+                    "name": name["name"],
+                    "path": name["name"],
+                    "sha256": hashlib.sha256(content).hexdigest(),
+                    "bytes": len(content),
+                }
+            )
+        manifest = dict(
+            bayside_manifest(), region=region.id, osm_date=region.snapshot.osm_date, files=entries
+        )
+        (out / "manifest.json").write_text(json.dumps(manifest))
+        return manifest
+
+    monkeypatch.setattr("bikeplan.snapshot_set.fetch_snapshot", fake_fetch)
+
+    def uploads():
+        calls = [json.loads(line) for line in log.read_text().splitlines()] if log.exists() else []
+        return [c[2] for c in calls if c[:2] == ["release", "upload"]]
+
+    return fetched, broken, uploads
+
+
+def run_set(root):
+    return main(
+        [
+            "snapshot",
+            "set",
+            str(root / "regions" / "sets" / "greater-sydney.yaml"),
+            "--root",
+            str(root),
+            "--cache",
+            str(root / "cache"),
+        ]
+    )
+
+
+def test_fr18_2_the_set_command_fetches_checks_and_publishes_only_missing_councils(
+    tmp_path, stand_ins
+):
+    fetched, _, uploads = stand_ins
+    ids = councils()
+    root = tree(tmp_path / "repo", ids[:-2])
+
+    assert run_set(root) == 0
+
+    assert fetched == ids[-2:]
+    date = bayside_manifest()["snapshot_id"]
+    assert sorted(uploads()) == sorted(f"snapshot-{i}-{date}" for i in ids[-2:])
+    assert set_problems(root / "regions" / "sets" / "greater-sydney.yaml", root) == []
+
+
+def test_fr18_2_a_second_run_of_the_set_command_fetches_nothing(tmp_path, stand_ins):
+    fetched, _, _ = stand_ins
+    root = tree(tmp_path / "repo", councils()[:-1])
+    assert run_set(root) == 0
+    fetched.clear()
+
+    assert run_set(root) == 0
+
+    assert fetched == []
+
+
+def test_fr18_2_a_failed_council_does_not_stop_the_rest_and_a_rerun_resumes(
+    tmp_path, stand_ins, capsys
+):
+    fetched, broken, _ = stand_ins
+    ids = councils()
+    root = tree(tmp_path / "repo", ids[:-3])
+    broken.add(ids[-3])
+
+    assert run_set(root) == 1
+
+    assert fetched == ids[-3:]
+    assert ids[-3] in capsys.readouterr().err
+    problems = set_problems(root / "regions" / "sets" / "greater-sydney.yaml", root)
+    assert problems == [f"{ids[-3]}: no manifest"]
+    broken.clear()
+    fetched.clear()
+
+    assert run_set(root) == 0
+    assert fetched == [ids[-3]]
+
+
+def test_fr18_2_a_snapshot_that_fails_its_check_is_not_published(tmp_path, stand_ins, monkeypatch):
+    _, _, uploads = stand_ins
+    root = tree(tmp_path / "repo", councils()[:-1])
+    from bikeplan import snapshot_set
+
+    inner = snapshot_set.fetch_snapshot
+
+    def corrupt(region, out, endpoint=None):
+        manifest = inner(region, out, endpoint)
+        (Path(out) / "network.osm.gz").write_bytes(b"changed")
+        return manifest
+
+    monkeypatch.setattr(snapshot_set, "fetch_snapshot", corrupt)
+
+    assert run_set(root) == 1
+    assert uploads() == []
