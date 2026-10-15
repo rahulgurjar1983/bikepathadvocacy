@@ -240,3 +240,28 @@ def test_fr18_3_a_region_file_with_a_single_quoted_date_is_planned(repo, tmp_pat
     result = run(repo, env, "--plan")
     assert result.returncode == 0, result.stderr
     assert "regions/gamma.yaml" in json.loads(result.stdout)
+
+
+def test_fr18_3_the_release_settings_do_not_reach_the_test_run(repo, tmp_path):
+    env = setup(repo, tmp_path)
+    repo.commit("baseline")
+    repo.write("src/code.py", "two\n")
+    repo.commit("code change")
+    seen = tmp_path / "seen.txt"
+    pytest_body = (
+        "import os, sys\n"
+        "from pathlib import Path\n"
+        "names = [k for k in os.environ if k.startswith('RELEASE_')]\n"
+        f"Path({str(seen)!r}).write_text(' '.join(names))\n"
+        "for arg in sys.argv[1:]:\n"
+        "    if arg.startswith('--junitxml='):\n"
+        "        Path(arg.split('=', 1)[1]).write_text('<testsuites/>')\n"
+    )
+    (tmp_path / "bin/pytest").write_text(f"#!{sys.executable}\n" + pytest_body)
+    built = tmp_path / "built"
+    prebuilt(built, "alpha")
+    prebuilt(built, "beta")
+    env.update(RELEASE_BUILT=str(built), RELEASE_MAX_SECS="3600", RELEASE_MAX_MB="14336")
+    result = run(repo, env, "v-new")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert seen.read_text() == ""
