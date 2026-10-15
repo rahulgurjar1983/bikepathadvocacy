@@ -33,5 +33,10 @@
     "region": "au-nsw-waverley",
     "seconds": 2481.3,
     "peak_rss_mb": 418.2
+  },
+  {
+    "region": "au-nsw-woollahra",
+    "seconds": 2560.1,
+    "peak_rss_mb": 499.8
   }
 ]

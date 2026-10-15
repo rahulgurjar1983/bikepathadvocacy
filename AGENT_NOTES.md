@@ -1188,4 +1188,4 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - A first `gh release upload` of many files may answer HTTP 400. Run the script again.
 - Canada Bay hit an Overpass 504 once, then a rerun used the 1 hour foreground limit and a 10 minute background limit and was stopped. Its tiles are in `data/cache/au-nsw-canada-bay/`, so run the script again. Strathfield, the smallest, took 507 s. Pick small councils first.
 - New snapshot releases now pass `--latest=false`, so they never take the latest release from the weekly report release.
-- Woollahra: a foreground run used the 1 hour limit and a 10 minute background run was stopped. Its tiles are in `data/cache/au-nsw-woollahra/`, so run the script again. Eight of 33 councils are published; 25 remain.
+- Woollahra: a foreground run used the 1 hour limit and a 10 minute background run was stopped. Its tiles are in `data/cache/au-nsw-woollahra/`, so run the script again. Nine of 33 councils are published (Woollahra needed a rerun after an Overpass HTTP 500); 24 remain.
