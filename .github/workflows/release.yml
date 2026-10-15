@@ -14,22 +14,20 @@ permissions:
   pull-requests: read
 
 jobs:
-  release:
-    name: release
+  plan:
+    name: plan
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 15
     env:
       GH_TOKEN: ${{ github.token }}
+    outputs:
+      pr: ${{ steps.name.outputs.pr }}
+      tag: ${{ steps.name.outputs.tag }}
+      councils: ${{ steps.plan.outputs.councils }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           fetch-depth: 2
-      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7
-        with:
-          version: "0.11.3"
-          enable-cache: true
-      - run: uv sync --frozen
-      - run: scripts/install-gitleaks.sh
       - name: Name the release after the merged pull request
         id: name
         run: |
@@ -45,19 +43,88 @@ jobs:
           fi
           echo "pr=$pr" >>"$GITHUB_OUTPUT"
           echo "tag=$tag" >>"$GITHUB_OUTPUT"
-      - name: Build and upload every report
-        run: scripts/release.sh "${{ steps.name.outputs.tag }}"
+      - name: List the councils to build
+        id: plan
+        run: |
+          councils="$(scripts/release.sh --plan)"
+          echo "release: build $councils"
+          echo "councils=$councils" >>"$GITHUB_OUTPUT"
+
+  build:
+    name: build ${{ matrix.region }}
+    needs: plan
+    if: needs.plan.outputs.councils != '[]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    env:
+      GH_TOKEN: ${{ github.token }}
+    strategy:
+      fail-fast: false
+      matrix:
+        region: ${{ fromJSON(needs.plan.outputs.councils) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 2
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7
+        with:
+          version: "0.11.3"
+          enable-cache: true
+      - run: uv sync --frozen
+      - name: Build one council
+        id: council
+        run: |
+          echo "id=$(sed -n 's/^id: *//p' "${{ matrix.region }}" | head -n 1)" >>"$GITHUB_OUTPUT"
+          scripts/release.sh --build "${{ matrix.region }}" built
+      - name: Keep the build and its record
+        if: always() && steps.council.outputs.id != ''
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: report-${{ steps.council.outputs.id }}
+          path: built/
+          if-no-files-found: error
+          retention-days: 7
+
+  assemble:
+    name: release
+    needs: [plan, build]
+    if: always() && needs.plan.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 2
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7
+        with:
+          version: "0.11.3"
+          enable-cache: true
+      - run: uv sync --frozen
+      - run: scripts/install-gitleaks.sh
+      - name: Collect the council builds
+        if: needs.plan.outputs.councils != '[]'
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+        with:
+          pattern: report-*
+          path: built
+          merge-multiple: true
+      - name: Check every council and upload the release
+        run: |
+          mkdir -p built
+          RELEASE_BUILT="$PWD/built" scripts/release.sh "${{ needs.plan.outputs.tag }}"
       - name: Title and notes from the pull request
         run: |
-          title="$(gh pr view "${{ steps.name.outputs.pr }}" --json title --jq .title)"
+          title="$(gh pr view "${{ needs.plan.outputs.pr }}" --json title --jq .title)"
           {
-            echo "Pull request #${{ steps.name.outputs.pr }}: $title"
+            echo "Pull request #${{ needs.plan.outputs.pr }}: $title"
             echo
-            gh pr view "${{ steps.name.outputs.pr }}" --json commits --jq '.commits[] | "- \(.oid[0:7]) \(.messageHeadline)"'
+            gh pr view "${{ needs.plan.outputs.pr }}" --json commits --jq '.commits[] | "- \(.oid[0:7]) \(.messageHeadline)"'
             echo
             echo "Open \`index.html\` for every report. \`SHA256SUMS\` checks every file."
           } >notes.md
-          gh release edit "${{ steps.name.outputs.tag }}" --title "$title" --notes-file notes.md --latest
+          gh release edit "${{ needs.plan.outputs.tag }}" --title "$title" --notes-file notes.md --latest
       - name: Remove a half-made release
-        if: failure() && steps.name.outputs.tag != ''
-        run: gh release delete "${{ steps.name.outputs.tag }}" --yes --cleanup-tag || true
+        if: failure()
+        run: gh release delete "${{ needs.plan.outputs.tag }}" --yes --cleanup-tag || true

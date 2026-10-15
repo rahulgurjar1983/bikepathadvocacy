@@ -23,7 +23,14 @@ Tags: [reasoning] needs deep checks, with no larger model by default; [routine] 
 - [x] **P11.2** [reasoning] NSW road segment function and lanes set ADT (FR-10.3). Part 1 shipped: the `nsw_road_segment` adapter, the `road_functions` map in the au-nsw profile and the edge matching in `bikeplan.traffic`, proved on one real Bayside tile. Part 2 shipped: the Bayside region file lists the adapter. Part 3 shipped: the per-tile cache. Part 4 shipped: the whole box is fetched and 133280 of 189386 Bayside edges take the function's ADT.
 - [x] **P11.3** [reasoning] TfNSW speed zones (FR-10.4, FR-10.9). The `tfnsw_speed_zones` adapter keeps permanent zones, the Bayside region lists it and 35640 of 189386 edges take the zone speed.
 - [x] **G1.1** [reasoning] `bikeplan region new` (P10.4 rules) and the Greater Sydney set: 33 region files with Bayside settings except id, name and boundary (FR-18.1, FR-1.11). Shipped: the command with `--pick`, `--id` and `--like`, the set file and 33 region files. Legal default speeds stay with P10.4.
-- [~] **G1.2** [reasoning] One resumable command fetches, checks and publishes the snapshot of every council in the set with the Bayside date and adapters, skipping those already published; no full council runs in turns, since release jobs measure those (FR-18.2)
+- [~] **G1.2** [reasoning] One resumable command fetches, checks and publishes the snapshot of every council in the set with the Bayside date and adapters, skipping those already published. Ship it now with the councils published so far once CI is green. Stop fetching in turns: the operator's `snapshots` workflow fetches the rest on GitHub runners. The check that all 33 are published moves to the G1.5 proof, and Bayside's refetch moves to Q1.10 under a new snapshot ID (FR-18.2)
+- [ ] **G1.6** [routine] Copy each `manifest.json` that the `snapshots` workflow published to a snapshot release into `snapshots/<id>/<date>/`, and check it with `bikeplan snapshot pull` and `verify`; list councils still missing with the workflow run that failed them (FR-18.2)
+- [ ] **M1.1** [reasoning] Places only inside the boundary, option links inside the boundary widened by `network.boundary_buffer_m`, and trips only up to `network.max_trip_km` (FR-17.1)
+- [ ] **M1.2** [reasoning] Fix choice for network options: separated first only when it takes no parking and no lane, otherwise the least disruption score (FR-17.6)
+- [ ] **M1.3** [reasoning] What blocks trips: blockers by street with trips stopped, reasons, state road owner and the ceiling score; a short ask of at most 10 named streets; the half-unsafe sentence (FR-17.14, FR-17.8)
+- [ ] **M1.4** [reasoning] Output checks in `checks.html` on the release's own files: places and links inside, ask streets, trip length, parking only where needed (FR-17.15)
+- [ ] **Q1.10** [reasoning] Fresh Bayside snapshot with the files of all five adapters (elevation, road segments and speed zones too) under a new immutable snapshot ID; the region file points at it (FR-15.9, FR-18.2)
+- [ ] **C1.13** [reasoning] Second councillor edition: the Bayside report from the fresh snapshot and shipped settings, with every opening figure and every FR-17.15 check "met" in `checks.html` (FR-17.12, FR-17.15, FR-17.14)
 - [ ] **G1.3** [reasoning] Greater Sydney index: council map shaded by today's safety score, table of picks, safety and disruption with figures and recipes, and where councils' networks meet or leave gaps (FR-18.4, FR-18.5)
 - [ ] **G1.4** [reasoning] Fifth network option, Corridors first, with paved-only all-ages corridor links and new path works (FR-18.6, FR-14.11)
 - [ ] **G1.5** [reasoning] Greater Sydney release proof: 33 reports, the index and joins, every opening "met", and every council within the time and memory limits (FR-18.8, FR-18.3)
@@ -50,7 +57,6 @@ The approved order is proposal and trade-offs, network map, options, neighbourho
 
 ## Later data and run work
 
-- [ ] **Q1.10** [reasoning] Check required snapshot adapters, effective dates and missing files; obtain complete inputs before switching the public manifest; publish a new immutable snapshot ID rather than overwrite a prior snapshot (FR-15.9)
 - [ ] **Q1.11** [reasoning] Reuse immutable graph and access work with versioned cache keys; cold and warm output bytes match; fast and full modes have labels (FR-15.16)
 
 ## Phase S: Scaffold (operator)

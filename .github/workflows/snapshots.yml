@@ -1,0 +1,110 @@
+name: snapshots
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch or commit whose code fetches the snapshots
+        default: main
+      councils:
+        description: Council ids, space separated, fetched even when a release exists; empty means every council with no manifest and no snapshot release
+        default: ""
+
+concurrency:
+  group: snapshots
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  plan:
+    name: plan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+    outputs:
+      councils: ${{ steps.plan.outputs.councils }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ inputs.ref }}
+      - name: List the councils to fetch
+        id: plan
+        env:
+          WANTED: ${{ inputs.councils }}
+        run: |
+          councils="$(python3 - <<'PY'
+          import json
+          import os
+          import re
+          import subprocess
+          from pathlib import Path
+
+          wanted = os.environ["WANTED"].split()
+          found = re.findall(r"^\s*-?\s*id:\s*(\S+)", Path("regions/sets/greater-sydney.yaml").read_text(), re.M)
+          picked = []
+          for council in found:
+              if wanted and council not in wanted:
+                  continue
+              region = Path(f"regions/{council}.yaml").read_text()
+              date = re.search(r"osm_date:\s*[\"']?(\d{4}-\d{2}-\d{2})", region)[1]
+              if list(Path("snapshots", council).glob("*/manifest.json")):
+                  continue
+              listed = subprocess.run(
+                  ["gh", "release", "view", f"snapshot-{council}-{date}"], capture_output=True, text=True
+              )
+              if listed.returncode == 0 and not wanted:
+                  continue
+              picked.append(council)
+          missing = sorted(set(wanted) - set(found))
+          if missing:
+              raise SystemExit(f"snapshots: not in the set: {' '.join(missing)}")
+          print(json.dumps(picked))
+          PY
+          )"
+          echo "snapshots: fetch $councils"
+          echo "councils=$councils" >>"$GITHUB_OUTPUT"
+
+  fetch:
+    name: fetch ${{ matrix.council }}
+    needs: plan
+    if: needs.plan.outputs.councils != '[]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    env:
+      GH_TOKEN: ${{ github.token }}
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        council: ${{ fromJSON(needs.plan.outputs.councils) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7
+        with:
+          version: "0.11.3"
+          enable-cache: true
+      - run: uv sync --frozen
+      - name: Restore fetched tiles
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: data/cache/${{ matrix.council }}
+          key: snapshot-${{ matrix.council }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: snapshot-${{ matrix.council }}-
+      - name: Fetch, check and publish
+        run: |
+          uv run --frozen bikeplan snapshot set regions/sets/greater-sydney.yaml --only "${{ matrix.council }}" --seconds 19800
+          manifest="$(ls snapshots/${{ matrix.council }}/*/manifest.json)"
+          tag="snapshot-$(python3 -c 'import json, sys; m = json.load(open(sys.argv[1])); print(m["region"] + "-" + m["snapshot_id"])' "$manifest")"
+          gh release upload "$tag" "$manifest" --clobber
+          echo "snapshots: $tag has its manifest"
+      - name: Keep fetched tiles for a rerun
+        if: always()
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: data/cache/${{ matrix.council }}
+          key: snapshot-${{ matrix.council }}-${{ github.run_id }}-${{ github.run_attempt }}
