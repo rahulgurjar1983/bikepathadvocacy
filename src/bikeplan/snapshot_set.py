@@ -6,7 +6,7 @@ import yaml
 
 from bikeplan.adapters import OUTPUT_FILES
 from bikeplan.config import load_region
-from bikeplan.snapshot import fetch_snapshot, publish_snapshot, verify_snapshot
+from bikeplan.snapshot import OverpassError, fetch_snapshot, publish_snapshot, verify_snapshot
 
 CORE_FILES = ["boundary.geojson", "network.osm.gz", "places.json"]
 
@@ -62,7 +62,7 @@ def publish_missing(set_file: str | Path, root: str | Path, cache: str | Path) -
             if bad:
                 raise OSError("; ".join(bad))
             publish_snapshot(out, root)
-        except (OSError, ValueError) as error:
+        except (OSError, ValueError, OverpassError) as error:
             print(f"{name}: {error}", file=sys.stderr)
             failed.append(name)
             continue
