@@ -1191,3 +1191,4 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - Woollahra: a foreground run used the 1 hour limit and a 10 minute background run was stopped. Its tiles are in `data/cache/au-nsw-woollahra/`, so run the script again. Nine of 33 councils were published at that point (Woollahra needed a rerun after an Overpass HTTP 500).
 - Willoughby finished on a rerun from its cached tiles, so its 866.7 s counts only the last run, not the first partial run. Ten of 33 councils are published (Bayside needs a refetch); 23 remain.
 - North Sydney finished in two foreground runs (the first moved to the background and was stopped at 10 minutes; the second took 19 min from cached tiles). Eleven of 33 are published counting Bayside; 22 need a run (Bayside needs a refetch).
+- Randwick finished in one foreground run from its cached tiles. Twelve of 33 are published counting Bayside (Bayside needs a refetch); 21 need a run.
