@@ -1959,13 +1959,14 @@ Artifact: `artifacts/V1.8/verdicts.json`
 
 ```bash
 uv run --frozen pytest -q tests/test_review_page.py
-uv run --frozen bikeplan route page data/private/V1.8/verdicts-2026-10-17 --source-manifest data/private/V1.8/capture-2026-10-17/source-manifest.json --reply data/private/V1.8/reply.yaml --out data/private/V1.8/page-2026-10-17
-uv run --frozen python -I artifacts/V1.8/check_page.py data/private/V1.8/page-2026-10-17 --out artifacts/V1.8/page.json
+uv run --frozen bikeplan route page data/private/V1.8/verdicts-2026-10-17 --source-manifest data/private/V1.8/capture-2026-10-17/source-manifest.json --reply data/private/V1.8/reply.yaml --lines data/private/V1.8/clip-2026-10-17/lines.geojson --out data/private/V1.8/page-map-2026-10-17
+uv run --frozen python -I artifacts/V1.8/check_page.py data/private/V1.8/page-map-2026-10-17 --out artifacts/V1.8/page.json
 ```
 
-Expect: the 6 tests pass. The run takes under a second and writes `index.html`
+Expect: the 9 tests pass. The run takes under a second and writes `index.html`
 under `data/private`, which git ignores. The page holds 23 figures, each with a
-recipe, the source credit and licence, the date the reply window ends, and the
-right of reply. The proof holds the page hash and figure count only.
+recipe, a map of 44 drawn route parts with a key, the source credit and
+licence, the date the reply window ends, and the right of reply. The proof
+holds the page hash, figure count and map path count only.
 
 Artifact: `artifacts/V1.8/page.json`
