@@ -222,7 +222,7 @@ def test_fr19_2_a_segment_with_no_bike_route_is_kept_and_marked(tmp_path):
     graph, _ = line_graph()
     graph.add_node(90, x=ORIGIN[0] + 5000.0, y=ORIGIN[1])
     graph.add_node(91, x=ORIGIN[0] + 5100.0, y=ORIGIN[1])
-    graph.add_edge(90, 91, 0, bike_ok=True, length_m=100.0)
+    graph.add_edge(90, 91, 0, bike_ok=True, length_m=100.0, highway="residential")
     corridors = corridor_file(tmp_path, {"S1": (("West", (0, 0)), ("Island", (5100, 0)))})
     (route,) = indicative_routes(graph, corridors)
     assert (route.nodes, route.links, route.km, route.inside_km) == ([], [], 0.0, 0.0)
@@ -257,7 +257,7 @@ def option(works=(), pick=()):
         "works": [{"street": street, "km": km, "links": links} for street, km, links in works],
         "steps": [
             {"step": 0, "works": []},
-            {"step": 1, "works": [0]},
+            {"step": 1, "works": [0] if works else []},
             {"step": 2, "works": list(range(1, len(works)))},
         ],
     }
@@ -341,7 +341,7 @@ def test_fr19_3_a_segment_with_no_bike_route_gets_the_no_route_verdict(tmp_path)
     graph, ratings = line_graph()
     graph.add_node(90, x=ORIGIN[0] + 5000.0, y=ORIGIN[1])
     graph.add_node(91, x=ORIGIN[0] + 5100.0, y=ORIGIN[1])
-    graph.add_edge(90, 91, 0, bike_ok=True, length_m=100.0)
+    graph.add_edge(90, 91, 0, bike_ok=True, length_m=100.0, highway="residential")
     corridors = corridor_file(tmp_path, {"S1": (("West", (0, 0)), ("Island", (5100, 0)))})
     result = fit(graph, ratings, indicative_routes(graph, corridors), [])
     assert result["segments"][0]["verdict"] == "no route"
