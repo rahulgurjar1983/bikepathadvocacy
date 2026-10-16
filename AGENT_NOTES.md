@@ -1300,3 +1300,9 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - Claims and `reply.yaml` for the real run live in `data/private/V1.8/` and are not in git. Quotes come from the page text of 2026-10-17.
 - The reply window starts only when a `sent` entry has a date. A person sends the review; no turn may contact the author.
 - Left: the private report page. `review_report.py` ties its figures to route data, so it needs a variant for these measures.
+
+### V1.8 page
+
+- `bikeplan route page <verdicts folder> --source-manifest --reply --out data/private/<new folder>` writes `index.html` from saved verdicts. It is new code in `review_page.py` and does not rebuild route figures.
+- The page has no map yet: the verdicts hold no route geometry. Adding the map from the clip's `lines.geojson` is left.
+- A person sends the page to the author, then adds a `sent` entry to `data/private/V1.8/reply.yaml`. Rerun `route verdicts` and `route page` into new folders to start the 14 days. No turn may contact the author.

@@ -15,6 +15,7 @@ from bikeplan.review import ClaimError, write_route_figures
 from bikeplan.review_claims import write_verdicts
 from bikeplan.review_clip import clip_source
 from bikeplan.review_measures import write_route_measures
+from bikeplan.review_page import write_page
 from bikeplan.review_report import write_review
 from bikeplan.review_source import capture_source
 from bikeplan.route import RouteError, write_corridor
@@ -58,6 +59,7 @@ GROUPS = {
         "clip": "Clip the lines of a saved plan source to a boundary",
         "measures": "Measure a plan's paths, streets, people reached and schools near",
         "verdicts": "Judge the claims of a plan from its saved measures",
+        "page": "Write the private review page from saved verdicts",
     },
     "snapshot": {
         "review-source": "Save a plan source and its credit in private storage",
@@ -168,6 +170,11 @@ def build_parser() -> argparse.ArgumentParser:
                 leaf.add_argument("--layers", required=True, help="layers.json of the clip")
                 leaf.add_argument("--source", required=True, help="Saved plan source file")
                 leaf.add_argument("--claims", required=True, help="Claims file")
+                leaf.add_argument("--reply", required=True, help="Right of reply file")
+                leaf.add_argument("--out", required=True, help="New folder under data/private")
+            if (name, sub) == ("route", "page"):
+                leaf.add_argument("folder", help="Verdicts folder of the plan")
+                leaf.add_argument("--source-manifest", required=True, help="source-manifest.json")
                 leaf.add_argument("--reply", required=True, help="Right of reply file")
                 leaf.add_argument("--out", required=True, help="New folder under data/private")
             if (name, sub) == ("route", "clip"):
@@ -515,6 +522,13 @@ def main(argv: list[str] | None = None) -> int:
                 )
             )
         except (ConfigError, ClaimError, OSError, ValueError, KeyError) as error:
+            print(error, file=sys.stderr)
+            return 1
+        return 0
+    if (args.command, getattr(args, "subcommand", None)) == ("route", "page"):
+        try:
+            print(write_page(args.folder, args.source_manifest, args.reply, args.out))
+        except (ConfigError, OSError, ValueError, KeyError) as error:
             print(error, file=sys.stderr)
             return 1
         return 0
