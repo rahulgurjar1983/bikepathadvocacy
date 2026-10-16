@@ -25,6 +25,7 @@ class Joined(NamedTuple):
     joined: list
     unjoined: list
     counts: dict
+    audit: dict | None = None
 
 
 def entrance_node(place: dict, entrances: list[dict], legal: set):

@@ -53,9 +53,7 @@ def trip_links(graph: nx.Graph, first: int, second: int) -> list | None:
     return [graph[a][b]["link"] for a, b in pairwise(path)]
 
 
-def within_trip_limit(table: dict, people: list, max_trip_m: float | None) -> set | None:
-    if max_trip_m is None:
-        return None
+def trip_reach(table: dict, people: list, max_trip_m: float) -> dict:
     graph = link_graph(table, list(table))
     reach = {}
     for item in people:
@@ -68,12 +66,32 @@ def within_trip_limit(table: dict, people: list, max_trip_m: float | None) -> se
                 if node in graph
                 else {node: 0.0}
             )
+    return reach
+
+
+def within_trip_limit(table: dict, people: list, max_trip_m: float | None) -> set | None:
+    if max_trip_m is None:
+        return None
+    reach = trip_reach(table, people, max_trip_m)
     return {
         (first["id"], second["id"])
         for index, first in enumerate(people)
         for second in people[index + 1 :]
         if second["node"] in reach[first["node"]]
     }
+
+
+def longest_trip_m(table: dict, people: list, max_trip_m: float) -> float:
+    reach = trip_reach(table, people, max_trip_m)
+    return max(
+        (
+            reach[first["node"]][second["node"]]
+            for index, first in enumerate(people)
+            for second in people[index + 1 :]
+            if second["node"] in reach[first["node"]]
+        ),
+        default=0.0,
+    )
 
 
 def option_trips(table: dict, links: list, joined: list, max_trip_m: float | None = None) -> list:

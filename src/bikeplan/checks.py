@@ -10,6 +10,9 @@ import tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+import shapely
+from shapely.geometry import LineString, Point
+
 from bikeplan.report import FIGURES, MAP_FIGURE
 
 SPEC_ID = re.compile(r"\b(?:FR-\d+\.\d+|NFR-\d+)\b")
@@ -27,6 +30,7 @@ STYLE = (
 )
 
 
+ASK_LIMIT = 10
 MAX_REPORT_BYTES = 8 * 1024 * 1024
 VERIFY_EXPECT = re.compile(r"^Expect:\s*(.+)$", re.M)
 VERIFY_ARTIFACT = re.compile(r"^Artifact:\s*`([^`]+)`", re.M)
@@ -164,11 +168,138 @@ def opening_problems(release: Path) -> list[str]:
     return problems
 
 
+def ask_of(text: str) -> list[str] | None:
+    found = re.search(r"<details><summary>.*?</summary><p>(.*?)</p></details>", text, re.S)
+    if not found:
+        found = re.search(r"<details><p>(.*?)</p></details>", text, re.S)
+    if not found:
+        return None
+    plain = html.unescape(re.sub(r"<[^>]*>", "", found[1]))
+    plain = re.sub(r"(?:^| and )\d+ more streets?$", "", plain)
+    return [] if plain in ("", "no street") else plain.split(", ")
+
+
+def picked(data: dict) -> tuple[dict, int]:
+    options = data["options"]
+    best = max(item["steps"][-1]["score"] for item in options)
+    close = [
+        (item["steps"][-1]["disruption"]["score"], index)
+        for index, item in enumerate(options)
+        if item["steps"][-1]["score"] >= best - 1
+    ]
+    pick = options[min(close)[1]]
+    scores = [step["score"] for step in pick["steps"]]
+    target = scores[0] + data["share"] * (scores[-1] - scores[0])
+    return pick, next(index for index, score in enumerate(scores) if score >= target - 1e-9)
+
+
+def inside_problems(data: dict) -> list[str]:
+    audit = data["audit"]
+    boundary = shapely.from_wkt(audit["boundary"])
+    area = boundary.buffer(audit["buffer_m"] + 0.5)
+    shapely.prepare(boundary)
+    shapely.prepare(area)
+    problems = [
+        f"place {place['name']} ({place['id']}) lies outside the boundary"
+        for place in audit["places"]
+        if not boundary.buffer(0.5).covers(Point(place["x"], place["y"]))
+    ]
+    for option in data["options"]:
+        for index, link in enumerate(option["links"]):
+            if not area.covers(LineString(list(zip(link[0::2], link[1::2], strict=True)))):
+                problems.append(
+                    f"{option['name']}: link {index} lies outside the boundary "
+                    f"widened by {audit['buffer_m']:g} m"
+                )
+                break
+    return problems
+
+
+def ask_problems(data: dict, page: str) -> list[str]:
+    named = ask_of(page)
+    if named is None:
+        return ["the opening has no list of ask streets"]
+    pick, step = picked(data)
+    built = {
+        pick["works"][index]["street"]
+        for item in pick["steps"][1 : step + 1]
+        for index in item["works"]
+    }
+    problems = [
+        f"the ask names the unnamed street {name}" for name in named if name.startswith("unnamed ")
+    ]
+    problems += [
+        f"the ask names {name}, which holds no work up to step {step}"
+        for name in named
+        if name not in built and not name.startswith("unnamed ")
+    ]
+    if len(named) > ASK_LIMIT:
+        problems.append(f"the ask names {len(named)} streets, more than {ASK_LIMIT}")
+    return problems
+
+
+def trip_problems(data: dict) -> list[str]:
+    audit = data["audit"]
+    if audit["longest_trip_m"] > audit["max_trip_km"] * 1000 + 1e-6:
+        return [
+            f"a trip of {audit['longest_trip_m'] / 1000:.1f} km is longer than "
+            f"{audit['max_trip_km']:g} km"
+        ]
+    return []
+
+
+def parking_problems(data: dict) -> list[str]:
+    return [
+        f"{option['name']}: the work on {work['street']} removes {work['parking_spaces']} "
+        f"parking spaces where a fix scoring {work['least']:g} fits, not {work['score']:g}"
+        for option in data["options"]
+        for work in option["works"]
+        if work["parking_spaces"] and work["least"] < work["score"] - 1e-9
+    ]
+
+
+def audit_problems_of(name: str, data: dict, page: str) -> list[str]:
+    if "audit" not in data:
+        return [f"{name}: options.json holds no audit data"]
+    found = [
+        *inside_problems(data),
+        *ask_problems(data, page),
+        *trip_problems(data),
+        *parking_problems(data),
+    ]
+    return [f"{name}: {line}" for line in found]
+
+
+def audit_problems(release: Path) -> list[str]:
+    problems = []
+    found = 0
+    for archive in region_archives(release):
+        files = archive_files(archive, ("options.json",))
+        if "options.json" not in files:
+            continue
+        found += 1
+        name = archive.name.removesuffix(".tar.gz")
+        report = release / f"{name}-report.html"
+        if not report.is_file():
+            problems.append(f"{name}: no {report.name} in the release")
+            continue
+        data = json.loads(files["options.json"])
+        problems += audit_problems_of(name, data, report.read_text(encoding="utf-8"))
+    if not found:
+        problems.append("no region report in the release holds options.json")
+    return problems
+
+
 RELEASE_CHECKS = {
     "FR-17.12": (
         opening_problems,
         "lists the four options, my pick and my ask, with every number linked to a figure "
         "whose recipe prints the same value from options.json",
+    ),
+    "FR-17.15": (
+        audit_problems,
+        "has every place and link inside the boundary, an ask of at most 10 named streets "
+        "that hold works, trips within the limit and no parking removed where a cheaper fix fits",
     ),
 }
 
