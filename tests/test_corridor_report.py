@@ -7,6 +7,7 @@ import sys
 import pytest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
 
 from bikeplan.config import load_region
 from bikeplan.edition import edition, edition_page
@@ -90,7 +91,7 @@ def test_fr19_5_the_section_follows_the_works_of_my_pick(made):
 def test_fr19_5_it_opens_with_one_sentence_of_counts_and_works_km(made):
     _, _, body, _, _ = made
     text = re.sub(r"<[^>]+>", "", section(body))
-    first = text.split("How my pick fits the TfNSW corridors", 1)[1].split(".", 1)[0]
+    first = text.split("How my pick fits the TfNSW corridors", 1)[1].split(". ", 1)[0]
     assert "covers 1 of the 4 segments" in first
     assert "partly covers 1" in first
     assert "misses 1" in first
@@ -208,10 +209,9 @@ def test_fr19_5_the_overlay_draws_dashed_routes_with_ids_and_removes_them(browse
     assert sorted(labels) == ["T1", "T2", "T3"]
     browser.find_element(By.ID, "overlay-corridors").click()
     assert dashed(browser) == []
-    labels = browser.execute_script(
-        "return document.querySelectorAll('#network-map .corridor-label').length"
+    WebDriverWait(browser, 5).until(
+        lambda driver: not driver.find_elements(By.CSS_SELECTOR, "#network-map .corridor-label")
     )
-    assert labels == 0
 
 
 def test_fr19_5_the_page_makes_no_network_call(browser):
