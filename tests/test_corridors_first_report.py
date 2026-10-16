@@ -1,13 +1,16 @@
+import importlib
 import json
 import shutil
 
 import pytest
 from shapely.geometry import LineString, box
 
-from bikeplan import main, propose
+from bikeplan import main
 from bikeplan.propose import Corridors
 from tests.test_edition import REGION, SNAPSHOT
 from tests.test_propose_corridor import OPEN, RAIL, corridor_files, loop_graph
+
+propose = importlib.import_module("bikeplan.propose")
 
 
 def test_fr18_6_a_rail_side_candidate_is_listed_with_its_nodes_length_and_label():
