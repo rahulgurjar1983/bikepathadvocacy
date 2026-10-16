@@ -7,6 +7,7 @@ import shapely
 import yaml
 from pyproj import Transformer
 from shapely.geometry import LineString
+from shapely.ops import transform
 
 from bikeplan.access import node_tree
 from bikeplan.config import Network
@@ -19,6 +20,10 @@ NONE_INSIDE = "none inside"
 
 
 class CorridorError(Exception):
+    pass
+
+
+class OutsideBox(CorridorError):
     pass
 
 
@@ -76,7 +81,7 @@ def read_end(data, where: str, box) -> End:
     osm = data.get("osm")
     south, west, north, east = box
     if not (south <= lat <= north and west <= lon <= east):
-        raise CorridorError(f"{where}: {name} is outside the snapshot box")
+        raise OutsideBox(f"{where}: {name} is outside the snapshot box")
     return End(name, None if osm is None else str(osm), lat, lon)
 
 
@@ -267,4 +272,28 @@ def corridor_fit(
             for name in ("covered", "partly", "missed")
         },
         "works": works_on_routes(routes, option, choice, network),
+    }
+
+
+def route_lines(graph, route: Route) -> list:
+    to_lonlat = Transformer.from_crs(graph.graph["crs"], 4326, always_xy=True)
+    shape = transform(to_lonlat.transform, route.line)
+    parts = getattr(shape, "geoms", [shape])
+    return [
+        [[round(x, 5), round(y, 5)] for x, y in part.coords]
+        for part in parts
+        if part.geom_type == "LineString"
+    ]
+
+
+def corridor_report(
+    graph, corridors: Corridors, ratings: dict, option: dict, choice: dict, network: Network
+) -> dict:
+    routes = indicative_routes(graph, corridors)
+    return {
+        "source": {name: getattr(corridors, name) for name in SOURCE_FIELDS},
+        **corridor_fit(ratings, routes, option, choice, network),
+        "routes": [
+            {"id": route.id, "lines": route_lines(graph, route)} for route in routes if route.nodes
+        ],
     }

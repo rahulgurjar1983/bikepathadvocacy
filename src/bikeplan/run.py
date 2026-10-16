@@ -12,7 +12,13 @@ from bikeplan.change import (
     frontier_data,
 )
 from bikeplan.config import ConfigError, config_hash
-from bikeplan.edition import build_options_report, edition, edition_page, street_overlay
+from bikeplan.edition import (
+    build_options_report,
+    corridor_data,
+    edition,
+    edition_page,
+    street_overlay,
+)
 from bikeplan.fit import segment_fit
 from bikeplan.network import bike_segments, build
 from bikeplan.page import (
@@ -271,6 +277,7 @@ def build_all(
     ]
     figures = sorted(figures, key=lambda item: int(item["id"][1:]))
     options, marks, joined = build_options_report(graph, region, profile, snapshot, scores)
+    corridor = corridor_data(graph, region, profile, snapshot, options)
     head, body, option_figures, options_json = edition(
         region,
         options,
@@ -279,6 +286,7 @@ def build_all(
         profile.network.recommend_share,
         figures,
         street_overlay(map_payload["segments"], rows),
+        corridor,
     )
     figures = sorted([*figures, *option_figures], key=lambda item: int(item["id"][1:]))
     page_text = edition_page(

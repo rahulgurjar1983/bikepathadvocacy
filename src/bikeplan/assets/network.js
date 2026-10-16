@@ -68,6 +68,37 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  map.createPane("corridors").style.zIndex = 392;
+  const corridorLayers = (data.corridors || []).map(function (route) {
+    const layer = L.polyline(
+      route.lines.map(function (line) {
+        return line.map(function (point) {
+          return [point[1], point[0]];
+        });
+      }),
+      { pane: "corridors", className: "corridor-line", color: "#c25e00", weight: 3, opacity: 1,
+        dashArray: "8 6" },
+    );
+    layer.on("add", function () {
+      layer.getElement().setAttribute("data-id", route.id);
+    });
+    layer.bindTooltip(route.id, {
+      permanent: true,
+      direction: "center",
+      className: "corridor-label",
+    });
+    return layer;
+  });
+  const corridorSwitch = document.getElementById("overlay-corridors");
+  if (corridorSwitch) {
+    corridorSwitch.addEventListener("change", function () {
+      for (const layer of corridorLayers) {
+        if (corridorSwitch.checked) layer.addTo(map);
+        else layer.remove();
+      }
+    });
+  }
+
   const placeLayers = {};
   for (const place of data.places) {
     const key = document.querySelector('#overlay-key .key-shape[data-kind="' + place.type + '"]');
