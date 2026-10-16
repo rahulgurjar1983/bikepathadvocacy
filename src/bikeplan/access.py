@@ -1,4 +1,5 @@
 import json
+import re
 import sqlite3
 from collections import defaultdict
 from pathlib import Path
@@ -26,6 +27,10 @@ STATION_TAGS = (
     ("amenity", "ferry_terminal"),
     ("railway", "tram_stop"),
 )
+RAIL_MODES = ("train", "subway", "light_rail", "tram", "ferry")
+RAIL_TAGS = {"railway": ("station", "halt", "tram_stop"), "amenity": ("ferry_terminal",)}
+SUFFIX = re.compile(r"\b(preschool|nursery)\b")
+SUBURB_KINDS = ("suburb", "locality")
 AMENITY_TYPES = {
     "school": "school",
     "college": "college",
@@ -48,9 +53,16 @@ def place_type(tags: dict) -> str | None:
         or tags.get("social_facility:for") == "senior"
     ):
         return "aged_care"
-    if any(tags.get(key) == value for key, value in STATION_TAGS):
+    if any(tags.get(key) == value for key, value in STATION_TAGS) and not bus_only(tags):
         return "station"
     return None
+
+
+def bus_only(tags: dict) -> bool:
+    served = any(tags.get(mode) == "yes" for mode in RAIL_MODES) or any(
+        tags.get(key) in values for key, values in RAIL_TAGS.items()
+    )
+    return not served and (tags.get("amenity") == "bus_station" or tags.get("bus") == "yes")
 
 
 def element_point(element: dict) -> tuple[float, float] | None:
@@ -65,8 +77,8 @@ def sort_key(place: dict) -> tuple[int, str]:
     return int(number), kind
 
 
-def read_places(elements: list[dict]) -> tuple[list[dict], list[dict]]:
-    found, shops, seen = [], [], set()
+def read_places(elements: list[dict]) -> tuple[list[dict], list[dict], list[dict]]:
+    found, shops, suburbs, seen = [], [], [], set()
     for element in elements:
         point = element_point(element)
         osm_id = f"{element['type']}/{element['id']}"
@@ -85,7 +97,9 @@ def read_places(elements: list[dict]) -> tuple[list[dict], list[dict]]:
             found.append(place)
         if "shop" in tags:
             shops.append(place)
-    return sorted(found, key=sort_key), sorted(shops, key=sort_key)
+        if tags.get("place") in SUBURB_KINDS and place["name"]:
+            suburbs.append(place)
+    return sorted(found, key=sort_key), sorted(shops, key=sort_key), sorted(suburbs, key=sort_key)
 
 
 def project(places: list[dict], transformer: Transformer) -> np.ndarray:
@@ -94,22 +108,43 @@ def project(places: list[dict], transformer: Transformer) -> np.ndarray:
     return np.column_stack(transformer.transform(lons, lats))
 
 
+def base_name(name: str) -> str:
+    return " ".join(SUFFIX.sub(" ", name.lower()).split())
+
+
 def drop_near_duplicates(found: list[dict], transformer: Transformer) -> list[dict]:
     kept: list[dict] = []
     points: list[np.ndarray] = []
     for place, point in zip(found, project(found, transformer) if found else [], strict=True):
-        near = any(
-            other["type"] == place["type"]
-            and np.hypot(*(point - other_point)) <= DUPLICATE_RADIUS_M
-            for other, other_point in zip(kept, points, strict=True)
+        twin = next(
+            (
+                index
+                for index, (other, other_point) in enumerate(zip(kept, points, strict=True))
+                if other["type"] == place["type"]
+                and base_name(other["name"]) == base_name(place["name"])
+                and np.hypot(*(point - other_point)) <= DUPLICATE_RADIUS_M
+            ),
+            None,
         )
-        if not near:
+        if twin is None:
             kept.append(place)
             points.append(point)
+        elif len(place["name"]) < len(kept[twin]["name"]):
+            kept[twin], points[twin] = place, point
     return kept
 
 
-def town_centres(shops: list[dict], transformer: Transformer) -> list[dict]:
+def centre_name(centre: dict, named: list[dict], number: int, transformer: Transformer) -> str:
+    if not named:
+        return f"Town centre {number}"
+    points = project(named, transformer)
+    nearest = named[int(np.argmin(np.hypot(*(points - project([centre], transformer)[0]).T)))]
+    return nearest["name"] if nearest.get("suburb") else f"Town centre near {nearest['name']}"
+
+
+def town_centres(
+    shops: list[dict], transformer: Transformer, named: list[dict] | None = None
+) -> list[dict]:
     if len(shops) < CENTRE_MIN_SHOPS:
         return []
     points = project(shops, transformer)
@@ -125,7 +160,8 @@ def town_centres(shops: list[dict], transformer: Transformer) -> list[dict]:
     for number, members in enumerate(clusters, 1):
         mean = points[members].mean(axis=0)
         nearest = members[np.argmin(np.hypot(*(points[members] - mean).T))]
-        centres.append({**shops[nearest], "type": "town_centre", "name": f"Town centre {number}"})
+        centre = {**shops[nearest], "type": "town_centre"}
+        centres.append({**centre, "name": centre_name(centre, named or [], number, transformer)})
     return centres
 
 
@@ -134,8 +170,12 @@ def places(snapshot: str | Path) -> list[dict]:
     elements = json.loads((folder / "places.json").read_text())["elements"]
     longitude, latitude = boundary_centre(folder / "boundary.geojson")
     transformer = Transformer.from_crs(4326, utm_crs(longitude, latitude), always_xy=True)
-    found, shops = read_places(elements)
-    return drop_near_duplicates(found, transformer) + town_centres(shops, transformer)
+    found, shops, suburbs = read_places(elements)
+    kept = drop_near_duplicates(found, transformer)
+    named = [{**item, "suburb": True} for item in suburbs] or [
+        item for item in kept if item["name"]
+    ]
+    return kept + town_centres(shops, transformer, named)
 
 
 class Homes(NamedTuple):

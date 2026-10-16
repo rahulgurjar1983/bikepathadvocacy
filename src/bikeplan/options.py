@@ -26,6 +26,7 @@ class Joined(NamedTuple):
     unjoined: list
     counts: dict
     audit: dict | None = None
+    outside: list | None = None
 
 
 def entrance_node(place: dict, entrances: list[dict], legal: set):
@@ -75,11 +76,33 @@ def components(graph) -> dict:
     }
 
 
+def outside_route(full, group: dict, main: int, part: int) -> list | None:
+    undirected = nx.Graph()
+    for u, v, k, data in full.edges(keys=True, data=True):
+        if not data["bike_ok"] or u == v:
+            continue
+        found = undirected.get_edge_data(u, v)
+        if found is None or (data["length_m"], k) < (found["weight"], found["key"]):
+            undirected.add_edge(u, v, weight=data["length_m"], key=k)
+    start, end = ("outside", "main"), ("outside", "part")
+    for node, index in group.items():
+        if index in (main, part) and node in undirected:
+            undirected.add_edge(start if index == main else end, node, weight=0.0, key=0)
+    if start not in undirected or end not in undirected:
+        return None
+    try:
+        _, path = nx.single_source_dijkstra(undirected, start, end, weight="weight")
+    except nx.NetworkXNoPath:
+        return None
+    return [link_id(u, v, undirected[u][v]["key"]) for u, v in pairwise(path[1:-1])]
+
+
 def join_places(graph, found: list[dict], entrances: list[dict], network: Network) -> Joined:
     wanted = sorted(
         (place for place in inside_boundary(graph, found) if place["type"] in network.place_types),
         key=sort_key,
     )
+    full = graph
     graph = area_graph(graph, network)
     legal = set(bike_nodes(graph)[0])
     nearest, _ = snap_points([(place["x"], place["y"]) for place in wanted], graph)
@@ -96,18 +119,25 @@ def join_places(graph, found: list[dict], entrances: list[dict], network: Networ
             joined.append(base | {"node": node, "via": via})
     group = components(graph)
     size: dict = {}
-    for item in joined:
-        size[group[item["node"]]] = size.get(group[item["node"]], 0) + 1
     lowest: dict = {}
     for node, index in group.items():
+        size[index] = size.get(index, 0) + 1
         lowest[index] = min(lowest.get(index, node), node)
-    main = min(size, key=lambda index: (-size[index], lowest[index])) if size else None
+    holding = {group[item["node"]] for item in joined}
+    main = min(holding, key=lambda index: (-size[index], lowest[index])) if holding else None
+    outside: set = set()
+    reached = {main}
+    for part in sorted(holding - {main}, key=lambda index: lowest[index]):
+        route = outside_route(full, group, main, part)
+        if route is not None:
+            outside.update(route)
+            reached.add(part)
     unjoined += [
-        {key: item[key] for key in ("id", "type", "name")} | {"reason": ISLAND}
+        {key: item[key] for key in ("id", "type", "name", "node")} | {"reason": ISLAND}
         for item in joined
-        if group[item["node"]] != main
+        if group[item["node"]] not in reached
     ]
-    joined = [item for item in joined if group[item["node"]] == main]
+    joined = [item for item in joined if group[item["node"]] in reached]
     unjoined.sort(key=lambda item: sort_key({"osm_id": item["id"]}))
     counts = {
         kind: {
@@ -116,7 +146,8 @@ def join_places(graph, found: list[dict], entrances: list[dict], network: Networ
         }
         for kind in network.place_types
     }
-    return Joined(joined, unjoined, counts)
+    inside = {link_id(u, v, k) for u, v, k in graph.edges(keys=True)}
+    return Joined(joined, unjoined, counts, None, sorted(outside - inside))
 
 
 def link_id(u, v, k) -> tuple:
@@ -124,11 +155,20 @@ def link_id(u, v, k) -> tuple:
     return a, b, k
 
 
-def link_table(graph, ratings: dict, network: Network | None = None) -> dict:
+def link_table(graph, ratings: dict, network: Network | None = None, outside=()) -> dict:
     table: dict = {}
+    far = set(outside)
+    full = graph
     if network is not None:
         graph = area_graph(graph, network)
-    for u, v, k, data in graph.edges(keys=True, data=True):
+    edges = list(graph.edges(keys=True, data=True))
+    if far:
+        edges += [
+            (u, v, k, data)
+            for u, v, k, data in full.edges(keys=True, data=True)
+            if link_id(u, v, k) in far
+        ]
+    for u, v, k, data in edges:
         if not data["bike_ok"] or u == v:
             continue
         rating = ratings[(u, v, k)]
@@ -141,6 +181,7 @@ def link_table(graph, ratings: dict, network: Network | None = None) -> dict:
                 "no_fix": rating["no_fix"],
                 "all_ages": rating.get("all_ages", rating["lts"] == 1),
                 "assumed": rating.get("assumed", False),
+                **({"outside": True} if link_id(u, v, k) in far else {}),
             },
         )
         found["length_m"] = min(found["length_m"], data["length_m"])
@@ -225,7 +266,7 @@ def mesh_links(graph, table: dict, joined: list, network: Network) -> list:
 
 
 def build_options(graph, joined: Joined, ratings: dict, network: Network) -> list[dict]:
-    table = link_table(graph, ratings, network)
+    table = link_table(graph, ratings, network, joined.outside or ())
     terminals = sorted({item["node"] for item in joined.joined})
     found = [
         (name, tree_links(table, name, terminals, network))
@@ -242,6 +283,7 @@ def build_options(graph, joined: Joined, ratings: dict, network: Network) -> lis
                 "links": links,
                 "km": sum(table[link]["length_m"] for link in links) / 1000,
                 "same_as": same,
+                "outside": [link for link in links if table[link].get("outside")],
                 "totals": option_totals(
                     table, links, joined.joined, max_trip_m=network.max_trip_km * 1000
                 ),

@@ -1829,3 +1829,14 @@ uv run --frozen python -I artifacts/M1.4/prove.py regions/au-nsw-bayside.yaml da
 Expect: The tests pass. The proof builds the Bayside options with the shipped settings and runs the output checks on them. It finds no problem: 65 places and 3804 links lie inside, the ask names 10 streets that hold works, the longest trip is 4994.8 m against the 5 km limit, and no work removes parking where a cheaper fix fits. Before the fix choice used each link's own length, the same run found 20 such works. The proof takes about 19 minutes. The checks that no place is unjoined while the full graph reaches it and that no place name is a bare number are still open.
 
 Artifact: `artifacts/M1.4/audit-proof.json`
+
+### M1.5
+
+```sh
+uv run --frozen pytest -q tests/test_access_filters.py tests/test_network_outside.py tests/test_network_outside_ask.py
+uv run --frozen python -I artifacts/M1.5/prove.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 artifacts/M1.5/outside-proof.json
+```
+
+Expect: The tests pass. The Bayside proof joins 61 of 66 places, one outside link in each option, and finds no problem in the output checks. The five left out are unreachable in the full graph, which the check confirms with its own path test. No bus-only station is a place. The run takes about 25 minutes.
+
+Artifact: `artifacts/M1.5/outside-proof.json`

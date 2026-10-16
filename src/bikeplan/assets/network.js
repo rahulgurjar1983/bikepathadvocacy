@@ -126,6 +126,7 @@ document.addEventListener("DOMContentLoaded", function () {
         { color: colours[state], weight: 4, opacity: 1 },
       );
       group.addLayer(layer);
+      if (item.outside) layer.bindTooltip(item.outside, { sticky: true });
       layer.getElement().setAttribute("data-state", state);
     }
     (totals.querySelector("a") || totals).textContent = current.steps[step].text;
