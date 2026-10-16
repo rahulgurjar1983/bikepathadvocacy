@@ -1839,4 +1839,12 @@ uv run --frozen python -I artifacts/M1.5/prove.py regions/au-nsw-bayside.yaml da
 
 Expect: The tests pass. The Bayside proof joins 61 of 66 places, one outside link in each option, and finds no problem in the output checks. The five left out are unreachable in the full graph, which the check confirms with its own path test. No bus-only station is a place. The run takes about 25 minutes.
 
+Suburb nodes:
+
+```sh
+uv run --frozen pytest -q tests/test_snapshot.py -k places_query_holds
+```
+
+Expect: The test passes. The places query asks for suburb and locality nodes, so town centres take a suburb name once a snapshot is rebuilt. Artifact: `artifacts/M1.5/outside-proof.json` is unchanged until that rebuild.
+
 Artifact: `artifacts/M1.5/outside-proof.json`
