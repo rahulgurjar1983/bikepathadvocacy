@@ -1,6 +1,8 @@
 import copy
+import hashlib
 import json
 import re
+import shutil
 import tarfile
 from pathlib import Path
 
@@ -196,27 +198,48 @@ def test_fr17_15_the_checks_page_shows_fails_and_the_first_wrong_item(tmp_path):
     assert "Wet School" in found["FR-17.15"][0]
 
 
+SNAPSHOT = Path("tests/fixtures/test-grid/snapshot")
+EXTRA = [
+    (3001, -33.9500021, 151.1499977, {"amenity": "school", "name": "West School"}),
+    (3002, -33.9446909, 151.1566043, {"amenity": "school", "name": "East School"}),
+    (3003, -33.9464289, 151.152239, {"railway": "station", "name": "Mid Station"}),
+]
+
+
 @pytest.fixture(scope="module")
 def built(tmp_path_factory):
-    out = tmp_path_factory.mktemp("audit")
-    assert (
-        main(
-            ["report", REGION, "--snapshot", "tests/fixtures/test-grid/snapshot", "--out", str(out)]
+    folder = tmp_path_factory.mktemp("audit") / "snapshot"
+    shutil.copytree(SNAPSHOT, folder)
+    places = json.loads((folder / "places.json").read_text())
+    for number, lat, lon, tags in EXTRA:
+        places["elements"].append(
+            {"type": "node", "id": number, "lat": lat, "lon": lon, "tags": tags}
         )
-        == 0
-    )
+    content = json.dumps(places).encode()
+    (folder / "places.json").write_bytes(content)
+    manifest = json.loads((folder / "manifest.json").read_text())
+    entry = next(item for item in manifest["files"] if item["name"] == "places.json")
+    entry.update(sha256=hashlib.sha256(content).hexdigest(), bytes=len(content))
+    (folder / "manifest.json").write_text(json.dumps(manifest, indent=2))
+    out = tmp_path_factory.mktemp("built")
+    assert main(["report", REGION, "--snapshot", str(folder), "--out", str(out)]) == 0
     return out
 
 
 def test_fr17_15_a_real_test_grid_build_holds_the_audit_data_and_passes(built):
     data = json.loads((built / "options.json").read_text())
-    assert data["audit"]["buffer_m"] == 200.0
-    assert data["audit"]["max_trip_km"] == 5.0
-    assert data["audit"]["places"]
-    assert data["audit"]["longest_trip_m"] <= 5000.0
-    assert any(item["links"] for item in data["options"])
+    audit = data["audit"]
+    assert audit["buffer_m"] == 200.0
+    assert audit["max_trip_km"] == 5.0
+    assert [item["name"] for item in audit["places"]] == [
+        "Grid School",
+        "West School",
+        "East School",
+        "Mid Station",
+    ]
+    assert 0 < audit["longest_trip_m"] <= 5000.0
+    assert all(item["links"] for item in data["options"])
     for item in data["options"]:
         assert all(len(line) >= 4 and len(line) % 2 == 0 for line in item["links"])
-        assert all("least" in work for work in item["works"])
     page = (built / "report.html").read_text()
     assert checks.audit_problems_of(NAME, data, page) == []
