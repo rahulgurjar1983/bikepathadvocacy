@@ -1981,5 +1981,7 @@ uv run --frozen python artifacts/Q1.6/collect_option_view.py
 Expect: The report lists each saved goal or stage package with its kind,
 parents, exact project and element IDs and unknown trip outcome. A chooser
 shows one package at a time and leaves the curve choice alone. With scripts
-off all packages show. The test-grid report shows the empty state.
+off all packages show. Each package also lists the elements and projects it
+shares with the selected curve package, each counted once. The test-grid
+report shows the empty state.
 Artifact: `artifacts/Q1.6/option-view.json`

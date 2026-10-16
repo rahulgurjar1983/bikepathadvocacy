@@ -1320,3 +1320,9 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - The real test grid has no sourced options, so the archive shows the empty
   state. Packages with sets come from the unit and browser cases. Making the
   other shared views follow an option package, and full browser proof, remain.
+
+- Q1.6 shared works: `option_view` lists each package's elements and projects
+  that also sit in the record's selected package. The current spec 17 page has
+  no curve chooser or `package-export-data`, so no script updates this list.
+  Curve exports and sheets are not on that page; restoring them needs a
+  decision on the page, not a model turn.

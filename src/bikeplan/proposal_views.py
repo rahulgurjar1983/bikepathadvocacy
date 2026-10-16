@@ -82,6 +82,7 @@ def option_view(record):
             '<p id="option-package-empty">No sourced goal or stage packages are saved. '
             "The curve package above is the only selected choice.</p></section>"
         )
+    selected = record.get("selected", {})
     keys = [f"{p['identity']['type']}:{p['identity']['option']}" for p in packages]
     choices = "".join(
         f'<option value="{html.escape(key, quote=True)}">{html.escape(key)}: '
@@ -104,6 +105,13 @@ def option_view(record):
         + field("Parents", p["parents"])
         + field("Projects", p["project_ids"])
         + field("Elements", p["element_ids"])
+        + field(
+            "Shared",
+            {
+                "elements": sorted(set(p["element_ids"]) & set(selected.get("element_ids", []))),
+                "projects": sorted(set(p["project_ids"]) & set(selected.get("project_ids", []))),
+            },
+        )
         + '<p>Return trips: unknown. <code data-option-field="outcome">Not yet recomputed. '
         + html.escape(p["outcomes"]["strict_return_trips"]["reason"])
         + "</code></p></div>"
@@ -113,7 +121,8 @@ def option_view(record):
         '<section id="option-packages"><h2>Goal and stage packages</h2>'
         "<p>These sourced concepts have their own identities. They never carry a "
         "curve rank, and choosing one here does not change the curve package above. "
-        "Return trips stay unknown until they are recomputed.</p>"
+        "Return trips stay unknown until they are recomputed. Shared lists show works "
+        "that also sit in the selected curve package; each counts once.</p>"
         '<label>Package <select id="option-package-select">'
         f"{choices}</select></label>"
         f'<p id="option-package-label">{html.escape(keys[0])}</p>{articles}</section>'

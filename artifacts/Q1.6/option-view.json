@@ -5,5 +5,9 @@
   "stage",
   "stage"
  ],
+ "example_shared": [
+  "{&quot;elements&quot;: [], &quot;projects&quot;: []}",
+  "{&quot;elements&quot;: [&quot;segment:b&quot;], &quot;projects&quot;: []}"
+ ],
  "example_scripts": 0
 }
