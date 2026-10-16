@@ -116,28 +116,31 @@ def link_fixes(graph, table: dict, fits: dict, profile, weights) -> dict:
             fit = fits.get(data["segment_id"])
             if not data["bike_ok"] or not fit or fit["status"] != "fix":
                 continue
-            counts = disruption_counts(
-                fit["fix"],
-                {**data, "adt": data.get("adt") or 0.0, "length_m": link["length_m"]},
-                profile,
-            )
-            record = {"street": street_name(data), "fix": fit["fix"]} | {
-                name: counts[name] for name in COUNTS
-            }
-            scores = [
-                disruption_score(
-                    disruption_counts(
-                        item["fix"],
-                        {**data, "adt": data.get("adt") or 0.0, "length_m": link["length_m"]},
-                        profile,
-                    ),
-                    weights,
-                )
+            sized = {**data, "adt": data.get("adt") or 0.0, "length_m": link["length_m"]}
+            options = [
+                (item["fix"], disruption_counts(item["fix"], sized, profile))
                 for item in fit.get("candidates", [])
                 if item["accepted"]
+            ] or [(fit["fix"], disruption_counts(fit["fix"], sized, profile))]
+            free = [
+                option
+                for option in options
+                if option[0] != "quietway"
+                and not option[1]["parking_spaces"]
+                and not option[1]["lane_km"]
             ]
-            if scores:
-                record["least"] = min(scores)
+            pool = free if free and profile.fit.prefer_separation.value else options
+            fix, counts = min(
+                pool,
+                key=lambda option: (
+                    disruption_score(option[1], weights),
+                    option[0] != fit["fix"],
+                ),
+            )
+            record = {"street": street_name(data), "fix": fix} | {
+                name: counts[name] for name in COUNTS
+            }
+            record["least"] = min(disruption_score(option[1], weights) for option in options)
             if best is None or disruption_score(record, weights) > disruption_score(best, weights):
                 best = record
         if best is not None:
