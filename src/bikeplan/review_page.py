@@ -115,8 +115,8 @@ def map_section(lines: dict) -> str:
         for name in names
     )
     return (
-        '<section id="map"><h2>Where the plan runs inside Bayside</h2>'
-        f'<svg id="route-map" role="img" aria-label="Map of the plan inside Bayside, north up" '
+        '<section id="map"><h2>Where the plan runs in the review area</h2>'
+        f'<svg id="route-map" role="img" aria-label="Map of the plan in the review area, north up" '
         f'viewBox="0 0 {MAP_WIDTH} {height}" width="100%">{paths}</svg>'
         f'<ul id="route-map-key">{key}</ul></section>'
     )
