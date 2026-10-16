@@ -1247,3 +1247,14 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 
 - T1.2: `edition()` and `network_report()` take an optional `corridor` dict from `corridors.corridor_report`. `edition.corridor_data` loads `references/tfnsw-strategic-corridors.yaml` and returns None when an end is outside the snapshot box (`OutsideBox`), so other regions get no section. `build_options_report` keeps the ratings in `graph.graph["ratings"]`. Corridor figures read `options.json` key `corridors` and use spec 19. The overlay draws only routes with a bike route, so Bayside shows 11 of 13. A Leaflet tooltip fades out, so a test must wait for the label to leave the page. The Bayside report takes about 32 minutes.
 - T1.2 note for C1.13: T2 and T3 (Wolli Creek to Rockdale to Kogarah) get "no route" in the Bayside run, as in T1.1. Check this before calling the edition ready.
+
+### Q1.10 spec issue (2026-10-17)
+
+- Q1.10 cannot ship a new Bayside snapshot ID without breaking an old test that the rules keep intact. `test_fr2_1_snapshot_fetch_writes_every_file_and_the_manifest` (tests/test_snapshot.py:389) reads the real `regions/au-nsw-bayside.yaml` and asserts `snapshot_id == "2026-10-01"` and `osm_date == "2026-10-01T00:00:00Z"`.
+- Proof on fresh `origin/main` in a worktree: change the Bayside `osm_date` to `2026-10-17T00:00:00Z`, then run `uv run --frozen pytest tests/test_snapshot.py -q -k fr2_1_snapshot_fetch_writes_every_file -x`. Result: 1 failed. A `revision` key giving `2026-10-01-r2` fails the same line.
+- The published Bayside manifest (`snapshots/au-nsw-bayside/2026-10-01/manifest.json`) lists 5 files and lacks `elevation.tif`, `road_segments.gpkg` and `speed_zones.gpkg`. `bikeplan snapshot set` and FR-15.9 verify would name them.
+- Needed input change: let that test take its expected ID and date from the Bayside region file (or run on a copy with fixed values), and say in spec 15 or 18 how a revision shows in the ID (for example `<osm date>-r<n>` set by `snapshot.revision`). `scripts/release.sh` `snapshot_date` also reads only `osm_date`, so it needs the same revision rule. After that, the row needs `snapshot.revision` in config, the ID in fetch, `snapshot_set` and `release.sh`, then one real fetch of about 15 minutes and a publish.
+
+### C1.13 input blocked (2026-10-17)
+
+- C1.13 needs the fresh Bayside snapshot from Q1.10, which is open (`rg -n "Q1.10" PROGRESS.md`) and blocked by the spec issue above. `snapshots/au-nsw-bayside/2026-10-01/manifest.json` still lists 5 files, so no report from a fresh snapshot can be built. Needed input change: the one in the Q1.10 spec issue.
