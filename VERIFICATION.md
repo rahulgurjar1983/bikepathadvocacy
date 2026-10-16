@@ -1906,3 +1906,18 @@ capture only. No claim has a verdict yet. The route, claims, measures,
 private report and reply window remain to be built and checked.
 
 Artifact: `artifacts/V1.8/capture.json`
+
+### V1.8 clip
+
+```bash
+uv run --frozen pytest -q tests/test_review_clip.py
+uv run --frozen bikeplan route clip data/private/V1.8/capture-2026-10-17 --boundary data/cache/au-nsw-bayside/2026-10-01/boundary.geojson --out data/private/V1.8/clip-2026-10-17
+uv run --frozen python artifacts/V1.8/check_clip.py data/private/V1.8/clip-2026-10-17 --out artifacts/V1.8/clip.json
+```
+
+Expect: the clip keeps 36 pieces of 7 layers inside Bayside, each
+shorter than its whole layer. The folder is private and ignored by git.
+The layer km sit in the private `layers.json` only. The proof holds hashes
+and counts, with an empty verdict count. It does not prove any claim.
+
+Artifact: `artifacts/V1.8/clip.json`
