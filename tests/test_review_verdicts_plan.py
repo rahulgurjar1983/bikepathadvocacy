@@ -28,7 +28,8 @@ def review(tmp_path, monkeypatch):
     (root / "capture").mkdir(parents=True)
     (root / "clip").mkdir()
     (root / "measures").mkdir()
-    page = f"<html><script>const DATA={json.dumps({'lines': {'features': []}, 'points': {'features': SOURCE_POINTS}})};</script></html>"
+    data = {"lines": {"features": []}, "points": {"features": SOURCE_POINTS}}
+    page = f"<html><script>const DATA={json.dumps(data)};</script></html>"
     (root / "capture/source").write_text(page)
     digest = hashlib.sha256(page.encode()).hexdigest()
     (root / "clip/layers.json").write_text(
