@@ -1268,3 +1268,15 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
   A local capture has not been sent to the author. No reply clock has begun.
 - The public proof holds hashes only, with an empty verdict count. This is
   source capture proof, not a completed review. Use a new folder to refetch.
+
+### V1.8 clip
+
+- `bikeplan route clip <capture> --boundary <boundary.geojson> --out
+  data/private/<new folder>` reads the `const DATA=` lines, clips them to the
+  boundary and writes `lines.geojson`, `layers.json` and `review.yaml`.
+- The page now totals 4,143.7 km over 932 lines, not the 4,133.9 km of spec
+  18. Its data changed since 14 October. Check each claim against the
+  new capture and say so in the report.
+- Still left: the new measures, the claim verdicts, the private report and
+  the reply window. No reply clock has begun.
+

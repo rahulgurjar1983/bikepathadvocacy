@@ -1,0 +1,11 @@
+{
+  "clipped_features": 36,
+  "layers_inside": 7,
+  "sha256": {
+    "layers.json": "76741e7a4d8f0977defae2b7c27ed506bea6472e17aec9d3351ab52eb2ab9a16",
+    "lines.geojson": "abb1007dd017bfdb48d15d386064b8266eb54f0980d1dbba6deb831030738e0a",
+    "review.yaml": "69f329258ca88059c40c88bdae559c400b086bf12bdf8e378f234c32cfa20f2d"
+  },
+  "source_sha256": "93d399a39453d7852e5941c931d3b0883936e86c833a6a7a61cea30d65aa941c",
+  "verdict_counts": {}
+}
