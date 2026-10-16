@@ -18,6 +18,21 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Spec issues
 
+### Q1.6 curve chooser and option-following views
+
+- FR-15.2 and FR-16.1 ask every view to follow one selected package, and the
+  spec 15 table asks for an offline browser check of baseline, a middle rank
+  and two scenarios. Spec 17 now sets the report page and has no curve chooser.
+  Only `option_view` is wired into `run.py`; `project_views`, `evidence_view`
+  and the curve exports are built but no page uses them.
+- Option packages have no recomputed trips, so no other view has totals to
+  follow. Browser proof of curve switching has nothing to switch.
+- Proof: on a fresh `origin/main` worktree, `rg -n "project_views|evidence_view" src`
+  finds only the definitions, and `rg -n "option_view" src/bikeplan/run.py`
+  finds the one wired view.
+- Needed input: spec 17 or 15 states whether the page keeps a curve chooser,
+  and whether option packages get recomputed trips.
+
 ### C1.11 old figures stay
 
 - Spec 17 section 5 says the old figures leave `figures.json`. FR-0.35 and the
