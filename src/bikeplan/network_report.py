@@ -13,7 +13,6 @@ COUNTS = (
 PLOT = (40, 10, 350, 200)
 ASK_STREETS = 10
 BLOCKERS_SHOWN = 10
-OWNER = "Transport for NSW"
 LEVELS = (
     (1, "one", "blue"),
     (2, "two", "dark blue"),
@@ -307,7 +306,7 @@ def blockers_block(pick: dict, ref=plain) -> str:
     rows = ""
     for index, item in enumerate(pick.get("blockers", [])[:BLOCKERS_SHOWN]):
         why = join_words(item["reasons"]) if item["reasons"] else "no fit found"
-        owner = f"Owned by {OWNER}" if item["state"] else "Council road"
+        owner = f"Owned by {item['owner']}" if item["owner"] else "Not a state road"
         cells = (
             html.escape(item["street"]),
             ref(("blockerkm", index), f"{item['km']:.2f}"),

@@ -93,7 +93,7 @@ def option_data(item: dict) -> dict:
             for gap in item["no_fix"]
         ],
         "blockers": [
-            {key: found[key] for key in ("street", "km", "road_type", "trips", "reasons", "state")}
+            {key: found[key] for key in ("street", "km", "road_type", "trips", "reasons", "owner")}
             | {"links": len(found["links"])}
             for found in item.get("blockers", [])
         ],
@@ -133,7 +133,9 @@ def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list
     table = link_table(graph, ratings, profile.network)
     fixes = link_fixes(graph, table, fits, profile, weights)
     streets = link_streets(graph)
-    roads = link_roads(graph)
+    roads = link_roads(
+        graph, profile.network.state_functions, profile.fit.speed_approval_body.value
+    )
     reasons = link_reasons(graph, table, fits)
 
     def point(node):

@@ -76,6 +76,10 @@ fit:
   speed_approval_body:
     value: Transport for NSW
     source: NSW Speed Zoning Guidelines
+network:
+  state_functions:
+    - PrimaryRoad
+    - ArterialRoad
 grade:
   steep_pct:
     value: 5

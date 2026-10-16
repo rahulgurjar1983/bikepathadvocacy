@@ -9,7 +9,6 @@ from bikeplan.options import link_id
 from bikeplan.rating import option_totals, option_trips
 
 COUNTS = ("parking_spaces", "lane_km", "speed_km", "path_km")
-STATE_FUNCTIONS = ("PrimaryRoad", "ArterialRoad")
 FIX_WORDS = {
     "quietway": "a quiet street",
     "cycleway_in_spare": "a cycleway",
@@ -35,14 +34,15 @@ def link_streets(graph) -> dict:
     return {key: min(found) for key, found in sorted(names.items())}
 
 
-def link_roads(graph) -> dict:
+def link_roads(graph, functions: tuple, owner: str) -> dict:
     found: dict = {}
     for u, v, k, data in graph.edges(keys=True, data=True):
         if not data["bike_ok"] or u == v:
             continue
-        road = found.setdefault(link_id(u, v, k), {"type": None, "state": False})
+        road = found.setdefault(link_id(u, v, k), {"type": None, "owner": None})
         road["type"] = road["type"] or str(first(data.get("highway")) or "road")
-        road["state"] = road["state"] or data.get("road_function") in STATE_FUNCTIONS
+        if data.get("road_function") in functions:
+            road["owner"] = owner
     return dict(sorted(found.items()))
 
 
@@ -193,7 +193,14 @@ def list_blockers(
                 "road_type": min(types, key=lambda kind: (-types[kind], kind)),
                 "trips": stopped.get(gap["street"], 0),
                 "reasons": why,
-                "state": any(roads.get(link, {}).get("state") for link in gap["links"]),
+                "owner": next(
+                    (
+                        roads[link]["owner"]
+                        for link in gap["links"]
+                        if roads.get(link, {}).get("owner")
+                    ),
+                    None,
+                ),
             }
         )
     found.sort(key=lambda item: (-item["trips"], item["street"]))
