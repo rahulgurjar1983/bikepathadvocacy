@@ -431,10 +431,10 @@ def corridor_section(corridor: dict, ref=plain) -> str:
         '<section id="corridors"><h2>How my pick fits the TfNSW corridors</h2>'
         f"<p>{sentence}</p>{rest}"
         "<p>Each route is indicative: it is the shortest bike-legal route I found between the "
-        "two ends of a segment. Transport for NSW has not chosen the exact routes.</p>"
+        "two ends of a segment. TfNSW has not chosen the exact routes.</p>"
         f"<table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>"
         f'<p>Source: <a href="{html.escape(source["url"])}">{html.escape(source["title"])}</a>, '
-        f"Transport for NSW, {html.escape(source['date'])}.</p></section>"
+        f"TfNSW, {html.escape(source['date'])}.</p></section>"
     )
 
 
