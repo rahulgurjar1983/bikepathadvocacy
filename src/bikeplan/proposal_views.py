@@ -126,7 +126,8 @@ def option_view(record):
         "<p>These sourced concepts have their own identities. They never carry a "
         "curve rank, and choosing one here does not change the curve package above. "
         "Return trips stay unknown until they are recomputed. Shared lists show works "
-        "that also sit in the selected curve package; each counts once. Gaps name projects with no saved plan sheet.</p>"
+        "that also sit in the selected curve package; each counts once. "
+        "Gaps name projects with no saved plan sheet.</p>"
         '<label>Package <select id="option-package-select">'
         f"{choices}</select></label>"
         f'<p id="option-package-label">{html.escape(keys[0])}</p>{articles}</section>'
