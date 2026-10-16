@@ -52,6 +52,7 @@ WAY_TAGS = [
     "parking:lane:both",
     "width",
     "width:carriageway",
+    "surface",
 ]
 KEPT_APART = ["osmid", "bike_ok", "contraflow", *WAY_TAGS]
 MILE_KMH = 1.609344
