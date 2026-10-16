@@ -1203,3 +1203,10 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - G1.2 (2026-10-16): Blacktown ran again with `--seconds 2400` and ended at the time limit after the same parcel log line; nothing new published. Still unpublished: 20 councils and the Bayside refetch. The road segment service stays slow; try a different council or a quicker service hour.
 - G1.2 (2026-10-16): Cumberland ran with `--seconds 1500` and ended at the time limit; nothing new published. The Overpass 502 is gone but the road segment service stays slow. Still unpublished: 20 councils and the Bayside refetch.
 - G1.2 (2026-10-16): the road segment service answered a probe in 3.8 to 10.5 s. City of Sydney ran with `--seconds 2700` and ended at the time limit after its parcel log line; nothing new published. Still unpublished: 20 councils and the Bayside refetch. Every council now ends at the road segment stage; the next turn should try that stage with a smaller tile size or a quicker hour.
+
+### G1.6 notes
+
+- G1.6 (2026-10-16): `snapshots/` holds 13 manifests and `gh release list` shows the same 13 `snapshot-<id>-2026-10-01` releases, so nothing new to copy. Check: `comm -23` of the two lists is empty.
+- Run 38825334605 of the `snapshots` workflow is still running. Missing (20): blacktown, blue-mountains, camden, campbelltown, canterbury-bankstown, cumberland, fairfield, georges-river, hawkesbury, hornsby, inner-west, ku-ring-gai, liverpool, northern-beaches, parramatta, penrith, sutherland, sydney, the-hills, wollondilly. Bayside needs its refetch (Q1.10).
+- Cumberland failed in run 38825334605 with "HTTP Error 504: Gateway Time-out" after 50 minutes. Rerun it with the `councils` input.
+- `snapshot verify` on a local folder fails with "speed_zones.gpkg missing" because big files stay in the release; use `snapshot pull`.
