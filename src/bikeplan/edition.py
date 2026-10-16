@@ -94,7 +94,7 @@ def options_text(options: list[dict], share: float, joined) -> str:
 def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list, list, object]:
     weights = region.proposals.disruption_weights
     fits = {
-        segment_id: segment_fit(segment, profile, weights)
+        segment_id: segment_fit(segment, profile, weights, free_separation=True)
         for segment_id, segment in bike_segments(graph).items()
     }
     ratings = model_ratings(graph, scores, fits)
