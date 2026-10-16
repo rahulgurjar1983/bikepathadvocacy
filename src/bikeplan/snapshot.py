@@ -644,6 +644,7 @@ def publish_snapshot(directory: str | Path, repo: str | Path = ".") -> None:
             "release",
             "create",
             tag,
+            "--latest=false",
             "--title",
             tag,
             "--notes",

@@ -1750,3 +1750,16 @@ The artifact lists the 33 ids with their relations and the keys that differ.
 Limits: legal default speeds by country stay with P10.4.
 
 Artifact: `artifacts/G1.1/set.json`
+
+### G1.2
+
+```sh
+uv run --frozen bikeplan snapshot set regions/sets/greater-sydney.yaml
+uv run --frozen pytest -q tests/test_snapshot_set.py
+```
+
+Expect: the command skips each council whose manifest in `snapshots/` has the Bayside date and adapters, and fetches, verifies and publishes the rest. It exits 1 and names the councils that failed, and a rerun resumes from the cached tiles. The tests pass. Every published council passes the manifest check; the check that all 33 are published moves to the G1.5 proof.
+
+Limits: 13 councils are published. The `snapshots` workflow fetches the rest. Bayside's refetch moves to Q1.10.
+
+Artifact: `snapshots/au-nsw-randwick/2026-10-01/manifest.json`
