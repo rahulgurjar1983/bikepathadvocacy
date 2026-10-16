@@ -127,13 +127,19 @@ def next_step(needs: list, fixed: set, works: list) -> frozenset | None:
 
 
 def build_ladder(
-    table: dict, links: list, joined: list, fixes: dict, weights, streets: dict | None = None
+    table: dict,
+    links: list,
+    joined: list,
+    fixes: dict,
+    weights,
+    streets: dict | None = None,
+    max_trip_m: float | None = None,
 ) -> dict:
     missing = [key for key in links if not table[key]["all_ages"] and key not in fixes]
     fixable = [key for key in links if not table[key]["all_ages"] and key in fixes]
     works = group_works(table, fixes, fixable, weights)
     owner = {link: index for index, work in enumerate(works) for link in work["links"]}
-    trips = option_trips(table, links, joined)
+    trips = option_trips(table, links, joined, max_trip_m)
     needs = trip_needs(table, trips, fixes, owner)
     fixed: set = set()
     steps = []

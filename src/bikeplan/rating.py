@@ -53,25 +53,55 @@ def trip_links(graph: nx.Graph, first: int, second: int) -> list | None:
     return [graph[a][b]["link"] for a, b in pairwise(path)]
 
 
-def option_trips(table: dict, links: list, joined: list) -> list:
+def within_trip_limit(table: dict, people: list, max_trip_m: float | None) -> set | None:
+    if max_trip_m is None:
+        return None
+    graph = link_graph(table, list(table))
+    reach = {}
+    for item in people:
+        node = item["node"]
+        if node not in reach:
+            reach[node] = (
+                nx.single_source_dijkstra_path_length(
+                    graph, node, cutoff=max_trip_m, weight="weight"
+                )
+                if node in graph
+                else {node: 0.0}
+            )
+    return {
+        (first["id"], second["id"])
+        for index, first in enumerate(people)
+        for second in people[index + 1 :]
+        if second["node"] in reach[first["node"]]
+    }
+
+
+def option_trips(table: dict, links: list, joined: list, max_trip_m: float | None = None) -> list:
     graph = link_graph(table, links)
     people = sorted(joined, key=lambda item: item["id"])
+    near = within_trip_limit(table, people, max_trip_m)
     return [
         (first, second, trip_links(graph, first["node"], second["node"]))
         for index, first in enumerate(people)
         for second in people[index + 1 :]
+        if near is None or (first["id"], second["id"]) in near
     ]
 
 
 def option_totals(
-    table: dict, links: list, joined: list, fixed=frozenset(), trips: list | None = None
+    table: dict,
+    links: list,
+    joined: list,
+    fixed=frozenset(),
+    trips: list | None = None,
+    max_trip_m: float | None = None,
 ) -> dict:
     people = sorted(joined, key=lambda item: item["id"])
     types = sorted({item["type"] for item in people})
     places_safe = dict.fromkeys(types, 0)
     served: set = set()
     safe = 0
-    found = option_trips(table, links, joined) if trips is None else trips
+    found = option_trips(table, links, joined, max_trip_m) if trips is None else trips
     trip_count = len(found)
     for first, second, path in found:
         if path is not None and all(link in fixed or table[link]["all_ages"] for link in path):

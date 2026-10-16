@@ -5,7 +5,7 @@ import networkx as nx
 import numpy as np
 import shapely
 from networkx.algorithms.approximation import steiner_tree
-from shapely.geometry import LineString
+from shapely.geometry import LineString, Point
 
 from bikeplan.access import SNAP_M, bike_nodes, snap_points, sort_key
 from bikeplan.config import Network
@@ -40,6 +40,30 @@ def entrance_node(place: dict, entrances: list[dict], legal: set):
     return min(valid, key=lambda item: item["id"])["node"] if valid else None
 
 
+def area_graph(graph, network: Network):
+    boundary = graph.graph.get("boundary")
+    if boundary is None:
+        return graph
+    area = boundary.buffer(network.boundary_buffer_m)
+    keys = list(graph.edges(keys=True))
+    shapes = [
+        graph.edges[key].get("geometry")
+        or LineString([(graph.nodes[node]["x"], graph.nodes[node]["y"]) for node in key[:2]])
+        for key in keys
+    ]
+    shapely.prepare(area)
+    inside = shapely.covers(area, np.array(shapes, dtype=object))
+    return graph.edge_subgraph(key for key, kept in zip(keys, inside, strict=True) if kept)
+
+
+def inside_boundary(graph, found: list[dict]) -> list[dict]:
+    boundary = graph.graph.get("boundary")
+    if boundary is None:
+        return found
+    shapely.prepare(boundary)
+    return [place for place in found if boundary.covers(Point(place["x"], place["y"]))]
+
+
 def components(graph) -> dict:
     undirected = nx.Graph()
     undirected.add_edges_from((u, v) for u, v, data in graph.edges(data=True) if data["bike_ok"])
@@ -52,8 +76,10 @@ def components(graph) -> dict:
 
 def join_places(graph, found: list[dict], entrances: list[dict], network: Network) -> Joined:
     wanted = sorted(
-        (place for place in found if place["type"] in network.place_types), key=sort_key
+        (place for place in inside_boundary(graph, found) if place["type"] in network.place_types),
+        key=sort_key,
     )
+    graph = area_graph(graph, network)
     legal = set(bike_nodes(graph)[0])
     nearest, _ = snap_points([(place["x"], place["y"]) for place in wanted], graph)
     joined, unjoined = [], []
@@ -97,8 +123,10 @@ def link_id(u, v, k) -> tuple:
     return a, b, k
 
 
-def link_table(graph, ratings: dict) -> dict:
+def link_table(graph, ratings: dict, network: Network | None = None) -> dict:
     table: dict = {}
+    if network is not None:
+        graph = area_graph(graph, network)
     for u, v, k, data in graph.edges(keys=True, data=True):
         if not data["bike_ok"] or u == v:
             continue
@@ -196,7 +224,7 @@ def mesh_links(graph, table: dict, joined: list, network: Network) -> list:
 
 
 def build_options(graph, joined: Joined, ratings: dict, network: Network) -> list[dict]:
-    table = link_table(graph, ratings)
+    table = link_table(graph, ratings, network)
     terminals = sorted({item["node"] for item in joined.joined})
     found = [
         (name, tree_links(table, name, terminals, network))
@@ -213,7 +241,9 @@ def build_options(graph, joined: Joined, ratings: dict, network: Network) -> lis
                 "links": links,
                 "km": sum(table[link]["length_m"] for link in links) / 1000,
                 "same_as": same,
-                "totals": option_totals(table, links, joined.joined),
+                "totals": option_totals(
+                    table, links, joined.joined, max_trip_m=network.max_trip_km * 1000
+                ),
             }
         )
     return options

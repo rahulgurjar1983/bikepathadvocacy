@@ -1211,3 +1211,9 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - Cumberland failed in run 38825334605 with "HTTP Error 504: Gateway Time-out" after 50 minutes. Rerun it with the `councils` input.
 - G1.6 (2026-10-16): all 13 manifests pass `snapshot pull` (see `artifacts/G1.6/pull.txt`). Run 38825334605 was started with ref `loop/G1.2-snapshots`, which PR 162 deleted when it merged. 13 jobs failed at checkout with a git fetch error, and 5 more failed with Overpass 504 or read time-outs (`artifacts/G1.6/missing.txt`). Operator ask: rerun the `snapshots` workflow with ref `main`, with the `councils` input set to the missing ids.
 - `snapshot verify` on a local folder fails with "speed_zones.gpkg missing" because big files stay in the release; use `snapshot pull`.
+
+### M1.1 notes
+
+- M1.1 (2026-10-16): `join_places`, `link_table`, `build_options` and `build_ladder` now use the boundary widened by `network.boundary_buffer_m` (`options.area_graph`). Trips come from `option_trips(..., max_trip_m)`, which counts a pair only when its shortest route inside that area is at most `network.max_trip_km`.
+- On Bayside the area holds two big bike components (5817 and 3802 nodes), so 25 of 65 places in the boundary sit off the main one and are listed as "no bike route to the main network". Routes that may leave the area would give 596 trips instead of 586. Run `uv run --frozen python -I artifacts/M1.1/prove.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 /tmp/proof.json` (18 minutes).
+- Editions built before M1.1 (`artifacts/C1.11`) join 228 places, because the old scope used `analysis_buffer_m`. C1.13 rebuilds them.

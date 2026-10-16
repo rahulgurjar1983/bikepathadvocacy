@@ -1776,3 +1776,18 @@ Expect: every pull downloads the release files and `verify` prints each file as 
 Limits: 13 of 33 councils are copied. The row stays open until the `snapshots` workflow publishes the other 20.
 
 Artifact: `artifacts/G1.6/pull.txt`
+
+### M1.1
+
+```sh
+uv run --frozen pytest -q tests/test_network_area.py
+uv run --frozen python -I artifacts/M1.1/prove.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 artifacts/M1.1/area-proof.json
+```
+
+Expect: The tests pass. The proof builds the Bayside options with the shipped
+settings and checks them by its own route search. It finds no joined place and
+no option link outside the boundary widened by 200 m. Every option counts the
+same 586 trips, and the longest counted route is 4994.8 m, under 5 km. 40
+places join and 25 are listed as having no bike route to the main network.
+
+Artifact: `artifacts/M1.1/area-proof.json`
