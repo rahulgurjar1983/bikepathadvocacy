@@ -28,6 +28,7 @@ Tags: [reasoning] needs deep checks, with no larger model by default; [routine] 
 - [x] **M1.2** [reasoning] Fix choice for network options: separated first only when it takes no parking and no lane, otherwise the least disruption score (FR-17.6)
 - [x] **M1.3** [reasoning] What blocks trips: blockers by street with trips stopped, reasons, state road owner and the ceiling score; a short ask of at most 10 named streets; the half-unsafe sentence (FR-17.14, FR-17.8)
 - [ ] **M1.4** [reasoning] Output checks in `checks.html` on the release's own files: places and links inside, ask streets, trip length, parking only where needed (FR-17.15)
+- [ ] **M1.5** [reasoning] Join the parts of the network that meet only outside the area by the shortest outside route, labelled "outside Bayside" and never in the ask; unjoined only when the full graph cannot reach; no bus-only stations, merged duplicate places, named town centres (FR-17.1, FR-17.15)
 - [ ] **T1.1** [reasoning] TfNSW corridors file from spec 19, indicative routes, the part inside Bayside, cover verdicts and works on corridors (FR-19.1, FR-19.2, FR-19.3, FR-19.4)
 - [ ] **T1.2** [reasoning] Report section, opening sentence, table, credit and the "TfNSW corridors (indicative)" overlay (FR-19.5)
 - [ ] **Q1.10** [reasoning] Fresh Bayside snapshot with the files of all five adapters (elevation, road segments and speed zones too) under a new immutable snapshot ID; the region file points at it (FR-15.9, FR-18.2)
