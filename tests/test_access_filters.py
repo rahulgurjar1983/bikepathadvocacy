@@ -50,23 +50,19 @@ def test_fr17_1_the_preschool_listed_first_still_leaves_the_school(tmp_path):
     assert [place["name"] for place in found] == ["Banksia Public School"]
 
 
-def test_fr17_1_two_schools_with_different_names_30m_apart_are_two_places(tmp_path):
+def test_fr17_1_schools_with_different_names_stay_two_places_and_suburb_nodes_are_not_places(
+    tmp_path,
+):
     near = 145.01 + 30 / M_PER_DEGREE
     elements = [
         node(1, 145.01, {"amenity": "school", "name": "North High"}),
         node(2, near, {"amenity": "school", "name": "South Primary"}),
         node(3, near, {"amenity": "library", "name": "North High"}),
+        node(4, 145.03, {"amenity": "school", "name": "Twin"}),
+        node(5, 145.03 + 80 / M_PER_DEGREE, {"amenity": "school", "name": "Twin"}),
+        node(900, 145.0105, {"place": "suburb", "name": "Rockdale"}),
     ]
-    assert ids(places(snapshot_of(tmp_path, elements))) == ["node/1", "node/2", "node/3"]
-
-
-def test_fr17_1_two_schools_with_the_same_name_80m_apart_are_two_places(tmp_path):
-    far = 145.01 + 80 / M_PER_DEGREE
-    elements = [
-        node(1, 145.01, {"amenity": "school", "name": "Twin"}),
-        node(2, far, {"amenity": "school", "name": "Twin"}),
-    ]
-    assert ids(places(snapshot_of(tmp_path, elements))) == ["node/1", "node/2"]
+    assert ids(places(snapshot_of(tmp_path, elements))) == [f"node/{i}" for i in range(1, 6)]
 
 
 def test_fr17_1_a_town_centre_takes_the_nearest_suburb_name(tmp_path):
@@ -77,11 +73,6 @@ def test_fr17_1_a_town_centre_takes_the_nearest_suburb_name(tmp_path):
     ]
     [centre] = centres(places(snapshot_of(tmp_path, shops(1, 10, 100) + suburbs)))
     assert centre["name"] == "Rockdale"
-
-
-def test_fr17_1_suburb_nodes_are_not_places(tmp_path):
-    suburbs = [node(900, 145.0105, {"place": "suburb", "name": "Rockdale"})]
-    assert places(snapshot_of(tmp_path, suburbs)) == []
 
 
 def test_fr17_1_a_centre_without_a_suburb_node_names_the_nearest_named_place(tmp_path):
