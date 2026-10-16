@@ -22,6 +22,7 @@ from bikeplan.edition import (
 from bikeplan.fit import segment_fit
 from bikeplan.network import bike_segments, build
 from bikeplan.page import (
+    ASSETS,
     assumptions_section,
     credits_for,
     credits_section,
@@ -33,6 +34,7 @@ from bikeplan.proposal_inputs import (
     load_proposal_inputs,
 )
 from bikeplan.proposal_record import proposal_record
+from bikeplan.proposal_views import option_view
 from bikeplan.propose import KINDS, csv_fields, csv_row, write_propose
 from bikeplan.report import (
     check_leaks,
@@ -294,7 +296,9 @@ def build_all(
         head,
         body,
         figures,
-        method_section()
+        option_view(proposal)
+        + f"<script>{(ASSETS / 'option_view.js').read_text()}</script>"
+        + method_section()
         + assumptions_section(profile)
         + credits_section(summary["credits"])
         + rebuild_section(summary),

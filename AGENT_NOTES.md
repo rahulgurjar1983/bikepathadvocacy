@@ -416,6 +416,8 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 
 ## BLOCKED
 
+- Q1.6 PR 141: the fix for the CI failure is committed on `loop/Q1.6-option-view` but not pushed. `git push` fails with "could not read Username" and `gh api user` returns HTTP 401: the token in `~/.config/gh/hosts.yml` is invalid. Run `gh auth login -h github.com`, then push that branch and run `scripts/wait-ci.sh 141`.
+
 - P10.1: resolved by the input proof-only gate path. Prior operator ask: add a rule and gate path for proof rows whose real tests pass on base code. The loop cannot edit `PROMPT.md` or `gates/redgreen.py`. Fresh base proof is in `artifacts/P10.1/main-audit.txt`; the gate marks a passing result as fake. Once that input fix ships, clear the hold and run the saved Bayside tests. Do not change code just to make a test fail.
 - V1.7 resolved on 2026-10-12: the operator found the track at `https://ridewithgps.com/trips/351728076` (linked from `https://www.cyclesydney.com/p/ride22`). Earlier note: I could not find the public RideWithGPS track for CycleSydney Ride 22. The wiki page for the ride (`cyclesydney.wiki/sutherland/`) sends the reader on to other domains: `syd.lat`, then `nisdy.online`, then `sdy005.cyou`. I did not follow the third one, since it looks like a hijacked redirect. The ask: send the `ridewithgps.com/routes/<number>` link for Ride 22, or its GPX file, and the exact quotes you want judged. Put the GPX in `data/private/ride22/` and the claims in `data/private/ride22/claims.yaml`. Also check that `data/private/` is in `.gitignore`; it is not now.
 - `boundary_geojson` joins relation ways into rings in plain Python, because shapely is not in the offline lock. `fetch_boundary` stores the raw reply only while it checks it, so an open relation leaves no file. The network query asks for XML; gzip is the job of the fetch command row.
@@ -1308,3 +1310,13 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - A person sends the page to the author, then adds a `sent` entry to `data/private/V1.8/reply.yaml`. Rerun `route verdicts` and `route page` into new folders to start the 14 days. No turn may contact the author.
 
 - Map: add `--lines <clip lines.geojson>` to `route page` to draw the route as an SVG with a key by plan layer. It must sit under `data/private`. The map is coloured by plan layer, not stress, since the clip holds no stress. Rerun the page into a new folder.
+
+### Q1.6 goal and stage package view
+
+- `option_view` renders the record's option packages as a script-free section.
+  A small handler in `proposal_views.js` shows the chosen package using the
+  native [change event](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/change_event).
+  Choosing one here does not change the curve package; the text says so.
+- The real test grid has no sourced options, so the archive shows the empty
+  state. Packages with sets come from the unit and browser cases. Making the
+  other shared views follow an option package, and full browser proof, remain.
