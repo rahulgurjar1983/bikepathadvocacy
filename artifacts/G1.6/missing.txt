@@ -1,0 +1,8 @@
+run 38825334605 (snapshots, ref loop/G1.2-snapshots, deleted at merge of PR 162)
+cumberland: HTTP Error 504: Gateway Time-out
+canterbury-bankstown: HTTP Error 504: Gateway Time-out
+camden: HTTP Error 504: Gateway Time-out
+blacktown: The read operation timed out
+fairfield: The read operation timed out
+georges-river, hawkesbury, hornsby, inner-west, ku-ring-gai, liverpool, northern-beaches, parramatta, penrith, sutherland, sydney, the-hills, wollondilly: git fetch of ref loop/G1.2-snapshots failed at checkout
+blue-mountains, campbelltown: still running
