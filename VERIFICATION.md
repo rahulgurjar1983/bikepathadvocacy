@@ -1938,3 +1938,19 @@ crossings, the share of people within 500 m and 1 km, and schools within
 verdict count. It proves the measures only, not any claim.
 
 Artifact: `artifacts/V1.8/measures.json`
+
+### V1.8 verdicts
+
+```bash
+uv run --frozen pytest -q tests/test_review_verdicts_plan.py
+uv run --frozen bikeplan route verdicts data/private/V1.8/measures-2026-10-17/measures.json --layers data/private/V1.8/clip-2026-10-17/layers.json --source data/private/V1.8/capture-2026-10-17/source --claims data/private/V1.8/claims.yaml --reply data/private/V1.8/reply.yaml --out data/private/V1.8/verdicts-2026-10-17
+uv run --frozen python artifacts/V1.8/check_verdicts.py data/private/V1.8/verdicts-2026-10-17 --out artifacts/V1.8/verdicts.json
+```
+
+Expect: the tests pass. The run takes under a second. It judges 12 claims:
+3 hold, 1 holds partly, 5 do not hold and 3 are outside this tool. The
+reply window has not started because the review is not yet sent to the
+author. The folder is private and ignored by git. The proof holds file
+hashes and verdict counts only.
+
+Artifact: `artifacts/V1.8/verdicts.json`

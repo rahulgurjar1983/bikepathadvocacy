@@ -1,0 +1,13 @@
+{
+  "reply_sent": null,
+  "sha256": {
+    "reply-window.json": "244238aa6773b6bc0f75ce9f3b639b39e0b15b56cb1ba94bf4919ce192ad9bc2",
+    "verdicts.json": "423ecee03c957e46c78ebc5b32ea2e675ebc65df324f4a1872fe2713e8c337fd"
+  },
+  "verdict_counts": {
+    "does not hold": 5,
+    "holds": 3,
+    "outside this tool": 3,
+    "partly": 1
+  }
+}
