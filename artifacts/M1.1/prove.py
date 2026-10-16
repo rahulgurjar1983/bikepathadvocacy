@@ -1,5 +1,6 @@
 import json
 import sys
+from pathlib import Path
 
 import networkx as nx
 from pyproj import Transformer
@@ -75,8 +76,9 @@ proof = {
     "pairs_within_limit_if_routes_may_leave_the_area": whole_pairs,
     "longest_counted_route_m": round(longest, 1),
 }
-json.dump(proof, open(out, "w"), indent=2, sort_keys=True)
-print(json.dumps(proof, indent=2, sort_keys=True))
+text = json.dumps(proof, indent=2, sort_keys=True) + "\n"
+Path(out).write_text(text)
+sys.stdout.write(text)
 assert not places_outside and not outside_links
 assert set(trip_counts.values()) == {pairs}
 assert longest <= limit_m
