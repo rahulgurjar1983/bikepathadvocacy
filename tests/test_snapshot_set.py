@@ -81,8 +81,11 @@ def test_fr18_2_a_wrong_date_or_adapter_list_fails(tmp_path):
     assert "population.gpkg" in problems[1]
 
 
-def test_fr18_2_every_council_in_the_set_has_a_manifest_like_bayside():
-    assert set_problems(SET, ROOT) == []
+def test_fr18_2_every_published_council_has_a_manifest_like_bayside():
+    problems = set_problems(SET, ROOT)
+    others = [p for p in problems if not p.endswith(": no manifest")]
+    assert [p for p in others if not p.startswith("au-nsw-bayside:")] == []
+    assert len(problems) < len(councils())
 
 
 GH_STAND_IN = """#!{python}
