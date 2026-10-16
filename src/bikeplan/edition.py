@@ -106,7 +106,7 @@ def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list
     found = in_scope_places(found, graph.graph["boundary"], region.analysis_buffer_m)
     joined = join_places(graph, found, [], profile.network)
     options = build_options(graph, joined, ratings, profile.network)
-    table = link_table(graph, ratings)
+    table = link_table(graph, ratings, profile.network)
     fixes = link_fixes(graph, table, fits, profile, weights)
     streets = link_streets(graph)
 
@@ -117,7 +117,15 @@ def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list
 
     report = []
     for item in options:
-        ladder = build_ladder(table, item["links"], joined.joined, fixes, weights, streets)
+        ladder = build_ladder(
+            table,
+            item["links"],
+            joined.joined,
+            fixes,
+            weights,
+            streets,
+            profile.network.max_trip_km * 1000,
+        )
         owner = {link: n for n, work in enumerate(ladder["works"]) for link in work["links"]}
         report.append(
             {

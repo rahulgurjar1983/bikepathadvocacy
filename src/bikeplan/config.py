@@ -177,6 +177,8 @@ class Network:
     stress_factor: tuple[float, ...] = (1.0, 1.2, 3.0, 6.0)
     no_fix_factor: float = 10.0
     recommend_share: float = 0.9
+    boundary_buffer_m: float = 200.0
+    max_trip_km: float = 5.0
 
 
 @dataclass(frozen=True)
@@ -395,7 +397,14 @@ class ProfileReader(Reader):
         )
 
     def network(self, raw: Any) -> Network:
-        keys = {"place_types", "stress_factor", "no_fix_factor", "recommend_share"}
+        keys = {
+            "place_types",
+            "stress_factor",
+            "no_fix_factor",
+            "recommend_share",
+            "boundary_buffer_m",
+            "max_trip_km",
+        }
         data = self.mapping(raw, "network", keys, set())
         found = {}
         if "place_types" in data:
@@ -419,6 +428,16 @@ class ProfileReader(Reader):
             if not 0 < share <= 1:
                 raise self.fail("network.recommend_share", "must be above 0 and at most 1")
             found["recommend_share"] = share
+        if "boundary_buffer_m" in data:
+            buffer = float(self.number(data["boundary_buffer_m"], "network.boundary_buffer_m"))
+            if buffer < 0:
+                raise self.fail("network.boundary_buffer_m", "must be at least 0")
+            found["boundary_buffer_m"] = buffer
+        if "max_trip_km" in data:
+            trip = float(self.number(data["max_trip_km"], "network.max_trip_km"))
+            if trip <= 0:
+                raise self.fail("network.max_trip_km", "must be above 0")
+            found["max_trip_km"] = trip
         return Network(**found)
 
     def width(self, raw: Any, key: str) -> Width:
