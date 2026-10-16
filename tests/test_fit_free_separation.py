@@ -26,7 +26,8 @@ def test_fr17_6_wide_link_takes_the_cycleway_in_spare_width():
 
 
 def test_fr17_6_free_separated_fix_beats_a_cheaper_quietway():
-    data = {**street("residential", 12.0, 2, "yes", 50, 750), "usable_verge": TOY_VERGE}
+    data = street("residential", 12.0, 2, "yes", 50, 750, reserve=27.0)
+    data["usable_verge"] = TOY_VERGE
     result = pick(data)
     by_fix = {item["fix"]: item for item in result["candidates"]}
     assert by_fix["quietway"]["accepted"]
