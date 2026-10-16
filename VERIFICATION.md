@@ -1763,3 +1763,16 @@ Expect: the command skips each council whose manifest in `snapshots/` has the Ba
 Limits: 13 councils are published. The `snapshots` workflow fetches the rest. Bayside's refetch moves to Q1.10.
 
 Artifact: `snapshots/au-nsw-randwick/2026-10-01/manifest.json`
+
+### G1.6
+
+```sh
+for m in snapshots/*/2026-10-01/manifest.json; do uv run --frozen bikeplan snapshot pull "$m" || echo "FAIL $m"; done
+comm -3 <(ls snapshots) <(gh release list --limit 200 --json tagName --jq '.[].tagName' | sed -n 's/^snapshot-\(.*\)-2026-10-01$/\1/p' | sort)
+```
+
+Expect: every pull downloads the release files and `verify` prints each file as `ok`, with no `FAIL` line. The `comm` output is empty when every published release has its manifest in `snapshots/`. Councils still missing are listed in `artifacts/G1.6/missing.txt`.
+
+Limits: 13 of 33 councils are copied. The row stays open until the `snapshots` workflow publishes the other 20.
+
+Artifact: `artifacts/G1.6/pull.txt`
