@@ -1848,3 +1848,13 @@ uv run --frozen pytest -q tests/test_snapshot.py -k places_query_holds
 Expect: The test passes. The places query asks for suburb and locality nodes, so town centres take a suburb name once a snapshot is rebuilt. Artifact: `artifacts/M1.5/outside-proof.json` is unchanged until that rebuild.
 
 Artifact: `artifacts/M1.5/outside-proof.json`
+
+### T1.1
+
+```sh
+uv run --frozen pytest -q tests/test_corridors.py
+uv run --frozen python artifacts/T1.1/prove.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 /tmp/corridors.json
+```
+
+Expect: The tests pass. The run loads the TfNSW corridors file, draws an indicative route for each segment, keeps the part inside Bayside, gives each segment a verdict of covered, partly or missed, and totals the works on corridors. The Bayside run gives 2 covered, 6 partly and 2 missed.
+Artifact: `artifacts/T1.1/corridors.json`
