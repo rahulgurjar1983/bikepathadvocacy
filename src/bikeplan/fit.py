@@ -430,6 +430,7 @@ def choose(
     weights,
     edges: list[dict] | None = None,
     confirmed_only: bool = True,
+    free_separation: bool = False,
 ) -> dict:
     edges = edges or [segment]
     before = cross_section(segment, profile)
@@ -457,6 +458,12 @@ def choose(
                 "reasons": [item["reason"] for item in found],
             }
     separated = [item for item in accepted if item["fix"] != "quietway"]
+    if free_separation:
+        separated = [
+            item
+            for item in separated
+            if not item["disruption"]["parking_spaces"] and not item["disruption"]["lane_km"]
+        ]
     if profile.fit.prefer_separation.value and separated:
         accepted = separated
     best = min(accepted, key=lambda item: item["score"])
@@ -522,7 +529,11 @@ def junction_fixes(graph, profile: Profile) -> list[dict]:
 
 
 def segment_fit(
-    segment: dict, profile: Profile, weights, confirmed_only: bool = False
+    segment: dict,
+    profile: Profile,
+    weights,
+    confirmed_only: bool = False,
+    free_separation: bool = False,
 ) -> dict | None:
     edges = [data for _, data in segment["edges"]]
     first_edge = edges[0]
@@ -530,7 +541,7 @@ def segment_fit(
         return None
     fused = fuse(first_edge, profile)
     data = {**first_edge, **fused, "length_m": segment["inside_m"]}
-    result = choose(data, profile, weights, edges, confirmed_only)
+    result = choose(data, profile, weights, edges, confirmed_only, free_separation)
     robust = None
     if result["status"] == "fix":
         robust = next(item for item in result["candidates"] if item["fix"] == result["fix"])[

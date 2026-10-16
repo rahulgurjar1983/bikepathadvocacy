@@ -91,12 +91,16 @@ def options_text(options: list[dict], share: float, joined) -> str:
     return json.dumps(data, sort_keys=True, separators=(",", ":")) + "\n"
 
 
-def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list, list, object]:
-    weights = region.proposals.disruption_weights
-    fits = {
-        segment_id: segment_fit(segment, profile, weights)
+def option_fits(graph, profile, weights) -> dict:
+    return {
+        segment_id: segment_fit(segment, profile, weights, free_separation=True)
         for segment_id, segment in bike_segments(graph).items()
     }
+
+
+def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list, list, object]:
+    weights = region.proposals.disruption_weights
+    fits = option_fits(graph, profile, weights)
     ratings = model_ratings(graph, scores, fits)
     to_metres = Transformer.from_crs(4326, graph.graph["crs"], always_xy=True)
     to_lonlat = Transformer.from_crs(graph.graph["crs"], 4326, always_xy=True)
