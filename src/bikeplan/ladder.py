@@ -46,10 +46,13 @@ def link_roads(graph, functions: tuple, owner: str) -> dict:
     return dict(sorted(found.items()))
 
 
-def plain_reason(name: str, reason: str, rejected: str | None) -> str | None:
-    what = FIX_WORDS[name]
-    if rejected:
+def plain_reason(item: dict) -> str | None:
+    what = FIX_WORDS[item["fix"]]
+    reason = item["reason"]
+    if item["rejected"]:
         return f"would not make the street all ages as {what}"
+    if item["fits"]:
+        return None
     if reason.startswith("ADT"):
         return f"too busy for {what}"
     if reason.startswith("needs at most"):
@@ -68,25 +71,34 @@ def plain_reason(name: str, reason: str, rejected: str | None) -> str | None:
 def plain_reasons(fit: dict) -> list[str]:
     found: list[str] = []
     for item in fit["candidates"]:
-        text = plain_reason(item["fix"], item["reason"], item["rejected"])
+        text = plain_reason(item)
         if text and text not in found:
             found.append(text)
     return found
 
 
+def fit_reasons(fit: dict | None) -> list[str]:
+    if fit is None:
+        return ["no traffic data to design a fix"]
+    if fit["status"] == "aaa":
+        return ["no design in the tool changes its stress rating"]
+    if fit["status"] == "no_fit":
+        return plain_reasons(fit) or ["no design fits"]
+    return []
+
+
 def link_reasons(graph, table: dict, fits: dict) -> dict:
     found: dict = {}
     for key, link in table.items():
-        if not link["no_fix"]:
+        if link["all_ages"]:
             continue
         a, b, k = key
+        texts: list[str] = []
         for edge in ((a, b, k), (b, a, k)):
-            if not graph.has_edge(*edge):
-                continue
-            fit = fits.get(graph.edges[edge]["segment_id"])
-            if fit and fit["status"] == "no_fit":
-                found.setdefault(key, [])
-                found[key] += [text for text in plain_reasons(fit) if text not in found[key]]
+            if graph.has_edge(*edge):
+                texts += fit_reasons(fits.get(graph.edges[edge]["segment_id"]))
+        if texts:
+            found[key] = list(dict.fromkeys(texts))
     return found
 
 
