@@ -9,5 +9,9 @@
   "{&quot;elements&quot;: [], &quot;projects&quot;: []}",
   "{&quot;elements&quot;: [&quot;segment:b&quot;], &quot;projects&quot;: []}"
  ],
+ "example_gaps": [
+  "{&quot;projects_without_sheet&quot;: []}",
+  "{&quot;projects_without_sheet&quot;: [&quot;p9&quot;]}"
+ ],
  "example_scripts": 0
 }

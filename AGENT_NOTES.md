@@ -1326,3 +1326,7 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
   no curve chooser or `package-export-data`, so no script updates this list.
   Curve exports and sheets are not on that page; restoring them needs a
   decision on the page, not a model turn.
+
+- Q1.6 gaps: `option_view` lists, per package, projects with no sheet in
+  `project_sheets`. Other shared views following an option package, and full
+  browser proof, remain.
