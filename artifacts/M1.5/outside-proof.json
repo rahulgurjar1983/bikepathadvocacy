@@ -1,0 +1,72 @@
+{
+  "ask_named": [
+    "Coward Street",
+    "Banks Avenue",
+    "Shaw Street",
+    "Station Street",
+    "Caroline Street",
+    "Frederick Street",
+    "Moate Avenue",
+    "Holloway Street",
+    "Napoleon Street",
+    "Arncliffe Street"
+  ],
+  "joined": 61,
+  "longest_trip_m": 4997.5,
+  "outside_links_per_option": {
+    "calm": 1,
+    "mesh": 1,
+    "separated": 1,
+    "shortest": 1
+  },
+  "outside_works_of_pick": [],
+  "places": 66,
+  "problems": [],
+  "row": "M1.5",
+  "stations": [
+    "Arncliffe",
+    "Banksia",
+    "Bardwell Park",
+    "Bexley North",
+    "Domestic Airport",
+    "International Airport",
+    "Kogarah",
+    "Mascot",
+    "Rockdale",
+    "Turrella",
+    "Wolli Creek"
+  ],
+  "town_centres": [
+    "Town centre near Arncliffe Library",
+    "Town centre near Domestic Airport",
+    "Town centre near Domestic Airport",
+    "Town centre near Eastgardens Library",
+    "Town centre near International Airport",
+    "Town centre near Our Lady of Fatima Catholic Primary School",
+    "Town centre near Rockdale Library",
+    "Town centre near St Therese Catholic Primary School"
+  ],
+  "unjoined": [
+    [
+      "Matraville Public School",
+      "no bike route to the main network"
+    ],
+    [
+      "Bayside High School",
+      "no bike route to the main network"
+    ],
+    [
+      "Arncliffe Public School",
+      "no bike route to the main network"
+    ],
+    [
+      "Town centre near Rockdale Library",
+      "no bike route to the main network"
+    ],
+    [
+      "Rockdale",
+      "no bike route to the main network"
+    ]
+  ],
+  "unreached": []
+}

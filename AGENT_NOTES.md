@@ -1236,3 +1236,9 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - A fit scores a segment by its length inside the boundary. A link in the widened strip has none, so all fixes tie at 0 and a parking fix could win. `link_fixes` now picks each link's fix by its own length.
 - A real Bayside build takes 19 to 24 minutes. Run it once per change.
 - The unjoined-place and bare-number-name checks of FR-17.15 belong to M1.5, whose row text names them.
+
+### M1.5 notes
+
+- M1.5 (2026-10-16): `join_places` joins a part to the main part by one shortest route in the full graph and returns the links outside the area as `Joined.outside`. `link_table` marks them `outside`, `build_options` lists them per option, and `group_works` keeps their works apart with `outside` set.
+- Suburb nodes are not in the Bayside snapshot, and `test_fr7_10_places_query_holds_every_place_tag_shop_and_out_center_tags` counts 12 filters, so adding `place=suburb` to the query needs an owner decision on that test. Until then a centre is named "Town centre near <nearest named place>".
+- Outside works carry the label "outside Bayside" but no neighbouring council name yet; the region files hold no neighbour boundaries.
