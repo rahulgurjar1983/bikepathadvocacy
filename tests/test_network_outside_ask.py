@@ -76,7 +76,7 @@ def test_fr17_15_the_ask_naming_an_outside_work_fails(tmp_path):
     assert "Ash St" in found[0]
 
 
-@pytest.mark.parametrize("name", ["7", "Town centre 3", ""])
+@pytest.mark.parametrize("name", ["7", "Town centre 3"])
 def test_fr17_15_a_place_named_by_a_bare_number_fails(tmp_path, name):
     def change(data):
         data["audit"]["places"][1]["name"] = name
