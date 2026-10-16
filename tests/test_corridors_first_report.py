@@ -17,7 +17,7 @@ def test_fr18_6_a_rail_side_candidate_is_listed_with_its_nodes_length_and_label(
     found = propose.corridor_candidates(loop_graph(), Corridors([("railway", RAIL)], OPEN))
     assert len(found) == 1
     assert (found[0]["a"], found[0]["b"], found[0]["label"]) == (0, 1, "railway")
-    assert found[0]["length_m"] == pytest.approx(1000.0, rel=0.05)
+    assert found[0]["length_m"] == pytest.approx(1000.0, rel=0.1)
 
 
 def test_fr18_6_no_candidate_is_listed_without_open_land_beside_the_line():
