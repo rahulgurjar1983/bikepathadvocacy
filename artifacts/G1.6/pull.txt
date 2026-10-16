@@ -1,0 +1,13 @@
+au-nsw-bayside pass 5 files ok
+au-nsw-burwood pass 8 files ok
+au-nsw-canada-bay pass 8 files ok
+au-nsw-hunters-hill pass 8 files ok
+au-nsw-lane-cove pass 8 files ok
+au-nsw-mosman pass 8 files ok
+au-nsw-north-sydney pass 8 files ok
+au-nsw-randwick pass 8 files ok
+au-nsw-ryde pass 8 files ok
+au-nsw-strathfield pass 8 files ok
+au-nsw-waverley pass 8 files ok
+au-nsw-willoughby pass 8 files ok
+au-nsw-woollahra pass 8 files ok

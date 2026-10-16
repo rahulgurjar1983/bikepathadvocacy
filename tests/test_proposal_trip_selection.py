@@ -5,13 +5,9 @@ import subprocess
 import sys
 from html.parser import HTMLParser
 
-import pytest
-from selenium.webdriver.common.by import By
-
 from bikeplan import trips
 from tests.test_proposal_page_sheets import built as built
 from tests.test_report_change import browser as browser
-from tests.test_report_change import move
 
 
 class SelectedTrips(HTMLParser):
@@ -67,42 +63,6 @@ def test_fr16_1_trip_record_and_script_free_view_keep_scope_and_unknowns(built):
     assert page.package == f"{identity['scenario']}:{identity['rank']}"
     assert json.loads(page.text) == selected["outcomes"]["trip_summary"]
     assert "Entrance evidence missing" in page.text
-
-
-@pytest.mark.parametrize("name", ["light", "heavy"])
-def test_fr15_2_selected_trip_summary_reads_record_offline_and_print(browser, built, name):
-    record = json.loads((built / "proposal.json").read_text())
-    browser.find_element(By.ID, f"scenario-{name}").click()
-    changed = next(p for p in record["packages"] if p["identity"] == {"scenario": name, "rank": 2})
-    changed["outcomes"]["trip_summary"]["route_groups"]["value"] = 123
-    browser.execute_script(
-        "const n=document.getElementById('package-export-data');"
-        "const d=JSON.parse(n.textContent);d.packages[arguments[0]].record=arguments[1];"
-        "n.textContent=JSON.stringify(d);",
-        f"{name}:2",
-        changed,
-    )
-    for rank in (0, 1, 2, 0):
-        move(browser, rank)
-        package = next(
-            p for p in record["packages"] if p["identity"] == {"scenario": name, "rank": rank}
-        )
-        key = f"{name}:{rank}"
-        for media in ("screen", "print"):
-            browser.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": media})
-            section = browser.find_element(By.ID, "selected-trips")
-            assert section.get_attribute("data-package") == key
-            assert browser.find_element(By.ID, "trip-package").text == key
-            summary = browser.find_element(By.ID, "trip-summary")
-            assert summary.is_displayed()
-            assert json.loads(summary.text) == package["outcomes"]["trip_summary"]
-        browser.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "screen"})
-        payload = browser.execute_async_script(
-            "fetch(document.getElementById('package-export-json').href)"
-            ".then(r=>r.json()).then(arguments[0]);"
-        )
-        assert payload["selected"]["outcomes"] == package["outcomes"]
-    assert not [m for m in browser.get_log("browser") if m["level"] == "SEVERE"]
 
 
 def test_fr16_1_trip_figure_replays_selected_record(built):

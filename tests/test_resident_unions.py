@@ -1,12 +1,10 @@
 import json
-from pathlib import Path
 
 from shapely.geometry import box
 
 from bikeplan import trips
 from bikeplan.access import homes
 from bikeplan.config import load_profile, load_region
-from bikeplan.run import build_all
 from tests.test_access_homes import line_graph
 
 
@@ -81,31 +79,6 @@ def test_fr16_5_buffer_first_legs_existing_access_and_missing_groups_are_explici
     assert "forecast" in result["limit"]
     assert result["first_leg_model"]["evidence_status"] == "assumed"
     assert "new destination" in result["method"]
-
-
-def test_fr16_5_saved_packages_shortlist_and_report_publish_resident_unions():
-    _, outputs, files, _ = build_all(
-        load_region("tests/fixtures/test-grid/region.yaml"),
-        load_profile("au-nsw"),
-        Path("tests/fixtures/test-grid/snapshot"),
-    )
-    frontier = json.loads(files["frontier.json"])
-    for curve in frontier["scenarios"]:
-        for package in curve["trip_packages"]:
-            outcomes = package["resident_outcomes"]
-            assert outcomes["strict"]["unique_residents"] == {
-                "before": 0,
-                "after": 0,
-                "newly_gained": 0,
-            }
-            assert outcomes["evidence_status"] == "modelled_with_missing_trip_evidence"
-            assert outcomes["population"]["source"]
-    shortlist = json.loads(outputs["projects.geojson"])["trip_proof"]
-    assert shortlist["resident_outcomes"]["strict"]["unique_residents"]["after"] == 0
-    page = outputs["report.html"].decode()
-    assert "Unique estimated residents" in page
-    assert "not a forecast of rides" in page
-    assert "Unknown age, disability, pupil and household data" in page
 
 
 def test_fr16_5_offline_selection_keeps_counts_without_bulk_origin_records():

@@ -70,6 +70,7 @@ PLACE_FILTERS = (
     '["amenity"="ferry_terminal"]',
     '["railway"="tram_stop"]',
     '["shop"]',
+    '["place"~"^(suburb|locality)$"]',
 )
 
 
@@ -644,6 +645,7 @@ def publish_snapshot(directory: str | Path, repo: str | Path = ".") -> None:
             "release",
             "create",
             tag,
+            "--latest=false",
             "--title",
             tag,
             "--notes",

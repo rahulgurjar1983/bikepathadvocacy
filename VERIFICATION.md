@@ -1558,6 +1558,419 @@ offline browser proof remain open.
 
 Artifact: `artifacts/Q1.6/option-packages.json`.
 
+### N1.1
+
+```sh
+uv run --frozen pytest -q tests/test_network_options.py
+uv run --frozen python artifacts/N1.1/collect_options.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 artifacts/N1.1/bayside-options.json
+```
+
+Expect: Every school, station and town centre joins the nearest bike-legal
+node, or its confirmed entrance. Places that cannot join are listed with a
+reason. The four options are connected and hold every joined place. A second
+build gives the same links, and an option equal to an earlier one is marked
+"same as". On Bayside the run joins 154 schools, 41 stations and 33 town
+centres, and lists 8 places it could not join. The four options hold 4101,
+3420, 3884 and 9253 links.
+
+Artifact: `artifacts/N1.1/bayside-options.json`.
+
+### N1.2
+
+```sh
+uv run --frozen pytest -q tests/test_option_rating.py
+uv run --frozen python artifacts/N1.2/collect_totals.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 artifacts/N1.2/bayside-totals.json
+```
+
+Expect: Each link gets a modelled rating from the stress score, with its
+level, whether it is all-ages, and whether assumed inputs support it. Each
+option reports safe trips and all trips, the safety score, km by level, km
+rated all-ages, places with a safe trip by type, and the share of km rated
+from assumed inputs. On Bayside the run gives 4, 3, 3 and 3 safe trips of
+25878 for the calm, shortest, separated and mesh options. It takes about 16
+minutes. This row covers step 0 only. The ladder of steps is N1.3.
+
+Artifact: `artifacts/N1.2/bayside-totals.json`.
+
+### N1.3
+
+```sh
+uv run --frozen pytest -q tests/test_option_ladder.py
+uv run --frozen python artifacts/N1.3/collect_ladder.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 artifacts/N1.3/bayside-ladder.json
+```
+
+Expect: Each link that is not all-ages gets the least disruptive fix of spec
+06, counted for that link. Next links on one street with one fix form one
+work. Links with no fix are listed by street. Each option has a ladder: every
+step makes at least one more trip safe, and records the works added with the
+running safety totals and the running parking spaces, traffic-lane km,
+lower-speed km, path km and disruption score. On Bayside the run gives 1207,
+858, 1134 and 2213 works in 98, 66, 92 and 161 steps for the calm, shortest,
+separated and mesh options. It takes about 35 minutes.
+
+Artifact: `artifacts/N1.3/bayside-ladder.json`.
+
+### N1.4
+
+```sh
+uv run --frozen pytest -q tests/test_network_report.py tests/test_network_share.py
+uv run --frozen python artifacts/N1.4/collect_report.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 artifacts/N1.4/bayside-network.html
+```
+
+Expect: The network report body follows the spec 17 order: the options side by
+side, my pick and my ask, the map with an option switch and a disruption
+slider, the chart and its table, the works of my pick by street, links with no
+fix, and data quality. The switch opens on my pick and the slider on the first
+step that reaches 0.9 of the full gain. With scripts off, the opening, the
+table and the step totals still show. The page holds no survey text. On
+Bayside the pick is Main roads with separation at step 56, with safety scores
+of 5.9, 1.7, 10.6 and 4.1 for the other options in order. The run takes about
+25 minutes.
+
+Limits: this part is a new module, not yet wired into `bikeplan report`. The
+old report parts and survey views are still in the page, and the opening
+figures with recipes are still open.
+
+Artifact: `artifacts/N1.4/bayside-network.html`.
+
+### C1.11
+
+```sh
+uv run --frozen bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out out
+artifacts/C1.11/prove.sh out artifacts/C1.11
+uv run --frozen pytest -q tests/test_edition.py tests/test_edition_browser.py tests/test_checks_opening.py
+```
+
+Expect: The Bayside report opens with the four network options side by side,
+my pick and my ask, then the map, the chart, the works of my pick by street,
+the links with no fix and data quality. Every number in the opening is a link
+to a figure from F32 up, and each recipe prints the same value from
+`options.json`. The release checks show FR-17.12 and FR-17.11 as met. The page
+holds no survey text. The report is about 2 MB. The build takes about 51
+minutes and 6.6 GB of memory on this host.
+
+Release proof: run 38461441413 on main built Bayside and `checks.html` shows
+FR-17.12 and FR-17.11 as met. The owner's links are the release
+https://github.com/rahulgurjar1983/bikepathadvocacy/releases/tag/v2026.10.13-pr149
+with `au-nsw-bayside-report.html` and `checks.html`. Check it with
+`gh release download v2026.10.13-pr149 -p checks.html`.
+
+Artifact: `artifacts/C1.11/edition-proof.json`
+
+### P11.2
+
+```bash
+uv run --frozen pytest -q tests/test_road_segment.py
+cat artifacts/P11.2/summary.json
+```
+
+Expect: 17 tests pass. The summary comes from one real tile of the NSW Road
+Segment service (box -33.935,151.115 to -33.925,151.125): 163 segments in 2
+requests, and 1670 of 189386 Bayside edges take the function's ADT with
+`adt_source` set to `nsw_road_segment`. The Bayside region file lists the adapter
+(18 tests now). The full Bayside fetch is not run.
+
+Part 3 adds a per-tile cache under `road_segment_tiles/` in the output folder.
+Run `bash artifacts/P11.2/fetch.sh` again and again; each run skips finished
+tiles. Count them with `ls data/cache/road-segment-work/road_segment_tiles | wc -l`.
+The Bayside box holds 266 tiles; all 266 are cached after three turns.
+20 tests pass.
+
+Part 4 copies `data/cache/road-segment-work/road_segments.gpkg` into the snapshot
+folder and builds the graph: `uv run --frozen python artifacts/P11.2/prove.py
+data/cache/au-nsw-bayside/2026-10-01 artifacts/P11.2/summary-full.json`.
+Expect: 26702 segments; 133280 of 189386 edges take `adt_source`
+`nsw_road_segment` and 56106 keep `default`. The build takes about 8 minutes.
+
+Artifact: `artifacts/P11.2/summary-full.json`
+
+### P11.3
+
+```bash
+uv run --frozen pytest -q tests/test_speed_zones.py
+bash artifacts/P11.3/fetch.sh
+cp data/cache/speed-zone-work/speed_zones.gpkg data/cache/au-nsw-bayside/2026-10-01/
+uv run --frozen python artifacts/P11.3/prove.py data/cache/au-nsw-bayside/2026-10-01 artifacts/P11.3/summary-full.json
+```
+
+Expect: 16 tests pass. The fetch reads the TfNSW Speed Zones service in 266
+tiles and keeps 14846 permanent zones. The build takes about 21 minutes: 35640
+of 189386 edges take `speed_source` `zone`, 31677 keep their `tag` and 122069
+keep `default`. The service needs no key, so the 👤 path (FR-10.9) shows only
+when the service answers with a key error; the test checks its text.
+
+Artifact: `artifacts/P11.3/summary-full.json`
+
+### N1.5
+
+```sh
+uv run --frozen pytest -q tests/test_overlays.py
+uv run --frozen bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out out
+uv run --frozen python artifacts/N1.5/prove.py out artifacts/N1.5
+```
+
+Expect: The map has an overlay box under the option switch. The street switch
+opens off and the place switches open on. Street calmness draws every street
+in blue for levels 1 and 2 and red for levels 3 and 4, busier streets thicker,
+with a switch for each level and one for streets rated all ages. Schools,
+stations and town centres have a circle, a square and a triangle in the key.
+Hover or tap names the street, its type, its level and its all-ages rating, or
+the place and its type. The overlays stay under the option links for every
+option and step. On Bayside the drawn pieces are 1529, 1213, 660 and 237 for
+levels 1 to 4, the level km add up to the 591.1 km of figure F1, and the place
+markers are 154 schools, 41 stations and 33 town centres. The report is 3.0 MB.
+The build takes about 45 minutes. The level km shown in the key come from `segments.csv`, run in the report folder:
+
+```sh
+python3 -c "import csv,collections;c=collections.Counter()
+for r in csv.DictReader(open('segments.csv')):c[r['lts']]+=float(r['length_m'])/1000
+print(c)"
+```
+
+Limits: the proof ran on a fresh build from this branch in headless Chromium
+with network calls blocked. The release run after the merge builds the same page.
+
+Artifact: `artifacts/N1.5/overlay-proof.json`
+
+### G1.1
+
+```sh
+uv run bikeplan region new "Blacktown Council New South Wales"
+uv run bikeplan region new "Blacktown Council New South Wales" --pick 1 --id au-nsw-blacktown --like regions/au-nsw-bayside.yaml --out /tmp/regions
+uv run pytest tests/test_region_new.py tests/test_region_set.py -q
+```
+
+Expect: The first command lists one match with its admin level and relation
+6217858 and writes nothing. The second writes a region file that loads and
+differs from the Bayside file only in id, name and boundary. The tests pass. `regions/sets/greater-sydney.yaml` lists the
+33 councils in the spec order. Each of the 33 region files differs from Bayside
+only in id, name and boundary. This needs the network for the first two commands.
+The artifact lists the 33 ids with their relations and the keys that differ.
+
+Limits: legal default speeds by country stay with P10.4.
+
+Artifact: `artifacts/G1.1/set.json`
+
+### G1.2
+
+```sh
+uv run --frozen bikeplan snapshot set regions/sets/greater-sydney.yaml
+uv run --frozen pytest -q tests/test_snapshot_set.py
+```
+
+Expect: the command skips each council whose manifest in `snapshots/` has the Bayside date and adapters, and fetches, verifies and publishes the rest. It exits 1 and names the councils that failed, and a rerun resumes from the cached tiles. The tests pass. Every published council passes the manifest check; the check that all 33 are published moves to the G1.5 proof.
+
+Limits: 13 councils are published. The `snapshots` workflow fetches the rest. Bayside's refetch moves to Q1.10.
+
+Artifact: `snapshots/au-nsw-randwick/2026-10-01/manifest.json`
+
+### G1.6
+
+```sh
+for m in snapshots/*/2026-10-01/manifest.json; do uv run --frozen bikeplan snapshot pull "$m" || echo "FAIL $m"; done
+comm -3 <(ls snapshots) <(gh release list --limit 200 --json tagName --jq '.[].tagName' | sed -n 's/^snapshot-\(.*\)-2026-10-01$/\1/p' | sort)
+```
+
+Expect: every pull downloads the release files and `verify` prints each file as `ok`, with no `FAIL` line. The `comm` output is empty when every published release has its manifest in `snapshots/`. Councils still missing are listed in `artifacts/G1.6/missing.txt`.
+
+Limits: 13 of 33 councils are copied. The row stays open until the `snapshots` workflow publishes the other 20.
+
+Artifact: `artifacts/G1.6/pull.txt`
+
+### M1.1
+
+```sh
+uv run --frozen pytest -q tests/test_network_area.py
+uv run --frozen python -I artifacts/M1.1/prove.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 artifacts/M1.1/area-proof.json
+```
+
+Expect: The tests pass. The proof builds the Bayside options with the shipped
+settings and checks them by its own route search. It finds no joined place and
+no option link outside the boundary widened by 200 m. Every option counts the
+same 586 trips, and the longest counted route is 4994.8 m, under 5 km. 40
+places join and 25 are listed as having no bike route to the main network.
+
+Artifact: `artifacts/M1.1/area-proof.json`
+
+### M1.2
+
+```sh
+uv run --frozen pytest -q tests/test_fit_free_separation.py tests/test_edition_fits.py
+uv run --frozen python -I artifacts/M1.2/prove.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 artifacts/M1.2/fix-proof.json
+```
+
+Expect: The tests pass. The proof picks a fix for every Bayside street segment
+with the shipped settings. It finds 34312 segments with a fix. In 1113 of them
+the quietway won where a cycleway that removes parking also fitted. In none of
+the 3044 segments whose fix takes parking or a lane was there a separated fix
+that took neither, or a fix with a lower disruption score.
+
+Artifact: `artifacts/M1.2/fix-proof.json`
+
+### M1.3
+
+```sh
+uv run --frozen pytest -q tests/test_network_blockers.py tests/test_edition_blockers.py
+uv run --frozen python -I artifacts/M1.3/prove.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 artifacts/M1.3/blockers-proof.json
+```
+
+Expect: The tests pass. The proof builds the Bayside options with the shipped settings. Each option ranks its blockers by trips stopped, then by street name. Every option has a ceiling of 100.0, no lower than its final score. My pick, Calm streets, ends at 35.49, so the opening holds the half-unsafe sentence and names its top three blockers. The ask names 10 streets and counts 68 more. The pick has 11 blockers and two are on state roads owned by Transport for NSW. The proof takes about 24 minutes.
+
+Artifact: `artifacts/M1.3/blockers-proof.json`
+
+
+### M1.4
+
+```sh
+uv run --frozen pytest -q tests/test_checks_audit.py tests/test_ladder_least.py
+uv run --frozen python -I artifacts/M1.4/prove.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 artifacts/M1.4/audit-proof.json
+```
+
+Expect: The tests pass. The proof builds the Bayside options with the shipped settings and runs the output checks on them. It finds no problem: 65 places and 3804 links lie inside, the ask names 10 streets that hold works, the longest trip is 4994.8 m against the 5 km limit, and no work removes parking where a cheaper fix fits. Before the fix choice used each link's own length, the same run found 20 such works. The proof takes about 19 minutes. The checks that no place is unjoined while the full graph reaches it and that no place name is a bare number are still open.
+
+Artifact: `artifacts/M1.4/audit-proof.json`
+
+### M1.5
+
+```sh
+uv run --frozen pytest -q tests/test_access_filters.py tests/test_network_outside.py tests/test_network_outside_ask.py
+uv run --frozen python -I artifacts/M1.5/prove.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 artifacts/M1.5/outside-proof.json
+```
+
+Expect: The tests pass. The Bayside proof joins 61 of 66 places, one outside link in each option, and finds no problem in the output checks. The five left out are unreachable in the full graph, which the check confirms with its own path test. No bus-only station is a place. The run takes about 25 minutes.
+
+Suburb nodes:
+
+```sh
+uv run --frozen pytest -q tests/test_snapshot.py -k places_query_holds
+```
+
+Expect: The test passes. The places query asks for suburb and locality nodes, so town centres take a suburb name once a snapshot is rebuilt. Artifact: `artifacts/M1.5/outside-proof.json` is unchanged until that rebuild.
+
+Artifact: `artifacts/M1.5/outside-proof.json`
+
+### T1.1
+
+```sh
+uv run --frozen pytest -q tests/test_corridors.py
+uv run --frozen python artifacts/T1.1/prove.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 /tmp/corridors.json
+```
+
+Expect: The tests pass. The run loads the TfNSW corridors file, draws an indicative route for each segment, keeps the part inside Bayside, gives each segment a verdict of covered, partly or missed, and totals the works on corridors. The Bayside run gives 2 covered, 6 partly and 2 missed.
+Artifact: `artifacts/T1.1/corridors.json`
+
+### T1.2
+
+```sh
+uv run --frozen pytest -q tests/test_corridor_report.py
+uv run --frozen bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/t12/out
+uv run --frozen python artifacts/T1.2/overlay.py /tmp/t12/out/report.html artifacts/T1.2/overlay.json
+```
+
+Expect: The tests pass. The Bayside report holds the section "How my pick fits the TfNSW corridors" after the works, with the opening sentence, the table of 13 segments and the credit. Switching on the overlay draws 11 dashed routes, and none are drawn before. The sentence reads 2 covered, 6 partly and 2 missed, with 10.09 km of works on the routes.
+Artifact: `artifacts/T1.2/section.txt`
+
+### G1.4
+
+```sh
+uv run --frozen pytest -q tests/test_corridors_first.py
+uv run --frozen python artifacts/G1.4/prove.py artifacts/G1.4/grid.json
+```
+
+Expect: The tests pass. On the test grid, "Corridors first" takes the paved path where "Calm streets" takes the road, with one safe trip. When the middle of the path is grass, that option has no safe trip. A rail-side candidate joins only that option, and building it adds 0.3 path km at the spec 06 path cost. This part covers the option engine; the Bayside report does not show the fifth option yet.
+
+Artifact: `artifacts/G1.4/grid.json`
+
+Part 2 feeds the candidates into the report:
+
+```sh
+uv run --frozen pytest -q tests/test_corridors_first_report.py
+```
+
+Expect: The tests pass. A snapshot with a `corridors.json` file gives a fifth option, "Corridors first", in `options.json` and the report. On the test grid with a rail line and open land beside it, that option holds a new path work. The Bayside snapshot has no `corridors.json` yet, so its report keeps four options.
+
+Artifact: `tests/test_corridors_first_report.py`
+
+### V1.8
+
+```bash
+uv run --frozen pytest -q tests/test_review_source.py
+uv run --frozen bikeplan snapshot review-source https://activetransportsuperhighway.com/ --out data/private/V1.8/capture-2026-10-17 --licence 'CC BY 4.0' --credit 'Active Transport Superhighway; https://activetransportsuperhighway.com/'
+uv run --frozen python artifacts/V1.8/check_capture.py data/private/V1.8/capture-2026-10-17 --out artifacts/V1.8/capture.json
+```
+
+Expect: the source bytes match their saved hash and stay out of git.
+A new capture needs a new folder; the tool will not replace saved files.
+The proof holds only hashes and an empty verdict count. It proves source
+capture only. No claim has a verdict yet. The route, claims, measures,
+private report and reply window remain to be built and checked.
+
+Artifact: `artifacts/V1.8/capture.json`
+
+### V1.8 clip
+
+```bash
+uv run --frozen pytest -q tests/test_review_clip.py
+uv run --frozen bikeplan route clip data/private/V1.8/capture-2026-10-17 --boundary data/cache/au-nsw-bayside/2026-10-01/boundary.geojson --out data/private/V1.8/clip-2026-10-17
+uv run --frozen python artifacts/V1.8/check_clip.py data/private/V1.8/clip-2026-10-17 --out artifacts/V1.8/clip.json
+```
+
+Expect: the clip keeps 36 pieces of 7 layers inside Bayside, each
+shorter than its whole layer. The folder is private and ignored by git.
+The layer km sit in the private `layers.json` only. The proof holds hashes
+and counts, with an empty verdict count. It does not prove any claim.
+
+Artifact: `artifacts/V1.8/clip.json`
+
+### V1.8 measures
+
+```bash
+uv run --frozen pytest -q tests/test_review_measures.py
+uv run --frozen bikeplan route measures data/private/V1.8/clip-2026-10-17/lines.geojson --region regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out data/private/V1.8/measures-2026-10-17
+uv run --frozen python artifacts/V1.8/check_measures.py data/private/V1.8/measures-2026-10-17 --out artifacts/V1.8/measures.json
+```
+
+Expect: the tests pass. The run takes about 26 minutes and 1.5 GB on this
+host. `measures.json` stays private and ignored by git. It holds paved
+off-road km, unpaved km, shared-street km by stress level, unsignalised
+crossings, the share of people within 500 m and 1 km, and schools within
+100 m. The proof holds the file hash and the key names only, with an empty
+verdict count. It proves the measures only, not any claim.
+
+Artifact: `artifacts/V1.8/measures.json`
+
+### V1.8 verdicts
+
+```bash
+uv run --frozen pytest -q tests/test_review_verdicts_plan.py
+uv run --frozen bikeplan route verdicts data/private/V1.8/measures-2026-10-17/measures.json --layers data/private/V1.8/clip-2026-10-17/layers.json --source data/private/V1.8/capture-2026-10-17/source --claims data/private/V1.8/claims.yaml --reply data/private/V1.8/reply.yaml --out data/private/V1.8/verdicts-2026-10-17
+uv run --frozen python artifacts/V1.8/check_verdicts.py data/private/V1.8/verdicts-2026-10-17 --out artifacts/V1.8/verdicts.json
+```
+
+Expect: the tests pass. The run takes under a second. It judges 12 claims:
+3 hold, 1 holds partly, 5 do not hold and 3 are outside this tool. The
+reply window has not started because the review is not yet sent to the
+author. The folder is private and ignored by git. The proof holds file
+hashes and verdict counts only.
+
+Artifact: `artifacts/V1.8/verdicts.json`
+
+### V1.8 page
+
+```bash
+uv run --frozen pytest -q tests/test_review_page.py
+uv run --frozen bikeplan route page data/private/V1.8/verdicts-2026-10-17 --source-manifest data/private/V1.8/capture-2026-10-17/source-manifest.json --reply data/private/V1.8/reply.yaml --lines data/private/V1.8/clip-2026-10-17/lines.geojson --out data/private/V1.8/page-map2-2026-10-17
+uv run --frozen python -I artifacts/V1.8/check_page.py data/private/V1.8/page-map2-2026-10-17 --out artifacts/V1.8/page.json
+```
+
+Expect: the 9 tests pass. The run takes under a second and writes `index.html`
+under `data/private`, which git ignores. The page holds 23 figures, each with a
+recipe, a map of 44 drawn route parts with a key, the source credit and
+licence, the date the reply window ends, and the right of reply. The proof
+holds the page hash, figure count and map path count only.
+
+Artifact: `artifacts/V1.8/page.json`
+
 ### Q1.6 goal and stage package view
 
 ```sh

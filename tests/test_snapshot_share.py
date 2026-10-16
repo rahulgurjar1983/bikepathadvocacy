@@ -222,3 +222,13 @@ def test_fr2_5_verify_runs_as_the_installed_command(tmp_path):
 
     assert result.returncode == 0
     assert "boundary.geojson ok" in result.stdout
+
+
+def test_fr18_2_a_new_snapshot_release_is_not_marked_latest(tmp_path, monkeypatch, gh_on_path):
+    directory = make_snapshot(tmp_path / "snap")
+    monkeypatch.chdir(tmp_path)
+
+    assert main(["snapshot", "publish", str(directory)]) == 0
+
+    create = [c for c in gh_on_path() if c[:2] == ["release", "create"]]
+    assert "--latest=false" in create[0]

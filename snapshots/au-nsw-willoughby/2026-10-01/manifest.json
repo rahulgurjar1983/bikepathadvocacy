@@ -1,0 +1,106 @@
+{
+  "region": "au-nsw-willoughby",
+  "snapshot_id": "2026-10-01",
+  "osm_date": "2026-10-01T00:00:00Z",
+  "created_at": "2026-10-15T04:09:08Z",
+  "tool_version": "0.1.0",
+  "config_hash": "fca4ae7c908893ea0df557f4155503d0d05f7c715c599f859717b113f2e08d9c",
+  "files": [
+    {
+      "name": "boundary.geojson",
+      "path": "boundary.geojson",
+      "sha256": "66b694cc4732b6e2d5f639dc28db2d209e358c20c7aafc319760939335044865",
+      "bytes": 22957,
+      "source": "OpenStreetMap via Overpass",
+      "request": "[out:json][timeout:900][date:\"2026-10-01T00:00:00Z\"];relation(6230051);out geom;",
+      "url": "https://overpass-api.de/api/interpreter",
+      "licence": "ODbL 1.0",
+      "attribution": "\u00a9 OpenStreetMap contributors",
+      "retrieved_at": "2026-10-15T03:58:40Z"
+    },
+    {
+      "name": "network.osm.gz",
+      "path": "network.osm.gz",
+      "sha256": "83ec968717fe247b25008d6066615c05c9ee9d1747dc67ac9bfe621a35873059",
+      "bytes": 4137501,
+      "source": "OpenStreetMap via Overpass",
+      "request": "[out:xml][timeout:900][date:\"2026-10-01T00:00:00Z\"];(way[\"highway\"~\"^(primary|primary_link|secondary|secondary_link|tertiary|tertiary_link|unclassified|residential|living_street|service|cycleway|path|footway|pedestrian|track|bridleway|steps|trunk|trunk_link)$\"](-33.848852,151.11415,-33.754402,151.262);>;node[\"highway\"=\"traffic_signals\"](-33.848852,151.11415,-33.754402,151.262);node[\"highway\"=\"crossing\"](-33.848852,151.11415,-33.754402,151.262);node[\"crossing\"](-33.848852,151.11415,-33.754402,151.262););out meta;",
+      "url": "https://overpass-api.de/api/interpreter",
+      "licence": "ODbL 1.0",
+      "attribution": "\u00a9 OpenStreetMap contributors",
+      "retrieved_at": "2026-10-15T03:59:41Z"
+    },
+    {
+      "name": "places.json",
+      "path": "places.json",
+      "sha256": "76fba08e2ff1631c12d95ba550f5203d8c56a737f083bef62f2951c794cce854",
+      "bytes": 438425,
+      "source": "OpenStreetMap via Overpass",
+      "request": "[out:json][timeout:900][date:\"2026-10-01T00:00:00Z\"];(nwr[\"amenity\"=\"school\"](-33.848852,151.11415,-33.754402,151.262);nwr[\"amenity\"=\"college\"](-33.848852,151.11415,-33.754402,151.262);nwr[\"amenity\"=\"university\"](-33.848852,151.11415,-33.754402,151.262);nwr[\"amenity\"=\"nursing_home\"](-33.848852,151.11415,-33.754402,151.262);nwr[\"amenity\"=\"social_facility\"](-33.848852,151.11415,-33.754402,151.262);nwr[\"amenity\"=\"library\"](-33.848852,151.11415,-33.754402,151.262);nwr[\"railway\"=\"station\"](-33.848852,151.11415,-33.754402,151.262);nwr[\"railway\"=\"halt\"](-33.848852,151.11415,-33.754402,151.262);nwr[\"public_transport\"=\"station\"](-33.848852,151.11415,-33.754402,151.262);nwr[\"amenity\"=\"ferry_terminal\"](-33.848852,151.11415,-33.754402,151.262);nwr[\"railway\"=\"tram_stop\"](-33.848852,151.11415,-33.754402,151.262);nwr[\"shop\"](-33.848852,151.11415,-33.754402,151.262););out center tags;",
+      "url": "https://overpass-api.de/api/interpreter",
+      "licence": "ODbL 1.0",
+      "attribution": "\u00a9 OpenStreetMap contributors",
+      "retrieved_at": "2026-10-15T04:00:21Z"
+    },
+    {
+      "name": "population.gpkg",
+      "path": "population.gpkg",
+      "sha256": "50fb69cb1ef62eda94c5a35e4f5f550ee7466b625dbcd01a3014900d7eb8a430",
+      "bytes": 81920,
+      "source": "Kontur Population via the Humanitarian Data Exchange",
+      "request": "{\"search\": \"https://data.humdata.org/api/3/action/package_search?fq=organization%3Akontur+AND+res_url%3A%2Akontur_population_AU_%2A&rows=10\", \"dataset\": \"kontur-population-australia\"}",
+      "url": "https://geodata-eu-central-1-kontur-public.s3.amazonaws.com/kontur_datasets/kontur_population_AU_20231101.gpkg.gz",
+      "licence": "CC BY 4.0",
+      "attribution": "Kontur Population dataset, Kontur Inc.",
+      "retrieved_at": "2026-10-15T04:00:53Z"
+    },
+    {
+      "name": "parcels.gpkg",
+      "path": "parcels.gpkg",
+      "sha256": "24d0f0f2631c43b9d56131c79be92a6667ec81725af1ae452dc9ece320235176",
+      "bytes": 27103232,
+      "source": "NSW Cadastre, Lot layer, NSW Spatial Services",
+      "request": "{\"box\": [-33.848852, 151.11415, -33.754402, 151.262], \"requests\": 242, \"parcels\": 87821}",
+      "url": "https://maps.six.nsw.gov.au/arcgis/rest/services/public/NSW_Cadastre/MapServer/9",
+      "licence": "CC BY 4.0",
+      "attribution": "\u00a9 State of New South Wales (NSW Spatial Services), NSW Cadastre",
+      "retrieved_at": "2026-10-15T04:07:54Z"
+    },
+    {
+      "name": "elevation.tif",
+      "path": "elevation.tif",
+      "sha256": "aae90bc54dba4a2524a37c658829bbca3b69e3ee8a322fc19e1baa3ff10a2131",
+      "bytes": 574904,
+      "source": "Copernicus DEM GLO-30, European Space Agency",
+      "request": "{\"box\": [-33.848852, 151.11415, -33.754402, 151.262], \"tiles\": 1}",
+      "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S34_00_E151_00_DEM/Copernicus_DSM_COG_10_S34_00_E151_00_DEM.tif",
+      "licence": "Copernicus DEM licence (free, with attribution)",
+      "attribution": "Contains modified Copernicus DEM GLO-30 data, \u00a9 DLR e.V. 2010-2014 and \u00a9 Airbus Defence and Space GmbH 2014-2018, provided under COPERNICUS by the European Union and ESA",
+      "retrieved_at": "2026-10-15T04:08:19Z"
+    },
+    {
+      "name": "road_segments.gpkg",
+      "path": "road_segments.gpkg",
+      "sha256": "22201ee284753374db330290863b40d411004e9be41a705f5a4e5802a5809ac0",
+      "bytes": 3768320,
+      "source": "NSW Road Segment, NSW Spatial Services",
+      "request": "{\"box\": [-33.848852, 151.11415, -33.754402, 151.262], \"requests\": 150, \"segments\": 14461}",
+      "url": "https://portal.data.nsw.gov.au/arcgis/rest/services/RoadSegment/MapServer/0",
+      "licence": "CC BY 4.0",
+      "attribution": "\u00a9 State of New South Wales (NSW Spatial Services), NSW Road Segment",
+      "retrieved_at": "2026-10-15T04:08:46Z"
+    },
+    {
+      "name": "speed_zones.gpkg",
+      "path": "speed_zones.gpkg",
+      "sha256": "f2d266ef3b33e962156b40a138bd8cf9304799f152c88393607ae6beed033505",
+      "bytes": 2572288,
+      "source": "Transport for NSW Speed Zones, NSW Spatial Services",
+      "request": "{\"box\": [-33.848852, 151.11415, -33.754402, 151.262], \"requests\": 150, \"zones\": 8740}",
+      "url": "https://portal.data.nsw.gov.au/arcgis/rest/services/Hosted/TFNSW_Speed_Zones_Public/FeatureServer/0",
+      "licence": "CC BY 4.0",
+      "attribution": "\u00a9 State of New South Wales (Transport for NSW), Speed Zones",
+      "retrieved_at": "2026-10-15T04:09:08Z"
+    }
+  ]
+}

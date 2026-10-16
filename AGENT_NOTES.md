@@ -18,6 +18,14 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Spec issues
 
+### C1.11 old figures stay
+
+- Spec 17 section 5 says the old figures leave `figures.json`. FR-0.35 and the
+  contracts gate keep the range from F1 and only let it grow. Both cannot hold.
+  The build keeps F1 to F31 and links them from one archive list.
+  Proof: `uv run python -m gates.contracts --base origin/main` rejects a range
+  that does not start at 1.
+
 ### Q1.6 prior report archive contract (resolved)
 
 FR-0.35 now allows the report file list to grow. The proof below is
@@ -403,6 +411,8 @@ same clash after the community report input merge. The base commit is
 in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 `artifacts/Q1.3/fresh-main-audit.txt`. No source or test was changed.
 
+
+- Speed zones come from `https://portal.data.nsw.gov.au/arcgis/rest/services/Hosted/TFNSW_Speed_Zones_Public/FeatureServer/0` with no key. The service lowercases its fields (`objectid`, `type`, `speed` such as `50 km/h`). Only permanent types are kept; school, variable, road work and wet weather zones are dropped. A tile fetch is fast (28 s for 266 tiles) but the Bayside build takes 21 minutes.
 
 ## BLOCKED
 
@@ -1062,6 +1072,244 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 - The old record test pins `pending`, so it still lists the two open items.
   Selecting these packages in the views is the next part.
 - Run `uv run --frozen python artifacts/Q1.6/collect_option_packages.py`.
+
+### N1.1 network options
+
+- `bikeplan.options` takes a rating for each directed edge: `lts`, `separated`
+  and `no_fix`. N1.2 and N1.3 fill these from the model. The collector in
+  `artifacts/N1.1` fills them from the stress score and the fit choice.
+- A link joins both directions of one street. Its level is the worst of the
+  two, and it counts as separated only if both directions are.
+- networkx `steiner_tree` with `mehlhorn` fails with a `KeyError` when the
+  graph has more than one component. The code cuts the graph to the
+  terminals' component first, and `join_places` drops islands with a reason.
+- Build each weighted graph with sorted nodes and links. That is what makes
+  shuffled input give the same links.
+- The Bayside run takes about 285 seconds, mostly the stress and fit scoring.
+
+
+### N1.2 modelled rating and option totals
+
+- `bikeplan.rating.model_ratings(graph, scores, fits)` gives the rating of each
+  directed edge. `fits` must hold every segment ID, with `None` for streets
+  that need no fix. Link IDs are sorted pairs, so a link is `(3, 6, 0)`.
+- A link is all-ages only if both directions are. It is assumed if either
+  direction is. On Bayside nearly every link is assumed, because traffic counts
+  are all defaults.
+- `option_totals(table, links, joined, fixed)` takes `fixed` links as level 1
+  and all-ages. N1.3 uses it for each step of the ladder.
+- The Bayside run takes about 16 minutes, mostly stress scoring and the
+  25878 trips.
+
+
+### N1.3 fix ladder
+
+- `bikeplan.ladder.link_fixes` counts disruption for each link with
+  `disruption_counts` on the link length, so it ignores the whole segment
+  count. `build_ladder` takes those fixes, the option links and the places.
+- Works are numbered by their first link. Steps list work numbers.
+- A trip in an option with no path inside it counts as blocked. A non-all-ages
+  link with no spec 06 fix blocks every trip that crosses it.
+- `option_trips` finds each trip path once. Pass it to `option_totals` as
+  `trips`, or each step repeats thousands of shortest paths.
+- The Bayside run takes about 35 minutes. Few trips become safe because no-fix
+  links block most of them.
+
+
+### N1.4 network report body
+
+- `bikeplan.network_report.network_report(options, share, places)` gives a
+  head and a body. An option is the N1.3 ladder plus `id`, `name`, `km`,
+  `same_as` and `lines`. A line is `{work, ok, line}` with lon/lat points.
+- The step texts, chart dots and tenths come from the server, so the script
+  only moves the slider and redraws links.
+- The pick ask names every street up to the recommended step. On Bayside that
+  is 285 streets, so the next part should fold it.
+- Not done: the build in `run.py` still makes the old page. Next part wires
+  this body in, moves the old parts and figures to the archive, and drops the
+  survey layer, `survey-note` and `survey_options`.
+- The Bayside collector takes about 25 minutes.
+
+
+### C1.11 first edition
+
+- `bikeplan report` now builds the spec 17 page. `bikeplan.edition` builds the
+  four options, the ladders and the page; `run.py` calls it. The old sections
+  (summary, projects, sheets, change, trips, works, delivery and the survey
+  layer) no longer show on the page. Their data stays in `frontier.json` and
+  `proposal.json`.
+- Every number in the options, map text, chart table, works table, links with no
+  fix and data quality is a link to a figure. Figures from F32 up come from
+  `options.json`, and each recipe reads only that file. `Figures.ref` hands out
+  the IDs in the order the page first uses them.
+- `network_report` takes a `ref(key, text)` function. The default returns the
+  text, so the N1.4 tests still read plain numbers.
+- Figures F1 to F31 stay in `figures.json`, each linked from "More figures from
+  the data archive". The contracts gate only lets the old figure range grow, so
+  they cannot leave yet.
+- `bikeplan checks` has two new output checks. FR-17.12 opens each region
+  archive, runs every spec 17 recipe on its `options.json`, and checks the hash,
+  the four option names and the figure links in the opening. FR-17.11 looks for
+  the word survey in each `-report.html`.
+- A test grid report has one school and no works, so every option scores 0. The
+  FR-17.12 check fails a release where no option gains safety.
+- Host load was above 20 on 4 cores, so one report test file took 4 minutes.
+
+- P11.2: `nsw_road_segment` writes `road_segments.gpkg`; the real service names its id field `OBJECTID` and returns Z of -1000, so the adapter reads either case and drops Z. A 0.01 degree tile takes about 30 s, so the whole Bayside box is hours; a full-box run dies at the one hour turn limit. `build` calls `bikeplan.traffic.set_segment_traffic` when the file and the profile `road_functions` exist. The Bayside region adapters now list it. Next: a per-tile cache so a fetch over many turns resumes; the cached snapshot lacks `road_segments.gpkg` until then.
+
+### N1.5 map overlays
+
+- `edition.street_overlay(pieces, rows)` keeps the merged street pieces of
+  `map.json` without the fix, and the km by stress level and all-ages from
+  `segments.csv`. `run.py` passes it to `edition`, and the page holds it in
+  `network-data` under `streets`.
+- The level km in the key are plain text. New figures would break the exact
+  figure count test of FR-17.12, so the key links the total to F1.
+- Streets and places have their own Leaflet panes (390 and 395) under the
+  option links (400). Place markers are `divIcon` copies of the key shapes.
+- Selenium `.text` of a Leaflet tooltip is empty. Read `textContent`.
+- A stale Chromium from a timed out run makes the next one hang. Do not run
+  `find /` or `pkill -f chrome` from the shell.
+
+
+### N1.4 close
+
+- C1.11 finished the open parts of N1.4. On main, `uv run --frozen pytest -q tests/test_edition.py tests/test_network_report.py tests/test_checks_opening.py` gives 39 passed. Release v2026.10.13-pr149 `checks.html` shows FR-17.11 met.
+- The old branch `loop/N1.4-report-order` is stale: it drops old tests and conflicts with main. Do not merge it.
+
+- P11.2: `nsw_road_segment` caches each top-level tile in `road_segment_tiles/` of its output folder. `bash artifacts/P11.2/fetch.sh` resumes into `data/cache/road-segment-work` (git ignores it). 219 of 266 tiles done after two turns, so about one more turn. When all 266 exist, copy `road_segments.gpkg` into the snapshot, rebuild and run the edge matching proof.
+- P11.2: the full Bayside road segment file (266 tiles, 26702 segments, 5.8 MB) is in the cached snapshot; the service answers 504 now and then, so rerun `artifacts/P11.2/fetch.sh` until 266 tiles are cached. The graph build with it takes about 8 minutes; 133280 of 189386 edges match a segment.
+
+G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au-nsw-<slug> --like regions/au-nsw-bayside.yaml` made the 33 council files. Nominatim gives one match for most queries; "Sydney" needs "City of Sydney New South Wales". Keep a 1.3 s pause between calls. `scripts/release.sh` skips regions with no published snapshot, so the new files do not enter a release until G1.2.
+
+### G1.2 notes
+
+- A snapshot of the smallest council, Burwood, took 2570 s and 470 MB. Bigger councils take longer, mostly in `nsw_road_segment` tiles. Run `bash scripts/snapshot-set.sh <region-id>` once per council. It resumes the road segment tiles in `data/cache/<id>/<date>/`.
+- The published Bayside manifest lists only 5 files. Its region file lists 5 adapters, so the elevation, road segment and speed zone files are missing from it. `tests/test_snapshot_set.py` expects every council, Bayside too, to hold the files of all 5 adapters. Bayside needs a refetch under this row.
+- The real data tests in that file stay red until all 33 manifests and runs exist. The PR stays a draft until then.
+- A first `gh release upload` of many files may answer HTTP 400. Run the script again.
+- Canada Bay hit an Overpass 504 once, then a rerun used the 1 hour foreground limit and a 10 minute background limit and was stopped. Its tiles are in `data/cache/au-nsw-canada-bay/`, so run the script again. Strathfield, the smallest, took 507 s. Pick small councils first.
+- New snapshot releases now pass `--latest=false`, so they never take the latest release from the weekly report release.
+- Woollahra: a foreground run used the 1 hour limit and a 10 minute background run was stopped. Its tiles are in `data/cache/au-nsw-woollahra/`, so run the script again. Nine of 33 councils were published at that point (Woollahra needed a rerun after an Overpass HTTP 500).
+- Willoughby finished on a rerun from its cached tiles, so its 866.7 s counts only the last run, not the first partial run. Ten of 33 councils are published (Bayside needs a refetch); 23 remain.
+- North Sydney finished in two foreground runs (the first moved to the background and was stopped at 10 minutes; the second took 19 min from cached tiles). Eleven of 33 are published counting Bayside; 22 need a run (Bayside needs a refetch).
+- Randwick finished in one foreground run from its cached tiles. Twelve of 33 are published counting Bayside (Bayside needs a refetch); 21 need a run.
+- G1.2 now has one command: `uv run --frozen bikeplan snapshot set regions/sets/greater-sydney.yaml`. It skips published councils, so a rerun resumes. A 55 minute foreground run started on Bayside's refetch and was stopped at the limit; run it again until `pytest tests/test_snapshot_set.py` is green. `scripts/snapshot-set.sh` and `artifacts/G1.2/runs.json` are history: the new spec leaves run times to the release jobs.
+- G1.2 (2026-10-15): the set command used to crash on a 502 from Overpass; it now names that council and goes on. A 50 minute run stopped at the time limit in Bayside's refetch (first in the set) with nothing new published. Next turn: add a per-council time limit or an order option so the other councils run before Bayside.
+- G1.2 (2026-10-16): the set command gained `--only <id>` (repeatable) and `--seconds N` per council, so Bayside's refetch no longer starves the rest. A 55 minute foreground run on `--only au-nsw-ryde` was ended by the turn limit before it printed; its tiles stay in `data/cache/au-nsw-ryde/`, so run it again. Still unpublished: 21 councils and the Bayside refetch.
+- G1.2 (2026-10-16): `--seconds` did not stop a stuck council, because its time-out error was an `OSError` and the fetch retry loop caught it and tried again. It is now a plain `Exception`, with a test that goes through `with_retries`. Ryde then published in one run from its cached tiles. Twelve councils besides Bayside are published; Bayside's refetch and 20 councils remain. Run `--only <id> --seconds 2400` for one council per turn.
+- G1.2 (2026-10-16): Cumberland answered Overpass HTTP 502 twice in a row (25 s and 3 min); the set command named it and went on. Georges River ran 26 min to `--seconds 1500` and is cached in `data/cache/au-nsw-georges-river/`; run it again to publish. Still unpublished: 20 councils and the Bayside refetch.
+- G1.2 (2026-10-16): Georges River did not publish in two more foreground runs (`--seconds 1500`, then `--seconds 1800`); both ended at the time limit after the same log line, "Created 146,622 records", with the road segment and speed zone files cached. The next turn should find which stage follows that line and why it does not finish before it runs again. Still unpublished: 20 councils and the Bayside refetch.
+- G1.2 (2026-10-16): the Georges River stall is not after "Created 146,622 records" (that line is the parcel file). A traceback taken after 240 s showed the wait inside the road segment step, in a network read of one uncached tile. A small test query to the NSW road segment service took 28.5 s and 24.6 s (`curl -m 60 -w "%{time_total}"` on a 0.01 degree box), so the service is slow today and each uncached tile costs tens of seconds. Rerun `--only au-nsw-georges-river --seconds 2400` when the service is quicker; cached tiles are kept. Still unpublished: 20 councils and the Bayside refetch.
+- G1.2 (2026-10-16): Blacktown ran to `--seconds 2400` in the foreground and stopped at the same road segment stage ("Created 273,727 records" is the parcel file); its tiles are cached in `data/cache/au-nsw-blacktown/`, so run it again. Still unpublished: 20 councils and the Bayside refetch. CI on PR 162 is red only on `test_fr18_2_every_council_in_the_set_has_a_manifest_like_bayside`, which needs all 33.
+- G1.2 (2026-10-16): Blacktown ran again with `--seconds 2400` and ended at the time limit after the same parcel log line; nothing new published. Still unpublished: 20 councils and the Bayside refetch. The road segment service stays slow; try a different council or a quicker service hour.
+- G1.2 (2026-10-16): Cumberland ran with `--seconds 1500` and ended at the time limit; nothing new published. The Overpass 502 is gone but the road segment service stays slow. Still unpublished: 20 councils and the Bayside refetch.
+- G1.2 (2026-10-16): the road segment service answered a probe in 3.8 to 10.5 s. City of Sydney ran with `--seconds 2700` and ended at the time limit after its parcel log line; nothing new published. Still unpublished: 20 councils and the Bayside refetch. Every council now ends at the road segment stage; the next turn should try that stage with a smaller tile size or a quicker hour.
+
+### G1.6 notes
+
+- G1.6 (2026-10-16): `snapshots/` holds 13 manifests and `gh release list` shows the same 13 `snapshot-<id>-2026-10-01` releases, so nothing new to copy. Check: `comm -23` of the two lists is empty.
+- Run 38825334605 of the `snapshots` workflow is still running. Missing (20): blacktown, blue-mountains, camden, campbelltown, canterbury-bankstown, cumberland, fairfield, georges-river, hawkesbury, hornsby, inner-west, ku-ring-gai, liverpool, northern-beaches, parramatta, penrith, sutherland, sydney, the-hills, wollondilly. Bayside needs its refetch (Q1.10).
+- Cumberland failed in run 38825334605 with "HTTP Error 504: Gateway Time-out" after 50 minutes. Rerun it with the `councils` input.
+- G1.6 (2026-10-16): all 13 manifests pass `snapshot pull` (see `artifacts/G1.6/pull.txt`). Run 38825334605 was started with ref `loop/G1.2-snapshots`, which PR 162 deleted when it merged. 13 jobs failed at checkout with a git fetch error, and 5 more failed with Overpass 504 or read time-outs (`artifacts/G1.6/missing.txt`). Operator ask: rerun the `snapshots` workflow with ref `main`, with the `councils` input set to the missing ids.
+- `snapshot verify` on a local folder fails with "speed_zones.gpkg missing" because big files stay in the release; use `snapshot pull`.
+
+### M1.1 notes
+
+- M1.1 (2026-10-16): `join_places`, `link_table`, `build_options` and `build_ladder` now use the boundary widened by `network.boundary_buffer_m` (`options.area_graph`). Trips come from `option_trips(..., max_trip_m)`, which counts a pair only when its shortest route inside that area is at most `network.max_trip_km`.
+- On Bayside the area holds two big bike components (5817 and 3802 nodes), so 25 of 65 places in the boundary sit off the main one and are listed as "no bike route to the main network". Routes that may leave the area would give 596 trips instead of 586. Run `uv run --frozen python -I artifacts/M1.1/prove.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 /tmp/proof.json` (18 minutes).
+- Editions built before M1.1 (`artifacts/C1.11`) join 228 places, because the old scope used `analysis_buffer_m`. C1.13 rebuilds them.
+
+### M1.2 notes
+
+- M1.2 (2026-10-16): `choose` and `segment_fit` take `free_separation`, off by default so the FR-6.11 tests and other callers keep the old choice. `edition.option_fits` turns it on for network options. A separated fix wins over `quietway` only when its parking spaces and lane km are both zero; otherwise the lowest disruption score wins. The Bayside proof takes 18 minutes: `uv run --frozen python -I artifacts/M1.2/prove.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 /tmp/p.json`.
+
+### M1.3 notes
+
+- M1.3 (2026-10-16): `build_ladder` now returns `blockers` and `ceiling`. A blocker is a street whose links stay not all-ages with no fix. Its trips are the trips whose no-fix links all lie on that street. A trip held by two blocker streets counts for neither. The ceiling fixes every link of the option.
+- A blocker also covers links where the fit tool says all ages or has no traffic data while the stress model says not all ages. Their reason reads "no design in the tool changes its stress rating" or "no traffic data to design a fix".
+- The state road owner is the profile's `fit.speed_approval_body`. State roads are the links whose matched road function is in `network.state_functions` (au-nsw: PrimaryRoad and ArterialRoad). The road segment data has no owner field, so this is an assumption. Bayside shows one "unnamed cycleway road" with that owner, which comes from a nearby matched segment.
+- The new figures (blocker trips and km, the ceiling and the count of unnamed ask streets) carry the spec label "spec 17 blockers" and take the last IDs, so the C1.11 figure count test stays intact. `Figures.settle` swaps the `L` placeholders for the final IDs.
+- The proof takes 24 minutes: `uv run --frozen python -I artifacts/M1.3/prove.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 /tmp/p.json`.
+
+
+## M1.4 notes
+
+- A fit scores a segment by its length inside the boundary. A link in the widened strip has none, so all fixes tie at 0 and a parking fix could win. `link_fixes` now picks each link's fix by its own length.
+- A real Bayside build takes 19 to 24 minutes. Run it once per change.
+- The unjoined-place and bare-number-name checks of FR-17.15 belong to M1.5, whose row text names them.
+
+### M1.5 notes
+
+- M1.5 (2026-10-16): `join_places` joins a part to the main part by one shortest route in the full graph and returns the links outside the area as `Joined.outside`. `link_table` marks them `outside`, `build_options` lists them per option, and `group_works` keeps their works apart with `outside` set.
+- Suburb nodes are not in the Bayside snapshot, and `test_fr7_10_places_query_holds_every_place_tag_shop_and_out_center_tags` counts 12 filters, so adding `place=suburb` to the query needs an owner decision on that test. Until then a centre is named "Town centre near <nearest named place>".
+- Outside works carry the label "outside Bayside" but no neighbouring council name yet; the region files hold no neighbour boundaries.
+
+- T1.1: do not name a feature-row run output `proof.json`; the red-green gate then reads the row as a proof row and rejects it.
+
+- T1.2: `edition()` and `network_report()` take an optional `corridor` dict from `corridors.corridor_report`. `edition.corridor_data` loads `references/tfnsw-strategic-corridors.yaml` and returns None when an end is outside the snapshot box (`OutsideBox`), so other regions get no section. `build_options_report` keeps the ratings in `graph.graph["ratings"]`. Corridor figures read `options.json` key `corridors` and use spec 19. The overlay draws only routes with a bike route, so Bayside shows 11 of 13. A Leaflet tooltip fades out, so a test must wait for the label to leave the page. The Bayside report takes about 32 minutes.
+- T1.2 note for C1.13: T2 and T3 (Wolli Creek to Rockdale to Kogarah) get "no route" in the Bayside run, as in T1.1. Check this before calling the edition ready.
+
+### G1.4 notes
+
+- `build_options(..., corridors=None)` keeps four options. A list (even empty) adds "corridors". Each candidate is `{"a","b","length_m","label"}`; its link key is `(a, b, 100 + index)`.
+- `link_table` now marks `unpaved` (surface tag on a path, cycleway or footway) and `path`; an unpaved link is never all-ages. `surface` is now a kept way tag in `network.py`, so older graph caches lack it.
+- Wiring left: turn `propose.add_corridor_paths` candidates into the dicts above in `edition.build_options_report`, then the switch, chart and figure counts in `test_edition.py` need a fifth option.
+- G1.4: nothing writes `corridors.json` yet; only `propose` and the options report read it. `from bikeplan import propose` gives the CLI function, so tests use `importlib.import_module`.
+
+### V1.8 source capture
+
+- `bikeplan snapshot review-source <url> --out data/private/<new folder>
+  --licence <licence> --credit <credit>` saves exact source bytes in `source`,
+  plus a source manifest and `review.yaml` with `public: false`. It refuses
+  an old folder and any path outside the private root, even through a link.
+- The live page is in `data/private/V1.8/capture-2026-10-17/source`. Its
+  `const DATA=` object has a `lines` GeoJSON field. Read it offline; no route
+  or claim from it may enter git. The
+  next part needs clipping, new measures, all claim verdicts and the report.
+  A local capture has not been sent to the author. No reply clock has begun.
+- The public proof holds hashes only, with an empty verdict count. This is
+  source capture proof, not a completed review. Use a new folder to refetch.
+
+### V1.8 clip
+
+- `bikeplan route clip <capture> --boundary <boundary.geojson> --out
+  data/private/<new folder>` reads the `const DATA=` lines, clips them to the
+  boundary and writes `lines.geojson`, `layers.json` and `review.yaml`.
+- The page now totals 4,143.7 km over 932 lines, not the 4,133.9 km of spec
+  18. Its data changed since 14 October. Check each claim against the
+  new capture and say so in the report.
+- Still left: the new measures, the claim verdicts, the private report and
+  the reply window. No reply clock has begun.
+
+
+### V1.8 measures
+
+- `bikeplan route measures <lines.geojson> --region --snapshot --out` writes
+  `measures.json` (new module `review_measures.py`). The real Bayside run took
+  25 minutes 43 seconds and 1.5 GB; most of it is `build` plus `route_figures`
+  matching 932 lines. Do not run it twice in one turn.
+- The measures are not yet in `route_figures` totals or `MEASURES` in
+  `review.py`, so no claim can use them. Left: wire them into the claim
+  verdicts, check each section 2 claim against the new capture, build the
+  private report and record the reply window. No reply clock has begun.
+- A gate test file must collect on base: import a new module inside the test
+  functions, not at the top.
+
+## V1.8 verdicts
+
+- `bikeplan route verdicts` judges claims from saved measures, the clip's `layers.json` and the source file. It refuses output outside `data/private` and an existing folder.
+- Claims and `reply.yaml` for the real run live in `data/private/V1.8/` and are not in git. Quotes come from the page text of 2026-10-17.
+- The reply window starts only when a `sent` entry has a date. A person sends the review; no turn may contact the author.
+- Left: the private report page. `review_report.py` ties its figures to route data, so it needs a variant for these measures.
+
+### V1.8 page
+
+- `bikeplan route page <verdicts folder> --source-manifest --reply --out data/private/<new folder>` writes `index.html` from saved verdicts. It is new code in `review_page.py` and does not rebuild route figures.
+- The page has no map yet: the verdicts hold no route geometry. Adding the map from the clip's `lines.geojson` is left.
+- A person sends the page to the author, then adds a `sent` entry to `data/private/V1.8/reply.yaml`. Rerun `route verdicts` and `route page` into new folders to start the 14 days. No turn may contact the author.
+
+- Map: add `--lines <clip lines.geojson>` to `route page` to draw the route as an SVG with a key by plan layer. It must sit under `data/private`. The map is coloured by plan layer, not stress, since the clip holds no stress. Rerun the page into a new folder.
 
 ### Q1.6 goal and stage package view
 

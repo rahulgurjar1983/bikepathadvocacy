@@ -1,0 +1,2026 @@
+[
+  {
+    "id": "F1",
+    "inputs": [
+      {
+        "name": "segments.csv",
+        "sha256": "b7aff3828c65ca838e52d18ac5c576716970ec50c2e44fb275fbb8f45e6fe430"
+      }
+    ],
+    "label": "Street a bike may use",
+    "method": "I add up the length of every street segment inside the boundary where a bike may ride.",
+    "recipe": "import csv;print(round(sum(float(r['length_m']) for r in csv.DictReader(open('segments.csv')) if True)/1000,3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 03",
+    "unit": "km",
+    "value": 591.099
+  },
+  {
+    "id": "F2",
+    "inputs": [
+      {
+        "name": "segments.csv",
+        "sha256": "b7aff3828c65ca838e52d18ac5c576716970ec50c2e44fb275fbb8f45e6fe430"
+      }
+    ],
+    "label": "Street that meets the model's all-ages criteria (AAA)",
+    "method": "I score each edge for stress and keep the segments where every edge is AAA.",
+    "recipe": "import csv;print(round(sum(float(r['length_m']) for r in csv.DictReader(open('segments.csv')) if r['aaa'] == '1')/1000,3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 04",
+    "unit": "km",
+    "value": 0.543
+  },
+  {
+    "id": "F3",
+    "inputs": [
+      {
+        "name": "segments.csv",
+        "sha256": "b7aff3828c65ca838e52d18ac5c576716970ec50c2e44fb275fbb8f45e6fe430"
+      }
+    ],
+    "label": "Street with no width estimate",
+    "method": "I try each width source in rank order. I count the segments where none gave a width.",
+    "recipe": "import csv;print(round(sum(float(r['length_m']) for r in csv.DictReader(open('segments.csv')) if r['width_source'] == 'none')/1000,3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 05",
+    "unit": "km",
+    "value": 60.255
+  },
+  {
+    "id": "F4",
+    "inputs": [
+      {
+        "name": "map.json",
+        "sha256": "f3036da0b260f51524f60d210d864b5954b876e636bf5704aedcfddbd9b0fad7"
+      }
+    ],
+    "label": "Street piece drawn on the map",
+    "method": "I join street segments that touch and share a name, street type, stress level, safety and fix. I draw each joined piece once. I count the pieces I drew.",
+    "recipe": "import json;print(len(json.load(open('map.json'))['segments']))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "pieces",
+    "value": 3639
+  },
+  {
+    "id": "F5",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "cfcfc958051333790e5075c0204dc0e61bfe77ee54999e1ec3bcea24853bf0f2"
+      }
+    ],
+    "label": "Access score at the recommended stop",
+    "method": "I take the projects in the order I picked them, and add up what each one costs and gains. The shown step is the recommended stop of the Weights as set scenario. The recipe reads that step from frontier.json; change the rank in it to check any other step. Unique people count the union of home nodes gaining a safe destination. Unique people by type use a union for each type. Gains counted by type sum those type counts and can count a person again. People are population estimates, not households; each node holds a share of its population unit.",
+    "recipe": "import json;d=json.load(open('frontier.json'));s=[c for c in d['scenarios'] if c['id']=='shipped'][0];p=s['picks'][s['recommended_stop'] or 0];print(p['score'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "points",
+    "value": 0.1
+  },
+  {
+    "id": "F6",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "cfcfc958051333790e5075c0204dc0e61bfe77ee54999e1ec3bcea24853bf0f2"
+      }
+    ],
+    "label": "Disruption score at the recommended stop",
+    "method": "I take the projects in the order I picked them, and add up what each one costs and gains. The shown step is the recommended stop of the Weights as set scenario. The recipe reads that step from frontier.json; change the rank in it to check any other step. Unique people count the union of home nodes gaining a safe destination. Unique people by type use a union for each type. Gains counted by type sum those type counts and can count a person again. People are population estimates, not households; each node holds a share of its population unit.",
+    "recipe": "import json;d=json.load(open('frontier.json'));s=[c for c in d['scenarios'] if c['id']=='shipped'][0];p=s['picks'][s['recommended_stop'] or 0];print(p['disruption'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "points",
+    "value": 0.0
+  },
+  {
+    "id": "F7",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "cfcfc958051333790e5075c0204dc0e61bfe77ee54999e1ec3bcea24853bf0f2"
+      }
+    ],
+    "label": "Parking spaces taken at the recommended stop",
+    "method": "I take the projects in the order I picked them, and add up what each one costs and gains. The shown step is the recommended stop of the Weights as set scenario. The recipe reads that step from frontier.json; change the rank in it to check any other step. Unique people count the union of home nodes gaining a safe destination. Unique people by type use a union for each type. Gains counted by type sum those type counts and can count a person again. People are population estimates, not households; each node holds a share of its population unit.",
+    "recipe": "import json;d=json.load(open('frontier.json'));s=[c for c in d['scenarios'] if c['id']=='shipped'][0];p=s['picks'][s['recommended_stop'] or 0];print(p['parking_spaces'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "spaces",
+    "value": 0
+  },
+  {
+    "id": "F8",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "cfcfc958051333790e5075c0204dc0e61bfe77ee54999e1ec3bcea24853bf0f2"
+      }
+    ],
+    "label": "Traffic-lane length taken at the recommended stop",
+    "method": "I take the projects in the order I picked them, and add up what each one costs and gains. The shown step is the recommended stop of the Weights as set scenario. The recipe reads that step from frontier.json; change the rank in it to check any other step. Unique people count the union of home nodes gaining a safe destination. Unique people by type use a union for each type. Gains counted by type sum those type counts and can count a person again. People are population estimates, not households; each node holds a share of its population unit.",
+    "recipe": "import json;d=json.load(open('frontier.json'));s=[c for c in d['scenarios'] if c['id']=='shipped'][0];p=s['picks'][s['recommended_stop'] or 0];print(p['lane_km'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "km",
+    "value": 0.0
+  },
+  {
+    "id": "F9",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "cfcfc958051333790e5075c0204dc0e61bfe77ee54999e1ec3bcea24853bf0f2"
+      }
+    ],
+    "label": "Street length with a lower speed limit at the recommended stop",
+    "method": "I take the projects in the order I picked them, and add up what each one costs and gains. The shown step is the recommended stop of the Weights as set scenario. The recipe reads that step from frontier.json; change the rank in it to check any other step. Unique people count the union of home nodes gaining a safe destination. Unique people by type use a union for each type. Gains counted by type sum those type counts and can count a person again. People are population estimates, not households; each node holds a share of its population unit.",
+    "recipe": "import json;d=json.load(open('frontier.json'));s=[c for c in d['scenarios'] if c['id']=='shipped'][0];p=s['picks'][s['recommended_stop'] or 0];print(p['speed_km'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "km",
+    "value": 0.0
+  },
+  {
+    "id": "F10",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "cfcfc958051333790e5075c0204dc0e61bfe77ee54999e1ec3bcea24853bf0f2"
+      }
+    ],
+    "label": "Unique people gaining a safe destination at the recommended stop",
+    "method": "I take the projects in the order I picked them, and add up what each one costs and gains. The shown step is the recommended stop of the Weights as set scenario. The recipe reads that step from frontier.json; change the rank in it to check any other step. Unique people count the union of home nodes gaining a safe destination. Unique people by type use a union for each type. Gains counted by type sum those type counts and can count a person again. People are population estimates, not households; each node holds a share of its population unit.",
+    "recipe": "import json;d=json.load(open('frontier.json'));s=[c for c in d['scenarios'] if c['id']=='shipped'][0];p=s['picks'][s['recommended_stop'] or 0];print(p['unique_people'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "people",
+    "value": 0
+  },
+  {
+    "id": "F11",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "cfcfc958051333790e5075c0204dc0e61bfe77ee54999e1ec3bcea24853bf0f2"
+      }
+    ],
+    "label": "Street length changed at the recommended stop",
+    "method": "I take the projects in the order I picked them, and add up what each one costs and gains. The shown step is the recommended stop of the Weights as set scenario. The recipe reads that step from frontier.json; change the rank in it to check any other step. Unique people count the union of home nodes gaining a safe destination. Unique people by type use a union for each type. Gains counted by type sum those type counts and can count a person again. People are population estimates, not households; each node holds a share of its population unit.",
+    "recipe": "import json;d=json.load(open('frontier.json'));s=[c for c in d['scenarios'] if c['id']=='shipped'][0];p=s['picks'][s['recommended_stop'] or 0];print(round(sum(p['km_by_fix'].values()),3))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "km",
+    "value": 0
+  },
+  {
+    "id": "F12",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "cfcfc958051333790e5075c0204dc0e61bfe77ee54999e1ec3bcea24853bf0f2"
+      }
+    ],
+    "label": "Steps drawn on the access against disruption chart",
+    "method": "Each scenario draws one point for no change and one for each project I picked. I count the points of every scenario.",
+    "recipe": "import json;print(sum(len(c['picks']) for c in json.load(open('frontier.json'))['scenarios']))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "steps",
+    "value": 3
+  },
+  {
+    "id": "F13",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "cfcfc958051333790e5075c0204dc0e61bfe77ee54999e1ec3bcea24853bf0f2"
+      }
+    ],
+    "label": "Projects up to the recommended stop",
+    "method": "I divide each pick's gain by its cost plus one, using full precision. I compare it with the best ratio so far, including this pick. The stop is the last rank at least 0.25 times that best ratio, even after a weaker pick.",
+    "recipe": "import json;d=json.load(open('frontier.json'));s=[c for c in d['scenarios'] if c['id']=='shipped'][0];p=s['picks'][s['recommended_stop'] or 0];print(s['recommended_stop'] or 0)",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "projects",
+    "value": 0
+  },
+  {
+    "id": "F14",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "cfcfc958051333790e5075c0204dc0e61bfe77ee54999e1ec3bcea24853bf0f2"
+      }
+    ],
+    "label": "Unique roads with new works",
+    "method": "I union road IDs for selected links. The saved plans show distinct sections, design lengths, retained links, crossings and gaps for each package. Each link counts once across projects and reverse edges. Unknown names use source way IDs.",
+    "recipe": "import json;d=json.load(open('frontier.json'));c=next(c for c in d['scenarios'] if c['id']==d['default']);p=c['trip_packages'][c['recommended_stop'] or 0];print(p['works']['unique_roads'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz in the snapshot folder"
+      }
+    ],
+    "spec": "spec 16",
+    "unit": "roads",
+    "value": 0
+  },
+  {
+    "id": "F15",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "cfcfc958051333790e5075c0204dc0e61bfe77ee54999e1ec3bcea24853bf0f2"
+      }
+    ],
+    "label": "Gains counted by type",
+    "method": "I take the projects in the order I picked them, and add up what each one costs and gains. The shown step is the recommended stop of the Weights as set scenario. The recipe reads that step from frontier.json; change the rank in it to check any other step. Unique people count the union of home nodes gaining a safe destination. Unique people by type use a union for each type. Gains counted by type sum those type counts and can count a person again. People are population estimates, not households; each node holds a share of its population unit.",
+    "recipe": "import json;d=json.load(open('frontier.json'));s=[c for c in d['scenarios'] if c['id']=='shipped'][0];p=s['picks'][s['recommended_stop'] or 0];print(p['gains_by_type'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "people",
+    "value": 0
+  },
+  {
+    "id": "F16",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "cfcfc958051333790e5075c0204dc0e61bfe77ee54999e1ec3bcea24853bf0f2"
+      }
+    ],
+    "label": "Unique people by type: aged care",
+    "method": "I take the projects in the order I picked them, and add up what each one costs and gains. The shown step is the recommended stop of the Weights as set scenario. The recipe reads that step from frontier.json; change the rank in it to check any other step. Unique people count the union of home nodes gaining a safe destination. Unique people by type use a union for each type. Gains counted by type sum those type counts and can count a person again. People are population estimates, not households; each node holds a share of its population unit.",
+    "recipe": "import json;d=json.load(open('frontier.json'));s=[c for c in d['scenarios'] if c['id']=='shipped'][0];p=s['picks'][s['recommended_stop'] or 0];print(p['unique_people_by_type']['aged_care'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "people",
+    "value": 0
+  },
+  {
+    "id": "F17",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "cfcfc958051333790e5075c0204dc0e61bfe77ee54999e1ec3bcea24853bf0f2"
+      }
+    ],
+    "label": "Unique people by type: college",
+    "method": "I take the projects in the order I picked them, and add up what each one costs and gains. The shown step is the recommended stop of the Weights as set scenario. The recipe reads that step from frontier.json; change the rank in it to check any other step. Unique people count the union of home nodes gaining a safe destination. Unique people by type use a union for each type. Gains counted by type sum those type counts and can count a person again. People are population estimates, not households; each node holds a share of its population unit.",
+    "recipe": "import json;d=json.load(open('frontier.json'));s=[c for c in d['scenarios'] if c['id']=='shipped'][0];p=s['picks'][s['recommended_stop'] or 0];print(p['unique_people_by_type']['college'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "people",
+    "value": 0
+  },
+  {
+    "id": "F18",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "cfcfc958051333790e5075c0204dc0e61bfe77ee54999e1ec3bcea24853bf0f2"
+      }
+    ],
+    "label": "Unique people by type: library",
+    "method": "I take the projects in the order I picked them, and add up what each one costs and gains. The shown step is the recommended stop of the Weights as set scenario. The recipe reads that step from frontier.json; change the rank in it to check any other step. Unique people count the union of home nodes gaining a safe destination. Unique people by type use a union for each type. Gains counted by type sum those type counts and can count a person again. People are population estimates, not households; each node holds a share of its population unit.",
+    "recipe": "import json;d=json.load(open('frontier.json'));s=[c for c in d['scenarios'] if c['id']=='shipped'][0];p=s['picks'][s['recommended_stop'] or 0];print(p['unique_people_by_type']['library'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "people",
+    "value": 0
+  },
+  {
+    "id": "F19",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "cfcfc958051333790e5075c0204dc0e61bfe77ee54999e1ec3bcea24853bf0f2"
+      }
+    ],
+    "label": "Unique people by type: school",
+    "method": "I take the projects in the order I picked them, and add up what each one costs and gains. The shown step is the recommended stop of the Weights as set scenario. The recipe reads that step from frontier.json; change the rank in it to check any other step. Unique people count the union of home nodes gaining a safe destination. Unique people by type use a union for each type. Gains counted by type sum those type counts and can count a person again. People are population estimates, not households; each node holds a share of its population unit.",
+    "recipe": "import json;d=json.load(open('frontier.json'));s=[c for c in d['scenarios'] if c['id']=='shipped'][0];p=s['picks'][s['recommended_stop'] or 0];print(p['unique_people_by_type']['school'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "people",
+    "value": 0
+  },
+  {
+    "id": "F20",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "cfcfc958051333790e5075c0204dc0e61bfe77ee54999e1ec3bcea24853bf0f2"
+      }
+    ],
+    "label": "Unique people by type: station",
+    "method": "I take the projects in the order I picked them, and add up what each one costs and gains. The shown step is the recommended stop of the Weights as set scenario. The recipe reads that step from frontier.json; change the rank in it to check any other step. Unique people count the union of home nodes gaining a safe destination. Unique people by type use a union for each type. Gains counted by type sum those type counts and can count a person again. People are population estimates, not households; each node holds a share of its population unit.",
+    "recipe": "import json;d=json.load(open('frontier.json'));s=[c for c in d['scenarios'] if c['id']=='shipped'][0];p=s['picks'][s['recommended_stop'] or 0];print(p['unique_people_by_type']['station'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "people",
+    "value": 0
+  },
+  {
+    "id": "F21",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "cfcfc958051333790e5075c0204dc0e61bfe77ee54999e1ec3bcea24853bf0f2"
+      }
+    ],
+    "label": "Unique people by type: town centre",
+    "method": "I take the projects in the order I picked them, and add up what each one costs and gains. The shown step is the recommended stop of the Weights as set scenario. The recipe reads that step from frontier.json; change the rank in it to check any other step. Unique people count the union of home nodes gaining a safe destination. Unique people by type use a union for each type. Gains counted by type sum those type counts and can count a person again. People are population estimates, not households; each node holds a share of its population unit.",
+    "recipe": "import json;d=json.load(open('frontier.json'));s=[c for c in d['scenarios'] if c['id']=='shipped'][0];p=s['picks'][s['recommended_stop'] or 0];print(p['unique_people_by_type']['town_centre'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "people",
+    "value": 0
+  },
+  {
+    "id": "F22",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "cfcfc958051333790e5075c0204dc0e61bfe77ee54999e1ec3bcea24853bf0f2"
+      }
+    ],
+    "label": "Unique people by type: university",
+    "method": "I take the projects in the order I picked them, and add up what each one costs and gains. The shown step is the recommended stop of the Weights as set scenario. The recipe reads that step from frontier.json; change the rank in it to check any other step. Unique people count the union of home nodes gaining a safe destination. Unique people by type use a union for each type. Gains counted by type sum those type counts and can count a person again. People are population estimates, not households; each node holds a share of its population unit.",
+    "recipe": "import json;d=json.load(open('frontier.json'));s=[c for c in d['scenarios'] if c['id']=='shipped'][0];p=s['picks'][s['recommended_stop'] or 0];print(p['unique_people_by_type']['university'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 13",
+    "unit": "people",
+    "value": 0
+  },
+  {
+    "id": "F23",
+    "inputs": [
+      {
+        "name": "frontier.json",
+        "sha256": "cfcfc958051333790e5075c0204dc0e61bfe77ee54999e1ec3bcea24853bf0f2"
+      }
+    ],
+    "label": "Parking spaces removed in the known subset",
+    "method": "I sum removed vehicle spaces once per selected physical link with a known loss. Unknown locations stay listed; a known subtotal is not complete inventory. Local losses remain beside additions and net change.",
+    "recipe": "import json;d=json.load(open('frontier.json'));c=next(c for c in d['scenarios'] if c['id']==d['default']);w=c['trip_packages'][c['recommended_stop'] or 0]['works'];print(sum(c['works_catalog'][k]['parking_spaces']['removed'] for k in set(w['element_ids']) if c['works_catalog'][k]['parking_spaces']['removed'] is not None))",
+    "sources": [
+      {
+        "licence": "See snapshot sources",
+        "name": "Saved fit estimates or sourced bay inventory",
+        "request": "Works catalog parking records"
+      }
+    ],
+    "spec": "spec 16",
+    "unit": "vehicle spaces",
+    "value": 0
+  },
+  {
+    "id": "F24",
+    "inputs": [
+      {
+        "name": "proposal.json",
+        "sha256": "2ce54ff9c115c327214d611ca81582a0ed75d70299f367ef154b84717dbdc3d9"
+      }
+    ],
+    "label": "Unique estimated residents gaining a strict return trip",
+    "method": "I union population-node shares gaining at least one new confirmed return trip in the saved choice. Several places or works do not multiply a share. The archived resident record keeps before, after, place types, source scope and evidence limits. First-leg model access stays separate. Zero proved gains can reflect missing evidence; it does not mean no useful trips exist.",
+    "recipe": "import json;p=json.load(open('proposal.json'))['selected'];print(p['outcomes']['resident_outcomes']['strict']['unique_residents']['newly_gained'])",
+    "sources": [
+      {
+        "licence": "See snapshot manifest for population; ODbL 1.0 for OpenStreetMap",
+        "name": "Snapshot population and OpenStreetMap contributors",
+        "request": "population and network.osm.gz in the snapshot folder"
+      }
+    ],
+    "spec": "spec 16",
+    "unit": "estimated residents",
+    "value": 0
+  },
+  {
+    "id": "F25",
+    "inputs": [
+      {
+        "name": "proposal.json",
+        "sha256": "2ce54ff9c115c327214d611ca81582a0ed75d70299f367ef154b84717dbdc3d9"
+      }
+    ],
+    "label": "Complete confirmed return trips in the selected package",
+    "method": "Count saved complete confirmed return-trip witnesses in the selected record. These are origin and destination pairs, not unique residents or school sites. Route groups and unproved gap records retain the same package scope and source. Missing evidence may leave no proved trips; model proof is not field safety.",
+    "recipe": "import json;p=json.load(open('proposal.json'))['selected'];print(p['outcomes']['trip_summary']['strict_return_trips']['value'])",
+    "sources": [
+      {
+        "licence": "See snapshot manifest; OpenStreetMap ODbL 1.0",
+        "name": "Snapshot trip evidence and OpenStreetMap contributors",
+        "request": "Snapshot network, destinations and trip evidence"
+      }
+    ],
+    "spec": "spec 16",
+    "unit": "return trips",
+    "value": 0
+  },
+  {
+    "id": "F26",
+    "inputs": [
+      {
+        "name": "proposal.json",
+        "sha256": "2ce54ff9c115c327214d611ca81582a0ed75d70299f367ef154b84717dbdc3d9"
+      }
+    ],
+    "label": "Protected bike path km in the selected works",
+    "method": "I read this figure from the works of the selected package in the saved proposal record. Each link counts once. Unknown path use or design stays in its own total; it is not assigned to a design. Crossings and retained links need field checks before delivery.",
+    "recipe": "import json;w=json.load(open('proposal.json'))['selected']['works'];print(w['km_by_design']['protected_cycleway'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors and saved works catalog",
+        "request": "network.osm.gz in the snapshot folder"
+      }
+    ],
+    "spec": "spec 16",
+    "unit": "km",
+    "value": 0.0
+  },
+  {
+    "id": "F27",
+    "inputs": [
+      {
+        "name": "proposal.json",
+        "sha256": "2ce54ff9c115c327214d611ca81582a0ed75d70299f367ef154b84717dbdc3d9"
+      }
+    ],
+    "label": "Shared path km in the selected works",
+    "method": "I read this figure from the works of the selected package in the saved proposal record. Each link counts once. Unknown path use or design stays in its own total; it is not assigned to a design. Crossings and retained links need field checks before delivery.",
+    "recipe": "import json;w=json.load(open('proposal.json'))['selected']['works'];print(w['km_by_design']['shared_path'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors and saved works catalog",
+        "request": "network.osm.gz in the snapshot folder"
+      }
+    ],
+    "spec": "spec 16",
+    "unit": "km",
+    "value": 0.0
+  },
+  {
+    "id": "F28",
+    "inputs": [
+      {
+        "name": "proposal.json",
+        "sha256": "2ce54ff9c115c327214d611ca81582a0ed75d70299f367ef154b84717dbdc3d9"
+      }
+    ],
+    "label": "Quiet street km in the selected works",
+    "method": "I read this figure from the works of the selected package in the saved proposal record. Each link counts once. Unknown path use or design stays in its own total; it is not assigned to a design. Crossings and retained links need field checks before delivery.",
+    "recipe": "import json;w=json.load(open('proposal.json'))['selected']['works'];print(w['km_by_design']['quiet_street'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors and saved works catalog",
+        "request": "network.osm.gz in the snapshot folder"
+      }
+    ],
+    "spec": "spec 16",
+    "unit": "km",
+    "value": 0.0
+  },
+  {
+    "id": "F29",
+    "inputs": [
+      {
+        "name": "proposal.json",
+        "sha256": "2ce54ff9c115c327214d611ca81582a0ed75d70299f367ef154b84717dbdc3d9"
+      }
+    ],
+    "label": "Works km with unknown path use or design",
+    "method": "I read this figure from the works of the selected package in the saved proposal record. Each link counts once. Unknown path use or design stays in its own total; it is not assigned to a design. Crossings and retained links need field checks before delivery.",
+    "recipe": "import json;w=json.load(open('proposal.json'))['selected']['works'];print(w['km_by_design']['path_use_unknown']+w['km_by_design']['design_unknown'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors and saved works catalog",
+        "request": "network.osm.gz in the snapshot folder"
+      }
+    ],
+    "spec": "spec 16",
+    "unit": "km",
+    "value": 0.0
+  },
+  {
+    "id": "F30",
+    "inputs": [
+      {
+        "name": "proposal.json",
+        "sha256": "2ce54ff9c115c327214d611ca81582a0ed75d70299f367ef154b84717dbdc3d9"
+      }
+    ],
+    "label": "Crossing upgrades in the selected works",
+    "method": "I read this figure from the works of the selected package in the saved proposal record. Each link counts once. Unknown path use or design stays in its own total; it is not assigned to a design. Crossings and retained links need field checks before delivery.",
+    "recipe": "import json;w=json.load(open('proposal.json'))['selected']['works'];print(len(w['crossing_upgrades']))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors and saved works catalog",
+        "request": "network.osm.gz in the snapshot folder"
+      }
+    ],
+    "spec": "spec 16",
+    "unit": "crossings",
+    "value": 0
+  },
+  {
+    "id": "F31",
+    "inputs": [
+      {
+        "name": "proposal.json",
+        "sha256": "2ce54ff9c115c327214d611ca81582a0ed75d70299f367ef154b84717dbdc3d9"
+      }
+    ],
+    "label": "Existing link km retained by the selected works",
+    "method": "I read this figure from the works of the selected package in the saved proposal record. Each link counts once. Unknown path use or design stays in its own total; it is not assigned to a design. Crossings and retained links need field checks before delivery.",
+    "recipe": "import json;w=json.load(open('proposal.json'))['selected']['works'];print(w['existing_links_retained']['length_m']/1000)",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors and saved works catalog",
+        "request": "network.osm.gz in the snapshot folder"
+      }
+    ],
+    "spec": "spec 16",
+    "unit": "km",
+    "value": 0.0
+  },
+  {
+    "id": "F32",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Calm streets: school places with a safe trip once every work is built",
+    "method": "I read place count from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[0];print(x['steps'][-1]['places_safe']['school'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "places",
+    "value": 128
+  },
+  {
+    "id": "F33",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Calm streets: station places with a safe trip once every work is built",
+    "method": "I read place count from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[0];print(x['steps'][-1]['places_safe']['station'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "places",
+    "value": 30
+  },
+  {
+    "id": "F34",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Calm streets: town_centre places with a safe trip once every work is built",
+    "method": "I read place count from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[0];print(x['steps'][-1]['places_safe']['town_centre'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "places",
+    "value": 26
+  },
+  {
+    "id": "F35",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Calm streets: parking spaces with every work built",
+    "method": "I read disruption total from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[0];print(int(round(x['steps'][-1]['disruption']['parking_spaces'])))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "spaces",
+    "value": 22726
+  },
+  {
+    "id": "F36",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Calm streets: traffic-lane km with every work built",
+    "method": "I read disruption total from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[0];print(round(x['steps'][-1]['disruption']['lane_km'],2))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "km",
+    "value": 1.82
+  },
+  {
+    "id": "F37",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Calm streets: lower-speed km with every work built",
+    "method": "I read disruption total from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[0];print(round(x['steps'][-1]['disruption']['speed_km'],2))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "km",
+    "value": 1.86
+  },
+  {
+    "id": "F38",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Calm streets: path km with every work built",
+    "method": "I read disruption total from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[0];print(round(x['steps'][-1]['disruption']['path_km'],2))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "km",
+    "value": 0.0
+  },
+  {
+    "id": "F39",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Calm streets: disruption score with every work built",
+    "method": "I read disruption total from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[0];print(round(x['steps'][-1]['disruption']['score'],1))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "points",
+    "value": 22802.6
+  },
+  {
+    "id": "F40",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Calm streets: length",
+    "method": "I read km from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[0];print(round(x['km'],1))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "km",
+    "value": 209.2
+  },
+  {
+    "id": "F41",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Calm streets: safety score today",
+    "method": "I read safety score from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[0];print(round(x['steps'][0]['score'],1))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "points",
+    "value": 0.0
+  },
+  {
+    "id": "F42",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Calm streets: safety score with every work built",
+    "method": "I read safety score from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[0];print(round(x['steps'][-1]['score'],1))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "points",
+    "value": 5.9
+  },
+  {
+    "id": "F43",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Shortest: school places with a safe trip once every work is built",
+    "method": "I read place count from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[1];print(x['steps'][-1]['places_safe']['school'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "places",
+    "value": 91
+  },
+  {
+    "id": "F44",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Shortest: station places with a safe trip once every work is built",
+    "method": "I read place count from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[1];print(x['steps'][-1]['places_safe']['station'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "places",
+    "value": 24
+  },
+  {
+    "id": "F45",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Shortest: town_centre places with a safe trip once every work is built",
+    "method": "I read place count from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[1];print(x['steps'][-1]['places_safe']['town_centre'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "places",
+    "value": 22
+  },
+  {
+    "id": "F46",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Shortest: parking spaces with every work built",
+    "method": "I read disruption total from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[1];print(int(round(x['steps'][-1]['disruption']['parking_spaces'])))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "spaces",
+    "value": 14658
+  },
+  {
+    "id": "F47",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Shortest: traffic-lane km with every work built",
+    "method": "I read disruption total from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[1];print(round(x['steps'][-1]['disruption']['lane_km'],2))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "km",
+    "value": 2.52
+  },
+  {
+    "id": "F48",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Shortest: lower-speed km with every work built",
+    "method": "I read disruption total from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[1];print(round(x['steps'][-1]['disruption']['speed_km'],2))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "km",
+    "value": 0.76
+  },
+  {
+    "id": "F49",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Shortest: path km with every work built",
+    "method": "I read disruption total from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[1];print(round(x['steps'][-1]['disruption']['path_km'],2))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "km",
+    "value": 0.0
+  },
+  {
+    "id": "F50",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Shortest: disruption score with every work built",
+    "method": "I read disruption total from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[1];print(round(x['steps'][-1]['disruption']['score'],1))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "points",
+    "value": 14760.4
+  },
+  {
+    "id": "F51",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Shortest: length",
+    "method": "I read km from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[1];print(round(x['km'],1))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "km",
+    "value": 161.2
+  },
+  {
+    "id": "F52",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Shortest: safety score today",
+    "method": "I read safety score from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[1];print(round(x['steps'][0]['score'],1))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "points",
+    "value": 0.0
+  },
+  {
+    "id": "F53",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Shortest: safety score with every work built",
+    "method": "I read safety score from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[1];print(round(x['steps'][-1]['score'],1))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "points",
+    "value": 1.7
+  },
+  {
+    "id": "F54",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Main roads with separation: school places with a safe trip once every work is built",
+    "method": "I read place count from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[2];print(x['steps'][-1]['places_safe']['school'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "places",
+    "value": 130
+  },
+  {
+    "id": "F55",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Main roads with separation: station places with a safe trip once every work is built",
+    "method": "I read place count from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[2];print(x['steps'][-1]['places_safe']['station'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "places",
+    "value": 30
+  },
+  {
+    "id": "F56",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Main roads with separation: town_centre places with a safe trip once every work is built",
+    "method": "I read place count from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[2];print(x['steps'][-1]['places_safe']['town_centre'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "places",
+    "value": 29
+  },
+  {
+    "id": "F57",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Main roads with separation: parking spaces with every work built",
+    "method": "I read disruption total from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[2];print(int(round(x['steps'][-1]['disruption']['parking_spaces'])))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "spaces",
+    "value": 26053
+  },
+  {
+    "id": "F58",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Main roads with separation: traffic-lane km with every work built",
+    "method": "I read disruption total from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[2];print(round(x['steps'][-1]['disruption']['lane_km'],2))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "km",
+    "value": 3.25
+  },
+  {
+    "id": "F59",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Main roads with separation: lower-speed km with every work built",
+    "method": "I read disruption total from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[2];print(round(x['steps'][-1]['disruption']['speed_km'],2))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "km",
+    "value": 0.55
+  },
+  {
+    "id": "F60",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Main roads with separation: path km with every work built",
+    "method": "I read disruption total from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[2];print(round(x['steps'][-1]['disruption']['path_km'],2))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "km",
+    "value": 0.0
+  },
+  {
+    "id": "F61",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Main roads with separation: disruption score with every work built",
+    "method": "I read disruption total from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[2];print(round(x['steps'][-1]['disruption']['score'],1))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "points",
+    "value": 26184.2
+  },
+  {
+    "id": "F62",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Main roads with separation: length",
+    "method": "I read km from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[2];print(round(x['km'],1))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "km",
+    "value": 194.5
+  },
+  {
+    "id": "F63",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Main roads with separation: safety score today",
+    "method": "I read safety score from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[2];print(round(x['steps'][0]['score'],1))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "points",
+    "value": 0.0
+  },
+  {
+    "id": "F64",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Main roads with separation: safety score with every work built",
+    "method": "I read safety score from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[2];print(round(x['steps'][-1]['score'],1))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "points",
+    "value": 10.6
+  },
+  {
+    "id": "F65",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Mesh: school places with a safe trip once every work is built",
+    "method": "I read place count from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[3];print(x['steps'][-1]['places_safe']['school'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "places",
+    "value": 111
+  },
+  {
+    "id": "F66",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Mesh: station places with a safe trip once every work is built",
+    "method": "I read place count from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[3];print(x['steps'][-1]['places_safe']['station'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "places",
+    "value": 29
+  },
+  {
+    "id": "F67",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Mesh: town_centre places with a safe trip once every work is built",
+    "method": "I read place count from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[3];print(x['steps'][-1]['places_safe']['town_centre'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "places",
+    "value": 23
+  },
+  {
+    "id": "F68",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Mesh: parking spaces with every work built",
+    "method": "I read disruption total from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[3];print(int(round(x['steps'][-1]['disruption']['parking_spaces'])))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "spaces",
+    "value": 38455
+  },
+  {
+    "id": "F69",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Mesh: traffic-lane km with every work built",
+    "method": "I read disruption total from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[3];print(round(x['steps'][-1]['disruption']['lane_km'],2))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "km",
+    "value": 3.78
+  },
+  {
+    "id": "F70",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Mesh: lower-speed km with every work built",
+    "method": "I read disruption total from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[3];print(round(x['steps'][-1]['disruption']['speed_km'],2))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "km",
+    "value": 1.83
+  },
+  {
+    "id": "F71",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Mesh: path km with every work built",
+    "method": "I read disruption total from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[3];print(round(x['steps'][-1]['disruption']['path_km'],2))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "km",
+    "value": 0.0
+  },
+  {
+    "id": "F72",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Mesh: disruption score with every work built",
+    "method": "I read disruption total from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[3];print(round(x['steps'][-1]['disruption']['score'],1))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "points",
+    "value": 38609.9
+  },
+  {
+    "id": "F73",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Mesh: length",
+    "method": "I read km from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[3];print(round(x['km'],1))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "km",
+    "value": 465.9
+  },
+  {
+    "id": "F74",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Mesh: safety score today",
+    "method": "I read safety score from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[3];print(round(x['steps'][0]['score'],1))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "points",
+    "value": 0.0
+  },
+  {
+    "id": "F75",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Mesh: safety score with every work built",
+    "method": "I read safety score from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[3];print(round(x['steps'][-1]['score'],1))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "points",
+    "value": 4.1
+  },
+  {
+    "id": "F76",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Recommended step of my pick",
+    "method": "I read recommended step from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];b=max(x['steps'][-1]['score'] for x in o);p=o[min((x['steps'][-1]['disruption']['score'],i) for i,x in enumerate(o) if x['steps'][-1]['score']>=b-1)[1]];s=[t['score'] for t in p['steps']];r=next(i for i,v in enumerate(s) if v>=s[0]+d['share']*(s[-1]-s[0])-1e-9);print(r)",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "step",
+    "value": 56
+  },
+  {
+    "id": "F77",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Streets named in my ask",
+    "method": "I read ask from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];b=max(x['steps'][-1]['score'] for x in o);p=o[min((x['steps'][-1]['disruption']['score'],i) for i,x in enumerate(o) if x['steps'][-1]['score']>=b-1)[1]];s=[t['score'] for t in p['steps']];r=next(i for i,v in enumerate(s) if v>=s[0]+d['share']*(s[-1]-s[0])-1e-9);print(len({p['works'][w]['street'] for t in p['steps'][1:r+1] for w in t['works']}))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "streets",
+    "value": 285
+  },
+  {
+    "id": "F78",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Safety score of my pick at the recommended step",
+    "method": "I read step totals from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];b=max(x['steps'][-1]['score'] for x in o);p=o[min((x['steps'][-1]['disruption']['score'],i) for i,x in enumerate(o) if x['steps'][-1]['score']>=b-1)[1]];s=[t['score'] for t in p['steps']];r=next(i for i,v in enumerate(s) if v>=s[0]+d['share']*(s[-1]-s[0])-1e-9);print(round(s[r],1))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "points",
+    "value": 9.7
+  },
+  {
+    "id": "F79",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Highest safety score in the table, at the full disruption of an option",
+    "method": "I read table from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];print(round(max(x['steps'][-1]['score'] for x in o),1))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "points",
+    "value": 10.6
+  },
+  {
+    "id": "F80",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Works of my pick up to the recommended step",
+    "method": "I read works from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];b=max(x['steps'][-1]['score'] for x in o);p=o[min((x['steps'][-1]['disruption']['score'],i) for i,x in enumerate(o) if x['steps'][-1]['score']>=b-1)[1]];s=[t['score'] for t in p['steps']];r=next(i for i,v in enumerate(s) if v>=s[0]+d['share']*(s[-1]-s[0])-1e-9);print(sum(len(t['works']) for t in p['steps'][1:r+1]))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "works",
+    "value": 550
+  },
+  {
+    "id": "F81",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Km of links with no fix, all options",
+    "method": "I read links with no fix from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];print(round(sum(w['km'] for x in o for w in x['no_fix']),2))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "km",
+    "value": 124.48
+  },
+  {
+    "id": "F82",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Calm streets: share of km rated from assumed or unknown inputs",
+    "method": "I read assumed share from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[0];print(round(100*x['steps'][0]['assumed_share'],1))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "%",
+    "value": 99.7
+  },
+  {
+    "id": "F83",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Shortest: share of km rated from assumed or unknown inputs",
+    "method": "I read assumed share from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[1];print(round(100*x['steps'][0]['assumed_share'],1))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "%",
+    "value": 100.0
+  },
+  {
+    "id": "F84",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Main roads with separation: share of km rated from assumed or unknown inputs",
+    "method": "I read assumed share from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[2];print(round(100*x['steps'][0]['assumed_share'],1))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "%",
+    "value": 99.9
+  },
+  {
+    "id": "F85",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Mesh: share of km rated from assumed or unknown inputs",
+    "method": "I read assumed share from options.json.",
+    "recipe": "import json;d=json.load(open('options.json'));o=d['options'];x=o[3];print(round(100*x['steps'][0]['assumed_share'],1))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "%",
+    "value": 100.0
+  },
+  {
+    "id": "F86",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Places of type school, joined",
+    "method": "I read place counts from options.json.",
+    "recipe": "import json;print(json.load(open('options.json'))['joined']['school']['joined'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "places",
+    "value": 154
+  },
+  {
+    "id": "F87",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Places of type school, unjoined",
+    "method": "I read place counts from options.json.",
+    "recipe": "import json;print(json.load(open('options.json'))['joined']['school']['unjoined'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "places",
+    "value": 4
+  },
+  {
+    "id": "F88",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Places of type station, joined",
+    "method": "I read place counts from options.json.",
+    "recipe": "import json;print(json.load(open('options.json'))['joined']['station']['joined'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "places",
+    "value": 41
+  },
+  {
+    "id": "F89",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Places of type station, unjoined",
+    "method": "I read place counts from options.json.",
+    "recipe": "import json;print(json.load(open('options.json'))['joined']['station']['unjoined'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "places",
+    "value": 3
+  },
+  {
+    "id": "F90",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Places of type town_centre, joined",
+    "method": "I read place counts from options.json.",
+    "recipe": "import json;print(json.load(open('options.json'))['joined']['town_centre']['joined'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "places",
+    "value": 33
+  },
+  {
+    "id": "F91",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Places of type town_centre, unjoined",
+    "method": "I read place counts from options.json.",
+    "recipe": "import json;print(json.load(open('options.json'))['joined']['town_centre']['unjoined'])",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "places",
+    "value": 1
+  },
+  {
+    "id": "F92",
+    "inputs": [
+      {
+        "name": "options.json",
+        "sha256": "5f47884da57006735a6197ad1d3e9941afcddb236d48c6c2a27ded81b628765a"
+      }
+    ],
+    "label": "Places left out of the options",
+    "method": "I read places left out from options.json.",
+    "recipe": "import json;print(len(json.load(open('options.json'))['unjoined']))",
+    "sources": [
+      {
+        "licence": "ODbL 1.0",
+        "name": "OpenStreetMap contributors",
+        "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+      }
+    ],
+    "spec": "spec 17",
+    "unit": "places",
+    "value": 8
+  }
+]

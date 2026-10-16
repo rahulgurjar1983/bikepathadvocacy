@@ -1,0 +1,105 @@
+{
+ "options": [
+  {
+   "id": "calm",
+   "km": 209.215,
+   "link_count": 4101,
+   "name": "Calm streets",
+   "same_as": null,
+   "totals": {
+    "assumed_share": 0.9974059575483705,
+    "km_all_ages": 55.513590529241874,
+    "km_by_level": {
+     "1": 61.32565262799179,
+     "2": 115.43912692698339,
+     "3": 29.00652528719519,
+     "4": 3.44393875448166
+    },
+    "places_safe": {
+     "school": 1,
+     "station": 4,
+     "town_centre": 0
+    },
+    "safe_trips": 4,
+    "score": 0.015457145065306438,
+    "trips": 25878
+   }
+  },
+  {
+   "id": "shortest",
+   "km": 161.216,
+   "link_count": 3420,
+   "name": "Shortest",
+   "same_as": null,
+   "totals": {
+    "assumed_share": 1.0,
+    "km_all_ages": 15.658571380866277,
+    "km_by_level": {
+     "1": 18.252781112010723,
+     "2": 54.710785312888504,
+     "3": 54.11245960229854,
+     "4": 34.13981313317141
+    },
+    "places_safe": {
+     "school": 1,
+     "station": 2,
+     "town_centre": 0
+    },
+    "safe_trips": 3,
+    "score": 0.011592858798979828,
+    "trips": 25878
+   }
+  },
+  {
+   "id": "separated",
+   "km": 194.463,
+   "link_count": 3884,
+   "name": "Main roads with separation",
+   "same_as": null,
+   "totals": {
+    "assumed_share": 0.9989265754133894,
+    "km_all_ages": 29.12801753891277,
+    "km_by_level": {
+     "1": 33.23057693323135,
+     "2": 82.62502867384805,
+     "3": 67.9264839960133,
+     "4": 10.680430913051069
+    },
+    "places_safe": {
+     "school": 1,
+     "station": 2,
+     "town_centre": 0
+    },
+    "safe_trips": 3,
+    "score": 0.011592858798979828,
+    "trips": 25878
+   }
+  },
+  {
+   "id": "mesh",
+   "km": 465.906,
+   "link_count": 9253,
+   "name": "Mesh",
+   "same_as": null,
+   "totals": {
+    "assumed_share": 0.9996577271798934,
+    "km_all_ages": 51.04774612692319,
+    "km_by_level": {
+     "1": 59.85527981390463,
+     "2": 160.20914425045765,
+     "3": 143.88151758630121,
+     "4": 101.95989926355925
+    },
+    "places_safe": {
+     "school": 1,
+     "station": 2,
+     "town_centre": 0
+    },
+    "safe_trips": 3,
+    "score": 0.011592858798979828,
+    "trips": 25878
+   }
+  }
+ ],
+ "region": "au-nsw-bayside"
+}

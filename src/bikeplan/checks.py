@@ -1,8 +1,17 @@
+import hashlib
 import html
+import json
+import math
 import re
+import subprocess
 import sys
+import tarfile
+import tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
+
+import shapely
+from shapely.geometry import LineString, Point
 
 from bikeplan.report import FIGURES, MAP_FIGURE
 
@@ -21,6 +30,8 @@ STYLE = (
 )
 
 
+ASK_LIMIT = 10
+BARE_NAME = re.compile(r"(Town centre )?\d+", re.I)
 MAX_REPORT_BYTES = 8 * 1024 * 1024
 VERIFY_EXPECT = re.compile(r"^Expect:\s*(.+)$", re.M)
 VERIFY_ARTIFACT = re.compile(r"^Artifact:\s*`([^`]+)`", re.M)
@@ -50,10 +61,267 @@ def no_local_paths(text: str) -> list[str]:
     return ["a local path is in the page"] if re.search(r"file://|/home/\w+/", text) else []
 
 
+def no_survey(text: str) -> list[str]:
+    return ["the word survey is in the page"] if re.search(r"survey", text, re.I) else []
+
+
 OUTPUT_CHECKS = {
     "FR-13.6": (phone_and_print, "has the viewport tag and a print style"),
     "FR-13.10": (no_local_paths, "holds no local path"),
     "FR-13.13": (small_enough, "is at most 8 MB"),
+}
+REPORT_CHECKS = {
+    "FR-17.11": (no_survey, "holds no survey text, plan, ask or layer"),
+}
+
+
+def region_archives(release: Path) -> list[Path]:
+    return sorted(path for path in release.glob("*.tar.gz") if path.name != "artifacts.tar.gz")
+
+
+def archive_files(archive: Path, wanted) -> dict[str, bytes]:
+    found = {}
+    with tarfile.open(archive) as tar:
+        for member in tar.getmembers():
+            name = member.name.removeprefix("./")
+            if name in wanted and member.isfile():
+                found[name] = tar.extractfile(member).read()
+    return found
+
+
+def recipe_problems(figures: list[dict], folder: Path) -> list[str]:
+    problems = []
+    for item in figures:
+        done = subprocess.run(
+            [sys.executable, "-I", "-c", item["recipe"]],
+            cwd=folder,
+            capture_output=True,
+            text=True,
+            timeout=60,
+        )
+        try:
+            same = done.returncode == 0 and math.isclose(
+                float(done.stdout), item["value"], abs_tol=1e-9
+            )
+        except ValueError:
+            same = False
+        if not same:
+            problems.append(f"{item['id']}: its recipe does not print {item['value']}")
+    return problems
+
+
+def opening_of(text: str) -> str:
+    found = re.search(r'<section id="options">.*?</section>', text, re.S)
+    return found[0] if found else ""
+
+
+def loose_numbers(text: str) -> list[str]:
+    opening = opening_of(text)
+    if not opening:
+        return ["no opening"]
+    bare = re.sub(r"<a [^>]*>.*?</a>", "", opening, flags=re.S)
+    return re.findall(r"\d+", re.sub(r"<[^>]*>", " ", bare))
+
+
+def opening_problems(release: Path) -> list[str]:
+    problems = []
+    found = 0
+    for archive in region_archives(release):
+        files = archive_files(archive, ("figures.json", "options.json"))
+        if "options.json" not in files:
+            continue
+        found += 1
+        name = archive.name.removesuffix(".tar.gz")
+        report = release / f"{name}-report.html"
+        if not report.is_file():
+            problems.append(f"{name}: no {report.name} in the release")
+            continue
+        text = report.read_text(encoding="utf-8")
+        data = json.loads(files["options.json"])
+        digest = hashlib.sha256(files["options.json"]).hexdigest()
+        figures = [item for item in json.loads(files["figures.json"]) if item["spec"] == "spec 17"]
+        names = [option["name"] for option in data["options"]]
+        if len(names) != 4:
+            problems.append(f"{name}: {len(names)} options, not four")
+        for option in names:
+            if f"<td>{html.escape(option)}" not in opening_of(text):
+                problems.append(f"{name}: the opening does not list {option}")
+        if "My pick:" not in opening_of(text) or "My ask" not in opening_of(text):
+            problems.append(f"{name}: the opening has no pick or ask")
+        if not any(
+            option["steps"][-1]["score"] > option["steps"][0]["score"] for option in data["options"]
+        ):
+            problems.append(f"{name}: no option gains safety, so the links with no fix block it")
+        if not figures:
+            problems.append(f"{name}: no opening figure")
+        if loose_numbers(text):
+            problems.append(f"{name}: a number in the opening is not a figure link")
+        for item in figures:
+            if item["inputs"][0]["sha256"] != digest:
+                problems.append(f"{name} {item['id']}: options.json does not match its hash")
+            if f'href="#{item["id"]}"' not in text.split('id="appendix"')[0]:
+                problems.append(f"{name} {item['id']}: not linked in the page")
+        with tempfile.TemporaryDirectory() as folder:
+            Path(folder, "options.json").write_bytes(files["options.json"])
+            problems += [f"{name} {line}" for line in recipe_problems(figures, Path(folder))]
+    if not found:
+        problems.append("no region report in the release holds options.json")
+    return problems
+
+
+def ask_of(text: str) -> list[str] | None:
+    found = re.search(r"<details><summary>.*?</summary><p>(.*?)</p></details>", text, re.S)
+    if not found:
+        found = re.search(r"<details><p>(.*?)</p></details>", text, re.S)
+    if not found:
+        return None
+    plain = html.unescape(re.sub(r"<[^>]*>", "", found[1]))
+    plain = re.sub(r"(?:^| and )\d+ more streets?$", "", plain)
+    return [] if plain in ("", "no street") else plain.split(", ")
+
+
+def picked(data: dict) -> tuple[dict, int]:
+    options = data["options"]
+    best = max(item["steps"][-1]["score"] for item in options)
+    close = [
+        (item["steps"][-1]["disruption"]["score"], index)
+        for index, item in enumerate(options)
+        if item["steps"][-1]["score"] >= best - 1
+    ]
+    pick = options[min(close)[1]]
+    scores = [step["score"] for step in pick["steps"]]
+    target = scores[0] + data["share"] * (scores[-1] - scores[0])
+    return pick, next(index for index, score in enumerate(scores) if score >= target - 1e-9)
+
+
+def inside_problems(data: dict) -> list[str]:
+    audit = data["audit"]
+    boundary = shapely.from_wkt(audit["boundary"])
+    area = boundary.buffer(audit["buffer_m"] + 0.5)
+    shapely.prepare(boundary)
+    shapely.prepare(area)
+    problems = [
+        f"place {place['name']} ({place['id']}) lies outside the boundary"
+        for place in audit["places"]
+        if not boundary.buffer(0.5).covers(Point(place["x"], place["y"]))
+    ]
+    for option in data["options"]:
+        far = set(option.get("outside", ()))
+        for index, link in enumerate(option["links"]):
+            if index not in far and not area.covers(
+                LineString(list(zip(link[0::2], link[1::2], strict=True)))
+            ):
+                problems.append(
+                    f"{option['name']}: link {index} lies outside the boundary "
+                    f"widened by {audit['buffer_m']:g} m"
+                )
+                break
+    return problems
+
+
+def ask_problems(data: dict, page: str) -> list[str]:
+    named = ask_of(page)
+    if named is None:
+        return ["the opening has no list of ask streets"]
+    pick, step = picked(data)
+    built = {
+        pick["works"][index]["street"]
+        for item in pick["steps"][1 : step + 1]
+        for index in item["works"]
+        if not pick["works"][index].get("outside")
+    }
+    problems = [
+        f"the ask names the unnamed street {name}" for name in named if name.startswith("unnamed ")
+    ]
+    problems += [
+        f"the ask names {name}, which holds no work up to step {step}"
+        for name in named
+        if name not in built and not name.startswith("unnamed ")
+    ]
+    if len(named) > ASK_LIMIT:
+        problems.append(f"the ask names {len(named)} streets, more than {ASK_LIMIT}")
+    return problems
+
+
+def place_problems(data: dict) -> list[str]:
+    audit = data["audit"]
+    problems = [
+        f"place {place['id']} has no real name, only {place['name']!r}"
+        for place in audit["places"]
+        if BARE_NAME.fullmatch(place["name"].strip())
+    ]
+    problems += [
+        f"place {item['name']} ({item['id']}) is unjoined although the full snapshot graph "
+        "joins it to the main network"
+        for item in audit.get("unreached", ())
+    ]
+    return problems
+
+
+def trip_problems(data: dict) -> list[str]:
+    audit = data["audit"]
+    if audit["longest_trip_m"] > audit["max_trip_km"] * 1000 + 1e-6:
+        return [
+            f"a trip of {audit['longest_trip_m'] / 1000:.1f} km is longer than "
+            f"{audit['max_trip_km']:g} km"
+        ]
+    return []
+
+
+def parking_problems(data: dict) -> list[str]:
+    return [
+        f"{option['name']}: the work on {work['street']} removes {work['parking_spaces']} "
+        f"parking spaces where a fix scoring {work['least']:g} fits, not {work['score']:g}"
+        for option in data["options"]
+        for work in option["works"]
+        if work["parking_spaces"] and work["least"] < work["score"] - 1e-9
+    ]
+
+
+def audit_problems_of(name: str, data: dict, page: str) -> list[str]:
+    if "audit" not in data:
+        return [f"{name}: options.json holds no audit data"]
+    found = [
+        *inside_problems(data),
+        *place_problems(data),
+        *ask_problems(data, page),
+        *trip_problems(data),
+        *parking_problems(data),
+    ]
+    return [f"{name}: {line}" for line in found]
+
+
+def audit_problems(release: Path) -> list[str]:
+    problems = []
+    found = 0
+    for archive in region_archives(release):
+        files = archive_files(archive, ("options.json",))
+        if "options.json" not in files:
+            continue
+        found += 1
+        name = archive.name.removesuffix(".tar.gz")
+        report = release / f"{name}-report.html"
+        if not report.is_file():
+            problems.append(f"{name}: no {report.name} in the release")
+            continue
+        data = json.loads(files["options.json"])
+        problems += audit_problems_of(name, data, report.read_text(encoding="utf-8"))
+    if not found:
+        problems.append("no region report in the release holds options.json")
+    return problems
+
+
+RELEASE_CHECKS = {
+    "FR-17.12": (
+        opening_problems,
+        "lists the four options, my pick and my ask, with every number linked to a figure "
+        "whose recipe prints the same value from options.json",
+    ),
+    "FR-17.15": (
+        audit_problems,
+        "has every place and link inside the boundary, an ask of at most 10 named streets "
+        "that hold works, trips within the limit and no parking removed where a cheaper fix fits",
+    ),
 }
 
 
@@ -63,14 +331,23 @@ def run_output_checks(release: Path, wanted) -> dict[str, list[str]]:
         raise ValueError(f"no report file in {release}")
     found: dict[str, list[str]] = {}
     for spec_id in wanted:
-        if spec_id not in OUTPUT_CHECKS:
-            continue
-        check = OUTPUT_CHECKS[spec_id][0]
-        found[spec_id] = [
-            f"{path.name}: {problem}"
-            for path in reports
-            for problem in check(path.read_text(encoding="utf-8"))
-        ]
+        if spec_id in RELEASE_CHECKS:
+            found[spec_id] = RELEASE_CHECKS[spec_id][0](release)
+        if spec_id in REPORT_CHECKS:
+            check = REPORT_CHECKS[spec_id][0]
+            found[spec_id] = [
+                f"{path.name}: {problem}"
+                for path in reports
+                if path.name.endswith("-report.html")
+                for problem in check(path.read_text(encoding="utf-8"))
+            ]
+        if spec_id in OUTPUT_CHECKS:
+            check = OUTPUT_CHECKS[spec_id][0]
+            found[spec_id] = [
+                f"{path.name}: {problem}"
+                for path in reports
+                for problem in check(path.read_text(encoding="utf-8"))
+            ]
     return found
 
 
@@ -220,8 +497,12 @@ def progress_rows(root: Path) -> dict[str, str]:
     return rows
 
 
+def checker(spec_id: str):
+    return OUTPUT_CHECKS.get(spec_id) or REPORT_CHECKS.get(spec_id) or RELEASE_CHECKS.get(spec_id)
+
+
 def entry(spec_id, requirement, plan, found, figures, section, output, release_files) -> str:
-    check = OUTPUT_CHECKS.get(spec_id)
+    check = checker(spec_id)
     status = status_of(found, output, check is not None)
     if found is None:
         result = "No test is named for this requirement in this release."
@@ -256,7 +537,7 @@ def build_page(root: Path, junit: Path, release: Path):
     outputs = run_output_checks(release, ids)
     release_files = [path.name for path in report_files(release)]
     statuses = {
-        spec_id: status_of(results.get(spec_id), outputs.get(spec_id), spec_id in OUTPUT_CHECKS)
+        spec_id: status_of(results.get(spec_id), outputs.get(spec_id), checker(spec_id) is not None)
         for spec_id in ids
     }
     names = ("met", "tested only", "fails", "not built yet")

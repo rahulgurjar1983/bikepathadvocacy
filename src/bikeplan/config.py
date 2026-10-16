@@ -172,6 +172,19 @@ class RoadClass:
 
 
 @dataclass(frozen=True)
+class Network:
+    place_types: tuple[str, ...] = ("school", "station", "town_centre")
+    stress_factor: tuple[float, ...] = (1.0, 1.2, 3.0, 6.0)
+    no_fix_factor: float = 10.0
+    recommend_share: float = 0.9
+    boundary_buffer_m: float = 200.0
+    max_trip_km: float = 5.0
+    corridor_match_m: float = 100.0
+    corridor_cover_share: float = 0.8
+    state_functions: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
 class Profile:
     id: str
     name: str
@@ -185,6 +198,8 @@ class Profile:
     grade: Grade
     road_classes: dict[str, RoadClass]
     implicit_speeds: dict[str, Num]
+    network: Network = Network()
+    road_functions: dict[str, Num] = dataclasses.field(default_factory=dict)
 
 
 ROAD_CLASS_NAMES = {
@@ -384,6 +399,70 @@ class ProfileReader(Reader):
             Num(text, source, source.startswith("assumption:")),
         )
 
+    def network(self, raw: Any) -> Network:
+        keys = {
+            "place_types",
+            "stress_factor",
+            "no_fix_factor",
+            "recommend_share",
+            "boundary_buffer_m",
+            "max_trip_km",
+            "corridor_match_m",
+            "corridor_cover_share",
+            "state_functions",
+        }
+        data = self.mapping(raw, "network", keys, set())
+        found = {}
+        if "place_types" in data:
+            types = data["place_types"]
+            if not isinstance(types, list) or not types:
+                raise self.fail("network.place_types", "must be a list with at least one item")
+            found["place_types"] = tuple(self.text(item, "network.place_types") for item in types)
+        if "stress_factor" in data:
+            factors = data["stress_factor"]
+            if not isinstance(factors, list) or len(factors) != 4:
+                raise self.fail("network.stress_factor", "must be a list of four numbers")
+            found["stress_factor"] = tuple(
+                float(self.number(item, "network.stress_factor")) for item in factors
+            )
+        if "no_fix_factor" in data:
+            found["no_fix_factor"] = float(
+                self.number(data["no_fix_factor"], "network.no_fix_factor")
+            )
+        if "recommend_share" in data:
+            share = float(self.number(data["recommend_share"], "network.recommend_share"))
+            if not 0 < share <= 1:
+                raise self.fail("network.recommend_share", "must be above 0 and at most 1")
+            found["recommend_share"] = share
+        if "boundary_buffer_m" in data:
+            buffer = float(self.number(data["boundary_buffer_m"], "network.boundary_buffer_m"))
+            if buffer < 0:
+                raise self.fail("network.boundary_buffer_m", "must be at least 0")
+            found["boundary_buffer_m"] = buffer
+        if "max_trip_km" in data:
+            trip = float(self.number(data["max_trip_km"], "network.max_trip_km"))
+            if trip <= 0:
+                raise self.fail("network.max_trip_km", "must be above 0")
+            found["max_trip_km"] = trip
+        if "corridor_match_m" in data:
+            match = float(self.number(data["corridor_match_m"], "network.corridor_match_m"))
+            if match <= 0:
+                raise self.fail("network.corridor_match_m", "must be above 0")
+            found["corridor_match_m"] = match
+        if "corridor_cover_share" in data:
+            cover = float(self.number(data["corridor_cover_share"], "network.corridor_cover_share"))
+            if not 0 < cover <= 1:
+                raise self.fail("network.corridor_cover_share", "must be above 0 and at most 1")
+            found["corridor_cover_share"] = cover
+        if "state_functions" in data:
+            names = data["state_functions"]
+            if not isinstance(names, list):
+                raise self.fail("network.state_functions", "must be a list of road functions")
+            found["state_functions"] = tuple(
+                self.text(item, "network.state_functions") for item in names
+            )
+        return Network(**found)
+
     def width(self, raw: Any, key: str) -> Width:
         data = self.mapping(raw, key, {"min", "desirable"}, {"min"})
         desirable = data.get("desirable")
@@ -429,6 +508,11 @@ class ProfileReader(Reader):
             for name in sorted(ROAD_CLASS_NAMES)
         }
 
+    def road_functions(self, raw: Any) -> dict[str, Num]:
+        if not isinstance(raw, dict):
+            raise self.fail("road_functions", "must be a mapping of functions to ADT")
+        return {str(name): self.num(item, f"road_functions.{name}") for name, item in raw.items()}
+
     def implicit_speeds(self, raw: Any) -> dict[str, Num]:
         if not isinstance(raw, dict) or not raw:
             raise self.fail("implicit_speeds", "must be a mapping of codes to km/h")
@@ -443,7 +527,7 @@ def load_profile(id: str, directory: str | Path | None = None) -> Profile:
     except (OSError, yaml.YAMLError) as error:
         raise ConfigError(f"{path}: cannot read: {error}") from error
     names = {f.name for f in dataclasses.fields(Profile)}
-    data = reader.mapping(raw, "", names, names)
+    data = reader.mapping(raw, "", names, names - {"network", "road_functions"})
     return Profile(
         reader.text(data["id"], "id"),
         reader.text(data["name"], "name"),
@@ -457,6 +541,8 @@ def load_profile(id: str, directory: str | Path | None = None) -> Profile:
         reader.group(data["grade"], "grade", Grade),
         reader.road_classes(data["road_classes"]),
         reader.implicit_speeds(data["implicit_speeds"]),
+        reader.network(data.get("network", {})),
+        reader.road_functions(data.get("road_functions", {})),
     )
 
 

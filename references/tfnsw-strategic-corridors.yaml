@@ -1,0 +1,148 @@
+source:
+  title: Strategic cycleway corridors, Greater Sydney network map
+  date: February 2023
+  url: https://www.transport.nsw.gov.au/system/files/media/documents/2023/Greater-Sydney-strategic-cycleway-corridors-network-map.pdf
+  sha256: a696bab92127aea0dcfcd9cb83f9caebd594052f54edddbfa27a3997903d658d
+segments:
+  - id: T1
+    from:
+      name: Kingsgrove station
+      osm: node/1663675831
+      lat: -33.94057
+      lon: 151.10063
+    to:
+      name: Wolli Creek station
+      osm: node/1886255332
+      lat: -33.92852
+      lon: 151.15399
+  - id: T2
+    from:
+      name: Wolli Creek station
+      osm: node/1886255332
+      lat: -33.92852
+      lon: 151.15399
+    to:
+      name: Rockdale station
+      osm: node/6620600106
+      lat: -33.95187
+      lon: 151.13685
+  - id: T3
+    from:
+      name: Rockdale station
+      osm: node/6620600106
+      lat: -33.95187
+      lon: 151.13685
+    to:
+      name: Kogarah station
+      osm: node/1685405588
+      lat: -33.96216
+      lon: 151.13257
+  - id: T4
+    from:
+      name: Hurstville station
+      osm: node/20941855
+      lat: -33.9674
+      lon: 151.10257
+    to:
+      name: Kogarah station
+      osm: node/1685405588
+      lat: -33.96216
+      lon: 151.13257
+  - id: T5
+    from:
+      name: Kogarah station
+      osm: node/1685405588
+      lat: -33.96216
+      lon: 151.13257
+    to:
+      name: Brighton-Le-Sands
+      osm: relation/5663426
+      lat: -33.95809
+      lon: 151.15261
+  - id: T6
+    from:
+      name: Wolli Creek station
+      osm: node/1886255332
+      lat: -33.92852
+      lon: 151.15399
+    to:
+      name: Brighton-Le-Sands
+      osm: relation/5663426
+      lat: -33.95809
+      lon: 151.15261
+  - id: T7
+    from:
+      name: Brighton-Le-Sands
+      osm: relation/5663426
+      lat: -33.95809
+      lon: 151.15261
+    to:
+      name: Sans Souci
+      osm: relation/2001721
+      lat: -33.99263
+      lon: 151.1338
+  - id: T8
+    from:
+      name: Wolli Creek station
+      osm: node/1886255332
+      lat: -33.92852
+      lon: 151.15399
+    to:
+      name: Tempe station
+      osm: node/1886255325
+      lat: -33.92454
+      lon: 151.15643
+  - id: T9
+    from:
+      name: Sydenham station
+      osm: node/6571195040
+      lat: -33.91474
+      lon: 151.16611
+    to:
+      name: Mascot station
+      osm: node/6560219244
+      lat: -33.92319
+      lon: 151.18727
+  - id: T10
+    from:
+      name: Mascot station
+      osm: node/6560219244
+      lat: -33.92319
+      lon: 151.18727
+    to:
+      name: Green Square station
+      osm: node/15445736
+      lat: -33.9062
+      lon: 151.20244
+  - id: T11
+    from:
+      name: Mascot station
+      osm: node/6560219244
+      lat: -33.92319
+      lon: 151.18727
+    to:
+      name: Eastlakes
+      osm: relation/5713878
+      lat: -33.93107
+      lon: 151.21137
+  - id: T12
+    from:
+      name: Mascot station
+      osm: node/6560219244
+      lat: -33.92319
+      lon: 151.18727
+    to:
+      name: Westfield Eastgardens
+      osm: way/45492049
+      lat: -33.94481
+      lon: 151.22445
+  - id: T13
+    from:
+      name: Westfield Eastgardens
+      osm: way/45492049
+      lat: -33.94481
+      lon: 151.22445
+    to:
+      name: 'Maroubra Junction, Anzac Parade at Maroubra Road'
+      lat: -33.94108
+      lon: 151.23923

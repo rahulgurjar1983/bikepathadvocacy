@@ -1015,3 +1015,70 @@ def test_fr0_37_failed_scope_cleanup_stops_before_any_other_provider(loop_repo, 
     assert not (state / "unexpected-fallback").exists()
     assert not (repo.path / ".ralph/stalls.json").exists()
     assert json.loads((repo.path / ".ralph/status.json").read_text())["phase"] == "worker_retry"
+
+
+def test_fr0_40_a_refused_save_runs_a_repair_turn_instead_of_waiting(loop_repo, tmp_path):
+    repo, env, state = loop_repo
+    remote = tmp_path / "origin.git"
+    subprocess.run(["git", "init", "--bare", "-q", str(remote)], check=True)
+    repo.git("remote", "add", "origin", str(remote))
+    repo.git("push", "-q", "origin", "main")
+    repo.branch("loop/P0.2-resume")
+    repo.write("PROMPT.md", "an input edited on a loop branch\n")
+    env.update(RALPH_SKIP_SYNC="0", RALPH_RESILIENT="1", RALPH_RETRY_SECS="0", RALPH_IDLE_SECS="0")
+    result = run_loop(repo, env, "1", timeout=30)
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert count(state) == 1
+    note = "\n".join(args_of(state, 1))
+    assert "Repair first" in note
+    assert "PROMPT.md" in note
+    assert "loop/P0.2-resume" in note
+    assert "repair turn" in result.stdout
+
+
+def test_fr0_41_the_turn_after_a_time_bound_is_told_to_push_and_split(loop_repo):
+    repo, env, state = loop_repo
+    env["RALPH_TURN_SECS"] = "2"
+    env["FAKE_RUN"] = (
+        'if [ ! -f "$FAKE_STATE/slept" ]; then touch "$FAKE_STATE/slept"; sleep 30; fi'
+    )
+    result = run_loop(repo, env, "3", timeout=60)
+    assert result.returncode == 0, result.stdout + result.stderr
+    first = "\n".join(args_of(state, 1))
+    second = "\n".join(args_of(state, 2))
+    third = "\n".join(args_of(state, 3))
+    assert "hit the time bound" not in first
+    assert "hit the time bound" in second
+    assert "push" in second
+    assert "hit the time bound" not in third
+
+
+def test_fr0_41_a_repair_note_reaches_the_next_turn_once(loop_repo):
+    repo, env, state = loop_repo
+    (repo.path / ".ralph").mkdir(exist_ok=True)
+    (repo.path / ".ralph/repair-note").write_text("no model turn has finished for 4.2 hours\n")
+    result = run_loop(repo, env, "2")
+    assert result.returncode == 0, result.stdout + result.stderr
+    first = "\n".join(args_of(state, 1))
+    second = "\n".join(args_of(state, 2))
+    assert "Repair first" in first
+    assert "no model turn has finished for 4.2 hours" in first
+    assert "Repair first" not in second
+    assert not (repo.path / ".ralph/repair-note").exists()
+
+
+def test_fr0_40_main_held_by_another_worktree_needs_no_repair_turn(loop_repo, tmp_path):
+    repo, env, state = loop_repo
+    remote = tmp_path / "origin.git"
+    subprocess.run(["git", "init", "--bare", "-q", str(remote)], check=True)
+    repo.git("remote", "add", "origin", str(remote))
+    repo.git("push", "-q", "origin", "main")
+    repo.branch("loop/P0.2-resume")
+    repo.git("worktree", "add", "-q", str(tmp_path / "operator"), "main")
+    env.update(RALPH_SKIP_SYNC="0", RALPH_RESILIENT="1", RALPH_RETRY_SECS="0", RALPH_IDLE_SECS="0")
+    result = run_loop(repo, env, "1", timeout=30)
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert count(state) == 1
+    assert "Repair first" not in "\n".join(args_of(state, 1))
+    assert "repair turn" not in result.stdout
+    assert repo.git("rev-parse", "HEAD") == repo.git("rev-parse", "origin/main")

@@ -303,7 +303,8 @@ main() {
   local fingerprint
   fingerprint="$(cksum <"$self")"
 
-  local i=0 idle=0 row status stamp turn_log note prompt agent_status secs rung rung_log
+  local i=0 idle=0 row status stamp turn_log note prompt agent_status secs rung rung_log saved dirty
+  local repair_reason="" last_repair_reason="" repair_streak=0
   local model row_id before progress effort role codex_model codex_effort codex_skills recovery
   local limited_logs=()
   if [ ! -f .ralph/checkpoint.py ]; then
@@ -334,20 +335,33 @@ main() {
         bounded_backoff "${RALPH_RETRY_SECS:-30}" || exit 2
         continue
       fi
-      if ! control_module gates.checkpoint save >>ralph.log 2>&1; then
-        log "work needs recovery; waiting without a model turn"
-        status blocked --reason "checkpoint refused; saved work retained" --retry-seconds "$idle_secs" || exit 2
-        bounded_backoff "$idle_secs" || exit 2
-        continue
+      repair_reason=""
+      if ! saved="$(control_module gates.checkpoint save 2>&1)"; then
+        printf '%s\n' "$saved" >>ralph.log
+        repair_reason="the checkpoint was refused: ${saved##*checkpoint: }"
+      elif ! { timeout --kill-after=10 "${RALPH_SYNC_SECS:-180}" git checkout -q main 2>>ralph.log &&
+        timeout --kill-after=10 "${RALPH_SYNC_SECS:-180}" git merge -q --ff-only origin/main 2>>ralph.log; } &&
+        ! timeout --kill-after=10 "${RALPH_SYNC_SECS:-180}" git checkout -q --detach origin/main 2>>ralph.log; then
+        repair_reason="origin/main could not be checked out"
+      else
+        printf '%s\n' "$saved" >>ralph.log
       fi
-      if ! timeout --kill-after=10 "${RALPH_SYNC_SECS:-180}" git checkout -q main 2>>ralph.log ||
-        ! timeout --kill-after=10 "${RALPH_SYNC_SECS:-180}" git merge -q --ff-only origin/main 2>>ralph.log; then
-        log "main sync needs recovery; waiting without a model turn"
-        status blocked --reason "main checkout or fast-forward failed" --retry-seconds "$idle_secs" || exit 2
-        bounded_backoff "$idle_secs" || exit 2
-        continue
+      if [ -n "$repair_reason" ]; then
+        if [ "$repair_reason" = "${last_repair_reason:-}" ]; then
+          repair_streak=$((repair_streak + 1))
+        else
+          repair_streak=1
+          last_repair_reason="$repair_reason"
+        fi
+        log "repair turn $repair_streak: $repair_reason"
+        if [ "$repair_streak" -eq 3 ]; then
+          notify "3 repair turns in a row failed: $repair_reason; inspect .ralph/status.json"
+        fi
+      else
+        repair_streak=0
+        last_repair_reason=""
       fi
-      if [ -n "${RALPH_CONTROL_DIR:-}" ]; then
+      if [ -n "${RALPH_CONTROL_DIR:-}" ] && [ -z "$repair_reason" ]; then
         if [ -n "$(git -C "$RALPH_CONTROL_DIR" status --porcelain)" ] ||
           ! git -C "$RALPH_CONTROL_DIR" checkout -q --detach origin/main 2>>ralph.log; then
           log "controller update needs recovery; waiting without a model turn"
@@ -403,6 +417,17 @@ main() {
     turn_log=".ralph/iter-${stamp}-$((i + 1)).log"
     row_id="${row%% *}"
     note="$row_id"
+    if [ -f .ralph/repair-note ]; then
+      note+=$'\n'"Repair first: $(cat .ralph/repair-note). Find why no turn finished, fix that cause on its branch, then carry on with your row."
+      rm -f .ralph/repair-note
+    fi
+    if [ "$(cat .ralph/timed-out 2>/dev/null)" = "$row_id" ]; then
+      note+=$'\n'"Your last turn on this row hit the time bound of ${RALPH_TURN_SECS}s. First commit and push what you have to its draft PR. Then work in steps that end well inside the bound: keep each build or command under half of it, and ship parts with the row kept open."
+    fi
+    if [ -n "${repair_reason:-}" ]; then
+      dirty="$(git status --porcelain=v1 --untracked-files=all | head -n 20 | cut -c4- | tr '\n' ' ')"
+      note+=$'\n'"Repair first: on branch $(git branch --show-current), $repair_reason. Dirty paths: ${dirty% }. Commit the work that belongs to its loop branch, move input edits to an operator note in AGENT_NOTES.md and restore them, then sync with origin/main and carry on with your row."
+    fi
     control_module gates.checkpoint install >>ralph.log 2>&1 || exit 2
     recovery="$(control_module gates.checkpoint pending "$row_id")" || exit 2
     if [ "$recovery" != "[]" ]; then
@@ -509,8 +534,10 @@ main() {
       continue
     fi
 
+    rm -f .ralph/timed-out
     if [ "$agent_status" -eq 124 ] || [ "$agent_status" -eq 137 ]; then
       log "turn $((i + 1)) hit the time bound of ${RALPH_TURN_SECS}s"
+      printf '%s\n' "$row_id" >.ralph/timed-out
     elif [ "$agent_status" -ne 0 ]; then
       log "turn $((i + 1)) ended with exit $agent_status"
     fi

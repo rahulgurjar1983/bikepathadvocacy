@@ -1,0 +1,57 @@
+[
+  {
+    "region": "au-nsw-burwood",
+    "seconds": 2570.2,
+    "peak_rss_mb": 470.5
+  },
+  {
+    "region": "au-nsw-canada-bay",
+    "seconds": 1293.3,
+    "peak_rss_mb": 590.6
+  },
+  {
+    "region": "au-nsw-hunters-hill",
+    "seconds": 2951.5,
+    "peak_rss_mb": 466.9
+  },
+  {
+    "region": "au-nsw-lane-cove",
+    "seconds": 3337.4,
+    "peak_rss_mb": 442.3
+  },
+  {
+    "region": "au-nsw-mosman",
+    "seconds": 2955.6,
+    "peak_rss_mb": 415.9
+  },
+  {
+    "region": "au-nsw-north-sydney",
+    "seconds": 1160.8,
+    "peak_rss_mb": 454.4
+  },
+  {
+    "region": "au-nsw-randwick",
+    "seconds": 2096.9,
+    "peak_rss_mb": 530.4
+  },
+  {
+    "region": "au-nsw-strathfield",
+    "seconds": 507.1,
+    "peak_rss_mb": 500.6
+  },
+  {
+    "region": "au-nsw-waverley",
+    "seconds": 2481.3,
+    "peak_rss_mb": 418.2
+  },
+  {
+    "region": "au-nsw-willoughby",
+    "seconds": 866.7,
+    "peak_rss_mb": 520.8
+  },
+  {
+    "region": "au-nsw-woollahra",
+    "seconds": 2560.1,
+    "peak_rss_mb": 499.8
+  }
+]

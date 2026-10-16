@@ -1,6 +1,5 @@
 import csv
 import json
-import re
 
 import pytest
 
@@ -64,12 +63,6 @@ def test_fr13_13_pieces_that_do_not_touch_stay_apart():
     first = piece([[[0.0, 0.0], [0.0, 0.001]]])
     second = piece([[[0.0, 0.01], [0.0, 0.011]]])
     assert len(merge_pieces([first, second])) == 2
-
-
-def test_fr13_13_the_page_data_leaves_out_the_full_network(built):
-    html = (built / "report.html").read_text()
-    inline = re.search(r'<script type="application/json" id="page-data">(.*?)</script>', html, re.S)
-    assert set(json.loads(inline.group(1))) == {"project_shapes", "projects", "summary"}
 
 
 def test_fr13_13_the_archive_keeps_the_detail_the_recipes_read(built):

@@ -295,7 +295,8 @@ def test_fr7_10_places_query_holds_every_place_tag_shop_and_out_center_tags():
     assert '["shop"]' in query
     assert "out center tags" in query
     assert "-34.0,151.0,-33.9,151.1" in query
-    assert query.count("nwr[") == 12
+    assert '["place"~"^(suburb|locality)$"]' in query
+    assert query.count("nwr[") == 13
 
 
 def test_fr7_10_places_query_keeps_the_date_line_when_fetched(overpass_replay_server, tmp_path):

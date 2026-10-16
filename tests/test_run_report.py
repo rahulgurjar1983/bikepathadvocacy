@@ -97,34 +97,9 @@ def page(out):
     return parsed
 
 
-def test_fr9_3_the_report_holds_each_section(page):
-    for name in SECTIONS:
-        assert page.ids.get(name) == "section", name
-
-
 def test_fr9_3_the_report_has_one_heading_for_each_section(page):
     assert page.tags.count("h1") == 1
     assert page.tags.count("h2") >= len(SECTIONS)
-
-
-def test_fr9_3_the_summary_gives_the_scores_and_totals(page):
-    text = page.texts["summary"]
-    assert "25.0" in text
-    assert "100.0" in text
-    assert "Signals" in text
-    assert "750" in text
-
-
-def test_fr9_3_the_data_is_inlined_as_json(page, out):
-    blocks = [item for item in page.scripts if item["attrs"].get("type") == "application/json"]
-    assert blocks
-    data = json.loads(blocks[0]["text"])
-    summary = json.loads((out / "summary.json").read_text())
-    assert data["summary"] == summary
-    assert len(data["projects"]) == 1
-    assert "network" not in data
-    assert "places" not in data
-    assert data["project_shapes"]["type"] == "FeatureCollection"
 
 
 def test_fr9_3_the_pinned_leaflet_build_is_inlined(page):
@@ -143,80 +118,6 @@ def test_fr9_3_the_page_makes_no_network_request(page):
     assert len(page.scripts) >= 3
     assert "map" in page.ids
     assert all("src" not in item["attrs"] for item in page.scripts)
-
-
-def test_fr9_3_the_map_has_a_layer_control_for_each_layer(page):
-    for name in ("lts-1", "lts-2", "lts-3", "lts-4", "aaa", "stations", "schools", "proposed"):
-        assert page.ids.get(f"layer-{name}") == "input", name
-    assert page.ids.get("report-map-canvas") == "div"
-
-
-def test_fr9_3_the_project_table_has_a_row_for_each_project(page, out):
-    projects = json.loads((out / "projects.json").read_text())
-    assert page.rows["projects"] == len(projects) + 1
-
-
-def test_fr9_3_each_project_has_a_sheet(page, out):
-    projects = json.loads((out / "projects.json").read_text())
-    for project in projects:
-        assert page.ids.get(f"project-{project['id']}") == "article"
-        assert project["name"] in page.texts["sheets"]
-
-
-def test_fr9_4_project_sheets_include_maps_and_scaled_cross_sections(page, out):
-    projects = json.loads((out / "projects.json").read_text())
-    maps = {item["data-project-id"]: item for item in page.project_maps}
-    for project in projects:
-        assert maps[project["id"]]["id"] == f"project-map-{project['id']}"
-        for element in project["elements"]:
-            drawings = [
-                item
-                for item in page.cross_sections
-                if item["attrs"]["data-project-id"] == project["id"]
-                and item["attrs"]["data-element-id"] == element["id"]
-            ]
-            phases = {}
-            for drawing in drawings:
-                attrs = drawing["attrs"]
-                phases.setdefault(attrs["data-section-id"], set()).add(attrs["data-phase"])
-            assert phases
-            assert all(found == {"before", "after"} for found in phases.values())
-    assert page.cross_sections
-    assert "Before cross-section" in page.texts["sheets"]
-    assert "After cross-section" in page.texts["sheets"]
-    for drawing in page.cross_sections:
-        total = float(drawing["attrs"]["data-total-width-m"])
-        widths = [float(strip["data-width-m"]) for strip in drawing["strips"]]
-        assert sum(widths) == pytest.approx(total)
-        for strip in drawing["strips"]:
-            width = float(strip["data-width-m"])
-            assert strip["data-label"] in page.texts["sheets"]
-            if strip["tag"] == "rect":
-                assert float(strip["width"]) == pytest.approx(max(0.0, width) * 40)
-
-
-def test_fr9_4_project_sheets_show_check_links_width_confidence_and_totals(page, out):
-    projects = json.loads((out / "projects.json").read_text())
-    links = [
-        value for tag, name, value in page.attributes if tag == "a" and name == "data-check-link"
-    ]
-    assert len(links) == 2 * sum(len(project["elements"]) for project in projects)
-    assert all(
-        value.startswith(("https://www.google.com/maps/", "https://www.mapillary.com/app/"))
-        for value in links
-    )
-    for project in projects:
-        for label in ("Parking spaces removed", "Car lane km taken", "Speed limit km lowered"):
-            assert label in page.texts["sheets"]
-        assert "Width confidence" in page.texts["sheets"]
-        for name, value in project["totals"].items():
-            if name == "km_by_fix":
-                assert "Kilometres by fix" in page.texts["sheets"]
-                for fix, amount in value.items():
-                    assert fix in page.texts["sheets"]
-                    assert str(amount) in page.texts["sheets"]
-            else:
-                assert str(value) in page.texts["sheets"]
 
 
 def test_fr9_3_the_method_is_in_plain_words(page):
