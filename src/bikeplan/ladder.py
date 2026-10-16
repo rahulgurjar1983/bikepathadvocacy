@@ -124,6 +124,18 @@ def link_fixes(graph, table: dict, fits: dict, profile, weights) -> dict:
             record = {"street": street_name(data), "fix": fit["fix"]} | {
                 name: counts[name] for name in COUNTS
             }
+            record["least"] = min(
+                disruption_score(
+                    disruption_counts(
+                        item["fix"],
+                        {**data, "adt": data.get("adt") or 0.0, "length_m": link["length_m"]},
+                        profile,
+                    ),
+                    weights,
+                )
+                for item in fit["candidates"]
+                if item["accepted"]
+            )
             if best is None or disruption_score(record, weights) > disruption_score(best, weights):
                 best = record
         if best is not None:
@@ -155,6 +167,7 @@ def group_works(table: dict, fixes: dict, fixable: list, weights) -> list:
             for name in COUNTS:
                 work[name] = sum(fixes[link][name] for link in links)
             work["score"] = disruption_score(work, weights)
+            work["least"] = sum(fixes[link]["least"] for link in links)
             works.append(work)
     works.sort(key=lambda work: work["links"][0])
     return works

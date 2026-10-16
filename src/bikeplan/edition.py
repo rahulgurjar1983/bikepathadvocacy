@@ -3,7 +3,9 @@ import html
 import json
 import re
 
+import shapely
 from pyproj import Transformer
+from shapely.geometry import LineString
 
 from bikeplan.access import in_scope_places, places
 from bikeplan.fit import segment_fit
@@ -17,7 +19,7 @@ from bikeplan.ladder import (
 from bikeplan.network import bike_segments
 from bikeplan.network_report import choose, network_report
 from bikeplan.options import build_options, join_places, link_table
-from bikeplan.rating import model_ratings
+from bikeplan.rating import longest_trip_m, model_ratings
 from bikeplan.report import GLOSSARY, SOURCES, STYLE, entry, glossary_section, snapshot_date
 
 SPEC = "spec 17"
@@ -86,7 +88,8 @@ def option_data(item: dict) -> dict:
             for step in item["steps"]
         ],
         "works": [
-            {key: work[key] for key in ("street", "fix", "km", *SPENT)} for work in item["works"]
+            {key: work[key] for key in ("street", "fix", "km", *SPENT, "least") if key in work}
+            for work in item["works"]
         ],
         "no_fix": [
             {"street": gap["street"], "km": gap["km"], "links": len(gap["links"])}
@@ -98,6 +101,7 @@ def option_data(item: dict) -> dict:
             for found in item.get("blockers", [])
         ],
         **({"ceiling": item["ceiling"]} if "ceiling" in item else {}),
+        **({"links": item["links"]} if "links" in item else {}),
     }
 
 
@@ -107,6 +111,7 @@ def options_text(options: list[dict], share: float, joined) -> str:
         "options": [option_data(item) for item in options],
         "joined": joined.counts,
         "unjoined": joined.unjoined,
+        **({"audit": joined.audit} if getattr(joined, "audit", None) else {}),
     }
     return json.dumps(data, sort_keys=True, separators=(",", ":")) + "\n"
 
@@ -143,6 +148,14 @@ def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list
         lon, lat = to_lonlat.transform(data["x"], data["y"])
         return [round(lon, 5), round(lat, 5)]
 
+    def line(link):
+        key = next(k for k in (link, (link[1], link[0], link[2])) if graph.has_edge(*k))
+        data = graph.edges[key]
+        shape = data.get("geometry") or LineString(
+            [(graph.nodes[node]["x"], graph.nodes[node]["y"]) for node in key[:2]]
+        )
+        return [round(value, 1) for xy in shape.coords for value in xy[:2]]
+
     report = []
     for item in options:
         ladder = build_ladder(
@@ -168,6 +181,7 @@ def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list
                 "no_fix": ladder["no_fix"],
                 "blockers": ladder["blockers"],
                 "ceiling": ladder["ceiling"],
+                "links": [line(link) for link in item["links"]],
                 "lines": [
                     {
                         "work": owner.get(link),
@@ -187,7 +201,22 @@ def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list
         }
         for place in joined.joined
     ]
-    return report, marks, joined
+    spots = {place["osm_id"]: place for place in found}
+    audit = {
+        "crs": str(graph.graph["crs"]),
+        "boundary": shapely.to_wkt(graph.graph["boundary"], rounding_precision=1),
+        "buffer_m": profile.network.boundary_buffer_m,
+        "max_trip_km": profile.network.max_trip_km,
+        "longest_trip_m": round(
+            longest_trip_m(table, joined.joined, profile.network.max_trip_km * 1000), 1
+        ),
+        "places": [
+            {key: item[key] for key in ("id", "name", "type")}
+            | {"x": round(spots[item["id"]]["x"], 1), "y": round(spots[item["id"]]["y"], 1)}
+            for item in sorted([*joined.joined, *joined.unjoined], key=lambda item: item["id"])
+        ],
+    }
+    return report, marks, joined._replace(audit=audit)
 
 
 def fact(label, value, unit, shown, recipe, method) -> dict:
