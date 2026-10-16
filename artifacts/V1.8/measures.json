@@ -1,0 +1,16 @@
+{
+  "measure_keys": [
+    "crossings_unsignalised",
+    "paved_offroad_km",
+    "paved_offroad_share",
+    "people",
+    "route_km",
+    "schools",
+    "shared_street_km_by_lts",
+    "unpaved_km"
+  ],
+  "sha256": {
+    "measures.json": "aada86052a6754ab2820c2bbb3ad028e02c349a567af2e4b5213f6a6e669c2b1"
+  },
+  "verdict_counts": {}
+}

@@ -1280,3 +1280,16 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - Still left: the new measures, the claim verdicts, the private report and
   the reply window. No reply clock has begun.
 
+
+### V1.8 measures
+
+- `bikeplan route measures <lines.geojson> --region --snapshot --out` writes
+  `measures.json` (new module `review_measures.py`). The real Bayside run took
+  25 minutes 43 seconds and 1.5 GB; most of it is `build` plus `route_figures`
+  matching 932 lines. Do not run it twice in one turn.
+- The measures are not yet in `route_figures` totals or `MEASURES` in
+  `review.py`, so no claim can use them. Left: wire them into the claim
+  verdicts, check each section 2 claim against the new capture, build the
+  private report and record the reply window. No reply clock has begun.
+- A gate test file must collect on base: import a new module inside the test
+  functions, not at the top.
