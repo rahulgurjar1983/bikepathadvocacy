@@ -2,6 +2,7 @@ import hashlib
 import html
 import json
 import re
+from pathlib import Path
 
 import networkx as nx
 import shapely
@@ -9,6 +10,7 @@ from pyproj import Transformer
 from shapely.geometry import LineString
 
 from bikeplan.access import in_scope_places, places
+from bikeplan.corridors import OutsideBox, corridor_report, load_corridors
 from bikeplan.fit import segment_fit
 from bikeplan.ladder import (
     build_ladder,
@@ -22,9 +24,18 @@ from bikeplan.network_report import choose, network_report
 from bikeplan.options import build_options, join_places, link_table
 from bikeplan.rating import longest_trip_m, model_ratings
 from bikeplan.report import GLOSSARY, SOURCES, STYLE, entry, glossary_section, snapshot_date
+from bikeplan.snapshot import buffered_box
 
 SPEC = "spec 17"
+CORRIDORS = Path(__file__).resolve().parents[2] / "references" / "tfnsw-strategic-corridors.yaml"
 SPEC_LATE = "spec 17 blockers"
+SPEC_CORRIDOR = "spec 19"
+CORRIDOR_LABELS = {
+    "inside_km": "km of the indicative route inside the council area",
+    "near_km": "km within reach of my pick",
+    "all_ages_km": "all-ages km today",
+    "step_all_ages_km": "all-ages km at the recommended step",
+}
 LATE = ("blocker", "blockerkm", "ceiling", "askmore")
 PICK = (
     "import json;d=json.load(open('options.json'));o=d['options'];"
@@ -111,13 +122,18 @@ def option_data(item: dict) -> dict:
     }
 
 
-def options_text(options: list[dict], share: float, joined) -> str:
+def options_text(options: list[dict], share: float, joined, corridor: dict | None = None) -> str:
     data = {
         "share": share,
         "options": [option_data(item) for item in options],
         "joined": joined.counts,
         "unjoined": joined.unjoined,
         **({"audit": joined.audit} if getattr(joined, "audit", None) else {}),
+        **(
+            {"corridors": {key: corridor[key] for key in ("source", "counts", "works", "segments")}}
+            if corridor
+            else {}
+        ),
     }
     return json.dumps(data, sort_keys=True, separators=(",", ":")) + "\n"
 
@@ -147,6 +163,7 @@ def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list
     weights = region.proposals.disruption_weights
     fits = option_fits(graph, profile, weights)
     ratings = model_ratings(graph, scores, fits)
+    graph.graph["ratings"] = ratings
     to_metres = Transformer.from_crs(4326, graph.graph["crs"], always_xy=True)
     to_lonlat = Transformer.from_crs(graph.graph["crs"], 4326, always_xy=True)
     found = places(snapshot)
@@ -259,8 +276,17 @@ def fact(label, value, unit, shown, recipe, method) -> dict:
 
 
 class Figures:
-    def __init__(self, options: list[dict], share: float, joined, text: str, first: int):
+    def __init__(
+        self,
+        options: list[dict],
+        share: float,
+        joined,
+        text: str,
+        first: int,
+        corridor: dict | None = None,
+    ):
         self.options = options
+        self.corridor = corridor
         self.joined = joined
         self.choice = choose(options, share)
         self.pick = next(item for item in options if item["id"] == self.choice["pick"])
@@ -272,7 +298,8 @@ class Figures:
     def ref(self, key: tuple, text: str) -> str:
         if key not in self.made:
             item = self.describe(key)
-            late = key[0] in LATE
+            kind = key[0]
+            late = kind in LATE
             figure_id = f"L{len(self.late)}" if late else f"F{self.next}"
             if late:
                 self.late.append(key)
@@ -283,7 +310,7 @@ class Figures:
                 "label": item["label"],
                 "value": item["value"],
                 "unit": item["unit"],
-                "spec": SPEC_LATE if late else SPEC,
+                "spec": SPEC_CORRIDOR if kind == "corridor" else SPEC_LATE if late else SPEC,
                 "method": f"I read {item['method']} from options.json.",
                 "inputs": [{"name": "options.json", "sha256": self.digest}],
                 "sources": SOURCES,
@@ -308,9 +335,42 @@ class Figures:
         kind = key[0]
         if kind in LATE:
             return self.of_blockers(key)
+        if kind == "corridor":
+            return self.of_corridor(key)
         if kind in ("km", "today", "full", "places", "spent", "quality"):
             return self.of_option(key)
         return self.of_pick(key)
+
+    def of_corridor(self, key: tuple) -> dict:
+        load = "import json;c=json.load(open('options.json'))['corridors'];"
+        if key[1] == "count":
+            return fact(
+                f"Corridor segments {key[2]} by my pick",
+                self.corridor["counts"][key[2]],
+                "segments",
+                0,
+                f"{load}print(c['counts']['{key[2]}'])",
+                "corridor verdicts",
+            )
+        if key[1] == "works":
+            return fact(
+                "Corridor works: km of my pick's works within reach of the indicative routes",
+                self.corridor["works"]["km"],
+                "km",
+                2,
+                f"{load}print(round(c['works']['km'],2))",
+                "corridor works",
+            )
+        _, _, number, name = key
+        segment = self.corridor["segments"][number]
+        return fact(
+            f"Corridor {segment['id']}: {CORRIDOR_LABELS[name]}",
+            segment[name],
+            "km",
+            2,
+            f"{load}print(round(c['segments'][{number}]['{name}'],2))",
+            "corridor segments",
+        )
 
     def of_option(self, key: tuple) -> dict:
         kind = key[0]
@@ -524,11 +584,25 @@ def checked(old: list[dict]) -> str:
     )
 
 
-def edition(region, options, marks, joined, share, old, streets=None) -> tuple[str, str, list, str]:
-    text = options_text(options, share, joined)
+def corridor_data(graph, region, profile, snapshot, options) -> dict | None:
+    boundary = json.loads((Path(snapshot) / "boundary.geojson").read_text())
+    box = buffered_box(boundary, region.analysis_buffer_m)
+    try:
+        corridors = load_corridors(CORRIDORS, box)
+    except OutsideBox:
+        return None
+    choice = choose(options, profile.network.recommend_share)
+    pick = next(item for item in options if item["id"] == choice["pick"])
+    return corridor_report(graph, corridors, graph.graph["ratings"], pick, choice, profile.network)
+
+
+def edition(
+    region, options, marks, joined, share, old, streets=None, corridor=None
+) -> tuple[str, str, list, str]:
+    text = options_text(options, share, joined, corridor)
     first = max(int(item["id"][1:]) for item in old) + 1
-    figures = Figures(options, share, joined, text, first)
-    head, body = network_report(options, share, marks, figures.ref, streets)
+    figures = Figures(options, share, joined, text, first, corridor)
+    head, body = network_report(options, share, marks, figures.ref, streets, corridor)
     body += left_out(joined, figures.ref) + archive_figures(old)
     made = figures.listed()
     body = figures.settle(body)

@@ -13,6 +13,7 @@ COUNTS = (
 PLOT = (40, 10, 350, 200)
 ASK_STREETS = 10
 BLOCKERS_SHOWN = 10
+CORRIDOR_COLUMNS = ("inside_km", "near_km", "all_ages_km", "step_all_ages_km")
 LEVELS = (
     (1, "one", "blue"),
     (2, "two", "dark blue"),
@@ -380,7 +381,64 @@ def quality_section(options: list[dict], ref=plain) -> str:
     )
 
 
-def overlay_controls(streets: dict | None) -> str:
+def corridor_section(corridor: dict, ref=plain) -> str:
+    source = corridor["source"]
+    rows = corridor["segments"]
+    counts = corridor["counts"]
+    works = corridor["works"]
+
+    def count(name: str) -> str:
+        return ref(("corridor", "count", name), str(counts[name]))
+
+    on_km = ref(("corridor", "works"), f"{works['km']:.2f}")
+    sentence = (
+        f"My pick covers {count('covered')} of the {len(rows)} segments, "
+        f"partly covers {count('partly')} and misses {count('missed')}, and "
+        f"{on_km} km of its works lie on them."
+    )
+    left = len(rows) - sum(counts.values())
+    rest = (
+        f"<p>{left} of the segments have no bike route or no part inside the council area, "
+        "so they have no verdict.</p>"
+        if left
+        else ""
+    )
+    body = "".join(
+        "<tr>"
+        f"<td>{html.escape(item['id'])}</td><td>{html.escape(item['from'])}</td>"
+        f"<td>{html.escape(item['to'])}</td>"
+        + "".join(
+            f"<td>{ref(('corridor', 'seg', number, name), f'{item[name]:.2f}')}</td>"
+            for name in CORRIDOR_COLUMNS
+        )
+        + f"<td>{html.escape(item['verdict'])}</td></tr>"
+        for number, item in enumerate(rows)
+    )
+    head = "".join(
+        f"<th>{name}</th>"
+        for name in (
+            "Segment",
+            "From",
+            "To",
+            "Km inside the council area",
+            "Km within reach of my pick",
+            "All-ages km today",
+            "All-ages km at the recommended step",
+            "Verdict",
+        )
+    )
+    return (
+        '<section id="corridors"><h2>How my pick fits the TfNSW corridors</h2>'
+        f"<p>{sentence}</p>{rest}"
+        "<p>Each route is indicative: it is the shortest bike-legal route I found between the "
+        "two ends of a segment. Transport for NSW has not chosen the exact routes.</p>"
+        f"<table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>"
+        f'<p>Source: <a href="{html.escape(source["url"])}">{html.escape(source["title"])}</a>, '
+        f"Transport for NSW, {html.escape(source['date'])}.</p></section>"
+    )
+
+
+def overlay_controls(streets: dict | None, corridors: bool = False) -> str:
     levels = ""
     if streets:
         rows = "".join(
@@ -401,13 +459,21 @@ def overlay_controls(streets: dict | None) -> str:
         f'style="color:{fill};-webkit-text-stroke:1px #222222">{mark}</span> {label}</label></li>'
         for kind, label, fill, mark in KINDS
     )
+    lines = (
+        '<label><input type="checkbox" id="overlay-corridors"> TfNSW corridors (indicative)'
+        "</label><p>Dashed lines are indicative routes, each labelled with its segment ID.</p>"
+        if corridors
+        else ""
+    )
     return (
-        f'<fieldset id="overlay-key"><legend>Overlays under the option</legend>{levels}'
+        f'<fieldset id="overlay-key"><legend>Overlays under the option</legend>{levels}{lines}'
         f"<ul>{places}</ul></fieldset>"
     )
 
 
-def map_section(options: list[dict], choice: dict, ref=plain, streets=None) -> str:
+def map_section(
+    options: list[dict], choice: dict, ref=plain, streets=None, corridors: bool = False
+) -> str:
     switch = "".join(
         f'<label><input type="radio" name="option" id="option-{item["id"]}"'
         f"{' checked' if item['id'] == choice['pick'] else ''}> {html.escape(item['name'])}</label>"
@@ -418,7 +484,7 @@ def map_section(options: list[dict], choice: dict, ref=plain, streets=None) -> s
         '<section id="map"><h2>Map of the network options</h2>'
         '<div id="map-controls" hidden><fieldset><legend>Option</legend>'
         f"{switch}</fieldset>"
-        f"{overlay_controls(streets)}"
+        f"{overlay_controls(streets, corridors)}"
         '<label>How much disruption: <input type="range" id="disruption-slider" min="0" '
         f'max="{len(pick["steps"]) - 1}" value="{choice["step"]}"></label></div>'
         "<p>Green: all ages today. Blue: made all ages by works up to the step. Red: still not "
@@ -436,6 +502,7 @@ def map_data(
     places: list[dict],
     share: float,
     streets: dict | None = None,
+    corridors: list | None = None,
 ) -> str:
     saved = {
         "streets": streets or {"pieces": [], "km": {}},
@@ -458,6 +525,8 @@ def map_data(
             for item in options
         ],
     }
+    if corridors:
+        saved["corridors"] = corridors
     return json.dumps(saved, sort_keys=True, separators=(",", ":")).replace("</", "<\\/")
 
 
@@ -467,23 +536,26 @@ def network_report(
     places: list[dict] | None = None,
     ref=plain,
     streets: dict | None = None,
+    corridor: dict | None = None,
 ) -> tuple[str, str]:
     choice = choose(options, share)
     top = max(item["steps"][-1]["disruption"]["score"] for item in options)
     pick = next(item for item in options if item["id"] == choice["pick"])
+    routes = corridor["routes"] if corridor else None
     head = (
         f"<style>{(ASSETS / 'leaflet.css').read_text()}"
         "#network-map{height:24rem;border:1px solid #444}</style>"
         f"<script>{(ASSETS / 'leaflet.js').read_text()}</script>"
         '<script type="application/json" id="network-data">'
-        f"{map_data(options, choice, top, places or [], share, streets)}</script>"
+        f"{map_data(options, choice, top, places or [], share, streets, routes)}</script>"
         f"<script>{(ASSETS / 'network.js').read_text()}</script>"
     )
     body = (
         opening(options, choice, ref)
-        + map_section(options, choice, ref, streets)
+        + map_section(options, choice, ref, streets, corridor is not None)
         + chart(options, choice, top, ref)
         + works_section(pick, choice, ref)
+        + (corridor_section(corridor, ref) if corridor else "")
         + no_fix_section(options, ref, pick)
         + quality_section(options, ref)
     )
