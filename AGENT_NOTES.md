@@ -1242,3 +1242,5 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - M1.5 (2026-10-16): `join_places` joins a part to the main part by one shortest route in the full graph and returns the links outside the area as `Joined.outside`. `link_table` marks them `outside`, `build_options` lists them per option, and `group_works` keeps their works apart with `outside` set.
 - Suburb nodes are not in the Bayside snapshot, and `test_fr7_10_places_query_holds_every_place_tag_shop_and_out_center_tags` counts 12 filters, so adding `place=suburb` to the query needs an owner decision on that test. Until then a centre is named "Town centre near <nearest named place>".
 - Outside works carry the label "outside Bayside" but no neighbouring council name yet; the region files hold no neighbour boundaries.
+
+- T1.1: do not name a feature-row run output `proof.json`; the red-green gate then reads the row as a proof row and rejects it.
