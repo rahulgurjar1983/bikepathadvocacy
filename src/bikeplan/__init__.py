@@ -12,6 +12,7 @@ from bikeplan.proposal_inputs import load_proposal_inputs
 from bikeplan.propose import write_propose
 from bikeplan.region_new import NOMINATIM_ENDPOINT, RegionNewError, describe, search, write_region
 from bikeplan.review import ClaimError, write_route_figures
+from bikeplan.review_clip import clip_source
 from bikeplan.review_report import write_review
 from bikeplan.review_source import capture_source
 from bikeplan.route import RouteError, write_corridor
@@ -50,7 +51,10 @@ GROUPS = {
         "corridor": "Make a region from a route file",
         "new": "Make a region file for a council or city",
     },
-    "route": {"figures": "Measure a route: facilities, stress levels, breaks, crossings, flags"},
+    "route": {
+        "figures": "Measure a route: facilities, stress levels, breaks, crossings, flags",
+        "clip": "Clip the lines of a saved plan source to a boundary",
+    },
     "snapshot": {
         "review-source": "Save a plan source and its credit in private storage",
         "fetch": "Fetch the input data of a region",
@@ -150,6 +154,10 @@ def build_parser() -> argparse.ArgumentParser:
                 leaf.add_argument("--snapshot", required=True, help="Snapshot folder")
                 leaf.add_argument("--out", required=True, help="Output directory")
                 leaf.add_argument("--claims", help="Claims file, for verdicts")
+            if (name, sub) == ("route", "clip"):
+                leaf.add_argument("folder", help="Saved plan source folder")
+                leaf.add_argument("--boundary", required=True, help="Boundary GeoJSON file")
+                leaf.add_argument("--out", required=True, help="New folder under data/private")
             if (name, sub) == ("snapshot", "review-source"):
                 leaf.add_argument("url", help="Public source URL")
                 leaf.add_argument("--out", required=True, help="New folder under data/private")
@@ -474,6 +482,13 @@ def main(argv: list[str] | None = None) -> int:
         )
     if (args.command, getattr(args, "subcommand", None)) == ("route", "figures"):
         return route_figures_command(args.route, args.region, args.snapshot, args.out, args.claims)
+    if (args.command, getattr(args, "subcommand", None)) == ("route", "clip"):
+        try:
+            print(clip_source(args.folder, args.boundary, args.out))
+        except (ConfigError, OSError, ValueError) as error:
+            print(error, file=sys.stderr)
+            return 1
+        return 0
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "review-source"):
         try:
             print(capture_source(args.url, args.out, args.licence, args.credit))
