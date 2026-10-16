@@ -16,7 +16,11 @@ figures = re.findall(r'<article id="F\d+">', text)
 assert figures and "Right of reply" in text and "CC BY 4.0" in text
 args.out.write_text(
     json.dumps(
-        {"sha256": hashlib.sha256(page.read_bytes()).hexdigest(), "figures": len(figures)},
+        {
+            "map_paths": len(re.findall(r"<path d=", text)),
+            "sha256": hashlib.sha256(page.read_bytes()).hexdigest(),
+            "figures": len(figures),
+        },
         indent=2,
         sort_keys=True,
     )

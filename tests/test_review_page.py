@@ -191,3 +191,92 @@ def test_fr14_12_the_page_never_replaces_an_existing_folder(review, capsys):
     built(review)
     assert page(review) == 1
     assert "exists" in capsys.readouterr().err
+
+
+LINES = {
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {"n": "River", "layer": "Waterways", "km": 1.0},
+            "geometry": {
+                "type": "MultiLineString",
+                "coordinates": [[[151.0, -33.0], [151.1, -33.0]], [[151.1, -33.0], [151.1, -33.1]]],
+            },
+        },
+        {
+            "type": "Feature",
+            "properties": {"n": "Path", "layer": "Existing Bike Paths", "km": 2.0},
+            "geometry": {"type": "LineString", "coordinates": [[151.0, -33.1], [151.1, -33.1]]},
+        },
+    ],
+}
+
+
+def page_with_lines(root, out=None):
+    (root / "lines.geojson").write_text(json.dumps(LINES))
+    return main(
+        [
+            "route",
+            "page",
+            str(root / "verdicts"),
+            "--source-manifest",
+            str(root / "capture/source-manifest.json"),
+            "--reply",
+            str(root / "reply.yaml"),
+            "--lines",
+            str(root / "lines.geojson"),
+            "--out",
+            str(out or root / "page"),
+        ]
+    )
+
+
+def test_fr18_7_the_page_draws_every_route_part_on_a_map_with_a_key(review):
+    assert verdicts(review) == 0
+    assert page_with_lines(review) == 0
+    text = (review / "page/index.html").read_text()
+    svg = re.search(r'<svg id="route-map".*?</svg>', text, re.S).group(0)
+    assert 'role="img"' in svg and "aria-label=" in svg
+    paths = re.findall(r'<path d="([^"]+)" stroke="(#[0-9a-f]{6})"', svg)
+    assert len(paths) == 3
+    assert len({colour for _, colour in paths}) == 2
+    assert paths[0][0].startswith("M") and paths[0][0].count("L") == 1
+    key = re.search(r'<ul id="route-map-key">(.*?)</ul>', text, re.S).group(1)
+    assert "Waterways" in key and "Existing Bike Paths" in key
+
+
+def test_fr18_7_the_map_puts_north_up_and_west_left(review):
+    assert verdicts(review) == 0
+    assert page_with_lines(review) == 0
+    svg = re.search(r'<svg id="route-map".*?</svg>', (review / "page/index.html").read_text(), re.S)
+    first, second, third = re.findall(
+        r'<path d="M([-\d.]+) ([-\d.]+)L([-\d.]+) ([-\d.]+)"', svg.group(0)
+    )
+    assert float(first[0]) < float(first[2])
+    assert float(second[1]) < float(second[3])
+    assert float(third[1]) > float(first[1])
+
+
+def test_fr14_12_the_map_needs_a_lines_file_under_data_private(review, tmp_path, capsys):
+    assert verdicts(review) == 0
+    outside = tmp_path / "outside.geojson"
+    outside.write_text(json.dumps(LINES))
+    code = main(
+        [
+            "route",
+            "page",
+            str(review / "verdicts"),
+            "--source-manifest",
+            str(review / "capture/source-manifest.json"),
+            "--reply",
+            str(review / "reply.yaml"),
+            "--lines",
+            str(outside),
+            "--out",
+            str(review / "page"),
+        ]
+    )
+    assert code == 1
+    assert "data/private" in capsys.readouterr().err
+    assert not (review / "page").exists()

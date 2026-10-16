@@ -1,6 +1,7 @@
 import hashlib
 import html
 import json
+import math
 from pathlib import Path
 
 from bikeplan.config import ConfigError
@@ -9,6 +10,9 @@ from bikeplan.review_report import day, read_reply, reply_section
 
 HEAD = "import json;v=json.load(open('verdicts.json'));"
 VERDICT_NAMES = ("holds", "partly", "does not hold", "outside this tool")
+PALETTE = ("#0072b2", "#d55e00", "#009e73", "#cc79a7", "#e69f00", "#56b4e9", "#444444")
+MAP_WIDTH = 800
+MAP_PAD = 10
 
 
 class Figures:
@@ -71,6 +75,53 @@ def claim_row(figures: Figures, index: int, found: dict) -> str:
     )
 
 
+def parts(geometry: dict) -> list:
+    if geometry["type"] == "LineString":
+        return [geometry["coordinates"]]
+    return geometry["coordinates"]
+
+
+def map_section(lines: dict) -> str:
+    drawn = [
+        (feature["properties"]["layer"], part)
+        for feature in lines["features"]
+        for part in parts(feature["geometry"])
+    ]
+    points = [point for _, part in drawn for point in part]
+    west = min(x for x, _ in points)
+    east = max(x for x, _ in points)
+    south = min(y for _, y in points)
+    north = max(y for _, y in points)
+    scale = (MAP_WIDTH - 2 * MAP_PAD) / max(
+        (east - west) * math.cos(math.radians((north + south) / 2)), 1e-9
+    )
+    stretch = math.cos(math.radians((north + south) / 2)) * scale
+    height = round((north - south) * scale + 2 * MAP_PAD)
+    names = sorted({name for name, _ in drawn})
+    colours = {name: PALETTE[index % len(PALETTE)] for index, name in enumerate(names)}
+
+    def place(point: list) -> str:
+        x = MAP_PAD + (point[0] - west) * stretch
+        y = MAP_PAD + (north - point[1]) * scale
+        return f"{x:.1f} {y:.1f}"
+
+    paths = "".join(
+        f'<path d="M{"L".join(place(point) for point in part)}" stroke="{colours[name]}" '
+        'fill="none" stroke-width="2"/>'
+        for name, part in drawn
+    )
+    key = "".join(
+        f'<li><span style="color:{colours[name]}">&#9632;</span> {html.escape(name)}</li>'
+        for name in names
+    )
+    return (
+        '<section id="map"><h2>Where the plan runs in the review area</h2>'
+        f'<svg id="route-map" role="img" aria-label="Map of the plan in the review area, north up" '
+        f'viewBox="0 0 {MAP_WIDTH} {height}" width="100%">{paths}</svg>'
+        f'<ul id="route-map-key">{key}</ul></section>'
+    )
+
+
 def window_section(window: dict) -> str:
     if window["public_after"]:
         text = (
@@ -86,7 +137,14 @@ def window_section(window: dict) -> str:
     return f'<section id="window"><h2>When this review can go public</h2>{text}</section>'
 
 
-def build_page(verdicts: list, window: dict, reply: dict, manifest: dict, digest: str) -> str:
+def build_page(
+    verdicts: list,
+    window: dict,
+    reply: dict,
+    manifest: dict,
+    digest: str,
+    lines: dict | None = None,
+) -> str:
     figures = Figures(verdicts, digest)
     judged = figures.add("Claims that I judge", "len(v)", "I count the claims in the claims file.")
     counts = [
@@ -116,6 +174,7 @@ def build_page(verdicts: list, window: dict, reply: dict, manifest: dict, digest
         f'<p>Source: <a href="{url}">{url}</a>, saved on '
         f"{html.escape(manifest['retrieved_at'][:10])}. Licence {licence}. Credit: {credit}.</p>"
         "</section>"
+        f"{map_section(lines) if lines else ''}"
         '<section id="verdicts"><h2>What I found for each claim</h2>'
         "<table><tr><th>The claim</th><th>Where it was said</th><th>Verdict</th>"
         f"<th>What I measured</th></tr>{rows}</table></section>"
@@ -125,20 +184,26 @@ def build_page(verdicts: list, window: dict, reply: dict, manifest: dict, digest
     )
 
 
-def write_page(folder, source_manifest, reply, out) -> Path:
+def write_page(folder, source_manifest, reply, out, lines=None) -> Path:
     private = Path.cwd() / "data/private"
     target = Path(out).absolute()
     if not target.is_relative_to(private) or not target.resolve().is_relative_to(private):
         raise ConfigError("The review page must stay under data/private")
     if target.exists():
         raise ConfigError(f"{target}: already exists; use a new page folder")
+    drawing = None
+    if lines:
+        found = Path(lines).absolute()
+        if not found.is_relative_to(private) or not found.resolve().is_relative_to(private):
+            raise ConfigError("The lines file must stay under data/private")
+        drawing = json.loads(found.read_text())
     source = Path(folder)
     content = (source / "verdicts.json").read_bytes()
     verdicts = json.loads(content)
     window = json.loads((source / "reply-window.json").read_text())
     manifest = json.loads(Path(source_manifest).read_text())
     text = build_page(
-        verdicts, window, read_reply(reply), manifest, hashlib.sha256(content).hexdigest()
+        verdicts, window, read_reply(reply), manifest, hashlib.sha256(content).hexdigest(), drawing
     )
     target.mkdir(parents=True)
     (target / "index.html").write_text(text)

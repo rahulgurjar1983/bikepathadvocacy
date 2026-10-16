@@ -1306,3 +1306,5 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - `bikeplan route page <verdicts folder> --source-manifest --reply --out data/private/<new folder>` writes `index.html` from saved verdicts. It is new code in `review_page.py` and does not rebuild route figures.
 - The page has no map yet: the verdicts hold no route geometry. Adding the map from the clip's `lines.geojson` is left.
 - A person sends the page to the author, then adds a `sent` entry to `data/private/V1.8/reply.yaml`. Rerun `route verdicts` and `route page` into new folders to start the 14 days. No turn may contact the author.
+
+- Map: add `--lines <clip lines.geojson>` to `route page` to draw the route as an SVG with a key by plan layer. It must sit under `data/private`. The map is coloured by plan layer, not stress, since the clip holds no stress. Rerun the page into a new folder.

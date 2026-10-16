@@ -176,6 +176,7 @@ def build_parser() -> argparse.ArgumentParser:
                 leaf.add_argument("folder", help="Verdicts folder of the plan")
                 leaf.add_argument("--source-manifest", required=True, help="source-manifest.json")
                 leaf.add_argument("--reply", required=True, help="Right of reply file")
+                leaf.add_argument("--lines", help="lines.geojson of the clip, for the map")
                 leaf.add_argument("--out", required=True, help="New folder under data/private")
             if (name, sub) == ("route", "clip"):
                 leaf.add_argument("folder", help="Saved plan source folder")
@@ -527,7 +528,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if (args.command, getattr(args, "subcommand", None)) == ("route", "page"):
         try:
-            print(write_page(args.folder, args.source_manifest, args.reply, args.out))
+            print(write_page(args.folder, args.source_manifest, args.reply, args.out, args.lines))
         except (ConfigError, OSError, ValueError, KeyError) as error:
             print(error, file=sys.stderr)
             return 1
