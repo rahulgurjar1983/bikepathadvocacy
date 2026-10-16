@@ -151,9 +151,10 @@ def link_fixes(graph, table: dict, fits: dict, profile, weights) -> dict:
 def group_works(table: dict, fixes: dict, fixable: list, weights) -> list:
     groups: dict = {}
     for key in fixable:
-        groups.setdefault((fixes[key]["street"], fixes[key]["fix"]), []).append(key)
+        far = bool(table[key].get("outside"))
+        groups.setdefault((fixes[key]["street"], fixes[key]["fix"], far), []).append(key)
     works = []
-    for (street, fix), keys in groups.items():
+    for (street, fix, far), keys in groups.items():
         joined = nx.Graph()
         for a, b, _ in keys:
             joined.add_edge(a, b)
@@ -168,6 +169,8 @@ def group_works(table: dict, fixes: dict, fixable: list, weights) -> list:
         for links in by_part.values():
             links.sort()
             work = {"street": street, "fix": fix, "links": links}
+            if far:
+                work["outside"] = True
             work["km"] = sum(table[link]["length_m"] for link in links) / 1000
             for name in COUNTS:
                 work[name] = sum(fixes[link][name] for link in links)

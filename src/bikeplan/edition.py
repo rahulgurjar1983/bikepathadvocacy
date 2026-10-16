@@ -3,6 +3,7 @@ import html
 import json
 import re
 
+import networkx as nx
 import shapely
 from pyproj import Transformer
 from shapely.geometry import LineString
@@ -88,7 +89,11 @@ def option_data(item: dict) -> dict:
             for step in item["steps"]
         ],
         "works": [
-            {key: work[key] for key in ("street", "fix", "km", *SPENT, "least") if key in work}
+            {
+                key: work[key]
+                for key in ("street", "fix", "km", *SPENT, "least", "outside")
+                if key in work
+            }
             for work in item["works"]
         ],
         "no_fix": [
@@ -102,6 +107,7 @@ def option_data(item: dict) -> dict:
         ],
         **({"ceiling": item["ceiling"]} if "ceiling" in item else {}),
         **({"links": item["links"]} if "links" in item else {}),
+        **({"outside": item["outside"]} if item.get("outside") else {}),
     }
 
 
@@ -123,6 +129,20 @@ def option_fits(graph, profile, weights) -> dict:
     }
 
 
+def unreached(graph, joined) -> list[dict]:
+    legal = nx.Graph()
+    legal.add_edges_from((u, v) for u, v, data in graph.edges(data=True) if data["bike_ok"])
+    main = {item["node"] for item in joined.joined if item["node"] in legal}
+    reach = (
+        set().union(*(nx.node_connected_component(legal, node) for node in main)) if main else set()
+    )
+    return [
+        {"id": item["id"], "name": item["name"]}
+        for item in joined.unjoined
+        if item.get("node") in reach
+    ]
+
+
 def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list, list, object]:
     weights = region.proposals.disruption_weights
     fits = option_fits(graph, profile, weights)
@@ -135,7 +155,9 @@ def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list
     found = in_scope_places(found, graph.graph["boundary"], region.analysis_buffer_m)
     joined = join_places(graph, found, [], profile.network)
     options = build_options(graph, joined, ratings, profile.network)
-    table = link_table(graph, ratings, profile.network)
+    table = link_table(graph, ratings, profile.network, joined.outside or ())
+    area = region.name.split(",")[0].removesuffix(" Council")
+    label = f"outside {area}"
     fixes = link_fixes(graph, table, fits, profile, weights)
     streets = link_streets(graph)
     roads = link_roads(
@@ -169,7 +191,11 @@ def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list
             roads,
             reasons,
         )
+        for work in ladder["works"]:
+            if work.get("outside"):
+                work["outside"] = label
         owner = {link: n for n, work in enumerate(ladder["works"]) for link in work["links"]}
+        far = set(item["outside"])
         report.append(
             {
                 "id": item["id"],
@@ -181,12 +207,14 @@ def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list
                 "no_fix": ladder["no_fix"],
                 "blockers": ladder["blockers"],
                 "ceiling": ladder["ceiling"],
+                "outside": [index for index, link in enumerate(item["links"]) if link in far],
                 "links": [line(link) for link in item["links"]],
                 "lines": [
                     {
                         "work": owner.get(link),
                         "ok": table[link]["all_ages"],
                         "line": [point(link[0]), point(link[1])],
+                        **({"outside": label} if link in far else {}),
                     }
                     for link in item["links"]
                 ],
@@ -210,6 +238,7 @@ def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list
         "longest_trip_m": round(
             longest_trip_m(table, joined.joined, profile.network.max_trip_km * 1000), 1
         ),
+        "unreached": unreached(graph, joined),
         "places": [
             {key: item[key] for key in ("id", "name", "type")}
             | {"x": round(spots[item["id"]]["x"], 1), "y": round(spots[item["id"]]["y"], 1)}

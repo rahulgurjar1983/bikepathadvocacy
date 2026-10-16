@@ -54,6 +54,8 @@ def asked(option: dict, step: int) -> dict:
     km: dict = {}
     for index in built:
         item = option["works"][index]
+        if item.get("outside"):
+            continue
         km[item["street"]] = km.get(item["street"], 0.0) + item["km"]
     streets = sorted(km)
     named = sorted(

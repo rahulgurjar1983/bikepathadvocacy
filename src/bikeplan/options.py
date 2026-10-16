@@ -133,7 +133,7 @@ def join_places(graph, found: list[dict], entrances: list[dict], network: Networ
             outside.update(route)
             reached.add(part)
     unjoined += [
-        {key: item[key] for key in ("id", "type", "name")} | {"reason": ISLAND}
+        {key: item[key] for key in ("id", "type", "name", "node")} | {"reason": ISLAND}
         for item in joined
         if group[item["node"]] not in reached
     ]

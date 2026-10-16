@@ -31,6 +31,7 @@ STYLE = (
 
 
 ASK_LIMIT = 10
+BARE_NAME = re.compile(r"(Town centre )?\d+", re.I)
 MAX_REPORT_BYTES = 8 * 1024 * 1024
 VERIFY_EXPECT = re.compile(r"^Expect:\s*(.+)$", re.M)
 VERIFY_ARTIFACT = re.compile(r"^Artifact:\s*`([^`]+)`", re.M)
@@ -205,8 +206,11 @@ def inside_problems(data: dict) -> list[str]:
         if not boundary.buffer(0.5).covers(Point(place["x"], place["y"]))
     ]
     for option in data["options"]:
+        far = set(option.get("outside", ()))
         for index, link in enumerate(option["links"]):
-            if not area.covers(LineString(list(zip(link[0::2], link[1::2], strict=True)))):
+            if index not in far and not area.covers(
+                LineString(list(zip(link[0::2], link[1::2], strict=True)))
+            ):
                 problems.append(
                     f"{option['name']}: link {index} lies outside the boundary "
                     f"widened by {audit['buffer_m']:g} m"
@@ -224,6 +228,7 @@ def ask_problems(data: dict, page: str) -> list[str]:
         pick["works"][index]["street"]
         for item in pick["steps"][1 : step + 1]
         for index in item["works"]
+        if not pick["works"][index].get("outside")
     }
     problems = [
         f"the ask names the unnamed street {name}" for name in named if name.startswith("unnamed ")
@@ -235,6 +240,21 @@ def ask_problems(data: dict, page: str) -> list[str]:
     ]
     if len(named) > ASK_LIMIT:
         problems.append(f"the ask names {len(named)} streets, more than {ASK_LIMIT}")
+    return problems
+
+
+def place_problems(data: dict) -> list[str]:
+    audit = data["audit"]
+    problems = [
+        f"place {place['id']} has no real name, only {place['name']!r}"
+        for place in audit["places"]
+        if BARE_NAME.fullmatch(place["name"].strip())
+    ]
+    problems += [
+        f"place {item['name']} ({item['id']}) is unjoined although the full snapshot graph "
+        "joins it to the main network"
+        for item in audit.get("unreached", ())
+    ]
     return problems
 
 
@@ -263,6 +283,7 @@ def audit_problems_of(name: str, data: dict, page: str) -> list[str]:
         return [f"{name}: options.json holds no audit data"]
     found = [
         *inside_problems(data),
+        *place_problems(data),
         *ask_problems(data, page),
         *trip_problems(data),
         *parking_problems(data),
