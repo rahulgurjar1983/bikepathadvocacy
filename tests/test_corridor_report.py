@@ -123,7 +123,7 @@ def test_fr19_5_the_section_credits_the_map_by_title_date_and_url(made):
 
 
 def test_fr19_5_every_value_is_a_figure_with_a_recipe(made):
-    _, _, body, figures, text = made
+    _, _, body, figures, _ = made
     block = section(body)
     cells = re.findall(r"<td>(.*?)</td>", block.split("<tbody>")[1])
     numeric = [c for c in cells if re.fullmatch(r"(<a[^>]*>)?[\d.]+(</a>)?", c)]
