@@ -24,7 +24,8 @@ release_out="${RELEASE_OUT:-}"
 release_built="${RELEASE_BUILT:-}"
 max_secs="${RELEASE_MAX_SECS:-3600}"
 max_mb="${RELEASE_MAX_MB:-14336}"
-unset RELEASE_OUT RELEASE_BUILT RELEASE_MAX_SECS RELEASE_MAX_MB
+release_regions="${RELEASE_REGIONS:-regions/*.yaml}"
+unset RELEASE_OUT RELEASE_BUILT RELEASE_MAX_SECS RELEASE_MAX_MB RELEASE_REGIONS
 commit="$(git rev-parse HEAD)"
 work="$(mktemp -d)"
 if [ -n "$release_out" ]; then
@@ -148,7 +149,7 @@ if [ "$mode" = plan ]; then
     find_last >&2
   fi
   planned=()
-  for region in regions/*.yaml; do
+  for region in $release_regions; do
     published "$region" || continue
     needs_build "$region" && planned+=("$region")
   done
@@ -248,7 +249,7 @@ build() {
   publish "$kind" "$id" "$rid" "$date" "$folder" "$html" "$archive" "$work/$kind-$id.json"
 }
 
-for region in regions/*.yaml; do
+for region in $release_regions; do
   published "$region" || continue
   [ -n "$release_built" ] || pull "$region"
   id="$(field id "$region")"

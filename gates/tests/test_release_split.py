@@ -265,3 +265,19 @@ def test_fr18_3_the_release_settings_do_not_reach_the_test_run(repo, tmp_path):
     result = run(repo, env, "v-new")
     assert result.returncode == 0, result.stdout + result.stderr
     assert seen.read_text() == ""
+
+
+def test_fr18_3_the_release_builds_only_the_regions_it_is_given(repo, tmp_path):
+    env = setup(repo, tmp_path)
+    repo.commit("baseline")
+    repo.write("src/code.py", "two\n")
+    repo.commit("code change")
+    env.update(RELEASE_REGIONS="regions/alpha.yaml")
+    planned = run(repo, env, "--plan")
+    assert planned.returncode == 0, planned.stderr
+    assert json.loads(planned.stdout) == ["regions/alpha.yaml"]
+    result = run(repo, env, "v-new")
+    assert result.returncode == 0, result.stdout + result.stderr
+    index = (tmp_path / "out/index.html").read_text()
+    assert "<td>alpha</td>" in index
+    assert "beta" not in index
