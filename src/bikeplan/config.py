@@ -179,6 +179,8 @@ class Network:
     recommend_share: float = 0.9
     boundary_buffer_m: float = 200.0
     max_trip_km: float = 5.0
+    corridor_match_m: float = 100.0
+    corridor_cover_share: float = 0.8
     state_functions: tuple[str, ...] = ()
 
 
@@ -405,6 +407,8 @@ class ProfileReader(Reader):
             "recommend_share",
             "boundary_buffer_m",
             "max_trip_km",
+            "corridor_match_m",
+            "corridor_cover_share",
             "state_functions",
         }
         data = self.mapping(raw, "network", keys, set())
@@ -440,6 +444,16 @@ class ProfileReader(Reader):
             if trip <= 0:
                 raise self.fail("network.max_trip_km", "must be above 0")
             found["max_trip_km"] = trip
+        if "corridor_match_m" in data:
+            match = float(self.number(data["corridor_match_m"], "network.corridor_match_m"))
+            if match <= 0:
+                raise self.fail("network.corridor_match_m", "must be above 0")
+            found["corridor_match_m"] = match
+        if "corridor_cover_share" in data:
+            cover = float(self.number(data["corridor_cover_share"], "network.corridor_cover_share"))
+            if not 0 < cover <= 1:
+                raise self.fail("network.corridor_cover_share", "must be above 0 and at most 1")
+            found["corridor_cover_share"] = cover
         if "state_functions" in data:
             names = data["state_functions"]
             if not isinstance(names, list):
