@@ -13,6 +13,7 @@ from bikeplan.propose import write_propose
 from bikeplan.region_new import NOMINATIM_ENDPOINT, RegionNewError, describe, search, write_region
 from bikeplan.review import ClaimError, write_route_figures
 from bikeplan.review_report import write_review
+from bikeplan.review_source import capture_source
 from bikeplan.route import RouteError, write_corridor
 from bikeplan.run import run_all, write_report
 from bikeplan.snapshot import (
@@ -51,6 +52,7 @@ GROUPS = {
     },
     "route": {"figures": "Measure a route: facilities, stress levels, breaks, crossings, flags"},
     "snapshot": {
+        "review-source": "Save a plan source and its credit in private storage",
         "fetch": "Fetch the input data of a region",
         "verify": "Check a snapshot folder against its manifest",
         "publish": "Upload a snapshot to its release and copy its manifest",
@@ -148,6 +150,11 @@ def build_parser() -> argparse.ArgumentParser:
                 leaf.add_argument("--snapshot", required=True, help="Snapshot folder")
                 leaf.add_argument("--out", required=True, help="Output directory")
                 leaf.add_argument("--claims", help="Claims file, for verdicts")
+            if (name, sub) == ("snapshot", "review-source"):
+                leaf.add_argument("url", help="Public source URL")
+                leaf.add_argument("--out", required=True, help="New folder under data/private")
+                leaf.add_argument("--licence", required=True, help="Source licence")
+                leaf.add_argument("--credit", required=True, help="Credit asked for by the source")
             if (name, sub) == ("snapshot", "fetch"):
                 leaf.add_argument("region", help="Region file")
                 leaf.add_argument("--out", required=True, help="Output directory")
@@ -467,6 +474,13 @@ def main(argv: list[str] | None = None) -> int:
         )
     if (args.command, getattr(args, "subcommand", None)) == ("route", "figures"):
         return route_figures_command(args.route, args.region, args.snapshot, args.out, args.claims)
+    if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "review-source"):
+        try:
+            print(capture_source(args.url, args.out, args.licence, args.credit))
+        except (ConfigError, OSError, OverpassError, ValueError) as error:
+            print(error, file=sys.stderr)
+            return 1
+        return 0
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "fetch"):
         return snapshot_fetch(args.region, args.out, args.endpoint)
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "verify"):
