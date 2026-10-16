@@ -1959,8 +1959,8 @@ Artifact: `artifacts/V1.8/verdicts.json`
 
 ```bash
 uv run --frozen pytest -q tests/test_review_page.py
-uv run --frozen bikeplan route page data/private/V1.8/verdicts-2026-10-17 --source-manifest data/private/V1.8/capture-2026-10-17/source-manifest.json --reply data/private/V1.8/reply.yaml --lines data/private/V1.8/clip-2026-10-17/lines.geojson --out data/private/V1.8/page-map-2026-10-17
-uv run --frozen python -I artifacts/V1.8/check_page.py data/private/V1.8/page-map-2026-10-17 --out artifacts/V1.8/page.json
+uv run --frozen bikeplan route page data/private/V1.8/verdicts-2026-10-17 --source-manifest data/private/V1.8/capture-2026-10-17/source-manifest.json --reply data/private/V1.8/reply.yaml --lines data/private/V1.8/clip-2026-10-17/lines.geojson --out data/private/V1.8/page-map2-2026-10-17
+uv run --frozen python -I artifacts/V1.8/check_page.py data/private/V1.8/page-map2-2026-10-17 --out artifacts/V1.8/page.json
 ```
 
 Expect: the 9 tests pass. The run takes under a second and writes `index.html`
