@@ -1,0 +1,19 @@
+{
+  "boundary_buffer_m": 200.0,
+  "first_link_outside": [],
+  "joined_places_outside_widened_boundary": [],
+  "links_outside_widened_boundary": 0,
+  "longest_counted_route_m": 4994.8,
+  "max_trip_km": 5.0,
+  "pairs_within_limit_by_independent_route": 586,
+  "pairs_within_limit_if_routes_may_leave_the_area": 596,
+  "places_joined": 40,
+  "places_unjoined": 25,
+  "row": "M1.1",
+  "trips_by_option_at_step_0": {
+    "calm": 586,
+    "mesh": 586,
+    "separated": 586,
+    "shortest": 586
+  }
+}
