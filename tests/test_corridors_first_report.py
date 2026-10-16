@@ -4,8 +4,7 @@ import shutil
 import pytest
 from shapely.geometry import LineString, box
 
-from bikeplan import main
-from bikeplan import propose
+from bikeplan import main, propose
 from bikeplan.propose import Corridors
 from tests.test_edition import REGION, SNAPSHOT
 from tests.test_propose_corridor import OPEN, RAIL, corridor_files, loop_graph
