@@ -85,7 +85,8 @@ def test_fr17_1_suburb_nodes_are_not_places(tmp_path):
 
 
 def test_fr17_1_a_centre_without_a_suburb_node_names_the_nearest_named_place(tmp_path):
-    elements = shops(1, 10, 100) + [
+    elements = [
+        *shops(1, 10, 100),
         node(800, 145.05, {"amenity": "school", "name": "Far School"}),
         node(801, 145.0105, {"railway": "station", "name": "Rockdale"}, lat=-36.9501),
     ]

@@ -62,7 +62,7 @@ def test_fr17_1_two_halves_meeting_only_outside_join_by_the_shortest_outside_rou
 def test_fr17_1_the_same_route_joins_whichever_part_holds_more_places():
     graph, _ = halves()
     found = [place("node/1", "school", 5, 5), place("node/3", "school", 800, 5)]
-    swapped = join_places(graph, found + [place("node/9", "school", 720, 5)], [], network())
+    swapped = join_places(graph, [*found, place("node/9", "school", 720, 5)], [], network())
     assert swapped.outside == [(2, 8, 0), (3, 9, 0), (8, 9, 0)]
 
 
