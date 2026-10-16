@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: release
+  group: release-${{ github.sha }}
   cancel-in-progress: false
 
 env:
@@ -127,7 +127,11 @@ jobs:
             echo
             echo "Open \`index.html\` for every report. \`SHA256SUMS\` checks every file."
           } >notes.md
-          gh release edit "${{ needs.plan.outputs.tag }}" --title "$title" --notes-file notes.md --latest
+          latest=false
+          if [ "$(git ls-remote origin refs/heads/main | cut -f1)" = "$GITHUB_SHA" ]; then
+            latest=true
+          fi
+          gh release edit "${{ needs.plan.outputs.tag }}" --title "$title" --notes-file notes.md --latest="$latest"
       - name: Remove a half-made release
         if: failure()
         run: gh release delete "${{ needs.plan.outputs.tag }}" --yes --cleanup-tag || true
