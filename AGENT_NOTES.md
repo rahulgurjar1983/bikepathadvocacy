@@ -1254,3 +1254,17 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - `link_table` now marks `unpaved` (surface tag on a path, cycleway or footway) and `path`; an unpaved link is never all-ages. `surface` is now a kept way tag in `network.py`, so older graph caches lack it.
 - Wiring left: turn `propose.add_corridor_paths` candidates into the dicts above in `edition.build_options_report`, then the switch, chart and figure counts in `test_edition.py` need a fifth option.
 - G1.4: nothing writes `corridors.json` yet; only `propose` and the options report read it. `from bikeplan import propose` gives the CLI function, so tests use `importlib.import_module`.
+
+### V1.8 source capture
+
+- `bikeplan snapshot review-source <url> --out data/private/<new folder>
+  --licence <licence> --credit <credit>` saves exact source bytes in `source`,
+  plus a source manifest and `review.yaml` with `public: false`. It refuses
+  an old folder and any path outside the private root, even through a link.
+- The live page is in `data/private/V1.8/capture-2026-10-17/source`. Its
+  `const DATA=` object has a `lines` GeoJSON field. Read it offline; no route
+  or claim from it may enter git. The
+  next part needs clipping, new measures, all claim verdicts and the report.
+  A local capture has not been sent to the author. No reply clock has begun.
+- The public proof holds hashes only, with an empty verdict count. This is
+  source capture proof, not a completed review. Use a new folder to refetch.

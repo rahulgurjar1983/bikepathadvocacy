@@ -1890,3 +1890,19 @@ uv run --frozen pytest -q tests/test_corridors_first_report.py
 Expect: The tests pass. A snapshot with a `corridors.json` file gives a fifth option, "Corridors first", in `options.json` and the report. On the test grid with a rail line and open land beside it, that option holds a new path work. The Bayside snapshot has no `corridors.json` yet, so its report keeps four options.
 
 Artifact: `tests/test_corridors_first_report.py`
+
+### V1.8
+
+```bash
+uv run --frozen pytest -q tests/test_review_source.py
+uv run --frozen bikeplan snapshot review-source https://activetransportsuperhighway.com/ --out data/private/V1.8/capture-2026-10-17 --licence 'CC BY 4.0' --credit 'Active Transport Superhighway; https://activetransportsuperhighway.com/'
+uv run --frozen python artifacts/V1.8/check_capture.py data/private/V1.8/capture-2026-10-17 --out artifacts/V1.8/capture.json
+```
+
+Expect: the source bytes match their saved hash and stay out of git.
+A new capture needs a new folder; the tool will not replace saved files.
+The proof holds only hashes and an empty verdict count. It proves source
+capture only. No claim has a verdict yet. The route, claims, measures,
+private report and reply window remain to be built and checked.
+
+Artifact: `artifacts/V1.8/capture.json`
