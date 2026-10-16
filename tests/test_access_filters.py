@@ -32,11 +32,15 @@ def test_fr17_1_a_school_and_its_preschool_30m_apart_are_one_place(tmp_path):
         node(
             4, 145.03 + 30 / M_PER_DEGREE, {"amenity": "school", "name": "Wattle Primary Nursery"}
         ),
+        node(5, 145.05, {"amenity": "school", "name": "North High"}),
+        node(6, 145.05 + 30 / M_PER_DEGREE, {"amenity": "school", "name": "South Primary"}),
     ]
     found = places(snapshot_of(tmp_path, elements))
     assert [(place["osm_id"], place["name"]) for place in found] == [
         ("node/1", "Banksia Public School"),
         ("node/3", "Wattle Primary"),
+        ("node/5", "North High"),
+        ("node/6", "South Primary"),
     ]
 
 
