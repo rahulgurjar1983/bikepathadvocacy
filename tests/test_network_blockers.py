@@ -251,3 +251,37 @@ def test_fr17_14_the_ceiling_is_labelled_as_a_ceiling_and_not_a_plan():
 def test_fr17_14_the_au_nsw_profile_names_the_state_road_functions_and_generic_names_none():
     assert load_profile("au-nsw").network.state_functions == ("PrimaryRoad", "ArterialRoad")
     assert load_profile("generic").network.state_functions == ()
+
+
+def test_fr17_14_a_fix_that_fits_and_is_not_rejected_gives_no_reason():
+    fit = {
+        "status": "no_fit",
+        "candidates": [
+            {"fix": "quietway", "fits": True, "reason": "ADT 750 is within 2000", "rejected": None},
+            {
+                "fix": "quietway",
+                "fits": True,
+                "reason": "ADT 750 is within 2000",
+                "rejected": "not AAA: LTS is 2",
+            },
+        ],
+    }
+    assert plain_reasons(fit) == ["would not make the street all ages as a quiet street"]
+
+
+def test_fr17_14_a_link_the_fit_cannot_design_for_still_says_why():
+    graph = nx.MultiDiGraph()
+    for number, name in enumerate(("s1", "s2", "s3", "s4")):
+        graph.add_edge(number, number + 1, 0, bike_ok=True, segment_id=name)
+    table = {(n, n + 1, 0): row() for n in range(4)}
+    fits = {
+        "s1": None,
+        "s2": {"status": "aaa", "candidates": []},
+        "s3": {"status": "no_fit", "candidates": []},
+        "s4": {"status": "fix", "candidates": []},
+    }
+    assert link_reasons(graph, table, fits) == {
+        (0, 1, 0): ["no traffic data to design a fix"],
+        (1, 2, 0): ["no design in the tool changes its stress rating"],
+        (2, 3, 0): ["no design fits"],
+    }
