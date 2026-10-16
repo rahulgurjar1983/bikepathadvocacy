@@ -1806,3 +1806,15 @@ the 3044 segments whose fix takes parking or a lane was there a separated fix
 that took neither, or a fix with a lower disruption score.
 
 Artifact: `artifacts/M1.2/fix-proof.json`
+
+### M1.3
+
+```sh
+uv run --frozen pytest -q tests/test_network_blockers.py tests/test_edition_blockers.py
+uv run --frozen python -I artifacts/M1.3/prove.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 artifacts/M1.3/blockers-proof.json
+```
+
+Expect: The tests pass. The proof builds the Bayside options with the shipped settings. Each option ranks its blockers by trips stopped, then by street name. Every option has a ceiling of 100.0, no lower than its final score. My pick, Calm streets, ends at 35.49, so the opening holds the half-unsafe sentence and names its top three blockers. The ask names 10 streets and counts 68 more. The pick has 11 blockers and two are on state roads owned by Transport for NSW. The proof takes about 24 minutes.
+
+Artifact: `artifacts/M1.3/blockers-proof.json`
+

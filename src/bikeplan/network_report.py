@@ -11,6 +11,8 @@ COUNTS = (
     ("score", "disruption score", "{:.1f}"),
 )
 PLOT = (40, 10, 350, 200)
+ASK_STREETS = 10
+BLOCKERS_SHOWN = 10
 LEVELS = (
     (1, "one", "blue"),
     (2, "two", "dark blue"),
@@ -49,8 +51,18 @@ def recommended(option: dict, share: float) -> int:
 
 def asked(option: dict, step: int) -> dict:
     built = [index for item in option["steps"][1 : step + 1] for index in item["works"]]
-    streets = sorted({option["works"][index]["street"] for index in built})
-    names = ", ".join(streets) if streets else "no street"
+    km: dict = {}
+    for index in built:
+        item = option["works"][index]
+        km[item["street"]] = km.get(item["street"], 0.0) + item["km"]
+    streets = sorted(km)
+    named = sorted(
+        (name for name in km if not name.startswith("unnamed ")), key=lambda name: (-km[name], name)
+    )[:ASK_STREETS]
+    more = len(streets) - len(named)
+    names = ", ".join(named) if named else "no street"
+    if more:
+        names += f" and {more} more street{'s' if more > 1 else ''}"
     intro = (
         f"I ask council to adopt {option['name']} as its bike network plan and to fund the "
         f"design of the works up to step {step}, on the streets below."
@@ -59,7 +71,15 @@ def asked(option: dict, step: int) -> dict:
         f"I ask council to adopt {option['name']} as its bike network plan and to fund the "
         f"design of the works up to step {step}: {names}."
     )
-    return {"streets": streets, "ask": ask, "built": built, "intro": intro, "names": names}
+    return {
+        "streets": streets,
+        "ask": ask,
+        "built": built,
+        "intro": intro,
+        "names": names,
+        "named": named,
+        "more": more,
+    }
 
 
 def tenths(option: dict) -> list[dict]:
@@ -118,6 +138,45 @@ def options_row(option: dict, options: list[dict], ref=plain) -> str:
     return "<tr>" + "".join(f"<td>{cell}</td>" for cell in cells) + "</tr>"
 
 
+def trips_text(count: int) -> str:
+    return f"{count} trip" if count == 1 else f"{count} trips"
+
+
+def join_words(items: list[str]) -> str:
+    return items[0] if len(items) == 1 else ", ".join(items[:-1]) + " and " + items[-1]
+
+
+def unsafe_sentence(pick: dict, ref=plain) -> str:
+    if pick["steps"][-1]["totals"]["score"] >= 50:
+        return ""
+    top = pick.get("blockers", [])[:3]
+    sentence = (
+        f"Even with every work built, more than half of the trips on {html.escape(pick['name'])} "
+        "stay unsafe."
+    )
+    if not top:
+        return f"<p>{sentence}</p>"
+    names = [
+        ref(("blocker", index), f"{html.escape(item['street'])} ({trips_text(item['trips'])})")
+        for index, item in enumerate(top)
+    ]
+    lead = (
+        "The three blockers that stop the most trips are"
+        if len(top) == 3
+        else "The blockers that stop the most trips are"
+    )
+    return f"<p>{sentence} {lead} {join_words(names)}.</p>"
+
+
+def ask_streets(choice: dict, ref=plain) -> str:
+    named = ref(("ask",), html.escape(", ".join(choice["named"]) or "no street"))
+    if not choice["more"]:
+        return named
+    word = "streets" if choice["more"] > 1 else "street"
+    more = ref(("askmore",), f"{choice['more']} more {word}")
+    return f"{named} and {more}" if choice["named"] else more
+
+
 def opening(options: list[dict], choice: dict, ref=plain) -> str:
     head = (
         "Option",
@@ -136,7 +195,8 @@ def opening(options: list[dict], choice: dict, ref=plain) -> str:
         f"{ref(('pickstep',), str(choice['step']))}.</p>"
         f"<h3>My ask</h3><p>{ref(('ask',), html.escape(choice['intro']))}</p>"
         f"<details><summary>The streets of the works</summary>"
-        f"<p>{ref(('ask',), html.escape(choice['names']))}</p></details>"
+        f"<p>{ask_streets(choice, ref)}</p></details>"
+        f"{unsafe_sentence(next(item for item in options if item['id'] == choice['pick']), ref)}"
         f"<table><caption>The options side by side</caption><thead><tr>{top}</tr></thead>"
         f"<tbody>{rows}</tbody></table></section>"
     )
@@ -242,7 +302,40 @@ def works_section(option: dict, choice: dict, ref=plain) -> str:
     )
 
 
-def no_fix_section(options: list[dict], ref=plain) -> str:
+def blockers_block(pick: dict, ref=plain) -> str:
+    rows = ""
+    for index, item in enumerate(pick.get("blockers", [])[:BLOCKERS_SHOWN]):
+        why = join_words(item["reasons"]) if item["reasons"] else "no fit found"
+        owner = f"Owned by {item['owner']}" if item["owner"] else "Not a state road"
+        cells = (
+            html.escape(item["street"]),
+            ref(("blockerkm", index), f"{item['km']:.2f}"),
+            html.escape(item["road_type"]),
+            ref(("blocker", index), str(item["trips"])),
+            html.escape(why),
+            owner,
+        )
+        rows += "<tr>" + "".join(f"<td>{cell}</td>" for cell in cells) + "</tr>"
+    head = "".join(
+        f"<th>{name}</th>"
+        for name in ("Street", "Km", "Road type", "Trips stopped", "Why no fix fits", "Owner")
+    )
+    ceiling = ""
+    if "ceiling" in pick:
+        ceiling = (
+            f"<p>Safety score of {html.escape(pick['name'])} if every blocker were fixed too: "
+            f"{ref(('ceiling',), f'{pick["ceiling"]:.1f}')}. This is a ceiling, not a plan.</p>"
+        )
+    return (
+        f"<h3>Blockers of {html.escape(pick['name'])}, by trips stopped</h3>"
+        "<p>A blocker is a street whose links have no fix. Trips stopped are the trips through it "
+        "that every work would otherwise make safe.</p>"
+        f'<table id="blockers"><thead><tr>{head}</tr></thead><tbody>{rows}</tbody></table>'
+        f"{ceiling}"
+    )
+
+
+def no_fix_section(options: list[dict], ref=plain, pick: dict | None = None) -> str:
     km = sum(gap["km"] for option in options for gap in option["no_fix"])
     parts = ""
     for option in options:
@@ -257,9 +350,11 @@ def no_fix_section(options: list[dict], ref=plain) -> str:
         )
         parts += f"<h3>{html.escape(option['name'])}</h3><ul>{rows or '<li>none</li>'}</ul>"
     return (
-        '<section id="no-fix"><h2>Links with no fix</h2>'
-        "<p>No design in the tool makes these links safe for all ages. They stay as they are at "
-        f"every step. Km of links with no fix, all options: {ref(('nofix',), f'{km:.2f}')}.</p>"
+        '<section id="no-fix"><h2>What blocks trips</h2>'
+        f"{blockers_block(pick, ref) if pick else ''}"
+        "<h3>Links with no fix</h3><p>No design in the tool makes these links safe for all ages. "
+        "They stay as they are at every step. Km of links with no fix, all options: "
+        f"{ref(('nofix',), f'{km:.2f}')}.</p>"
         f"{parts}</section>"
     )
 
@@ -387,7 +482,7 @@ def network_report(
         + map_section(options, choice, ref, streets)
         + chart(options, choice, top, ref)
         + works_section(pick, choice, ref)
-        + no_fix_section(options, ref)
+        + no_fix_section(options, ref, pick)
         + quality_section(options, ref)
     )
     return head, body

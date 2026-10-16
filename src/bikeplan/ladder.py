@@ -9,6 +9,14 @@ from bikeplan.options import link_id
 from bikeplan.rating import option_totals, option_trips
 
 COUNTS = ("parking_spaces", "lane_km", "speed_km", "path_km")
+FIX_WORDS = {
+    "quietway": "a quiet street",
+    "cycleway_in_spare": "a cycleway",
+    "cycleway_parking_one_side": "a cycleway",
+    "cycleway_parking_both_sides": "a cycleway",
+    "road_diet": "a road diet",
+    "verge_path": "a verge path",
+}
 
 
 def street_name(data: dict) -> str:
@@ -24,6 +32,74 @@ def link_streets(graph) -> dict:
         if data["bike_ok"] and u != v:
             names.setdefault(link_id(u, v, k), set()).add(street_name(data))
     return {key: min(found) for key, found in sorted(names.items())}
+
+
+def link_roads(graph, functions: tuple, owner: str) -> dict:
+    found: dict = {}
+    for u, v, k, data in graph.edges(keys=True, data=True):
+        if not data["bike_ok"] or u == v:
+            continue
+        road = found.setdefault(link_id(u, v, k), {"type": None, "owner": None})
+        road["type"] = road["type"] or str(first(data.get("highway")) or "road")
+        if data.get("road_function") in functions:
+            road["owner"] = owner
+    return dict(sorted(found.items()))
+
+
+def plain_reason(item: dict) -> str | None:
+    what = FIX_WORDS[item["fix"]]
+    reason = item["reason"]
+    if item["rejected"]:
+        return f"would not make the street all ages as {what}"
+    if item["fits"]:
+        return None
+    if reason.startswith("ADT"):
+        return f"too busy for {what}"
+    if reason.startswith("needs at most"):
+        return f"too many lanes for {what}"
+    if reason.startswith("needs 2 lanes"):
+        return f"too few lanes for {what}"
+    if "not a quiet street class" in reason:
+        return f"the wrong kind of road for {what}"
+    if reason.startswith("needs"):
+        return f"too narrow for {what}"
+    if "unknown" in reason:
+        return f"width unknown for {what}"
+    return None
+
+
+def plain_reasons(fit: dict) -> list[str]:
+    found: list[str] = []
+    for item in fit["candidates"]:
+        text = plain_reason(item)
+        if text and text not in found:
+            found.append(text)
+    return found
+
+
+def fit_reasons(fit: dict | None) -> list[str]:
+    if fit is None:
+        return ["no traffic data to design a fix"]
+    if fit["status"] == "aaa":
+        return ["no design in the tool changes its stress rating"]
+    if fit["status"] == "no_fit":
+        return plain_reasons(fit) or ["no design fits"]
+    return []
+
+
+def link_reasons(graph, table: dict, fits: dict) -> dict:
+    found: dict = {}
+    for key, link in table.items():
+        if link["all_ages"]:
+            continue
+        a, b, k = key
+        texts: list[str] = []
+        for edge in ((a, b, k), (b, a, k)):
+            if graph.has_edge(*edge):
+                texts += fit_reasons(fits.get(graph.edges[edge]["segment_id"]))
+        if texts:
+            found[key] = list(dict.fromkeys(texts))
+    return found
 
 
 def link_fixes(graph, table: dict, fits: dict, profile, weights) -> dict:
@@ -98,6 +174,51 @@ def list_no_fix(table: dict, missing: list, streets: dict) -> list:
     ]
 
 
+def list_blockers(
+    table: dict,
+    missing: list,
+    streets: dict,
+    trips: list,
+    roads: dict,
+    reasons: dict,
+) -> list:
+    held = set(missing)
+    stopped: dict = {}
+    for _, _, path in trips:
+        if path is None:
+            continue
+        stoppers = {streets.get(link, "unnamed road") for link in path if link in held}
+        if len(stoppers) == 1:
+            street = stoppers.pop()
+            stopped[street] = stopped.get(street, 0) + 1
+    found = []
+    for gap in list_no_fix(table, missing, streets):
+        types: dict = {}
+        why: list = []
+        for link in gap["links"]:
+            kind = roads.get(link, {}).get("type") or "road"
+            types[kind] = types.get(kind, 0) + table[link]["length_m"]
+            why += [text for text in reasons.get(link, []) if text not in why]
+        found.append(
+            gap
+            | {
+                "road_type": min(types, key=lambda kind: (-types[kind], kind)),
+                "trips": stopped.get(gap["street"], 0),
+                "reasons": why,
+                "owner": next(
+                    (
+                        roads[link]["owner"]
+                        for link in gap["links"]
+                        if roads.get(link, {}).get("owner")
+                    ),
+                    None,
+                ),
+            }
+        )
+    found.sort(key=lambda item: (-item["trips"], item["street"]))
+    return found
+
+
 def trip_needs(table: dict, trips: list, fixes: dict, owner: dict) -> list:
     needs = []
     for one, two, path in trips:
@@ -134,6 +255,8 @@ def build_ladder(
     weights,
     streets: dict | None = None,
     max_trip_m: float | None = None,
+    roads: dict | None = None,
+    reasons: dict | None = None,
 ) -> dict:
     missing = [key for key in links if not table[key]["all_ages"] and key not in fixes]
     fixable = [key for key in links if not table[key]["all_ages"] and key in fixes]
@@ -160,8 +283,11 @@ def build_ladder(
         if added is None:
             break
         fixed |= added
+    ceiling = option_totals(table, links, joined, frozenset(links), trips)
     return {
         "works": works,
         "no_fix": list_no_fix(table, missing, streets or {}),
+        "blockers": list_blockers(table, missing, streets or {}, trips, roads or {}, reasons or {}),
+        "ceiling": ceiling["score"],
         "steps": steps,
     }

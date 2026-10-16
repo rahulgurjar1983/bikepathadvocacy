@@ -1,0 +1,182 @@
+{
+  "ask_more": 68,
+  "ask_named": [
+    "Shaw Street",
+    "Station Street",
+    "Caroline Street",
+    "Frederick Street",
+    "Arncliffe Street",
+    "Abercorn Street",
+    "Firth Street",
+    "Churchill Street",
+    "Somerville Street",
+    "St Georges Road"
+  ],
+  "ask_names_text": "Shaw Street, Station Street, Caroline Street, Frederick Street, Arncliffe Street, Abercorn Street, Firth Street, Churchill Street, Somerville Street, St Georges Road and 68 more streets",
+  "opening_has_half_unsafe_sentence": true,
+  "per_option": {
+    "calm": {
+      "blockers": 11,
+      "blockers_that_stop_a_trip": 9,
+      "ceiling": 100.0,
+      "final_score": 35.49,
+      "ranked_by_trips_then_street": true,
+      "state_road_blockers": 2
+    },
+    "mesh": {
+      "blockers": 40,
+      "blockers_that_stop_a_trip": 23,
+      "ceiling": 100.0,
+      "final_score": 12.63,
+      "ranked_by_trips_then_street": true,
+      "state_road_blockers": 9
+    },
+    "separated": {
+      "blockers": 9,
+      "blockers_that_stop_a_trip": 8,
+      "ceiling": 100.0,
+      "final_score": 28.84,
+      "ranked_by_trips_then_street": true,
+      "state_road_blockers": 2
+    },
+    "shortest": {
+      "blockers": 21,
+      "blockers_that_stop_a_trip": 15,
+      "ceiling": 100.0,
+      "final_score": 5.97,
+      "ranked_by_trips_then_street": true,
+      "state_road_blockers": 7
+    }
+  },
+  "pick": "Calm streets",
+  "pick_final_score": 35.49,
+  "pick_step": 12,
+  "row": "M1.3",
+  "top_blockers_of_pick": [
+    {
+      "km": 0.025728822070601468,
+      "owner": null,
+      "reasons": [
+        "no design in the tool changes its stress rating"
+      ],
+      "road_type": "service",
+      "street": "Alexandra Parade",
+      "trips": 39
+    },
+    {
+      "km": 0.02250003159774214,
+      "owner": null,
+      "reasons": [
+        "too busy for a quiet street",
+        "too narrow for a cycleway",
+        "too few lanes for a road diet",
+        "width unknown for a verge path"
+      ],
+      "road_type": "secondary",
+      "street": "unnamed secondary road",
+      "trips": 38
+    },
+    {
+      "km": 0.048709081021886216,
+      "owner": null,
+      "reasons": [
+        "too busy for a quiet street",
+        "too narrow for a cycleway",
+        "too narrow for a road diet",
+        "width unknown for a verge path"
+      ],
+      "road_type": "secondary",
+      "street": "Hartill-Law Avenue",
+      "trips": 21
+    },
+    {
+      "km": 0.050377401800693854,
+      "owner": null,
+      "reasons": [
+        "too busy for a quiet street",
+        "too narrow for a cycleway",
+        "too few lanes for a road diet",
+        "width unknown for a verge path"
+      ],
+      "road_type": "residential",
+      "street": "Turrella Street",
+      "trips": 21
+    },
+    {
+      "km": 0.08900195547360164,
+      "owner": null,
+      "reasons": [
+        "too busy for a quiet street",
+        "too narrow for a cycleway",
+        "too few lanes for a road diet",
+        "width unknown for a verge path"
+      ],
+      "road_type": "residential",
+      "street": "Knoll Avenue",
+      "trips": 17
+    },
+    {
+      "km": 0.07061112477076648,
+      "owner": null,
+      "reasons": [
+        "too busy for a quiet street",
+        "too narrow for a cycleway",
+        "too few lanes for a road diet",
+        "width unknown for a verge path"
+      ],
+      "road_type": "residential",
+      "street": "Wollongong Road",
+      "trips": 17
+    },
+    {
+      "km": 0.11768400019562572,
+      "owner": null,
+      "reasons": [
+        "the wrong kind of road for a quiet street",
+        "too narrow for a cycleway",
+        "too few lanes for a road diet",
+        "width unknown for a verge path"
+      ],
+      "road_type": "tertiary",
+      "street": "Francis Avenue",
+      "trips": 10
+    },
+    {
+      "km": 0.14855940101200255,
+      "owner": "Transport for NSW",
+      "reasons": [
+        "too busy for a quiet street",
+        "too narrow for a cycleway",
+        "too few lanes for a road diet",
+        "width unknown for a verge path",
+        "too narrow for a road diet"
+      ],
+      "road_type": "primary",
+      "street": "Croydon Road",
+      "trips": 5
+    },
+    {
+      "km": 0.004530759162241748,
+      "owner": null,
+      "reasons": [
+        "would not make the street all ages as a quiet street",
+        "too narrow for a cycleway",
+        "too few lanes for a road diet",
+        "width unknown for a verge path"
+      ],
+      "road_type": "service",
+      "street": "unnamed service road",
+      "trips": 1
+    },
+    {
+      "km": 0.2825799324219846,
+      "owner": "Transport for NSW",
+      "reasons": [
+        "no traffic data to design a fix"
+      ],
+      "road_type": "cycleway",
+      "street": "unnamed cycleway road",
+      "trips": 0
+    }
+  ]
+}

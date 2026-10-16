@@ -179,6 +179,7 @@ class Network:
     recommend_share: float = 0.9
     boundary_buffer_m: float = 200.0
     max_trip_km: float = 5.0
+    state_functions: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -404,6 +405,7 @@ class ProfileReader(Reader):
             "recommend_share",
             "boundary_buffer_m",
             "max_trip_km",
+            "state_functions",
         }
         data = self.mapping(raw, "network", keys, set())
         found = {}
@@ -438,6 +440,13 @@ class ProfileReader(Reader):
             if trip <= 0:
                 raise self.fail("network.max_trip_km", "must be above 0")
             found["max_trip_km"] = trip
+        if "state_functions" in data:
+            names = data["state_functions"]
+            if not isinstance(names, list):
+                raise self.fail("network.state_functions", "must be a list of road functions")
+            found["state_functions"] = tuple(
+                self.text(item, "network.state_functions") for item in names
+            )
         return Network(**found)
 
     def width(self, raw: Any, key: str) -> Width:

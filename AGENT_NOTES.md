@@ -1221,3 +1221,12 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 ### M1.2 notes
 
 - M1.2 (2026-10-16): `choose` and `segment_fit` take `free_separation`, off by default so the FR-6.11 tests and other callers keep the old choice. `edition.option_fits` turns it on for network options. A separated fix wins over `quietway` only when its parking spaces and lane km are both zero; otherwise the lowest disruption score wins. The Bayside proof takes 18 minutes: `uv run --frozen python -I artifacts/M1.2/prove.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 /tmp/p.json`.
+
+### M1.3 notes
+
+- M1.3 (2026-10-16): `build_ladder` now returns `blockers` and `ceiling`. A blocker is a street whose links stay not all-ages with no fix. Its trips are the trips whose no-fix links all lie on that street. A trip held by two blocker streets counts for neither. The ceiling fixes every link of the option.
+- A blocker also covers links where the fit tool says all ages or has no traffic data while the stress model says not all ages. Their reason reads "no design in the tool changes its stress rating" or "no traffic data to design a fix".
+- The state road owner is the profile's `fit.speed_approval_body`. State roads are the links whose matched road function is in `network.state_functions` (au-nsw: PrimaryRoad and ArterialRoad). The road segment data has no owner field, so this is an assumption. Bayside shows one "unnamed cycleway road" with that owner, which comes from a nearby matched segment.
+- The new figures (blocker trips and km, the ceiling and the count of unnamed ask streets) carry the spec label "spec 17 blockers" and take the last IDs, so the C1.11 figure count test stays intact. `Figures.settle` swaps the `L` placeholders for the final IDs.
+- The proof takes 24 minutes: `uv run --frozen python -I artifacts/M1.3/prove.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 /tmp/p.json`.
+
