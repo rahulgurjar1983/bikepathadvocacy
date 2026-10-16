@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from itertools import pairwise
 from pathlib import Path
 
 import networkx as nx
@@ -123,7 +124,7 @@ def edge_shape(graph, u, v, data):
 
 def make_route(graph, segment: Segment, path: list, found: nx.Graph) -> Route:
     boundary = graph.graph["boundary"]
-    edges = [found[u][v]["edge"] for u, v in zip(path, path[1:], strict=False)]
+    edges = [found[u][v]["edge"] for u, v in pairwise(path)]
     shapes = [edge_shape(graph, u, v, graph.edges[u, v, k]) for u, v, k in edges]
     pieces = [boundary.intersection(shape) for shape in shapes]
     return Route(
