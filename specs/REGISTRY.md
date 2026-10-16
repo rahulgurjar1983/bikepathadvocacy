@@ -22,4 +22,5 @@ Each spec has one number. Take the next free number when you add a spec, and add
 | 15 | `specs/15-review-improvements.md` | Trustworthy advice, validation and council use |
 | 16 | `specs/16-community-proposal.md` | Community outcome, local impacts, options and delivery |
 | 17 | `specs/17-network-options.md` | Network options, safety and disruption |
-| 18 | `specs/18-greater-sydney.md` | Every council in Greater Sydney, and the Superhighway review |
+| 18 | `specs/18-greater-sydney.md` | Every council in Greater Sydney (paused: Bayside only), and the Superhighway review |
+| 19 | `specs/19-tfnsw-corridors.md` | How my pick fits the TfNSW strategic corridors |
