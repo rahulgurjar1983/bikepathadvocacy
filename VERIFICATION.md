@@ -1753,9 +1753,13 @@ Artifact: `artifacts/G1.1/set.json`
 
 ### G1.2
 
-Command: `uv run --frozen bikeplan snapshot set regions/sets/greater-sydney.yaml`, then `uv run --frozen pytest -q tests/test_snapshot_set.py`.
-Expect: the command skips each council whose manifest in `snapshots/` has the Bayside date and adapters, and fetches, verifies and publishes the rest. It exits 1 and names the councils that failed, and a rerun resumes from the cached tiles. The last test passes once all 33 councils are published.
-Artifact: `snapshots/au-nsw-randwick/`
+```sh
+uv run --frozen bikeplan snapshot set regions/sets/greater-sydney.yaml
+uv run --frozen pytest -q tests/test_snapshot_set.py
+```
 
-Part 1: the command and its four tests. Run time and memory are no longer recorded in turns; the release jobs of FR-18.3 measure them. Twelve councils besides Bayside are published. Bayside's refetch and 20 other councils are not, so the row stays open.
+Expect: the command skips each council whose manifest in `snapshots/` has the Bayside date and adapters, and fetches, verifies and publishes the rest. It exits 1 and names the councils that failed, and a rerun resumes from the cached tiles. The tests pass. Every published council passes the manifest check; the check that all 33 are published moves to the G1.5 proof.
 
+Limits: 13 councils are published. The `snapshots` workflow fetches the rest. Bayside's refetch moves to Q1.10.
+
+Artifact: `snapshots/au-nsw-randwick/2026-10-01/manifest.json`
