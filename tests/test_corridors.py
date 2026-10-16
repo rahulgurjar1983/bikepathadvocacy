@@ -2,10 +2,10 @@ from pathlib import Path
 
 import pytest
 import yaml
-from bikeplan.corridors import CorridorError, corridor_fit, indicative_routes, load_corridors
 from shapely.geometry import box
 
 from bikeplan.config import ConfigError, Network, load_profile
+from bikeplan.corridors import CorridorError, corridor_fit, indicative_routes, load_corridors
 from bikeplan.options import link_id
 from tests.option_helpers import street_graph
 from tests.route_helpers import ORIGIN, lonlat
@@ -381,7 +381,7 @@ def test_fr19_4_works_km_on_the_routes_their_share_and_streets_match_a_hand_coun
 
 
 def test_fr19_4_outside_works_are_left_out_of_the_km_and_the_share(tmp_path):
-    graph, ratings, routes = lanes(tmp_path)
+    _, ratings, routes = lanes(tmp_path)
     pick = [(0, [(100, 0), (200, 0)]), (1, [(300, 0), (400, 0)])]
     works = [("Main St", 0.1, []), ("Over There", 0.1, [])]
     chosen = option(works, pick)
@@ -400,7 +400,7 @@ def test_fr19_4_no_works_give_a_zero_share(tmp_path):
 
 
 def test_fr19_4_the_option_input_is_left_unchanged(tmp_path):
-    graph, ratings, routes = lanes(tmp_path)
+    _, ratings, routes = lanes(tmp_path)
     chosen = option([("Main St", 0.1, [link_id(1, 2, 0)])], [(0, [(100, 0), (200, 0)])])
     before = repr(chosen)
     corridor_fit(ratings, routes, chosen, {"step": 1, "built": [0]}, Network())
