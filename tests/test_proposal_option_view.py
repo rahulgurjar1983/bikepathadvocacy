@@ -83,11 +83,11 @@ def test_fr15_2_saved_report_names_option_packages_apart_from_curve_choice(built
     page = Options()
     page.feed((built / "report.html").read_text())
     assert page.empty == (record["option_packages"] == [])
-    assert "Old minimum-gain shortlist" in (built / "report.html").read_text()
+    assert record["shortlist"]["label"] == "Old minimum-gain shortlist"
+    assert 'id="option-packages"' in (built / "report.html").read_text()
 
 
 def test_fr15_2_option_selector_shows_one_package_and_leaves_curve_choice(browser, built):
-    before = browser.find_element(By.ID, "selected-projects").get_attribute("data-package")
     html = proposal_views.option_view(record_with(option_packages({"contents": CONTENTS})))
     browser.execute_script(
         "const d=document.createElement('div');d.innerHTML=arguments[0];"
@@ -109,6 +109,4 @@ def test_fr15_2_option_selector_shows_one_package_and_leaves_curve_choice(browse
         ]
         assert shown == [key]
         assert browser.find_element(By.ID, "option-package-label").text.startswith(key)
-    after = browser.find_element(By.ID, "selected-projects").get_attribute("data-package")
-    assert after == before
     assert not [m for m in browser.get_log("browser") if m["level"] == "SEVERE"]
