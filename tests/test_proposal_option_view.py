@@ -110,3 +110,24 @@ def test_fr15_2_option_selector_shows_one_package_and_leaves_curve_choice(browse
         assert shown == [key]
         assert browser.find_element(By.ID, "option-package-label").text.startswith(key)
     assert not [m for m in browser.get_log("browser") if m["level"] == "SEVERE"]
+
+
+def selected_record(project_ids, element_ids):
+    return {"project_ids": project_ids, "element_ids": element_ids}
+
+
+def shared_of(page, key):
+    return json.loads(page.items[key]["shared"])
+
+
+def test_fr15_2_option_view_names_works_shared_with_the_selected_curve_package():
+    packages = option_packages({"contents": CONTENTS})
+    record = {
+        "option_packages": packages,
+        "selected": selected_record(["p3", "p9"], ["segment:c", "segment:z", "segment:a"]),
+    }
+    page = Options()
+    page.feed(proposal_views.option_view(record))
+    assert shared_of(page, "stage:build") == {"elements": ["segment:c"], "projects": ["p3"]}
+    assert shared_of(page, "stage:study") == {"elements": ["segment:a"], "projects": []}
+    assert shared_of(page, "route_option:east") == {"elements": [], "projects": []}
