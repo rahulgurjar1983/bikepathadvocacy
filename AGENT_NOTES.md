@@ -1217,3 +1217,7 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - M1.1 (2026-10-16): `join_places`, `link_table`, `build_options` and `build_ladder` now use the boundary widened by `network.boundary_buffer_m` (`options.area_graph`). Trips come from `option_trips(..., max_trip_m)`, which counts a pair only when its shortest route inside that area is at most `network.max_trip_km`.
 - On Bayside the area holds two big bike components (5817 and 3802 nodes), so 25 of 65 places in the boundary sit off the main one and are listed as "no bike route to the main network". Routes that may leave the area would give 596 trips instead of 586. Run `uv run --frozen python -I artifacts/M1.1/prove.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 /tmp/proof.json` (18 minutes).
 - Editions built before M1.1 (`artifacts/C1.11`) join 228 places, because the old scope used `analysis_buffer_m`. C1.13 rebuilds them.
+
+### M1.2 notes
+
+- M1.2 (2026-10-16): `choose` and `segment_fit` take `free_separation`, off by default so the FR-6.11 tests and other callers keep the old choice. `edition.option_fits` turns it on for network options. A separated fix wins over `quietway` only when its parking spaces and lane km are both zero; otherwise the lowest disruption score wins. The Bayside proof takes 18 minutes: `uv run --frozen python -I artifacts/M1.2/prove.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 /tmp/p.json`.

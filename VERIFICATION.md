@@ -1791,3 +1791,18 @@ same 586 trips, and the longest counted route is 4994.8 m, under 5 km. 40
 places join and 25 are listed as having no bike route to the main network.
 
 Artifact: `artifacts/M1.1/area-proof.json`
+
+### M1.2
+
+```sh
+uv run --frozen pytest -q tests/test_fit_free_separation.py tests/test_edition_fits.py
+uv run --frozen python -I artifacts/M1.2/prove.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 artifacts/M1.2/fix-proof.json
+```
+
+Expect: The tests pass. The proof picks a fix for every Bayside street segment
+with the shipped settings. It finds 34312 segments with a fix. In 1113 of them
+the quietway won where a cycleway that removes parking also fitted. In none of
+the 3044 segments whose fix takes parking or a lane was there a separated fix
+that took neither, or a fix with a lower disruption score.
+
+Artifact: `artifacts/M1.2/fix-proof.json`

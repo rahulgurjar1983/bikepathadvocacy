@@ -1,0 +1,15 @@
+{
+  "first_wrong": [],
+  "fix_counts": {
+    "cycleway_in_spare": 1034,
+    "cycleway_parking_both_sides": 22128,
+    "cycleway_parking_one_side": 1588,
+    "quietway": 5714,
+    "road_diet": 3848
+  },
+  "quietway_chosen_where_a_parking_removal_cycleway_also_fitted": 1113,
+  "row": "M1.2",
+  "segments_where_that_fix_was_not_the_least_disruptive_or_a_free_one_fitted": 0,
+  "segments_whose_fix_takes_parking_or_a_lane": 3044,
+  "segments_with_a_fix": 34312
+}
