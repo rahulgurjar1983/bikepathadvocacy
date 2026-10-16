@@ -1247,3 +1247,9 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 
 - T1.2: `edition()` and `network_report()` take an optional `corridor` dict from `corridors.corridor_report`. `edition.corridor_data` loads `references/tfnsw-strategic-corridors.yaml` and returns None when an end is outside the snapshot box (`OutsideBox`), so other regions get no section. `build_options_report` keeps the ratings in `graph.graph["ratings"]`. Corridor figures read `options.json` key `corridors` and use spec 19. The overlay draws only routes with a bike route, so Bayside shows 11 of 13. A Leaflet tooltip fades out, so a test must wait for the label to leave the page. The Bayside report takes about 32 minutes.
 - T1.2 note for C1.13: T2 and T3 (Wolli Creek to Rockdale to Kogarah) get "no route" in the Bayside run, as in T1.1. Check this before calling the edition ready.
+
+### G1.4 notes
+
+- `build_options(..., corridors=None)` keeps four options. A list (even empty) adds "corridors". Each candidate is `{"a","b","length_m","label"}`; its link key is `(a, b, 100 + index)`.
+- `link_table` now marks `unpaved` (surface tag on a path, cycleway or footway) and `path`; an unpaved link is never all-ages. `surface` is now a kept way tag in `network.py`, so older graph caches lack it.
+- Wiring left: turn `propose.add_corridor_paths` candidates into the dicts above in `edition.build_options_report`, then the switch, chart and figure counts in `test_edition.py` need a fifth option.

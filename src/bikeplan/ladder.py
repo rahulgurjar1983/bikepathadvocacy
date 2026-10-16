@@ -102,10 +102,23 @@ def link_reasons(graph, table: dict, fits: dict) -> dict:
     return found
 
 
+def new_path_fix(link: dict, street: str, weights) -> dict:
+    counts = {"parking_spaces": 0, "lane_km": 0.0, "speed_km": 0.0}
+    counts["path_km"] = link["length_m"] / 1000
+    return (
+        {"street": street, "fix": "new_path"}
+        | counts
+        | {"least": disruption_score(counts, weights)}
+    )
+
+
 def link_fixes(graph, table: dict, fits: dict, profile, weights) -> dict:
     found: dict = {}
     for key, link in table.items():
         if link["all_ages"] or link["no_fix"]:
+            continue
+        if link.get("new_path"):
+            found[key] = new_path_fix(link, f"new path beside {link['label']}", weights)
             continue
         a, b, k = key
         best = None
@@ -113,6 +126,9 @@ def link_fixes(graph, table: dict, fits: dict, profile, weights) -> dict:
             if not graph.has_edge(*edge):
                 continue
             data = graph.edges[edge]
+            if link.get("unpaved") and data["bike_ok"]:
+                best = new_path_fix(link, street_name(data), weights)
+                break
             fit = fits.get(data["segment_id"])
             if not data["bike_ok"] or not fit or fit["status"] != "fix":
                 continue

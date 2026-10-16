@@ -1869,3 +1869,14 @@ uv run --frozen python artifacts/T1.2/overlay.py /tmp/t12/out/report.html artifa
 
 Expect: The tests pass. The Bayside report holds the section "How my pick fits the TfNSW corridors" after the works, with the opening sentence, the table of 13 segments and the credit. Switching on the overlay draws 11 dashed routes, and none are drawn before. The sentence reads 2 covered, 6 partly and 2 missed, with 10.09 km of works on the routes.
 Artifact: `artifacts/T1.2/section.txt`
+
+### G1.4
+
+```sh
+uv run --frozen pytest -q tests/test_corridors_first.py
+uv run --frozen python artifacts/G1.4/prove.py artifacts/G1.4/grid.json
+```
+
+Expect: The tests pass. On the test grid, "Corridors first" takes the paved path where "Calm streets" takes the road, with one safe trip. When the middle of the path is grass, that option has no safe trip. A rail-side candidate joins only that option, and building it adds 0.3 path km at the spec 06 path cost. This part covers the option engine; the Bayside report does not show the fifth option yet.
+
+Artifact: `artifacts/G1.4/grid.json`
