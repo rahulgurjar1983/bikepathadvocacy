@@ -339,9 +339,10 @@ main() {
       if ! saved="$(control_module gates.checkpoint save 2>&1)"; then
         printf '%s\n' "$saved" >>ralph.log
         repair_reason="the checkpoint was refused: ${saved##*checkpoint: }"
-      elif ! timeout --kill-after=10 "${RALPH_SYNC_SECS:-180}" git checkout -q main 2>>ralph.log ||
-        ! timeout --kill-after=10 "${RALPH_SYNC_SECS:-180}" git merge -q --ff-only origin/main 2>>ralph.log; then
-        repair_reason="main could not be checked out or fast-forwarded"
+      elif ! { timeout --kill-after=10 "${RALPH_SYNC_SECS:-180}" git checkout -q main 2>>ralph.log &&
+        timeout --kill-after=10 "${RALPH_SYNC_SECS:-180}" git merge -q --ff-only origin/main 2>>ralph.log; } &&
+        ! timeout --kill-after=10 "${RALPH_SYNC_SECS:-180}" git checkout -q --detach origin/main 2>>ralph.log; then
+        repair_reason="origin/main could not be checked out"
       else
         printf '%s\n' "$saved" >>ralph.log
       fi

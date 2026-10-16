@@ -1065,3 +1065,20 @@ def test_fr0_41_a_repair_note_reaches_the_next_turn_once(loop_repo):
     assert "no model turn has finished for 4.2 hours" in first
     assert "Repair first" not in second
     assert not (repo.path / ".ralph/repair-note").exists()
+
+
+def test_fr0_40_main_held_by_another_worktree_needs_no_repair_turn(loop_repo, tmp_path):
+    repo, env, state = loop_repo
+    remote = tmp_path / "origin.git"
+    subprocess.run(["git", "init", "--bare", "-q", str(remote)], check=True)
+    repo.git("remote", "add", "origin", str(remote))
+    repo.git("push", "-q", "origin", "main")
+    repo.branch("loop/P0.2-resume")
+    repo.git("worktree", "add", "-q", str(tmp_path / "operator"), "main")
+    env.update(RALPH_SKIP_SYNC="0", RALPH_RESILIENT="1", RALPH_RETRY_SECS="0", RALPH_IDLE_SECS="0")
+    result = run_loop(repo, env, "1", timeout=30)
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert count(state) == 1
+    assert "Repair first" not in "\n".join(args_of(state, 1))
+    assert "repair turn" not in result.stdout
+    assert repo.git("rev-parse", "HEAD") == repo.git("rev-parse", "origin/main")
