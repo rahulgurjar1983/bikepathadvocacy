@@ -34,11 +34,17 @@ with tempfile.TemporaryDirectory() as tmp:
         sys.exit("run failed")
     record = json.loads((Path(tmp) / "proposal.json").read_text())
     page = (Path(tmp) / "report.html").read_text()
-example = proposal_views.option_view({"option_packages": option_packages({"contents": CONTENTS})})
+example = proposal_views.option_view(
+    {
+        "option_packages": option_packages({"contents": CONTENTS}),
+        "selected": {"element_ids": ["segment:b"], "project_ids": []},
+    }
+)
 result = {
     "archive_empty_state": 'id="option-package-empty"' in page,
     "archive_option_packages": len(record["option_packages"]),
     "example_articles": re.findall(r'data-option-type="(\w+)"', example),
+    "example_shared": re.findall(r'data-option-field="shared">([^<]*)', example),
     "example_scripts": example.count("<script"),
 }
 if not result["archive_empty_state"] or result["archive_option_packages"] != 0:
