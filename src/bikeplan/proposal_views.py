@@ -83,6 +83,9 @@ def option_view(record):
             "The curve package above is the only selected choice.</p></section>"
         )
     selected = record.get("selected", {})
+    sheeted = {
+        sheet["id"] for block in record.get("project_sheets", []) for sheet in block["sheets"]
+    }
     keys = [f"{p['identity']['type']}:{p['identity']['option']}" for p in packages]
     choices = "".join(
         f'<option value="{html.escape(key, quote=True)}">{html.escape(key)}: '
@@ -112,6 +115,7 @@ def option_view(record):
                 "projects": sorted(set(p["project_ids"]) & set(selected.get("project_ids", []))),
             },
         )
+        + field("Gaps", {"projects_without_sheet": sorted(set(p["project_ids"]) - sheeted)})
         + '<p>Return trips: unknown. <code data-option-field="outcome">Not yet recomputed. '
         + html.escape(p["outcomes"]["strict_return_trips"]["reason"])
         + "</code></p></div>"
@@ -122,7 +126,7 @@ def option_view(record):
         "<p>These sourced concepts have their own identities. They never carry a "
         "curve rank, and choosing one here does not change the curve package above. "
         "Return trips stay unknown until they are recomputed. Shared lists show works "
-        "that also sit in the selected curve package; each counts once.</p>"
+        "that also sit in the selected curve package; each counts once. Gaps name projects with no saved plan sheet.</p>"
         '<label>Package <select id="option-package-select">'
         f"{choices}</select></label>"
         f'<p id="option-package-label">{html.escape(keys[0])}</p>{articles}</section>'
