@@ -131,3 +131,25 @@ def test_fr15_2_option_view_names_works_shared_with_the_selected_curve_package()
     assert shared_of(page, "stage:build") == {"elements": ["segment:c"], "projects": ["p3"]}
     assert shared_of(page, "stage:study") == {"elements": ["segment:a"], "projects": []}
     assert shared_of(page, "route_option:east") == {"elements": [], "projects": []}
+
+
+def test_fr15_2_option_view_names_projects_without_a_saved_sheet():
+    packages = option_packages({"contents": CONTENTS})
+    sheets = [
+        {"scenario": "a", "sheets": [{"id": "p3"}]},
+        {"scenario": "b", "sheets": [{"id": "p1"}]},
+    ]
+    record = {
+        "option_packages": packages,
+        "selected": selected_record([], []),
+        "project_sheets": sheets,
+    }
+    page = Options()
+    page.feed(proposal_views.option_view(record))
+    assert json.loads(page.items["stage:build"]["gaps"]) == {"projects_without_sheet": []}
+    assert json.loads(page.items["stage:study"]["gaps"]) == {"projects_without_sheet": []}
+    bare = dict(record, project_sheets=[{"scenario": "a", "sheets": [{"id": "p1"}]}])
+    page = Options()
+    page.feed(proposal_views.option_view(bare))
+    assert json.loads(page.items["stage:build"]["gaps"]) == {"projects_without_sheet": ["p3"]}
+    assert json.loads(page.items["route_option:east"]["gaps"]) == {"projects_without_sheet": []}

@@ -1982,6 +1982,7 @@ Expect: The report lists each saved goal or stage package with its kind,
 parents, exact project and element IDs and unknown trip outcome. A chooser
 shows one package at a time and leaves the curve choice alone. With scripts
 off all packages show. Each package also lists the elements and projects it
-shares with the selected curve package, each counted once. The test-grid
-report shows the empty state.
+shares with the selected curve package, each counted once, and the
+projects that have no saved plan sheet. The test-grid report shows the empty
+state.
 Artifact: `artifacts/Q1.6/option-view.json`
