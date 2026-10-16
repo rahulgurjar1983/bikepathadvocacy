@@ -70,6 +70,7 @@ PLACE_FILTERS = (
     '["amenity"="ferry_terminal"]',
     '["railway"="tram_stop"]',
     '["shop"]',
+    '["place"~"^(suburb|locality)$"]',
 )
 
 
