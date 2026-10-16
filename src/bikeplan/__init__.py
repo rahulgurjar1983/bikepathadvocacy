@@ -13,6 +13,7 @@ from bikeplan.propose import write_propose
 from bikeplan.region_new import NOMINATIM_ENDPOINT, RegionNewError, describe, search, write_region
 from bikeplan.review import ClaimError, write_route_figures
 from bikeplan.review_clip import clip_source
+from bikeplan.review_measures import write_route_measures
 from bikeplan.review_report import write_review
 from bikeplan.review_source import capture_source
 from bikeplan.route import RouteError, write_corridor
@@ -54,6 +55,7 @@ GROUPS = {
     "route": {
         "figures": "Measure a route: facilities, stress levels, breaks, crossings, flags",
         "clip": "Clip the lines of a saved plan source to a boundary",
+        "measures": "Measure a plan's paths, streets, people reached and schools near",
     },
     "snapshot": {
         "review-source": "Save a plan source and its credit in private storage",
@@ -154,6 +156,11 @@ def build_parser() -> argparse.ArgumentParser:
                 leaf.add_argument("--snapshot", required=True, help="Snapshot folder")
                 leaf.add_argument("--out", required=True, help="Output directory")
                 leaf.add_argument("--claims", help="Claims file, for verdicts")
+            if (name, sub) == ("route", "measures"):
+                leaf.add_argument("route", help="Route file")
+                leaf.add_argument("--region", required=True, help="Region file")
+                leaf.add_argument("--snapshot", required=True, help="Snapshot folder")
+                leaf.add_argument("--out", required=True, help="Output directory")
             if (name, sub) == ("route", "clip"):
                 leaf.add_argument("folder", help="Saved plan source folder")
                 leaf.add_argument("--boundary", required=True, help="Boundary GeoJSON file")
@@ -482,6 +489,15 @@ def main(argv: list[str] | None = None) -> int:
         )
     if (args.command, getattr(args, "subcommand", None)) == ("route", "figures"):
         return route_figures_command(args.route, args.region, args.snapshot, args.out, args.claims)
+    if (args.command, getattr(args, "subcommand", None)) == ("route", "measures"):
+        try:
+            print(
+                write_route_measures(args.route, load_region(args.region), args.snapshot, args.out)
+            )
+        except (RouteError, ConfigError, OSError) as error:
+            print(error, file=sys.stderr)
+            return 1
+        return 0
     if (args.command, getattr(args, "subcommand", None)) == ("route", "clip"):
         try:
             print(clip_source(args.folder, args.boundary, args.out))

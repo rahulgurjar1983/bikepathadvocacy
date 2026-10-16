@@ -1921,3 +1921,20 @@ The layer km sit in the private `layers.json` only. The proof holds hashes
 and counts, with an empty verdict count. It does not prove any claim.
 
 Artifact: `artifacts/V1.8/clip.json`
+
+### V1.8 measures
+
+```bash
+uv run --frozen pytest -q tests/test_review_measures.py
+uv run --frozen bikeplan route measures data/private/V1.8/clip-2026-10-17/lines.geojson --region regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out data/private/V1.8/measures-2026-10-17
+uv run --frozen python artifacts/V1.8/check_measures.py data/private/V1.8/measures-2026-10-17 --out artifacts/V1.8/measures.json
+```
+
+Expect: the tests pass. The run takes about 26 minutes and 1.5 GB on this
+host. `measures.json` stays private and ignored by git. It holds paved
+off-road km, unpaved km, shared-street km by stress level, unsignalised
+crossings, the share of people within 500 m and 1 km, and schools within
+100 m. The proof holds the file hash and the key names only, with an empty
+verdict count. It proves the measures only, not any claim.
+
+Artifact: `artifacts/V1.8/measures.json`
