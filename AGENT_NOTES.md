@@ -1230,3 +1230,9 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - The new figures (blocker trips and km, the ceiling and the count of unnamed ask streets) carry the spec label "spec 17 blockers" and take the last IDs, so the C1.11 figure count test stays intact. `Figures.settle` swaps the `L` placeholders for the final IDs.
 - The proof takes 24 minutes: `uv run --frozen python -I artifacts/M1.3/prove.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 /tmp/p.json`.
 
+
+## M1.4 notes
+
+- A fit scores a segment by its length inside the boundary. A link in the widened strip has none, so all fixes tie at 0 and a parking fix could win. `link_fixes` now picks each link's fix by its own length.
+- A real Bayside build takes 19 to 24 minutes. Run it once per change.
+- Still open for M1.4: the unjoined-place and bare-number-name checks of FR-17.15. They need the M1.5 joining work.

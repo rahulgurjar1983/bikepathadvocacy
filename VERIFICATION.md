@@ -1818,3 +1818,14 @@ Expect: The tests pass. The proof builds the Bayside options with the shipped se
 
 Artifact: `artifacts/M1.3/blockers-proof.json`
 
+
+### M1.4
+
+```sh
+uv run --frozen pytest -q tests/test_checks_audit.py tests/test_ladder_least.py
+uv run --frozen python -I artifacts/M1.4/prove.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 artifacts/M1.4/audit-proof.json
+```
+
+Expect: The tests pass. The proof builds the Bayside options with the shipped settings and runs the output checks on them. It finds no problem: 65 places and 3804 links lie inside, the ask names 10 streets that hold works, the longest trip is 4994.8 m against the 5 km limit, and no work removes parking where a cheaper fix fits. Before the fix choice used each link's own length, the same run found 20 such works. The proof takes about 19 minutes. The checks that no place is unjoined while the full graph reaches it and that no place name is a bare number are still open.
+
+Artifact: `artifacts/M1.4/audit-proof.json`

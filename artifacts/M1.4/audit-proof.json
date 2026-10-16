@@ -1,0 +1,21 @@
+{
+  "ask_named": [
+    "Shaw Street",
+    "Station Street",
+    "Caroline Street",
+    "Frederick Street",
+    "Arncliffe Street",
+    "Abercorn Street",
+    "Firth Street",
+    "Churchill Street",
+    "Somerville Street",
+    "St Georges Road"
+  ],
+  "links": 3804,
+  "longest_trip_m": 4994.8,
+  "max_trip_km": 5.0,
+  "parking_works": 596,
+  "places": 65,
+  "problems": [],
+  "row": "M1.4"
+}
