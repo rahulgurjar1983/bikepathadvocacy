@@ -1880,3 +1880,13 @@ uv run --frozen python artifacts/G1.4/prove.py artifacts/G1.4/grid.json
 Expect: The tests pass. On the test grid, "Corridors first" takes the paved path where "Calm streets" takes the road, with one safe trip. When the middle of the path is grass, that option has no safe trip. A rail-side candidate joins only that option, and building it adds 0.3 path km at the spec 06 path cost. This part covers the option engine; the Bayside report does not show the fifth option yet.
 
 Artifact: `artifacts/G1.4/grid.json`
+
+Part 2 feeds the candidates into the report:
+
+```sh
+uv run --frozen pytest -q tests/test_corridors_first_report.py
+```
+
+Expect: The tests pass. A snapshot with a `corridors.json` file gives a fifth option, "Corridors first", in `options.json` and the report. On the test grid with a rail line and open land beside it, that option holds a new path work. The Bayside snapshot has no `corridors.json` yet, so its report keeps four options.
+
+Artifact: `tests/test_corridors_first_report.py`

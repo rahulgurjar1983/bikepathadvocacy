@@ -410,11 +410,7 @@ def path_element(graph, geometry, label: str, name: str, segment: str) -> dict:
     }
 
 
-def add_corridor_paths(graph, planning: Planning, corridors: Corridors, metres: float) -> tuple:
-    graph = graph.copy()
-    edges = dict(planning.edges)
-    elements = dict(planning.elements)
-    names = []
+def corridor_segments(graph, corridors: Corridors):
     nodes = sorted(
         {n for u, v, d in graph.edges(data=True) if d["bike_ok"] for n in (u, v)}, key=repr
     )
@@ -441,25 +437,50 @@ def add_corridor_paths(graph, planning: Planning, corridors: Corridors, metres: 
                 [points[first], *substring(line, behind[0], item[0]).coords, points[last]]
             )
             segment = "corridor-" + project_id([label, repr(first), repr(last)])
-            name = f"segment:{segment}"
-            if name in elements:
-                continue
-            elements[name] = path_element(graph, geometry, label, name, segment)
-            names.append(name)
-            for start, end, shape in ((first, last, geometry), (last, first, geometry.reverse())):
-                graph.add_edge(
-                    start,
-                    end,
-                    "new",
-                    highway="cycleway",
-                    bike_ok=True,
-                    candidate=True,
-                    segment_id=segment,
-                    length_m=shape.length,
-                    geometry=shape,
-                )
-                cost = shape.length + metres * elements[name]["score"]
-                edges[(start, end, "new")] = {"cost": cost, "needs": (name,)}
+            yield label, first, last, geometry, segment
+
+
+def corridor_candidates(graph, corridors: Corridors) -> list[dict]:
+    found = {}
+    for label, first, last, geometry, segment in corridor_segments(graph, corridors):
+        found.setdefault(
+            segment,
+            {
+                "a": first,
+                "b": last,
+                "length_m": geometry.length,
+                "label": label,
+                "geometry": geometry,
+            },
+        )
+    return list(found.values())
+
+
+def add_corridor_paths(graph, planning: Planning, corridors: Corridors, metres: float) -> tuple:
+    graph = graph.copy()
+    edges = dict(planning.edges)
+    elements = dict(planning.elements)
+    names = []
+    for label, first, last, geometry, segment in corridor_segments(graph, corridors):
+        name = f"segment:{segment}"
+        if name in elements:
+            continue
+        elements[name] = path_element(graph, geometry, label, name, segment)
+        names.append(name)
+        for start, end, shape in ((first, last, geometry), (last, first, geometry.reverse())):
+            graph.add_edge(
+                start,
+                end,
+                "new",
+                highway="cycleway",
+                bike_ok=True,
+                candidate=True,
+                segment_id=segment,
+                length_m=shape.length,
+                geometry=shape,
+            )
+            cost = shape.length + metres * elements[name]["score"]
+            edges[(start, end, "new")] = {"cost": cost, "needs": (name,)}
     return graph, Planning(edges, elements, planning.survey_options), names
 
 

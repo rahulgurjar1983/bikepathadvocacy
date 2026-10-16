@@ -21,7 +21,8 @@ from bikeplan.ladder import (
 )
 from bikeplan.network import bike_segments
 from bikeplan.network_report import choose, network_report
-from bikeplan.options import build_options, join_places, link_table
+from bikeplan.options import NEW_PATH_KEY, build_options, join_places, link_table
+from bikeplan.propose import corridor_candidates, read_corridors
 from bikeplan.rating import longest_trip_m, model_ratings
 from bikeplan.report import GLOSSARY, SOURCES, STYLE, entry, glossary_section, snapshot_date
 from bikeplan.snapshot import buffered_box
@@ -171,8 +172,10 @@ def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list
         place["x"], place["y"] = to_metres.transform(place["lon"], place["lat"])
     found = in_scope_places(found, graph.graph["boundary"], region.analysis_buffer_m)
     joined = join_places(graph, found, [], profile.network)
-    options = build_options(graph, joined, ratings, profile.network)
-    table = link_table(graph, ratings, profile.network, joined.outside or ())
+    corridors = read_corridors(snapshot, graph.graph["crs"])
+    candidates = None if corridors is None else corridor_candidates(graph, corridors)
+    options = build_options(graph, joined, ratings, profile.network, candidates)
+    table = link_table(graph, ratings, profile.network, joined.outside or (), candidates or ())
     area = region.name.split(",")[0].removesuffix(" Council")
     label = f"outside {area}"
     fixes = link_fixes(graph, table, fits, profile, weights)
@@ -188,6 +191,9 @@ def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list
         return [round(lon, 5), round(lat, 5)]
 
     def line(link):
+        if link[2] >= NEW_PATH_KEY:
+            shape = candidates[link[2] - NEW_PATH_KEY]["geometry"]
+            return [round(value, 1) for xy in shape.coords for value in xy[:2]]
         key = next(k for k in (link, (link[1], link[0], link[2])) if graph.has_edge(*k))
         data = graph.edges[key]
         shape = data.get("geometry") or LineString(
