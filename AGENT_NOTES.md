@@ -1244,3 +1244,6 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - Outside works carry the label "outside Bayside" but no neighbouring council name yet; the region files hold no neighbour boundaries.
 
 - T1.1: do not name a feature-row run output `proof.json`; the red-green gate then reads the row as a proof row and rejects it.
+
+- T1.2: `edition()` and `network_report()` take an optional `corridor` dict from `corridors.corridor_report`. `edition.corridor_data` loads `references/tfnsw-strategic-corridors.yaml` and returns None when an end is outside the snapshot box (`OutsideBox`), so other regions get no section. `build_options_report` keeps the ratings in `graph.graph["ratings"]`. Corridor figures read `options.json` key `corridors` and use spec 19. The overlay draws only routes with a bike route, so Bayside shows 11 of 13. A Leaflet tooltip fades out, so a test must wait for the label to leave the page. The Bayside report takes about 32 minutes.
+- T1.2 note for C1.13: T2 and T3 (Wolli Creek to Rockdale to Kogarah) get "no route" in the Bayside run, as in T1.1. Check this before calling the edition ready.

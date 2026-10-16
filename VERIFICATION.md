@@ -1858,3 +1858,14 @@ uv run --frozen python artifacts/T1.1/prove.py regions/au-nsw-bayside.yaml data/
 
 Expect: The tests pass. The run loads the TfNSW corridors file, draws an indicative route for each segment, keeps the part inside Bayside, gives each segment a verdict of covered, partly or missed, and totals the works on corridors. The Bayside run gives 2 covered, 6 partly and 2 missed.
 Artifact: `artifacts/T1.1/corridors.json`
+
+### T1.2
+
+```sh
+uv run --frozen pytest -q tests/test_corridor_report.py
+uv run --frozen bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-01 --out /tmp/t12/out
+uv run --frozen python artifacts/T1.2/overlay.py /tmp/t12/out/report.html artifacts/T1.2/overlay.json
+```
+
+Expect: The tests pass. The Bayside report holds the section "How my pick fits the TfNSW corridors" after the works, with the opening sentence, the table of 13 segments and the credit. Switching on the overlay draws 11 dashed routes, and none are drawn before. The sentence reads 2 covered, 6 partly and 2 missed, with 10.09 km of works on the routes.
+Artifact: `artifacts/T1.2/section.txt`
