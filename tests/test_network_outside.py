@@ -104,3 +104,9 @@ def test_fr17_1_the_outside_route_is_the_same_for_any_node_order():
     graph, _ = street_graph(NODES, ROADS, seed=7)
     graph.graph["boundary"] = AREA
     assert join_places(graph, FOUND, [], network()).outside == first
+
+
+def test_fr17_1_an_unjoined_place_in_a_cut_off_part_keeps_its_node():
+    graph, _ = halves([road for road in ROADS if road[:2] not in {(2, 8), (2, 10)}])
+    result = join_places(graph, FOUND, [], network())
+    assert [item["node"] for item in result.unjoined] == [5]
