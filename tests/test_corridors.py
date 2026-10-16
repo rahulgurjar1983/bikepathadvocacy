@@ -269,7 +269,7 @@ def pick_lines(*rows):
 
 def fit(graph, ratings, routes, pick, works=(), step=1, built=(), network=None):
     chosen = {"step": step, "built": list(built)}
-    return corridor_fit(graph, ratings, routes, option(works, pick), chosen, network or Network())
+    return corridor_fit(ratings, routes, option(works, pick), chosen, network or Network())
 
 
 def verdicts(result):
@@ -337,6 +337,17 @@ def test_fr19_3_only_the_inside_part_is_counted(tmp_path):
     assert row["verdict"] == "covered"
 
 
+def test_fr19_3_a_segment_with_no_bike_route_gets_the_no_route_verdict(tmp_path):
+    graph, ratings = line_graph()
+    graph.add_node(90, x=ORIGIN[0] + 5000.0, y=ORIGIN[1])
+    graph.add_node(91, x=ORIGIN[0] + 5100.0, y=ORIGIN[1])
+    graph.add_edge(90, 91, 0, bike_ok=True, length_m=100.0)
+    corridors = corridor_file(tmp_path, {"S1": (("West", (0, 0)), ("Island", (5100, 0)))})
+    result = fit(graph, ratings, indicative_routes(graph, corridors), [])
+    assert result["segments"][0]["verdict"] == "no route"
+    assert result["counts"] == {"covered": 0, "partly": 0, "missed": 0}
+
+
 def test_fr19_3_a_route_with_no_inside_part_has_no_verdict(tmp_path):
     graph, ratings = line_graph()
     graph.graph["boundary"] = box(ORIGIN[0] + 9000, ORIGIN[1], ORIGIN[0] + 9100, ORIGIN[1] + 10)
@@ -375,7 +386,7 @@ def test_fr19_4_outside_works_are_left_out_of_the_km_and_the_share(tmp_path):
     works = [("Main St", 0.1, []), ("Over There", 0.1, [])]
     chosen = option(works, pick)
     chosen["works"][1]["outside"] = "outside Bayside"
-    result = corridor_fit(graph, ratings, routes, chosen, {"step": 1, "built": [0, 1]}, Network())
+    result = corridor_fit(ratings, routes, chosen, {"step": 1, "built": [0, 1]}, Network())
     assert result["works"]["km"] == pytest.approx(0.1)
     assert result["works"]["total_km"] == pytest.approx(0.1)
     assert result["works"]["share"] == pytest.approx(1.0)
@@ -392,5 +403,5 @@ def test_fr19_4_the_option_input_is_left_unchanged(tmp_path):
     graph, ratings, routes = lanes(tmp_path)
     chosen = option([("Main St", 0.1, [link_id(1, 2, 0)])], [(0, [(100, 0), (200, 0)])])
     before = repr(chosen)
-    corridor_fit(graph, ratings, routes, chosen, {"step": 1, "built": [0]}, Network())
+    corridor_fit(ratings, routes, chosen, {"step": 1, "built": [0]}, Network())
     assert repr(chosen) == before
