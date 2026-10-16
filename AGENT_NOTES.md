@@ -1253,3 +1253,4 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - `build_options(..., corridors=None)` keeps four options. A list (even empty) adds "corridors". Each candidate is `{"a","b","length_m","label"}`; its link key is `(a, b, 100 + index)`.
 - `link_table` now marks `unpaved` (surface tag on a path, cycleway or footway) and `path`; an unpaved link is never all-ages. `surface` is now a kept way tag in `network.py`, so older graph caches lack it.
 - Wiring left: turn `propose.add_corridor_paths` candidates into the dicts above in `edition.build_options_report`, then the switch, chart and figure counts in `test_edition.py` need a fifth option.
+- G1.4: nothing writes `corridors.json` yet; only `propose` and the options report read it. `from bikeplan import propose` gives the CLI function, so tests use `importlib.import_module`.
