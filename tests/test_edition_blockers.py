@@ -86,7 +86,7 @@ def test_fr17_14_options_json_holds_blockers_and_the_ceiling_of_each_option(made
         "road_type",
         "trips",
         "reasons",
-        "state",
+        "owner",
         "links",
     }
 

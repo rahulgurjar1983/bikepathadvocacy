@@ -1,6 +1,7 @@
 import networkx as nx
 import pytest
 
+from bikeplan.config import load_profile
 from bikeplan.ladder import build_ladder, link_reasons, link_roads, plain_reasons
 from bikeplan.network_report import choose, network_report, opening
 from tests.test_network_report import option
@@ -57,15 +58,15 @@ def test_fr17_14_with_nothing_blocking_the_ceiling_is_the_final_score():
 
 def test_fr17_14_a_blocker_carries_its_road_type_owner_and_reasons():
     roads = {
-        (3, 4, 0): {"type": "primary", "state": True},
-        (0, 1, 0): {"type": "residential", "state": False},
+        (3, 4, 0): {"type": "primary", "owner": "Transport for NSW"},
+        (0, 1, 0): {"type": "residential", "owner": None},
     }
     reasons = {(3, 4, 0): ["too busy for a quiet street", "too narrow for a cycleway"]}
     ladder = hand_ladder(roads=roads, reasons=reasons)
     ace, zed = ladder["blockers"]
-    assert (ace["road_type"], ace["state"]) == ("primary", True)
+    assert (ace["road_type"], ace["owner"]) == ("primary", "Transport for NSW")
     assert ace["reasons"] == ["too busy for a quiet street", "too narrow for a cycleway"]
-    assert (zed["road_type"], zed["state"], zed["reasons"]) == ("residential", False, [])
+    assert (zed["road_type"], zed["owner"], zed["reasons"]) == ("residential", None, [])
 
 
 def test_fr17_14_only_a_road_the_segment_data_names_primary_or_arterial_is_a_state_road():
@@ -82,11 +83,11 @@ def test_fr17_14_only_a_road_the_segment_data_names_primary_or_arterial_is_a_sta
                 data["road_function"] = function
             graph.add_edge(u, v, 0, **data)
     graph.add_edge(5, 6, 0, bike_ok=False, highway="motorway", road_function="PrimaryRoad")
-    assert link_roads(graph) == {
-        (0, 1, 0): {"type": "primary", "state": True},
-        (1, 2, 0): {"type": "residential", "state": False},
-        (2, 3, 0): {"type": "trunk", "state": True},
-        (3, 4, 0): {"type": "residential", "state": False},
+    assert link_roads(graph, ("PrimaryRoad", "ArterialRoad"), "Transport for NSW") == {
+        (0, 1, 0): {"type": "primary", "owner": "Transport for NSW"},
+        (1, 2, 0): {"type": "residential", "owner": None},
+        (2, 3, 0): {"type": "trunk", "owner": "Transport for NSW"},
+        (3, 4, 0): {"type": "residential", "owner": None},
     }
 
 
@@ -146,14 +147,14 @@ def test_fr17_14_link_reasons_come_from_the_fit_of_each_link_with_no_fix():
     assert link_reasons(graph, table, fits) == {(0, 1, 0): ["too busy for a quiet street"]}
 
 
-def blocker(street, trips, state=False, km=0.4, road="residential"):
+def blocker(street, trips, owner=None, km=0.4, road="residential"):
     return {
         "street": street,
         "km": km,
         "road_type": road,
         "trips": trips,
         "reasons": ["too busy for a quiet street", "too narrow for a cycleway"],
-        "state": state,
+        "owner": owner,
         "links": [[0, 1, 0]],
     }
 
@@ -230,7 +231,10 @@ def test_fr17_14_the_report_shows_the_ten_blockers_that_stop_the_most_trips():
 
 
 def test_fr17_14_a_state_road_blocker_names_transport_for_nsw_and_others_do_not():
-    found = [blocker("Ace St", 30, state=True, road="primary"), blocker("Bay St", 20)]
+    found = [
+        blocker("Ace St", 30, owner="Transport for NSW", road="primary"),
+        blocker("Bay St", 20),
+    ]
     _, rows = blockers_table([blocked_option(found)])
     assert "Transport for NSW" in rows[0]
     assert "primary" in rows[0]
@@ -242,3 +246,8 @@ def test_fr17_14_the_ceiling_is_labelled_as_a_ceiling_and_not_a_plan():
     section, _ = blockers_table([blocked_option(FOUR, ceiling=71.5)])
     assert "ceiling, not a plan" in section
     assert "71.5" in section
+
+
+def test_fr17_14_the_au_nsw_profile_names_the_state_road_functions_and_generic_names_none():
+    assert load_profile("au-nsw").network.state_functions == ("PrimaryRoad", "ArterialRoad")
+    assert load_profile("generic").network.state_functions == ()
