@@ -1,21 +1,29 @@
+import json
 import sys
 import types
-import json
+from importlib import import_module
 from pathlib import Path
 
-tests = types.ModuleType("tests")
-tests.__path__ = [str(Path("tests").resolve())]
-sys.modules["tests"] = tests
-sys.path.insert(0, str(Path("tests").resolve().parent))
 
-from tests.test_path_reasons import MINIMUM, reasons_for
-from tests.test_safety_evidence import crossing_graph, path_graph
+def load():
+    folder = Path("tests").resolve()
+    package = types.ModuleType("tests")
+    package.__path__ = [str(folder)]
+    sys.modules["tests"] = package
+    sys.path.insert(0, str(folder.parent))
+    return import_module("tests.test_path_reasons"), import_module("tests.test_safety_evidence")
 
-gravel = path_graph()
-gravel[1][2][0]["surface"] = "gravel"
-found = {
-    "crossing": reasons_for(crossing_graph()),
-    "narrow": reasons_for(path_graph(width=MINIMUM - 1.0)),
-    "unpaved": reasons_for(gravel),
-}
-Path("artifacts/W1.1/reasons.json").write_text(json.dumps(found, indent=2) + "\n")
+
+def main():
+    reasons, evidence = load()
+    gravel = evidence.path_graph()
+    gravel[1][2][0]["surface"] = "gravel"
+    found = {
+        "crossing": reasons.reasons_for(evidence.crossing_graph()),
+        "narrow": reasons.reasons_for(evidence.path_graph(width=reasons.MINIMUM - 1.0)),
+        "unpaved": reasons.reasons_for(gravel),
+    }
+    Path("artifacts/W1.1/reasons.json").write_text(json.dumps(found, indent=2) + "\n")
+
+
+main()
