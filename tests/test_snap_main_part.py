@@ -7,8 +7,8 @@ from bikeplan.config import ConfigError, Network, load_profile
 from bikeplan.corridors import indicative_routes
 from bikeplan.options import join_places
 from tests.option_helpers import place, street_graph
-from tests.test_corridors import LINE_NODES, LINE_ROADS, absolute, corridor_file
 from tests.route_helpers import ORIGIN
+from tests.test_corridors import LINE_NODES, LINE_ROADS, absolute, corridor_file
 
 MAIN_NODES = {n: (n * 100, 200) for n in range(7)}
 MAIN_ROADS = [(n, n + 1, 100.0, 1, False, False) for n in range(6)]
@@ -23,7 +23,7 @@ def network(**changes):
 
 
 def island_graph(area):
-    graph, _ = street_graph(MAIN_NODES | ISLAND_NODES, MAIN_ROADS + ISLAND_ROADS)
+    graph, _ = street_graph(MAIN_NODES | ISLAND_NODES, [*MAIN_ROADS, *ISLAND_ROADS])
     if area is not None:
         graph.graph["boundary"] = area
     return graph
@@ -39,7 +39,7 @@ def test_fr17_1_snap_max_m_defaults_to_300_and_reads_from_the_profile(tmp_path):
     (tmp_path / "au-nsw.yaml").write_text(
         text.replace("network:\n", "network:\n  snap_max_m: 0\n", 1)
     )
-    with pytest.raises(ConfigError, match="network.snap_max_m"):
+    with pytest.raises(ConfigError, match=r"network\.snap_max_m"):
         load_profile("au-nsw", tmp_path)
 
 
@@ -71,7 +71,7 @@ def test_fr17_1_snap_max_m_limits_the_snap():
 def end_graph():
     graph, _ = street_graph(
         absolute(LINE_NODES | {90: (0, 30), 91: (20, 30), 92: (40, 30)}),
-        LINE_ROADS + [(90, 91, 20.0, 2, False, False), (91, 92, 20.0, 2, False, False)],
+        [*LINE_ROADS, (90, 91, 20.0, 2, False, False), (91, 92, 20.0, 2, False, False)],
     )
     graph.graph["crs"] = 32756
     graph.graph["boundary"] = box(ORIGIN[0] - 50, ORIGIN[1] - 50, ORIGIN[0] + 250, ORIGIN[1] + 50)
