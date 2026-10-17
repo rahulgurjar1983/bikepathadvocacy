@@ -371,3 +371,31 @@ def test_fr10_3_a_stopped_fetch_resumes_without_refetching_finished_tiles(
 
     assert len(state["requests"]) == 9
     assert len(geopandas.read_file(tmp_path / "road_segments.gpkg")) == 10
+
+
+def test_fr10_3_a_link_with_no_segment_takes_the_road_function_of_its_way(tmp_path):
+    profile = load_profile("au-nsw")
+    folder, east0, north0 = grid_with_segments(tmp_path, [[(5, -50), (5, 420)]], ["ArterialRoad"])
+
+    graph = build_grid(folder)
+
+    last = edges_at(graph, east0, north0, 0, 399, 601)
+    assert last
+    for data in last:
+        assert data["adt"] == profile.road_functions["ArterialRoad"].value
+        assert data["adt_source"] == "nsw_road_segment"
+        assert data["road_function"] == "ArterialRoad"
+
+
+def test_fr17_14_the_way_function_is_the_one_covering_most_matched_length(tmp_path):
+    folder, east0, north0 = grid_with_segments(
+        tmp_path,
+        [[(5, -50), (5, 410)], [(-5, 390), (-5, 420)]],
+        ["LocalRoad", "PrimaryRoad"],
+    )
+
+    graph = build_grid(folder)
+
+    last = edges_at(graph, east0, north0, 0, 399, 601)
+    assert last
+    assert {d["road_function"] for d in last} == {"LocalRoad"}
