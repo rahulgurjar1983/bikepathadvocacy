@@ -1359,3 +1359,7 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
   browser proof, remain.
 
 - M1.7: `set_segment_traffic` fills links with no segment from their OSM way (`take_way_function` in `traffic.py`); the way function is the one with the most matched length, ties by name.
+
+- W1.2: `spots.py` holds the spot rules; `link_fixes` in `ladder.py` calls it for a link with no other fix. A crossing spot is a link whose own fit is AAA but is not all ages, beside a main street with no signal. A short path spot is a no-fix link of at most `fit.spot_max_m` (default 100 m, optional profile key) between two all-ages links. A spot is its own work.
+- W1.2 real run (Bayside, 2026-10-01): 12 spots over four options (`artifacts/W1.2/after.json`). The pr191 blockers mostly stay blockers, since most are longer than 100 m or do not sit between two calm links. Widening that is a spec choice. The footpath width has no data field, so short paths read "needs a site check" unless `footpath_width_m` is set.
+- The crossing stress table gives LTS 1 for 2 lanes at 50 km/h, so a zebra spot arises only where a link is not all ages for another reason.

@@ -2023,3 +2023,16 @@ Expect: the tests pass. For Forest Road, Wentworth Avenue, Bay Street and
 Croydon Road, `owned` is above zero, so the blockers name Transport for NSW.
 The run reads the Bayside snapshot dated 2026-10-01 with shipped settings.
 Artifact: `artifacts/M1.7/after.json`
+
+### W1.2
+
+```
+uv run --frozen pytest -q tests/test_spots.py
+uv run --frozen python artifacts/W1.2/prove.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 artifacts/W1.2/after.json
+```
+
+Expect: the tests pass. Each Bayside option has at least one spot, in `spots`,
+with `by_fix` naming the fix kinds, and `before.json` (run on main before this
+row) has none. The run reads the Bayside snapshot dated 2026-10-01 with shipped
+settings and takes about 25 minutes.
+Artifact: `artifacts/W1.2/after.json`

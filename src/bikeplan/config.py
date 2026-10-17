@@ -150,6 +150,7 @@ class Quietway:
 class Fit:
     prefer_separation: Num
     speed_approval_body: Num
+    spot_max_m: Num = Num(100.0, "assumption: a short piece the council can build in one job", True)
 
 
 @dataclass(frozen=True)
