@@ -83,3 +83,20 @@ def set_segment_traffic(graph, segments_path, crs, profile: Profile) -> None:
         data["adt"] = profile.road_functions[names[found]].value
         data["adt_source"] = sources[found]
         data["road_function"] = names[found]
+    take_way_function(graph, profile, frame)
+
+
+def take_way_function(graph, profile: Profile, frame) -> None:
+    covered: dict = {}
+    for _, _, data in graph.edges(data=True):
+        if "road_function" in data:
+            way = covered.setdefault(data["osm_way"], {})
+            way[data["road_function"]] = way.get(data["road_function"], 0.0) + data["length_m"]
+    source = frame["adt_source"].iloc[0] if len(frame) else None
+    for _, _, data in graph.edges(data=True):
+        way = covered.get(data["osm_way"])
+        if way and "road_function" not in data:
+            name = min(way, key=lambda function: (-way[function], function))
+            data["adt"] = profile.road_functions[name].value
+            data["adt_source"] = source
+            data["road_function"] = name

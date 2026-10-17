@@ -1357,3 +1357,5 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - Q1.6 gaps: `option_view` lists, per package, projects with no sheet in
   `project_sheets`. Other shared views following an option package, and full
   browser proof, remain.
+
+- M1.7: `set_segment_traffic` fills links with no segment from their OSM way (`take_way_function` in `traffic.py`); the way function is the one with the most matched length, ties by name.

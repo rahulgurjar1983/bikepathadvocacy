@@ -2011,3 +2011,15 @@ Expect: `no_route` and `unjoined` are empty; Matraville Public School,
 Bayside High School and Arncliffe Public School are `joined`; T2 and T3 have
 nodes. The run reads the Bayside snapshot dated 2026-10-01 with shipped settings.
 Artifact: `artifacts/M1.6/after.json`
+
+### M1.7
+
+```
+uv run --frozen pytest -q tests/test_road_segment.py
+uv run --frozen python artifacts/M1.7/prove.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 artifacts/M1.7/after.json
+```
+
+Expect: the tests pass. For Forest Road, Wentworth Avenue, Bay Street and
+Croydon Road, `owned` is above zero, so the blockers name Transport for NSW.
+The run reads the Bayside snapshot dated 2026-10-01 with shipped settings.
+Artifact: `artifacts/M1.7/after.json`
