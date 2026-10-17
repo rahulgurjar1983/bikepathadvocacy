@@ -2009,6 +2009,5 @@ uv run --frozen python artifacts/M1.6/prove.py regions/au-nsw-bayside.yaml data/
 
 Expect: `no_route` and `unjoined` are empty; Matraville Public School,
 Bayside High School and Arncliffe Public School are `joined`; T2 and T3 have
-nodes. Part only: snapping and the three named schools are proved; the row
-stays open until the full edition is rebuilt.
+nodes. The run reads the Bayside snapshot dated 2026-10-01 with shipped settings.
 Artifact: `artifacts/M1.6/after.json`
