@@ -1,0 +1,25 @@
+{
+  "owners": {
+    "Bay Street": {
+      "links": 74,
+      "owned": 40
+    },
+    "Croydon Road": {
+      "links": 39,
+      "owned": 12
+    },
+    "Forest Road": {
+      "links": 196,
+      "owned": 154
+    },
+    "Wentworth Avenue": {
+      "links": 124,
+      "owned": 108
+    }
+  },
+  "row": "M1.7",
+  "state_functions": [
+    "PrimaryRoad",
+    "ArterialRoad"
+  ]
+}
