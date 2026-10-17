@@ -14,7 +14,7 @@ MAIN_NODES = {n: (n * 100, 200) for n in range(7)}
 MAIN_ROADS = [(n, n + 1, 100.0, 1, False, False) for n in range(6)]
 ISLAND_NODES = {10: (300, 120), 11: (320, 120), 12: (340, 120)}
 ISLAND_ROADS = [(10, 11, 20.0, 1, False, False), (11, 12, 20.0, 1, False, False)]
-BOXES = [None, box(-50, 100, 700, 250)]
+BOXES = [None, box(-50, 100, 700, 650)]
 
 
 def network(**changes):
@@ -61,7 +61,7 @@ def test_fr17_1_a_place_400_m_from_the_main_part_is_unjoined_with_the_limit_in_t
 
 
 def test_fr17_1_snap_max_m_limits_the_snap():
-    found = [place("node/1", "school", 300, 140)]
+    found = [place("node/1", "school", 300, 260)]
     tight = join_places(island_graph(None), found, [], network(snap_max_m=50.0))
     assert [item["reason"] for item in tight.unjoined] == ["no bike-legal node within 50 m"]
     wide = join_places(island_graph(None), found, [], network(snap_max_m=60.0))
@@ -87,7 +87,7 @@ def test_fr19_2_a_corridor_end_beside_an_island_routes_from_the_main_part(tmp_pa
 
 
 def test_fr19_2_a_corridor_end_beyond_snap_max_m_has_no_route(tmp_path):
-    corridors = corridor_file(tmp_path, {"S1": (("West", (0, 400)), ("East", (480, -10)))})
+    corridors = corridor_file(tmp_path, {"S1": (("West", (0, -400)), ("East", (480, -10)))})
     (route,) = indicative_routes(end_graph(), corridors, 300.0)
     assert route.nodes == []
     (route,) = indicative_routes(end_graph(), corridors, 500.0)
