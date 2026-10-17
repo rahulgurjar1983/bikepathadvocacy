@@ -18,7 +18,12 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Spec issues
 
-### Q1.6 curve chooser and option-following views
+### Q1.6 curve chooser and option-following views (resolved)
+
+Resolved by the spec 20 ruling (row Q1.6 in its rulings table): one record,
+my pick at its stage, drives the page. The curve chooser and the
+option-following views are retired, so the needed input is given.
+The text below is the earlier ask.
 
 - FR-15.2 and FR-16.1 ask every view to follow one selected package, and the
   spec 15 table asks for an offline browser check of baseline, a middle rank
