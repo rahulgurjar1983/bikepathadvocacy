@@ -1,0 +1,123 @@
+# Spec 20: The five-minute report
+
+## 1. Problem
+
+On 17 October 2026 the owner asked for a report that councillors and residents say "wow" to when they see it, read it and use it. It must take at most five minutes to read, at a Year 8 reading level.
+
+The report of release `v2026.10.16-pr191` is far from that:
+
+- It holds 19,096 words. A Year 8 student reads about 200 words a minute (Brysbaert 2019 gives 238 for adults), so five minutes is about 1,000 words.
+- Its first screen is a plain heading, an "I checked 591.099 km" line and a "step 27" ask. Raw codes such as `cycleway_parking_both_sides` and `town_centre` fill its tables. Its works table has 301 rows.
+- The map shows Cook Park Trail, the 8 km foreshore path that council calls "Bayside's most popular cycling and walking path", as not all-ages. Only 0.543 km of 591 km is all-ages on the map, because the map uses the confirmed rating while the options use the modelled one.
+- With every work built, my pick makes 18.3% of trips safe. Yet the same report says the score would be 100.0 if its 10 blockers were fixed, and those blockers are short: Bardwell Road 45 m, Forest Road 35 m. They are crossings and short pieces of busy road. The tool has no crossing fix, so the plan stops where a short, cheap work would finish it.
+- One blocker is "unnamed cycleway road" with "no traffic data to design a fix": a path with no cars that got a car-road reason.
+- It shows no cost, no ward, and nothing about council's own adopted plan, the Bayside Bike Plan 2024 and its Priority Cycleway Network.
+
+## 2. Goal
+
+One page that a councillor or resident gets in the first screen and finishes in five minutes:
+
+1. A promise they can see: a title, three to four big numbers and a big map.
+2. A plan they can play: today, first stage, full plan.
+3. Their own place: search for a school, station, street or suburb, and see what changes there, drawn as a street picture.
+4. Their own ward: what the plan does there.
+5. The few spots that hold the network back, and what fixes them.
+6. How it fits council's own plan and the TfNSW corridors.
+7. What it costs and what changes for drivers, side by side with the gain.
+8. A short ask.
+9. Every number still links to its figure, and everything else sits in one folded "Check every number" part.
+
+This spec wins over specs 13, 15, 16, 17 and 19 for the report page: its order, its opening, its map look and its words. Their rules for figures, recipes, determinism, `checks.html`, voice, privacy and the data archive still apply. No figure, recipe or check is dropped; parts the page no longer shows move into "Check every number".
+
+## 3. Terms
+
+| Term | Meaning |
+|------|---------|
+| Spot | A short piece of the plan where a crossing, or a short path and crossing, makes the route all-ages: a link of a busy road that a route crosses, or runs along for at most `fit.spot_max_m` (default 100 m) between two calm links. |
+| Stage | "Today" is step 0. "First stage" is the works and spots up to the recommended step of FR-17.8. "Full plan" is every work and spot of my pick. The page never shows step numbers. |
+| Area | A ward from the region's sourced ward file, or, with none, a suburb. |
+| Council plan | A bike network that the council has adopted, read from its published map into a reference file. |
+
+## 4. Functional requirements
+
+### FR-20: The five-minute report
+
+| ID | Requirement | Priority |
+|----|-------------|----------|
+| FR-20.1 | One rating everywhere. Every all-ages count, map style and figure on the page uses the modelled rating of FR-17.4. The page says once, in "How I know", that ratings are modelled from open data. The confirmed-only count (F2) stays in "Check every number" with its own label. A path or cycleway with no motor traffic never gets a car-road reason such as "no traffic data" or "too busy for a quiet street": when it is not all-ages, its reason names the real cause, such as a narrow width, an unpaved surface or a busy road it crosses. | MUST |
+| FR-20.2 | Crossing fixes. Spec 06 gains three fixes for a spot. "Raised zebra crossing": the crossed road has at most two traffic lanes and a speed limit of at most 50 km/h, as TfNSW priority path crossings allow (<https://www.movementandplace.nsw.gov.au/standards/design-solutions/priority-path-crossings>). "Bike and walk signals": any other crossed road. "Short path and crossing": a route along a busy road for at most `fit.spot_max_m`, built as a shared path on the footpath side with a crossing of the kind above at its end. Each crossing removes the parking within 20 m before and 10 m after it on each kerb that has parking, as NSW Road Rules 2014 rule 172 sets for marked crossings; for signals this count is labelled assumed. A short path where the footpath width is unknown is labelled "needs a site check". A spot on a state road names Transport for NSW as owner. Spots join the ladder of FR-17.7 like any other work, with their disruption. A link that is not a spot and has no fix stays a blocker under FR-17.14. | MUST |
+| FR-20.3 | Stages. The tool gives "Today", "First stage" and "Full plan" for my pick, each with: safe trips and their share; schools, stations and town centres with a safe trip, each out of its joined total; km of the network that is all-ages; works and spots; parking spaces removed; traffic-lane km removed; km set to 30 km/h; and the cost range of FR-20.4. The share of trips made safe by spots alone is a figure. | MUST |
+| FR-20.4 | Cost. `references/cost-rates.yaml` holds, for each fix, a likely cost per km or per spot with its source, table, price year and currency, and the range around it. The first source is Infrastructure Victoria, "Priority Cycling Corridor Investment Analysis", Trafficworks, 18 July 2025, Tables 1 to 5, with its range of minus 20% to plus 30% of the likely cost. Each work's cost is its km or count times its rate. The page shows each stage's cost as a rounded range, such as "$31 to 51 million", with the words "rough cost from 2025 Victorian rates". A fix with no rate shows "cost not known", and a total that misses one says "at least". Costs follow FR-16.10: money only, never parking or road space. | MUST |
+| FR-20.5 | Areas. The areas file is `references/<region id>-wards.geojson`, with its source, licence, credit, name field and sha256 in a sidecar YAML of the same name. The tool finds it by the region ID, so region files stay alike as FR-18.1 requires. For Bayside it holds the five wards of Bayside Council's 2024 ward map, `references/au-nsw-bayside-wards.geojson`. A ward card names the suburbs whose suburb nodes lie inside it. With no areas file, the areas are the suburbs of the places query. For each area the tool gives: places joined and places with a safe trip at each stage; km of works and spots; parking spaces removed; the three streets with the most works km; and its spots. A work that crosses an area line is split by length. | MUST |
+| FR-20.6 | Council plan. The council plan file is `references/<region id>-council-plan.geojson`, a GeoJSON of named routes with a sidecar YAML of source, page, sha256 and method, found by the region ID. For Bayside it holds the 24 routes of "Bayside's Priority Cycleway Network", Bayside Bike Plan 2024, page 17. For each route the tool gives the km inside the boundary, the km within `network.corridor_match_m` of my pick, the km all-ages today and at each stage, and a verdict by the FR-19.3 rule. It also gives the share of the council plan's km that my pick covers, and the km of my pick that lie off the council plan. | MUST |
+| FR-20.7 | Page order and length. The page has these parts, in this order: the hero (FR-20.8), the map (FR-20.9), "Find your place" (FR-20.10), "What changes on the street" (FR-20.12), "The spots that hold it back" (FR-20.13), "In your ward" (FR-20.14), "It fits the plans we have" (FR-20.15), "What it costs and what changes" (FR-20.16), "What I ask" (FR-20.17), "How I know" and "Check every number" (FR-20.18). At load, in headless Chromium at 1440 by 900 with no clicks, `document.body.innerText` holds at most 1,000 words, counted as runs of letters or digits. Its prose, the text of `h1` to `h3`, `p`, `li` and `figcaption` outside `details`, scores at most 8.0 on Flesch-Kincaid with `textstat` 0.7.13. The page shows its reading time, the word count divided by 200 and rounded up, such as "4-minute read". | MUST |
+| FR-20.8 | The hero. In the first screen at 390 by 844 and at 1440 by 900 the reader sees: a title of at most 10 words that names the council and the outcome, such as "All-ages bike routes to every school in Bayside"; one sentence of at most 25 words; and four big numbers with short labels: all-ages km in the full plan, schools with an all-ages trip in the full plan out of all joined schools, parking spaces removed by the full plan, and the full plan's cost range. Gain and impact sit side by side. At 1440 by 900 the map also starts in the first screen. The author line follows the hero. | MUST |
+| FR-20.9 | The map. It fills the page width and at least 60% of the screen height. Under the plan it draws a backdrop from the snapshot: sea and other water, parks, railways, the airport and every street as a thin grey line, with the land outside the boundary paler. The plan draws in four styles: all-ages today (solid green), made all-ages by the stage (solid blue, thicker), a spot (an orange numbered circle), and not yet all-ages (grey, dashed). Each style also differs by width, dash or shape, so colour is never the only clue. Three buttons, "Today", "First stage" and "Full plan", switch the stage and update the four numbers in place. A "Play" button steps the map through the ladder from today to the full plan in at most 8 seconds. Schools, stations and town centres have their own icons and show their names when zoomed in. Tapping a street opens its street card (FR-20.11); tapping a place opens its place card (FR-20.10). On a touch screen a one-finger drag scrolls the page, and two fingers move the map. With `prefers-reduced-motion`, Play shows the end state and the map does not fly. | MUST |
+| FR-20.10 | Find your place. One search box finds schools, stations, town centres, streets and areas, offline, from the second letter typed, as an ARIA combobox that works with the keyboard. Choosing a place zooms the map to it and opens its card: its safe trips today, at the first stage and in the full plan; the places it joins with an all-ages trip in the full plan; the works and spots within 500 m. Choosing a street opens its street card. Choosing an area opens its card of FR-20.14. The URL hash `#find=<slug>` opens the same view, and the card has a "Copy link" button. | MUST |
+| FR-20.11 | Street card. For each work on the street, the card shows the fix in plain words, its length, its stage, the parking spaces and lanes it changes, and a before and after cross-section. Each cross-section is an SVG drawn to scale from the street's carriageway width, lanes and parking under specs 05 and 06, with labels: footpath, parking, traffic lane, bike lane, path, kerb. A width the data does not hold is drawn at the profile default and labelled "typical width". | MUST |
+| FR-20.12 | What changes on the street. One card per fix my pick uses, in order of km: the plain name, one sentence, a generic before and after cross-section, the km or the count of spots, and the parking it removes. The plain names are: `quietway` "Quiet street: 30 km/h and fewer cars cutting through"; `cycleway_in_spare` "Protected bike lane in spare road space"; `cycleway_parking_one_side` "Protected bike lane in place of parking on one side"; `cycleway_parking_both_sides` "Protected bike lanes in place of parking on both sides"; `road_diet` "Protected bike lane in place of a traffic lane"; `verge_path` "Shared path beside the road"; `new_path` "New path"; and the FR-20.2 names. | MUST |
+| FR-20.13 | The spots. One sentence gives the number of spots, their total length, and the safe-trip share before and after them: "Fix these 12 spots, 640 m in all, and all-ages trips rise from 18% to 74%." A list ranks them by trips they make safe, with street, crossing type, owner and trips, and each item moves the map to its spot. At most 10 show; the rest are counted. | MUST |
+| FR-20.14 | In your ward. One card per area, in name order: a small map of the area with its plan, and its FR-20.5 values in at most 40 words. | MUST |
+| FR-20.15 | It fits the plans we have. Two short lines and one bar each: the share of the council plan that my pick covers (FR-20.6), and the TfNSW segments covered, partly covered and missed (FR-19.5). A map switch draws the council plan and the TfNSW corridors, both off at load. Each source is credited by title, date and link. | MUST |
+| FR-20.16 | What it costs and what changes. For the first stage and the full plan, side by side: cost range, parking spaces removed and their share of the street parking the tool counted, traffic-lane km removed, km set to 30 km/h, and the gain in safe trips and places. | MUST |
+| FR-20.17 | What I ask. At most three numbered asks, each at most 25 words: adopt my pick as council's bike network plan; fund the design of the first stage, naming at most 10 streets and the count of the rest; and ask Transport for NSW to fix the spots on state roads. The ask follows VOICE.md and FR-17.8. | MUST |
+| FR-20.18 | How I know, and Check every number. "How I know" is at most 80 words: the data, the model, that ratings are modelled, and how to check. "Check every number" is one closed `details` that holds every other part of the old page: the options side by side, the chart and table, the works by street, the blockers, the TfNSW table, data quality, places, archive figures, words, method, recipes, credits and rebuild steps. | MUST |
+| FR-20.19 | Plain words. At load the visible text holds no code word with an underscore, no "step" followed by a number, no "unnamed", no "LTS", no "AAA" and no "Steiner"; no number shows more than three significant figures, except counts written with thousands commas and years. Figure links stay on every number, styled as a dotted underline in the text colour. An unnamed street is called by its road type and nearest named cross street, such as "a path off Bay Street". | MUST |
+| FR-20.20 | Look. The page uses a system font stack and no font download. It sets its colours, type sizes and spacing as CSS custom properties. Body text is at least 17 px with a line height of at least 1.5 and lines of at most 70 characters. Big numbers are at least 40 px at 390 px wide. The page never scrolls sideways at 360 px. It prints on A4 in at most 4 pages that hold the hero, the map at the full plan, the spots, the ward cards and the ask. | MUST |
+| FR-20.21 | Access. axe-core, pinned by version and sha256, run in headless Chromium finds no violation of impact "serious" or "critical" at load, with a place card open, and with a street card open. The keyboard reaches the search, the stage buttons, Play, the map zoom, each spot and each ward card, with a visible focus ring. | MUST |
+| FR-20.22 | Size and proof. `report.html` stays at most 4 MB and opens with no network. The release holds `shots/phone.png` at 390 by 844 and `shots/desktop.png` at 1440 by 900 of the page at load, and the index links them. | MUST |
+| FR-20.23 | `checks.html` measures FR-20.7, FR-20.8, FR-20.19, FR-20.20, FR-20.21 and FR-20.22 on the release's own page, each with the measured value and its limit, such as "words at load: 912 of at most 1,000, met". | MUST |
+
+### Rulings on blocked rows
+
+These rulings answer the loop's open input asks of 16 and 17 October 2026.
+
+| Row | Ruling |
+|-----|--------|
+| Q1.6 | Spec 20 retires the curve chooser and the option-following views. One record drives the page: my pick at its stage. Mark the AGENT_NOTES spec issue resolved by this ruling, ship PR 192 and close the row. |
+| Q1.10 | `test_fr2_1_snapshot_fetch_writes_every_file_and_the_manifest` may read the expected snapshot ID and OSM date from the region file, and its exact file list may add the files that FR-20.9 and FR-18.6 add to a snapshot, after the old names in their old order. All its other checks stay. |
+| Q1.10, G1.4 | The `snapshots` workflow now skips a council only when the manifest for its region file's current snapshot exists, so a new `osm_date` fetches a new snapshot. A loop turn may start it with `gh workflow run snapshots.yml -f ref=<branch> -f councils=<id>`, wait for it within its turn limit, and copy the manifest. |
+| M1.5 | Outside works carry the label "outside Bayside" with no neighbouring council name. The name part of FR-17.1 is retired. |
+| C1.2 and other spec 16 rows | Paused behind the W rows. Spec 20 gives councillors and residents their place, street and ward views. |
+
+## 5. Test plan
+
+| Spec ID | What the tests show |
+|---------|---------------------|
+| FR-20.1 | On the test grid, a cycleway of unknown width with no busy crossing is all-ages on the map and in the options; a cycleway that crosses a four-lane road names that crossing as its reason; the map's all-ages km equals the options' modelled km |
+| FR-20.2 | On the test grid, a route across a two-lane 50 km/h street gets a raised zebra crossing; across a four-lane street, signals; along 80 m of a busy road, a short path and crossing; along 150 m, a blocker; each crossing removes the hand-counted parking; a state road names TfNSW |
+| FR-20.3 | On the test grid, the three stages give the hand-worked trips, places, km, works, parking and cost |
+| FR-20.4 | The shipped rates file holds each fix with its source fields; a work's cost is km times rate; a missing rate gives "cost not known" and "at least"; the range is minus 20% to plus 30% |
+| FR-20.5 | On the test grid, two areas split a work by length and give hand-counted values; with no areas file, suburbs are used; a missing sidecar field fails |
+| FR-20.6 | On the test grid, a plan route on my pick is covered, one 300 m away is missed, and the shares match a hand count; the shipped Bayside file holds 24 routes with the source sha256 |
+| FR-20.7 | In headless Chromium, the parts come in order; the word count and Flesch-Kincaid score are measured on the page and a page over either limit fails |
+| FR-20.8 | At both sizes the title, sentence and four numbers lie inside the first screen; at 1440 by 900 the map does too |
+| FR-20.9 | With network calls blocked, the backdrop layers draw; each stage button changes the styles and the four numbers to the saved stage values; Play ends on the full plan; a touch drag scrolls the page |
+| FR-20.10 | Typing two letters of a test-grid school lists it; Enter opens its card with the hand-counted trips; `#find=` opens the same card |
+| FR-20.11 | A test-grid street of known width draws its lanes and parking to scale; an unknown width says "typical width" |
+| FR-20.12 | Each fix of the test-grid pick has one card with its plain name; no code word shows |
+| FR-20.13 | The spot sentence and list hold the hand-worked values; clicking a spot moves the map |
+| FR-20.14 | Each test-grid area has one card with its values |
+| FR-20.15 | The bars hold the FR-20.6 and FR-19.5 values; the plan switches start off and draw when turned on |
+| FR-20.16 | The two stages show the FR-20.3 values side by side |
+| FR-20.17 | At most three asks, each at most 25 words, naming at most 10 streets |
+| FR-20.18 | "How I know" is at most 80 words; every old section sits inside the closed "Check every number" and every figure link still resolves |
+| FR-20.19 | A planted code word, "step 4", "unnamed" or a four-figure decimal in the visible text fails the check |
+| FR-20.20 | No sideways scroll at 360 px; the A4 print has at most 4 pages and holds the named parts |
+| FR-20.21 | axe-core finds no serious or critical violation in the three states; Tab reaches each named control |
+| FR-20.22 | The test-grid page is under 4 MB, opens offline, and the release script writes both shots and links them |
+| FR-20.23 | Artifact: the Bayside release `checks.html` shows each measured value "met" |
+
+## 6. Loop work
+
+Rows `W1.1` to `W1.9` build this spec on the test grid; `C1.13` proves it on Bayside. Tests of page parts that this spec moves into "Check every number" may change to look for them there, with a `Retires: <row>` trailer on the commit, as spec 17 section 7 allows; tests of figures, recipes, hashes, determinism and size stay. Never change a default, a rate or a reference file to get a better number.
+
+The operator made two reference files on 17 October 2026:
+
+- `references/au-nsw-bayside-council-plan.geojson`. Source: Bayside Council, "Bayside's Priority Cycleway Network", Bayside Bike Plan 2024, page 17, <https://www.bayside.nsw.gov.au/sites/default/files/2024-08/Cycleway.pdf>, sha256 `c2936eb7537438bcac4365513b35dc6d1e99eeb4f2b695c29b803998016e7732`. Method: the PDF draws each route as a vector line in its legend colour. The council boundary line in the PDF was fitted to the OpenStreetMap boundary of the Bayside snapshot by an affine transform; the median gap is 3.9 m and the 90th percentile 10.9 m. The routes were moved by the same transform and simplified to 5 m. The drawn line is about 105 m wide at map scale, so the routes are indicative, as spec 19 says of the TfNSW lines.
+- `references/au-nsw-bayside-wards.geojson`, from the council's 2024 ward layer behind its "Find your Ward" map. Geoscape Administrative Boundaries (August 2026) hold no wards for NSW, and OpenStreetMap has none for Bayside. The five wards cover the snapshot boundary with no gap wider than 50 m.
+- `references/cost-rates.yaml`, from the Infrastructure Victoria study named in FR-20.4, sha256 `57f6baea7638e4699e589a9128414ff305e9ce2b503e19c40f20338f2d867586`.
+
+## 7. Basis
+
+On 17 October 2026 the owner asked: "Take the report to an amazing level, make it max 5 min read for year 8 reading level, make councilors and residents say wow when they see, read, and interact with it."

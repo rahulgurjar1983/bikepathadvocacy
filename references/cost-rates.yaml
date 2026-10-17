@@ -1,0 +1,65 @@
+source:
+  title: Priority Cycling Corridor Investment Analysis
+  author: Trafficworks for Infrastructure Victoria
+  date: 2025-07-18
+  url: https://assets.infrastructurevictoria.com.au/assets/Resources/Priority-Cycling-Corridor-Investment-Analysis.pdf
+  sha256: 57f6baea7638e4699e589a9128414ff305e9ce2b503e19c40f20338f2d867586
+  scope: design and construction, excluding program management overhead
+currency: AUD
+price_year: 2025
+place: Victoria
+range:
+  low: 0.8
+  high: 1.3
+  source: section 6.1, "a range of -20% and +30% has been applied to the likely cost"
+rates:
+  quietway:
+    likely: 350000
+    unit: per_km
+    table: Table 4, bicycle boulevard with sharrows, medium complexity
+    why: a quiet street needs speed treatment every 80 to 100 m, as the medium level says
+  cycleway_in_spare:
+    likely: 500000
+    unit: per_km
+    table: Table 2, protected on-road, low complexity
+    why: spare width, with no parking or lane change
+  cycleway_parking_one_side:
+    likely: 1000000
+    unit: per_km
+    table: Table 2, protected on-road, medium complexity
+    why: parking is moved at some places
+  cycleway_parking_both_sides:
+    likely: 1500000
+    unit: per_km
+    table: Table 2, protected on-road, high complexity
+    why: parking is moved at many places
+  road_diet:
+    likely: 1500000
+    unit: per_km
+    table: Table 2, protected on-road, high complexity
+    why: a traffic lane is removed
+  verge_path:
+    likely: 900000
+    unit: per_km
+    table: Table 3, shared use path, medium complexity
+    why: a new path with minor civil works beside the road
+  new_path:
+    likely: 1500000
+    unit: per_km
+    table: Table 3, shared use path, high complexity
+    why: a new path with extensive civil works
+  short_path:
+    likely: 900000
+    unit: per_km
+    table: Table 3, shared use path, medium complexity
+    why: a short new path on the footpath side; its crossing is priced on its own
+  raised_zebra:
+    likely: 100000
+    unit: per_spot
+    table: Table 5, raised priority crossing, medium complexity
+    why: a new raised crossing on a two-lane street
+  signals:
+    likely: 1500000
+    unit: per_spot
+    table: Table 5, pedestrian operated signal, high complexity
+    why: new signals with civil works
