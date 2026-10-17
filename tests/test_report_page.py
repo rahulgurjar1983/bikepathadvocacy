@@ -360,3 +360,8 @@ def test_fr20_18_how_i_know_names_the_snapshot_date_and_the_modelled_ratings(gri
     assert "modelled" in part
     assert "1 October 2026" in part
     assert len(words) <= 120
+
+
+def test_fr20_25_missing_cost_data_leaves_out_the_cost_tile(full_page):
+    found = parse(full_page.read_text())
+    assert "t-cost" not in found.ids
