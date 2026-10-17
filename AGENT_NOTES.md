@@ -28,6 +28,14 @@ The release build pulls the Bayside snapshot from `snapshots/au-nsw-bayside/2026
 - On the local snapshot with the file, the Bay Street link of 11.7 m and the Wentworth Avenue link of 9.3 m in those blockers are ArterialRoad. Wentworth Avenue also has 11 primary links whose ways match no segment, and Forest Road and Croydon Road have secondary links the data calls DistributorRoad, which is not in `network.state_functions`. Check these on a release built from the new snapshot.
 - Needed input: row Q1.10 (fresh Bayside snapshot with all five adapters) must publish `road_segments.gpkg`. Then run M1.7 again and read the release blockers.
 
+### W1.1 the rest waits on the page (open)
+
+The map overlay, its km and the F2 label are shipped. The rest of W1.1 is a check on the five-minute page, and that page is not built.
+
+- Prove it: `rg -n "model_pieces|model_km" src` finds the overlay writer in `edition.py` and the reader in `assets/network.js`, and no page code.
+- Prove it: `grep -c "FR-20.1[,)]" PROGRESS.md` prints 1, the W1.1 row, so W1.6 does not cite FR-20.1.
+- Needed input: add FR-20.1 to the W1.6 row, so its page reads `model_pieces` and `model_km` and a test shows that every all-ages figure on it is modelled. Then close W1.1 as shipped, or leave it open until W1.6 merges.
+
 ### W1.1 one rating on the map conflicts with saved FR-15.5 tests (resolved)
 
 Resolved by the spec 20 ruling: modelled fields sit beside the confirmed ones. `street_overlay` takes `model` and adds `model_pieces` and `model_km`; `network.js` reads them.
