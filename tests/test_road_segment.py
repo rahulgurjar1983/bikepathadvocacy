@@ -399,3 +399,20 @@ def test_fr17_14_the_way_function_is_the_one_covering_most_matched_length(tmp_pa
     last = edges_at(graph, east0, north0, 0, 399, 601)
     assert last
     assert {d["road_function"] for d in last} == {"LocalRoad"}
+
+
+def test_fr17_14_a_link_matching_a_crossing_local_road_still_takes_its_way_function(tmp_path):
+    profile = load_profile("au-nsw")
+    folder, east0, north0 = grid_with_segments(
+        tmp_path,
+        [[(5, -50), (5, 390)], [(5, 395), (5, 650)]],
+        ["ArterialRoad", "LocalRoad"],
+    )
+
+    graph = build_grid(folder)
+
+    last = edges_at(graph, east0, north0, 0, 399, 601)
+    assert last
+    for data in last:
+        assert data["road_function"] == "ArterialRoad"
+        assert data["adt"] == profile.road_functions["ArterialRoad"].value
