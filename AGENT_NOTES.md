@@ -18,6 +18,46 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Spec issues
 
+### W1.0 the mock conflicts with the old number check (open)
+
+The new page keeps the mock's date and numbered map key. The old test
+`test_fr13_2_no_number_outside_a_figure_link_or_the_appendix` rejects both.
+It reads all text before the old appendix, even text outside the closed
+"Check every number". Its links must point to a figure ID, while the mock
+links to the closed part. A date has no such figure in the saved list.
+
+Fresh main proof: run `git fetch origin`, then
+`git worktree add --detach /tmp/bikepath-W1.0-input-main origin/main` and
+`uv run --frozen python artifacts/W1.0/reproduce.py /tmp/bikepath-W1.0-input-main`.
+The old test passes on main. With just the saved page code it fails on
+the date and key. The probe restores the worktree when it ends.
+`artifacts/W1.0/input-blocker.json` holds the base hash and exit codes;
+`base.txt` and `page.txt` in that folder hold the logs.
+
+Needed input: align that old page-text check with spec 20 on main, or give
+an explicit rule to scope it to the old page in the closed part. Keep
+the figure IDs, values, recipes and hashes checked. Spec 20 allows tests
+of moved page parts to look there, but the turn rules keep other old test
+bodies intact, and spec 20 also says figure tests stay. This turn changed
+no old test or input. PR 209 stays a draft and W1.0 stays open.
+
+### W1.0 template changes
+
+The copy of the mock uses run values for its title, author, date, place
+counts, stage totals, street names, spots and TfNSW fit. It drops the mock
+banner and its example search words. It keeps the colour tokens, type,
+drawings and scripts. Parts with no data, and the empty cost tile, are
+left out. Costs, wards, council plan fit and the map backdrop wait on
+later W rows. The full-plan score comes from the last stage, not the
+ceiling. Spot parking comes from the works, not a fixed count per spot.
+
+The main map uses `plan-map` so the old map can keep its `map` section ID
+in the closed part. Extra styles keep old tables and drawings within that
+part. Opening it sends a resize event so the old map can draw. Missing
+parts have script guards. The read time comes from the page's words at
+load. These changes let the mock read real run data and keep the old
+report whole; they do not change its design.
+
 ### M1.7 the release has no road segments to read (open)
 
 The release build pulls the Bayside snapshot from `snapshots/au-nsw-bayside/2026-10-01/manifest.json`. That manifest lists five files and no `road_segments.gpkg`, `speed_zones.gpkg` or `elevation.tif`. The build reads the road function only when `road_segments.gpkg` exists, so no release link has a road function and every blocker says "Not a state road". The code of parts 1 and 2 cannot show in a release until a snapshot with the file is published.

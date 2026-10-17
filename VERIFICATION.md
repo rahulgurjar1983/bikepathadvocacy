@@ -2050,3 +2050,22 @@ a work fixes is a spot too. Spots per option went calm 3 to 11, mesh 5 to 90,
 separated 1 to 5, shortest 3 to 36; all-built scores went 44.8 to 60.0, 12.7 to
 36.2, 51.3 to 60.0 and 8.1 to 26.1.
 Artifact: `artifacts/W1.2/after.json`
+
+### W1.0
+
+```sh
+uv run --frozen pytest -q tests/test_report_page.py
+git fetch origin
+git worktree add --detach /tmp/bikepath-W1.0-input-main origin/main
+uv run --frozen python artifacts/W1.0/reproduce.py /tmp/bikepath-W1.0-input-main
+```
+
+Expect: the page tests pass. The probe runs the old number-link test on
+fresh main, where it passes, then with the page code, where it fails.
+The date and numbered map key in the mock cause that failure. The probe
+restores the worktree. This proves an input clash, not a finished row or
+a Bayside release. See the W1.0 spec issue in `AGENT_NOTES.md`. The PR stays
+a draft until the old page-text check and the new page rule agree.
+
+Artifact: `artifacts/W1.0/input-blocker.json`, `artifacts/W1.0/base.txt`,
+`artifacts/W1.0/page.txt` and `artifacts/W1.0/page.patch`.
