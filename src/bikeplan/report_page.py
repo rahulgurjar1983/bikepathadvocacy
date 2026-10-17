@@ -241,6 +241,8 @@ def five_minute_page(region, data: dict, head: str, inner: str) -> str:
             text = drop_section(text, name)
     for name in ("wards", "cost"):
         text = drop_section(text, name)
+    if "cost" not in data["stages"]["works"]:
+        text = re.sub(r'<div class="tile cost">.*?</div>', "", text, flags=re.S)
     text = drop_button(drop_button(text, "council"), "wards")
     if have["plans"]:
         text = drop_card(text, "council")
