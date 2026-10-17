@@ -2045,5 +2045,8 @@ uv run --frozen python artifacts/W1.2/prove.py regions/au-nsw-bayside.yaml data/
 Expect: the tests pass. Each Bayside option has at least one spot, in `spots`,
 with `by_fix` naming the fix kinds, and `before.json` (run on main before this
 row) has none. The run reads the Bayside snapshot dated 2026-10-01 with shipped
-settings and takes about 25 minutes.
+settings and takes about 25 minutes. Part 2: a short blocker beside a link that
+a work fixes is a spot too. Spots per option went calm 3 to 11, mesh 5 to 90,
+separated 1 to 5, shortest 3 to 36; all-built scores went 44.8 to 60.0, 12.7 to
+36.2, 51.3 to 60.0 and 8.1 to 26.1.
 Artifact: `artifacts/W1.2/after.json`

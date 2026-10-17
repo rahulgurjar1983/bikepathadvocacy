@@ -166,13 +166,12 @@ def link_fixes(graph, table: dict, fits: dict, profile, weights) -> dict:
             points.update(junction_points(graph))
         return points
 
+    waiting: list = []
     for key, link in table.items():
         if link["all_ages"]:
             continue
         if link["no_fix"]:
-            spot = link_spot(graph, key, link, fits, profile, calm, flags)
-            if spot:
-                found[key] = spot | {"least": disruption_score(spot, weights)}
+            waiting.append(key)
             continue
         if link.get("new_path"):
             found[key] = new_path_fix(link, f"new path beside {link['label']}", weights)
@@ -222,6 +221,17 @@ def link_fixes(graph, table: dict, fits: dict, profile, weights) -> dict:
                 best = best | {"least": disruption_score(best, weights)}
         if best is not None:
             found[key] = best
+            calm.update(key[:2])
+    grown = True
+    while grown:
+        grown = False
+        for key in list(waiting):
+            spot = link_spot(graph, key, table[key], fits, profile, calm, flags)
+            if spot:
+                found[key] = spot | {"least": disruption_score(spot, weights)}
+                calm.update(key[:2])
+                waiting.remove(key)
+                grown = True
     return found
 
 

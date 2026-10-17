@@ -175,3 +175,25 @@ def test_fr20_2_two_spots_on_one_street_stay_two_works():
     works = build_ladder(table, sorted(table), people((1, 0), (2, 3)), fixes, WEIGHTS)["works"]
     assert [work["fix"] for work in works] == ["raised_zebra_crossing"] * 2
     assert [len(work["links"]) for work in works] == [1, 1]
+
+
+def test_fr20_2_a_short_piece_beside_a_link_a_work_fixes_becomes_a_spot():
+    graph, table, fits = along_world(80.0, 2.5)
+    table[2, 3, 0] = row(all_ages=False, length=80.0)
+    fits["calm-e"] = {"status": "fix", "fix": "road_diet"}
+    fixes = link_fixes(graph, table, fits, PROFILE, WEIGHTS)
+    assert fixes[2, 3, 0]["fix"] == "road_diet"
+    assert fixes[1, 2, 0]["fix"] == "short_path_crossing"
+    assert fixes[1, 2, 0]["spot"] is True
+    table[2, 3, 0] = row(all_ages=False, no_fix=True, length=80.0)
+    assert (1, 2, 0) not in link_fixes(graph, table, fits, PROFILE, WEIGHTS)
+
+
+def test_fr20_2_the_ladder_reaches_the_full_score_once_a_work_and_its_spot_are_both_built():
+    graph, table, fits = along_world(80.0, 2.5)
+    table[2, 3, 0] = row(all_ages=False, length=80.0)
+    fits["calm-e"] = {"status": "fix", "fix": "road_diet"}
+    fixes = link_fixes(graph, table, fits, PROFILE, WEIGHTS)
+    ladder = build_ladder(table, sorted(table), people((1, 0), (2, 3)), fixes, WEIGHTS)
+    assert ladder["blockers"] == []
+    assert {work["fix"] for work in ladder["works"]} == {"road_diet", "short_path_crossing"}
