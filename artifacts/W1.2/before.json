@@ -1,0 +1,53 @@
+{
+  "options": {
+    "calm": {
+      "blockers": 14,
+      "by_fix": {},
+      "ceiling": 100.0,
+      "no_fix_streets": 14,
+      "parking_spaces": 0,
+      "score_all_built": 41.40127388535032,
+      "site_check": 0,
+      "spot_m": 0,
+      "spots": 0,
+      "state_owned": 0
+    },
+    "mesh": {
+      "blockers": 67,
+      "by_fix": {},
+      "ceiling": 100.0,
+      "no_fix_streets": 67,
+      "parking_spaces": 0,
+      "score_all_built": 12.632696390658174,
+      "site_check": 0,
+      "spot_m": 0,
+      "spots": 0,
+      "state_owned": 0
+    },
+    "separated": {
+      "blockers": 12,
+      "by_fix": {},
+      "ceiling": 100.0,
+      "no_fix_streets": 12,
+      "parking_spaces": 0,
+      "score_all_built": 51.167728237791934,
+      "site_check": 0,
+      "spot_m": 0,
+      "spots": 0,
+      "state_owned": 0
+    },
+    "shortest": {
+      "blockers": 35,
+      "by_fix": {},
+      "ceiling": 100.0,
+      "no_fix_streets": 35,
+      "parking_spaces": 0,
+      "score_all_built": 7.961783439490445,
+      "site_check": 0,
+      "spot_m": 0,
+      "spots": 0,
+      "state_owned": 0
+    }
+  },
+  "row": "W1.2"
+}
