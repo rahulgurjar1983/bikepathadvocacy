@@ -24,3 +24,4 @@ Each spec has one number. Take the next free number when you add a spec, and add
 | 17 | `specs/17-network-options.md` | Network options, safety and disruption |
 | 18 | `specs/18-greater-sydney.md` | Every council in Greater Sydney (paused: Bayside only), and the Superhighway review |
 | 19 | `specs/19-tfnsw-corridors.md` | How my pick fits the TfNSW strategic corridors |
+| 20 | `specs/20-five-minute-report.md` | The five-minute report: hero, map, places, spots, wards, cost and ask |

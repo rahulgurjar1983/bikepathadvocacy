@@ -7,7 +7,7 @@ on:
         description: Branch or commit whose code fetches the snapshots
         default: main
       councils:
-        description: Council ids, space separated, fetched even when a release exists; empty means every council with no manifest and no snapshot release
+        description: Council ids, space separated, fetched even when a release exists; empty means every council with no manifest and no snapshot release for its region file's osm_date
         default: ""
 
 concurrency:
@@ -50,7 +50,7 @@ jobs:
                   continue
               region = Path(f"regions/{council}.yaml").read_text()
               date = re.search(r"osm_date:\s*[\"']?(\d{4}-\d{2}-\d{2})", region)[1]
-              if list(Path("snapshots", council).glob("*/manifest.json")):
+              if Path("snapshots", council, date, "manifest.json").exists():
                   continue
               listed = subprocess.run(
                   ["gh", "release", "view", f"snapshot-{council}-{date}"], capture_output=True, text=True

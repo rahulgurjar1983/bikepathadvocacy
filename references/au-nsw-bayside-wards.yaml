@@ -1,0 +1,16 @@
+title: Bayside Council ward boundaries, 2024
+publisher: Bayside Council
+layer: https://services7.arcgis.com/L1i6OQHVUek3lIg4/arcgis/rest/services/Ward_Boundary_Review_2023/FeatureServer/0
+web_map: Bayside Council Ward Boundary 2024 Web Map, behind the "Find your Ward" link on https://www.bayside.nsw.gov.au/council-wards
+read_on: 2026-10-17
+query: query?where=1%3D1&outFields=*&outSR=4326&f=geojson
+sha256_of_download: 535e9bf610969bf55ff88da9259189ab2be5b7dc9fb21ff97c94358760bb5173
+licence: not stated on the layer; a public council web map of public ward lines
+credit: Ward boundaries from Bayside Council's 2024 ward map
+file: au-nsw-bayside-wards.geojson
+name_field: name
+kind: ward
+method: >-
+  The five ward polygons were projected to MGA zone 56, simplified to 2 m and stored in WGS84 to
+  5 decimals. Together they cover the OpenStreetMap boundary of snapshot au-nsw-bayside 2026-10-01
+  with no gap or overlap wider than 50 m.
