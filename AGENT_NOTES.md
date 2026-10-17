@@ -18,6 +18,16 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Spec issues
 
+### M1.7 the release has no road segments to read (open)
+
+The release build pulls the Bayside snapshot from `snapshots/au-nsw-bayside/2026-10-01/manifest.json`. That manifest lists five files and no `road_segments.gpkg`, `speed_zones.gpkg` or `elevation.tif`. The build reads the road function only when `road_segments.gpkg` exists, so no release link has a road function and every blocker says "Not a state road". The code of parts 1 and 2 cannot show in a release until a snapshot with the file is published.
+
+- Prove it: `python3 -c "import json; print([f['path'] for f in json.load(open('snapshots/au-nsw-bayside/2026-10-01/manifest.json'))['files']])"` prints five paths without `road_segments.gpkg`.
+- Prove it: `gh release view snapshot-au-nsw-bayside-2026-10-01 --json assets --jq '.assets[].name'` lists the same five files.
+- Prove it: release v2026.10.17-pr204 (after part 2) still has "Not a state road" for Forest Road, Wentworth Avenue, Bay Street and Croydon Road in options.json.
+- On the local snapshot with the file, the Bay Street link of 11.7 m and the Wentworth Avenue link of 9.3 m in those blockers are ArterialRoad. Wentworth Avenue also has 11 primary links whose ways match no segment, and Forest Road and Croydon Road have secondary links the data calls DistributorRoad, which is not in `network.state_functions`. Check these on a release built from the new snapshot.
+- Needed input: row Q1.10 (fresh Bayside snapshot with all five adapters) must publish `road_segments.gpkg`. Then run M1.7 again and read the release blockers.
+
 ### W1.1 one rating on the map conflicts with saved FR-15.5 tests (resolved)
 
 Resolved by the spec 20 ruling: modelled fields sit beside the confirmed ones. `street_overlay` takes `model` and adds `model_pieces` and `model_km`; `network.js` reads them.
