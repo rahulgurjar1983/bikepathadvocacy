@@ -1,0 +1,362 @@
+import math
+import re
+from html.parser import HTMLParser
+from pathlib import Path
+
+import pytest
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+
+from bikeplan import main
+from bikeplan.config import load_region
+
+MOCK = Path("specs/20-design/mock.html")
+GRID = "regions/test-grid.yaml"
+SNAPSHOT = "tests/fixtures/test-grid/snapshot"
+ORDER = ["top", "find", "spots", "streets", "wards", "plans", "cost", "ask", "how", "evidence"]
+MOCK_ONLY = ["pr191", "794", "Coward", "Kogarah", "Design mock", "36\u201358", "Mascot", "Ward 3"]
+
+
+def step(number, score, safe, km, parking, works=(), school=0):
+    return {
+        "step": number,
+        "works": list(works),
+        "totals": {
+            "trips": 20,
+            "safe_trips": safe,
+            "score": score,
+            "km_by_level": {1: km, 2: 0.0, 3: 0.0, 4: 0.0},
+            "km_all_ages": km,
+            "places_safe": {"school": school},
+            "assumed_share": 0.5,
+        },
+        "disruption": {
+            "parking_spaces": parking,
+            "lane_km": 0.0,
+            "speed_km": 0.0,
+            "path_km": 0.0,
+            "score": parking,
+        },
+    }
+
+
+def work(street, fix, km, parking, **more):
+    return {
+        "street": street,
+        "fix": fix,
+        "km": km,
+        "parking_spaces": parking,
+        "lane_km": 0.0,
+        "speed_km": 0.0,
+        "path_km": 0.0,
+        "score": parking,
+        "links": [[0, 1, 0]],
+    } | more
+
+
+def spot(street, fix, km, parking, owner=None):
+    return work(street, fix, km, parking, spot=True, owner=owner, assumed=False, site_check=False)
+
+
+def lines(work_index, ok=False, at=(151.15, -33.95)):
+    return {
+        "work": work_index,
+        "ok": ok,
+        "line": [list(at), [at[0] + 0.001, at[1] + 0.001]],
+    }
+
+
+def pick():
+    return {
+        "id": "calm",
+        "name": "Calm streets",
+        "same_as": None,
+        "km": 12.4,
+        "ceiling": 95.0,
+        "blockers": [],
+        "no_fix": [],
+        "unjoined": [],
+        "works": [
+            work("Ash Street", "quietway", 4.0, 4),
+            spot("Bay Street", "raised_zebra_crossing", 0.04, 3),
+            spot("Forest Road", "bike_walk_signals", 0.05, 3, "Transport for NSW"),
+        ],
+        "steps": [
+            step(0, 10.0, 2, 0.0, 0),
+            step(1, 50.0, 10, 4.0, 4, [0], 1),
+            step(2, 65.0, 13, 4.04, 7, [1], 2),
+            step(3, 90.0, 19, 12.4, 10, [2], 3),
+        ],
+        "lines": [
+            lines(None, True, (151.1, -33.9)),
+            lines(0, False, (151.11, -33.91)),
+            lines(1, False, (151.12, -33.92)),
+            lines(2, False, (151.13, -33.93)),
+            lines(None, False, (151.14, -33.94)),
+        ],
+    }
+
+
+CHOICE = {"pick": "calm", "step": 1, "streets": ["Ash Street"], "ask": "Adopt this."}
+JOINED = {"school": {"joined": 3, "unjoined": 1}, "station": {"joined": 0, "unjoined": 0}}
+MARKS = [{"lon": 151.12, "lat": -33.92, "type": "school", "name": "Oak School"}]
+STREETS = {
+    "pieces": [],
+    "model_pieces": [{"name": "Ash Street", "lines": [[[-33.91, 151.11], [-33.9, 151.12]]]}],
+}
+CORRIDOR = {
+    "counts": {"covered": 2, "partly": 1, "missed": 3},
+    "routes": [{"id": "T1", "lines": [[[151.1, -33.9], [151.2, -33.9]]]}],
+    "source": {
+        "title": "TfNSW corridors",
+        "date": "2023-02",
+        "url": "https://x.test",
+        "sha256": "0",
+    },
+}
+
+
+def data_for(**more):
+    from bikeplan.report_page import report_data
+
+    given = {
+        "options": [pick()],
+        "choice": CHOICE,
+        "marks": MARKS,
+        "joined": JOINED,
+        "streets": STREETS,
+        "corridor": CORRIDOR,
+        "boundary": None,
+    }
+    return report_data(**(given | more))
+
+
+def page_for(data, evidence='<section id="options"><h2>Options</h2></section>'):
+    from bikeplan.report_page import five_minute_page
+
+    return five_minute_page(load_region("regions/au-nsw-bayside.yaml"), data, "", evidence)
+
+
+class Ids(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.ids = []
+        self.stack = []
+        self.inside = {}
+        self.details_open = None
+
+    def handle_starttag(self, tag, attrs):
+        found = dict(attrs)
+        if "id" in found:
+            self.ids.append(found["id"])
+            if self.stack:
+                self.inside[found["id"]] = self.stack[-1]
+        if tag == "details" and found.get("id") == "evidence":
+            self.details_open = "open" in found
+        if tag not in {"br", "img", "input", "meta", "link", "hr"}:
+            self.stack.append("evidence" if found.get("id") == "evidence" else self.where())
+
+    def where(self):
+        return self.stack[-1] if self.stack else None
+
+    def handle_endtag(self, tag):
+        if self.stack and tag not in {"br", "img", "input", "meta", "link", "hr"}:
+            self.stack.pop()
+
+
+def parse(text):
+    found = Ids()
+    found.feed(text)
+    return found
+
+
+def open_page(path, width=1440):
+    options = webdriver.ChromeOptions()
+    for flag in ("--headless=new", "--no-sandbox", "--proxy-server=http://127.0.0.1:9"):
+        options.add_argument(flag)
+    options.set_capability("goog:loggingPrefs", {"browser": "ALL"})
+    driver = webdriver.Chrome(options=options)
+    driver.execute_cdp_cmd(
+        "Emulation.setDeviceMetricsOverride",
+        {"width": width, "height": 900, "deviceScaleFactor": 1, "mobile": False},
+    )
+    driver.get(path.resolve().as_uri())
+    driver.implicitly_wait(5)
+    return driver
+
+
+@pytest.fixture(scope="module")
+def full_page(tmp_path_factory):
+    path = tmp_path_factory.mktemp("page") / "report.html"
+    path.write_text(page_for(data_for()))
+    return path
+
+
+@pytest.fixture(scope="module")
+def grid_out(tmp_path_factory):
+    out = tmp_path_factory.mktemp("grid") / "out"
+    assert main(["run", GRID, "--snapshot", SNAPSHOT, "--out", str(out)]) == 0
+    return out
+
+
+def test_fr20_25_data_holds_the_stage_values_the_spots_and_the_line_styles():
+    data = data_for()
+    today, first, full = (data["stages"][key] for key in ("today", "first", "works"))
+    assert (today["score"], today["trips"], today["km"], today["park"]) == (10.0, 20, 0.0, 0)
+    assert (first["score"], first["km"], first["park"], first["places"]["school"]) == (
+        50.0,
+        4.0,
+        4,
+        1,
+    )
+    assert (full["score"], full["km"], full["park"], full["places"]["school"]) == (
+        90.0,
+        12.4,
+        10,
+        3,
+    )
+    assert data["rec"] == 1
+    assert data["joined"]["school"] == {"joined": 3, "unjoined": 1}
+    assert [item["w"] for item in data["steps"]] == [[], [0], [1], [2]]
+    assert [line["s"] for line in data["lines"]] == [0, 1, 3, 3, 4]
+    assert [line["w"] for line in data["lines"]] == [None, 0, 1, 2, None]
+    assert [(w["i"], w["street"], w["stage"]) for w in data["works"]] == [(0, "Ash Street", 1)]
+
+
+def test_fr20_25_spots_rank_by_the_trips_their_step_makes_safe():
+    spots = data_for()["spots"]
+    assert [(s["n"], s["street"], s["kind"], s["trips"]) for s in spots] == [
+        (1, "Forest Road", "signals", 6),
+        (2, "Bay Street", "zebra", 3),
+    ]
+    assert [s["owner"] for s in spots] == ["Transport for NSW", None]
+    assert [round(s["m"]) for s in spots] == [50, 40]
+
+
+def test_fr20_25_the_tfnsw_counts_and_lines_come_from_the_run():
+    data = data_for()
+    assert data["corridor_counts"] == {"covered": 2, "partly": 1, "missed": 3}
+    assert data["corridors"] == [{"id": "T1", "lines": [[[151.1, -33.9], [151.2, -33.9]]]}]
+    assert data["streets"] == [[[151.11, -33.91], [151.12, -33.9]]]
+
+
+def test_fr20_25_a_part_without_data_is_left_out_of_the_data():
+    data = data_for(corridor=None, marks=[])
+    assert data["corridors"] == []
+    assert data["places"] == []
+    assert "council" not in data
+    assert "wards" not in data
+
+
+def test_fr20_25_the_page_has_the_mock_section_ids_in_order_less_missing_parts(full_page):
+    ids = parse(full_page.read_text()).ids
+    kept = [name for name in ids if name in ORDER]
+    assert kept == ["top", "find", "spots", "streets", "plans", "ask", "how", "evidence"]
+    assert "wards" not in ids
+    assert "cost" not in ids
+    mock = parse(MOCK.read_text()).ids
+    assert [name for name in mock if name in ORDER] == ORDER
+
+
+def test_fr20_25_no_spots_data_shows_no_spots_section():
+    spotless = pick()
+    spotless["works"] = spotless["works"][:1]
+    spotless["steps"] = spotless["steps"][:2]
+    spotless["lines"] = spotless["lines"][:2]
+    ids = parse(page_for(data_for(options=[spotless]))).ids
+    assert "spots" not in ids
+    assert "streets" in ids
+
+
+def test_fr20_25_no_tfnsw_data_shows_no_plans_section():
+    ids = parse(page_for(data_for(corridor=None))).ids
+    assert "plans" not in ids
+    assert "spots" in ids
+
+
+def test_fr20_25_the_ids_of_the_page_are_unique(full_page):
+    ids = parse(full_page.read_text()).ids
+    assert len(ids) == len(set(ids))
+
+
+def test_fr20_25_the_root_tokens_equal_the_mock(full_page):
+    pattern = re.compile(r":root[^{]*\{[^}]*\}")
+    assert pattern.findall(full_page.read_text()) == pattern.findall(MOCK.read_text())
+
+
+def test_fr20_25_the_mock_banner_and_data_are_not_on_the_page(full_page):
+    text = full_page.read_text()
+    for word in MOCK_ONLY:
+        assert word not in text
+
+
+def test_fr20_25_the_hero_and_the_spot_story_show_this_runs_numbers(full_page):
+    driver = open_page(full_page)
+    try:
+
+        def read(name):
+            return driver.find_element(By.ID, name).text
+
+        assert read("t-km") == "12"
+        assert read("t-sch") == "3"
+        assert read("t-sch-l") == "of 3 schools with an all-ages ride"
+        assert read("t-park") == "10"
+        driver.find_element(By.CSS_SELECTOR, '[data-stage="1"]').click()
+        WebDriverWait(driver, 5).until(lambda _: read("t-km") == "4")
+        assert read("t-park") == "4"
+        assert "50%" in read("scoreline")
+        assert "of 20 short trips" in read("scoreline")
+        assert "2 short spots" in read("spot-h")
+        buttons = driver.find_elements(By.CSS_SELECTOR, "#spotlist li")
+        assert [b.text.split("\n")[1] for b in buttons] == ["Forest Road", "Bay Street"]
+        assert "TfNSW" in buttons[0].text
+        assert "cover 2 in full and 1 in part. They miss 3." in read("tf-text")
+        severe = [m for m in driver.get_log("browser") if m["level"] == "SEVERE"]
+        assert severe == []
+    finally:
+        driver.quit()
+
+
+def test_fr20_7_the_reading_time_is_the_word_count_over_200_rounded_up(full_page):
+    driver = open_page(full_page)
+    try:
+        words = int(driver.execute_script("return document.documentElement.dataset.words"))
+        shown = driver.find_element(By.ID, "readtime").text
+        assert words > 0
+        assert shown == f"{math.ceil(words / 200)}-minute read"
+    finally:
+        driver.quit()
+
+
+def test_fr20_25_the_run_writes_the_mock_page_for_the_test_grid(grid_out):
+    text = (grid_out / "report.html").read_text()
+    ids = parse(text).ids
+    assert [name for name in ids if name in ORDER] == ["top", "find", "ask", "how", "evidence"]
+    assert "{{" not in text
+    for word in MOCK_ONLY:
+        assert word not in text
+
+
+def test_fr20_18_every_old_part_sits_inside_the_closed_check_every_number(grid_out):
+    found = parse((grid_out / "report.html").read_text())
+    assert found.details_open is False
+    for name in ["opening", "options", "chart", "works", "quality", "appendix", "report-glossary"]:
+        assert found.inside.get(name) == "evidence", name
+
+
+def test_fr20_18_every_figure_link_still_resolves(grid_out):
+    text = (grid_out / "report.html").read_text()
+    found = parse(text)
+    links = set(re.findall(r'href="#(F\d+)"', text))
+    assert links
+    assert {found.inside.get(name) for name in links} == {"evidence"}
+
+
+def test_fr20_18_how_i_know_names_the_snapshot_date_and_the_modelled_ratings(grid_out):
+    text = (grid_out / "report.html").read_text()
+    part = text.split('id="how"')[1].split("<details")[0]
+    words = re.findall(r"[A-Za-z0-9]+", re.sub(r"<[^>]+>", " ", part))
+    assert "modelled" in part
+    assert "1 October 2026" in part
+    assert len(words) <= 120
