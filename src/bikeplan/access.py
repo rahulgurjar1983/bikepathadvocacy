@@ -5,6 +5,7 @@ from collections import defaultdict
 from pathlib import Path
 from typing import NamedTuple
 
+import networkx as nx
 import numpy as np
 import shapely
 from pyproj import Transformer
@@ -199,17 +200,28 @@ def bike_nodes(graph) -> tuple[list, list]:
     return sorted(legal), residential
 
 
-def node_tree(graph) -> tuple[list, cKDTree]:
+def main_part(graph) -> set:
+    undirected = nx.Graph()
+    undirected.add_edges_from((u, v) for u, v, data in graph.edges(data=True) if data["bike_ok"])
+    parts = list(nx.connected_components(undirected))
+    if not parts:
+        return set()
+    return min(parts, key=lambda part: (-len(part), min(part)))
+
+
+def node_tree(graph, only=None) -> tuple[list, cKDTree]:
     legal, _ = bike_nodes(graph)
+    if only is not None:
+        legal = [node for node in legal if node in only]
     points = [(graph.nodes[node]["x"], graph.nodes[node]["y"]) for node in legal]
     return legal, cKDTree(points)
 
 
-def snap_points(points: list, graph) -> tuple[list, list]:
-    legal, tree = node_tree(graph)
+def snap_points(points: list, graph, max_m: float = SNAP_M, only=None) -> tuple[list, list]:
+    legal, tree = node_tree(graph, only)
     if not legal or not points:
         return [None] * len(points), list(range(len(points)))
-    distances, indices = tree.query(points, distance_upper_bound=SNAP_M)
+    distances, indices = tree.query(points, distance_upper_bound=np.nextafter(max_m, np.inf))
     nodes = [
         legal[index] if np.isfinite(d) else None
         for d, index in zip(distances, indices, strict=True)

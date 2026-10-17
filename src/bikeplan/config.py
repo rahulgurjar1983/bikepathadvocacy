@@ -179,6 +179,7 @@ class Network:
     recommend_share: float = 0.9
     boundary_buffer_m: float = 200.0
     max_trip_km: float = 5.0
+    snap_max_m: float = 300.0
     corridor_match_m: float = 100.0
     corridor_cover_share: float = 0.8
     state_functions: tuple[str, ...] = ()
@@ -407,6 +408,7 @@ class ProfileReader(Reader):
             "recommend_share",
             "boundary_buffer_m",
             "max_trip_km",
+            "snap_max_m",
             "corridor_match_m",
             "corridor_cover_share",
             "state_functions",
@@ -444,6 +446,11 @@ class ProfileReader(Reader):
             if trip <= 0:
                 raise self.fail("network.max_trip_km", "must be above 0")
             found["max_trip_km"] = trip
+        if "snap_max_m" in data:
+            snap = float(self.number(data["snap_max_m"], "network.snap_max_m"))
+            if snap <= 0:
+                raise self.fail("network.snap_max_m", "must be above 0")
+            found["snap_max_m"] = snap
         if "corridor_match_m" in data:
             match = float(self.number(data["corridor_match_m"], "network.corridor_match_m"))
             if match <= 0:

@@ -7,7 +7,7 @@ import shapely
 from networkx.algorithms.approximation import steiner_tree
 from shapely.geometry import LineString, Point
 
-from bikeplan.access import SNAP_M, bike_nodes, snap_points, sort_key
+from bikeplan.access import bike_nodes, main_part, snap_points, sort_key
 from bikeplan.config import Network
 from bikeplan.network import first as first_value
 from bikeplan.rating import option_totals
@@ -36,7 +36,6 @@ UNPAVED = {
 }
 PATH_FACTOR = 0.5
 NEW_PATH_KEY = 100
-NO_BIKE_NODE = f"no bike-legal node within {SNAP_M:g} m"
 ISLAND = "no bike route to the main network"
 
 
@@ -116,6 +115,10 @@ def outside_route(full, group: dict, main: int, part: int) -> list | None:
     return [link_id(u, v, undirected[u][v]["key"]) for u, v in pairwise(path[1:-1])]
 
 
+def no_bike_node(network: Network) -> str:
+    return f"no bike-legal node within {network.snap_max_m:g} m"
+
+
 def join_places(graph, found: list[dict], entrances: list[dict], network: Network) -> Joined:
     wanted = sorted(
         (place for place in inside_boundary(graph, found) if place["type"] in network.place_types),
@@ -124,7 +127,10 @@ def join_places(graph, found: list[dict], entrances: list[dict], network: Networ
     full = graph
     graph = area_graph(graph, network)
     legal = set(bike_nodes(graph)[0])
-    nearest, _ = snap_points([(place["x"], place["y"]) for place in wanted], graph)
+    points = [(place["x"], place["y"]) for place in wanted]
+    main_nodes, _ = snap_points(points, graph, network.snap_max_m, main_part(full))
+    any_nodes, _ = snap_points(points, graph, network.snap_max_m)
+    nearest = [main or other for main, other in zip(main_nodes, any_nodes, strict=True)]
     joined, unjoined = [], []
     for place, near in zip(wanted, nearest, strict=True):
         node = entrance_node(place, entrances, legal)
@@ -133,7 +139,7 @@ def join_places(graph, found: list[dict], entrances: list[dict], network: Networ
             node, via = near, "nearest"
         base = {"id": place["osm_id"], "type": place["type"], "name": place["name"]}
         if node is None:
-            unjoined.append(base | {"reason": NO_BIKE_NODE})
+            unjoined.append(base | {"reason": no_bike_node(network)})
         else:
             joined.append(base | {"node": node, "via": via})
     group = components(graph)
