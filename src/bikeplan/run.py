@@ -40,6 +40,8 @@ from bikeplan.report import (
     check_leaks,
     figure_list,
     map_data,
+    model_data,
+    model_segment_rows,
     segment_rows,
     segments_text,
 )
@@ -287,7 +289,9 @@ def build_all(
         joined,
         profile.network.recommend_share,
         figures,
-        street_overlay(map_payload["segments"], rows),
+        street_overlay(
+            map_payload["segments"], rows, model_data(graph, model_segment_rows(graph, profile))
+        ),
         corridor,
     )
     figures = sorted([*figures, *option_figures], key=lambda item: int(item["id"][1:]))

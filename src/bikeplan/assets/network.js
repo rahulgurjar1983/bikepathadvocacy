@@ -24,6 +24,10 @@ document.addEventListener("DOMContentLoaded", function () {
     secondary: 5, secondary_link: 5, primary: 6, primary_link: 6, trunk: 7, trunk_link: 7,
   };
 
+  function rated(piece) {
+    return "model_all_ages" in piece ? piece.model_all_ages : piece.aaa;
+  }
+
   function describe(text) {
     const box = document.createElement("div");
     box.textContent = text;
@@ -40,7 +44,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  const streetLayers = data.streets.pieces.map(function (piece) {
+  const streetPieces = data.streets.model_pieces || data.streets.pieces;
+  const streetLayers = streetPieces.map(function (piece) {
     const layer = L.polyline(piece.lines, {
       pane: "streets",
       className: "street-line",
@@ -52,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
       layer,
       { "data-level": String(piece.lts) },
       (piece.name || "Unnamed street") + ", " + piece.highway + ". Stress level " + piece.lts +
-        ", modelled. " + (piece.aaa ? "Rated all ages." : "Not rated all ages."),
+        ", modelled. " + (rated(piece) ? "Rated all ages." : "Not rated all ages."),
     );
     return { layer: layer, piece: piece };
   });
@@ -62,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function refreshStreets() {
     for (const street of streetLayers) {
       const shown =
-        overlay.streets && levels[street.piece.lts] && (!overlay.aaa || street.piece.aaa);
+        overlay.streets && levels[street.piece.lts] && (!overlay.aaa || rated(street.piece));
       if (shown) street.layer.addTo(map);
       else street.layer.remove();
     }
