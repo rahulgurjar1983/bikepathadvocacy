@@ -620,19 +620,25 @@ def edition(
     return head, body, made, text
 
 
-def edition_page(region, head, body, figures, details) -> str:
+def edition_parts(region, body, figures, details) -> str:
     area = region.name.split(",")[0]
     terms = {area: "the council area this report covers.", **GLOSSARY, **TERMS}
-    author = f"<p>By {html.escape(region.report.author)}</p>" if region.report.author else ""
     appendix = "".join(entry(item) for item in figures)
+    return (
+        f"{body}{glossary_section(terms)}"
+        '<section id="appendix"><h2>How to check every number</h2>'
+        f"<p>This report uses the data snapshot of {snapshot_date(region)}.</p>"
+        f"{appendix}{details}</section>"
+    )
+
+
+def edition_page(region, head, body, figures, details) -> str:
+    author = f"<p>By {html.escape(region.report.author)}</p>" if region.report.author else ""
     return (
         '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width, initial-scale=1">'
         f"<title>Bike paths in {html.escape(region.name)}</title>"
         f"<style>{STYLE}</style>{head}</head><body>"
         f"<h1>Bike paths in {html.escape(region.name)}</h1>{author}"
-        f"{body}{glossary_section(terms)}"
-        '<section id="appendix"><h2>How to check every number</h2>'
-        f"<p>This report uses the data snapshot of {snapshot_date(region)}.</p>"
-        f"{appendix}{details}</section></body></html>\n"
+        f"{edition_parts(region, body, figures, details)}</body></html>\n"
     )
