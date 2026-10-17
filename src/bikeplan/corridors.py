@@ -9,7 +9,7 @@ from pyproj import Transformer
 from shapely.geometry import LineString
 from shapely.ops import transform
 
-from bikeplan.access import node_tree
+from bikeplan.access import SNAP_M, main_part, node_tree
 from bikeplan.config import Network
 from bikeplan.options import link_id
 
@@ -146,17 +146,25 @@ def make_route(graph, segment: Segment, path: list, found: nx.Graph) -> Route:
     )
 
 
-def indicative_routes(graph, corridors: Corridors) -> list[Route]:
+def snap_end(end, to_metres, trees: list, snap_max_m: float):
+    point = to_metres.transform(end.lon, end.lat)
+    for legal, tree in trees:
+        distance, index = tree.query(point)
+        if distance <= snap_max_m:
+            return legal[index]
+    return None
+
+
+def indicative_routes(graph, corridors: Corridors, snap_max_m: float = SNAP_M) -> list[Route]:
     to_metres = Transformer.from_crs(4326, graph.graph["crs"], always_xy=True)
-    legal, tree = node_tree(graph)
+    trees = [node_tree(graph, main_part(graph)), node_tree(graph)]
     found = shortest_graph(graph)
     routes = []
     for segment in corridors.segments:
-        ends = [
-            legal[tree.query(to_metres.transform(end.lon, end.lat))[1]]
-            for end in (segment.start, segment.end)
-        ]
+        ends = [snap_end(end, to_metres, trees, snap_max_m) for end in (segment.start, segment.end)]
         try:
+            if None in ends:
+                raise nx.NetworkXNoPath
             path = nx.dijkstra_path(found, *ends, weight="weight")
         except (nx.NetworkXNoPath, nx.NodeNotFound):
             routes.append(
@@ -289,7 +297,7 @@ def route_lines(graph, route: Route) -> list:
 def corridor_report(
     graph, corridors: Corridors, ratings: dict, option: dict, choice: dict, network: Network
 ) -> dict:
-    routes = indicative_routes(graph, corridors)
+    routes = indicative_routes(graph, corridors, network.snap_max_m)
     return {
         "source": {name: getattr(corridors, name) for name in SOURCE_FIELDS},
         **corridor_fit(ratings, routes, option, choice, network),

@@ -1999,3 +1999,15 @@ A narrow path gives "narrower than 2.5 m". An unpaved path gives "unpaved
 surface". None gives a car-road reason. The map, place counts and all-ages
 figures still use the confirmed rating; see the spec issue in `AGENT_NOTES.md`.
 Artifact: `artifacts/W1.1/reasons.json`
+
+### M1.6
+
+```
+uv run --frozen pytest -q tests/test_snap_main_part.py
+uv run --frozen python artifacts/M1.6/prove.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 artifacts/M1.6/after.json
+```
+
+Expect: `no_route` and `unjoined` are empty; Matraville Public School,
+Bayside High School and Arncliffe Public School are `joined`; T2 and T3 have
+nodes. The run reads the Bayside snapshot dated 2026-10-01 with shipped settings.
+Artifact: `artifacts/M1.6/after.json`
