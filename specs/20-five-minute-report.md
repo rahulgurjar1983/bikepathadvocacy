@@ -67,7 +67,7 @@ This spec wins over specs 13, 15, 16, 17 and 19 for the report page: its order, 
 | FR-20.21 | Access. axe-core, pinned by version and sha256, run in headless Chromium finds no violation of impact "serious" or "critical" at load, with a place card open, and with a street card open. The keyboard reaches the search, the stage buttons, Play, the map zoom, each spot and each ward card, with a visible focus ring. | MUST |
 | FR-20.22 | Size and proof. `report.html` stays at most 4 MB and opens with no network. `bikeplan shots <report.html> --out <folder>` writes `phone.png` at 390 by 844 and `desktop.png` at 1440 by 900 of the page at load, in headless Chromium with network calls blocked. The release script, which is operator plumbing under FR-0.31, runs it on each council build, puts the files in the release as `<council>-phone.png` and `<council>-desktop.png`, and the index links them. | MUST |
 | FR-20.24 | Council plan first. When the region has a council plan file, the tool builds one more option, "Council plan first": the Steiner tree of FR-17.2 with each link within `network.corridor_match_m` of a council plan route weighted by `network.council_plan_factor`, default 0.5, times its length and stress factor. It is compared, picked and shown under the FR-17.8 rules like the others. On release `v2026.10.16-pr191` my pick ran along 35% of the council plan's 95 km, so a councillor needs to see the option that follows council's own routes. | MUST |
-| FR-20.23 | `checks.html` measures FR-20.7, FR-20.8, FR-20.19, FR-20.20, FR-20.21 and FR-20.22 on the release's own page, each with the measured value and its limit, in the form "words at load: <n> of at most 1,000, met". | MUST |
+| FR-20.23 | `checks.html` measures FR-20.7, FR-20.8, FR-20.19, FR-20.20, FR-20.21, FR-20.22 and FR-20.25 on the release's own page, each with the measured value and its limit, in the form "words at load: <n> of at most 1,000, met". | MUST |
 
 ### Rulings on blocked rows
 
@@ -112,7 +112,13 @@ These rulings answer the loop's open input asks of 16 and 17 October 2026.
 
 ## 6. Design target
 
-`specs/20-design/` holds the operator's design mock of 17 October 2026, built from the data of release `v2026.10.16-pr191`: `mock.html` (the page with its data slots left as `{{DATA_JSON}}`, `{{LEAFLET_CSS}}` and `{{LEAFLET_JS}}`) and screenshots of the hero on desktop, phone and dark mode, the spots, the street changes and a place card. The page the tool writes matches its layout, colour tokens, type scale, light and dark themes, cross-section drawings and behaviour. The tool may reuse its CSS and JavaScript. Every number and name comes from the run, never from the mock. The mock passed axe-core 4.14.0 with no violation at 390 px, with a place card open, and measured 961 words and a Flesch-Kincaid grade of 2.7 by the FR-20.7 rules.
+`specs/20-design/` holds the operator's design mock of 17 October 2026, built from the data of release `v2026.10.16-pr191`: `mock.html` (the page with its data slots left as `{{DATA_JSON}}`, `{{LEAFLET_CSS}}` and `{{LEAFLET_JS}}`), `DATA.md` (the data it reads) and screenshots of the hero on desktop, phone and dark mode, the spots, the street changes and a place card. The mock passed axe-core 4.14.0 with no violation at 390 px, with a place card open, and measured 961 words and a Flesch-Kincaid grade of 2.7 by the FR-20.7 rules. The owner ruled on 17 October 2026 that every release's report must follow it: "much better in terms of style, content, structure, everything".
+
+| ID | Requirement | Priority |
+|----|-------------|----------|
+| FR-20.25 | The report page is the design mock. The tool keeps a copy of `mock.html` as its page template and fills the data slot with the object of `DATA.md`, built from this run's outputs. The page keeps the mock's section IDs in the mock's order, its `:root` colour tokens with their light and dark values, its type scale, its cross-section drawings and its scripts. A part whose data the run does not yet make is left out of the page with its section, never filled from the mock or from an example. The four stand-ins that `DATA.md` names come from the run. A change to the template that differs from the mock needs a reason in AGENT_NOTES.md. | MUST |
+
+Test plan: FR-20.25: the test-grid page has the mock's section IDs in order, less any part whose data the run lacks, and the mock's `:root` tokens with equal values; a run with no spots data shows no spots section; no number from the mock's data appears on the test-grid page.
 
 ## 7. Loop work
 
