@@ -18,6 +18,13 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Spec issues
 
+### W1.1 one rating on the map conflicts with saved FR-15.5 tests
+
+- FR-20.1 asks the map, place counts and all-ages figures to use the modelled rating.
+- Main tests say the opposite. `test_fr15_5_stress_export_does_not_count_unknown_paths_as_confirmed` needs the map `aaa` false and `km_aaa` 0 for an unknown-width path. `test_fr15_5_literal_model_scores_never_claim_confirmed_distance` and the confirmed place scenario also hold.
+- Prove it: `uv run pytest tests/test_safety_evidence.py -k "unknown_paths or literal_model"` passes on `origin/main`, so a change to the map rating breaks them.
+- Needed input: a spec 00 or spec 20 ruling that retires or amends those FR-15.5 cases. Shipped in W1.1: the path reason part only. Left: the map, the place counts, the all-ages figures and the F2 label.
+
 ### Q1.6 curve chooser and option-following views (resolved)
 
 Resolved by the spec 20 ruling (row Q1.6 in its rulings table): one record,
