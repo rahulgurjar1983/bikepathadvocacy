@@ -77,6 +77,7 @@ These rulings answer the loop's open input asks of 16 and 17 October 2026.
 |-----|--------|
 | Q1.6 | Spec 20 retires the curve chooser and the option-following views. One record drives the page: my pick at its stage. Mark the AGENT_NOTES spec issue resolved by this ruling, ship PR 192 and close the row. |
 | Q1.10 | `test_fr2_1_snapshot_fetch_writes_every_file_and_the_manifest` may read the expected snapshot ID and OSM date from the region file, and its exact file list may add the files that FR-20.9 and FR-18.6 add to a snapshot, after the old names in their old order. All its other checks stay. |
+| Q1.10 | On 17 October 2026 the operator found that every release since P11 used snapshot 2026-10-01, which holds no road segments, speed zones or elevation. Q1.10 now runs right after W1.0 and fetches the five adapters only; Q1.12 adds the backdrop and corridor files later. All 33 region files take the new `osm_date` so FR-18.1 still holds; only Bayside is fetched. |
 | Q1.10, G1.4 | The `snapshots` workflow now skips a council only when the manifest for its region file's current snapshot exists, so a new `osm_date` fetches a new snapshot. A loop turn may start it with `gh workflow run snapshots.yml -f ref=<branch> -f councils=<id>`, wait for it within its turn limit, and copy the manifest. |
 | M1.5 | Outside works carry the label "outside Bayside" with no neighbouring council name. The name part of FR-17.1 is retired. |
 | C1.2 and other spec 16 rows | Paused behind the W rows. Spec 20 gives councillors and residents their place, street and ward views. |
