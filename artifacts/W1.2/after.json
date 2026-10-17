@@ -1,63 +1,63 @@
 {
   "options": {
     "calm": {
-      "blockers": 14,
+      "blockers": 9,
       "by_fix": {
         "bike_walk_signals": 2,
-        "short_path_crossing": 1
+        "short_path_crossing": 9
       },
       "ceiling": 100.0,
-      "no_fix_streets": 14,
-      "parking_spaces": 0,
-      "score_all_built": 44.79830148619958,
-      "site_check": 1,
-      "spot_m": 20,
-      "spots": 3,
+      "no_fix_streets": 9,
+      "parking_spaces": 64,
+      "score_all_built": 59.97876857749469,
+      "site_check": 9,
+      "spot_m": 433,
+      "spots": 11,
       "state_owned": 2
     },
     "mesh": {
-      "blockers": 67,
+      "blockers": 48,
       "by_fix": {
         "raised_zebra_crossing": 1,
-        "short_path_crossing": 4
+        "short_path_crossing": 89
       },
       "ceiling": 100.0,
-      "no_fix_streets": 67,
-      "parking_spaces": 8,
-      "score_all_built": 12.738853503184714,
-      "site_check": 4,
-      "spot_m": 124,
+      "no_fix_streets": 48,
+      "parking_spaces": 476,
+      "score_all_built": 36.19957537154989,
+      "site_check": 89,
+      "spot_m": 4836,
+      "spots": 90,
+      "state_owned": 36
+    },
+    "separated": {
+      "blockers": 9,
+      "by_fix": {
+        "short_path_crossing": 5
+      },
+      "ceiling": 100.0,
+      "no_fix_streets": 9,
+      "parking_spaces": 32,
+      "score_all_built": 59.97876857749469,
+      "site_check": 5,
+      "spot_m": 277,
       "spots": 5,
       "state_owned": 0
     },
-    "separated": {
-      "blockers": 12,
-      "by_fix": {
-        "short_path_crossing": 1
-      },
-      "ceiling": 100.0,
-      "no_fix_streets": 12,
-      "parking_spaces": 0,
-      "score_all_built": 51.27388535031847,
-      "site_check": 1,
-      "spot_m": 5,
-      "spots": 1,
-      "state_owned": 0
-    },
     "shortest": {
-      "blockers": 35,
+      "blockers": 24,
       "by_fix": {
         "raised_zebra_crossing": 1,
-        "short_path_crossing": 2
+        "short_path_crossing": 35
       },
       "ceiling": 100.0,
-      "no_fix_streets": 35,
-      "parking_spaces": 8,
-      "score_all_built": 8.067940552016985,
-      "site_check": 2,
-      "spot_m": 72,
-      "spots": 3,
-      "state_owned": 0
+      "no_fix_streets": 24,
+      "parking_spaces": 220,
+      "score_all_built": 26.11464968152866,
+      "site_check": 35,
+      "spot_m": 1971,
+      "spots": 36,
+      "state_owned": 9
     }
   },
   "row": "W1.2"
