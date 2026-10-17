@@ -1986,3 +1986,16 @@ shares with the selected curve package, each counted once, and the
 projects that have no saved plan sheet. The test-grid report shows the empty
 state.
 Artifact: `artifacts/Q1.6/option-view.json`
+
+### W1.1
+
+```
+uv run --frozen pytest -q tests/test_path_reasons.py
+uv run --frozen python artifacts/W1.1/collect_reasons.py
+```
+
+Expect: A cycleway that crosses a four-lane road gives "crosses a busy road".
+A narrow path gives "narrower than 2.5 m". An unpaved path gives "unpaved
+surface". None gives a car-road reason. The map, place counts and all-ages
+figures still use the confirmed rating; see the spec issue in `AGENT_NOTES.md`.
+Artifact: `artifacts/W1.1/reasons.json`

@@ -5,8 +5,9 @@ import networkx as nx
 from bikeplan.access import sort_key
 from bikeplan.fit import disruption_counts, disruption_score
 from bikeplan.network import first
-from bikeplan.options import link_id
+from bikeplan.options import is_unpaved, link_id
 from bikeplan.rating import option_totals, option_trips
+from bikeplan.stress import FOOT_PATHS, OFF_ROAD_FACILITIES, path_min_width
 
 COUNTS = ("parking_spaces", "lane_km", "speed_km", "path_km")
 FIX_WORDS = {
@@ -87,7 +88,25 @@ def fit_reasons(fit: dict | None) -> list[str]:
     return []
 
 
-def link_reasons(graph, table: dict, fits: dict) -> dict:
+def is_path(data: dict) -> bool:
+    return (
+        data.get("bike_facility") in OFF_ROAD_FACILITIES or first(data.get("highway")) in FOOT_PATHS
+    )
+
+
+def path_reasons(data: dict, score: dict | None, profile) -> list[str]:
+    found: list[str] = []
+    width = data.get("width_tag_m")
+    if width is not None and width < path_min_width(profile):
+        found.append(f"narrower than {path_min_width(profile):g} m")
+    if is_unpaved(data):
+        found.append("unpaved surface")
+    if score is not None and score["lts"] > 1:
+        found.append("crosses a busy road")
+    return found
+
+
+def link_reasons(graph, table: dict, fits: dict, scores: dict | None = None, profile=None) -> dict:
     found: dict = {}
     for key, link in table.items():
         if link["all_ages"]:
@@ -95,8 +114,13 @@ def link_reasons(graph, table: dict, fits: dict) -> dict:
         a, b, k = key
         texts: list[str] = []
         for edge in ((a, b, k), (b, a, k)):
-            if graph.has_edge(*edge):
-                texts += fit_reasons(fits.get(graph.edges[edge]["segment_id"]))
+            if not graph.has_edge(*edge):
+                continue
+            data = graph.edges[edge]
+            if scores is not None and is_path(data):
+                texts += path_reasons(data, scores.get(edge), profile)
+            else:
+                texts += fit_reasons(fits.get(data["segment_id"]))
         if texts:
             found[key] = list(dict.fromkeys(texts))
     return found
