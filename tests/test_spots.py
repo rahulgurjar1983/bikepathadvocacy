@@ -185,13 +185,7 @@ def test_fr20_2_a_short_piece_beside_a_link_a_work_fixes_becomes_a_spot():
     assert fixes[2, 3, 0]["fix"] == "road_diet"
     assert fixes[1, 2, 0]["fix"] == "short_path_crossing"
     assert fixes[1, 2, 0]["spot"] is True
-
-
-def test_fr20_2_a_short_piece_beside_a_no_fix_link_stays_a_blocker():
-    graph, table, fits = along_world(80.0, 2.5)
-    table[0, 1, 0] = row(all_ages=False, length=80.0)
     table[2, 3, 0] = row(all_ages=False, no_fix=True, length=80.0)
-    fits["calm-w"] = {"status": "fix", "fix": "road_diet"}
     assert (1, 2, 0) not in link_fixes(graph, table, fits, PROFILE, WEIGHTS)
 
 
