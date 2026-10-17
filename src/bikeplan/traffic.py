@@ -95,7 +95,7 @@ def take_way_function(graph, profile: Profile, frame) -> None:
     source = frame["adt_source"].iloc[0] if len(frame) else None
     for _, _, data in graph.edges(data=True):
         way = covered.get(data["osm_way"])
-        if way and "road_function" not in data:
+        if way:
             name = min(way, key=lambda function: (-way[function], function))
             data["adt"] = profile.road_functions[name].value
             data["adt_source"] = source
