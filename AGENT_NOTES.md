@@ -18,7 +18,9 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Spec issues
 
-### W1.1 one rating on the map conflicts with saved FR-15.5 tests
+### W1.1 one rating on the map conflicts with saved FR-15.5 tests (resolved)
+
+Resolved by the spec 20 ruling: modelled fields sit beside the confirmed ones. `street_overlay` takes `model` and adds `model_pieces` and `model_km`; `network.js` reads them.
 
 - FR-20.1 asks the map, place counts and all-ages figures to use the modelled rating.
 - Main tests say the opposite. `test_fr15_5_stress_export_does_not_count_unknown_paths_as_confirmed` needs the map `aaa` false and `km_aaa` 0 for an unknown-width path. `test_fr15_5_literal_model_scores_never_claim_confirmed_distance` and the confirmed place scenario also hold.

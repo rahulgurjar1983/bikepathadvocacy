@@ -69,16 +69,19 @@ def number(value, places_shown):
     return round(value) if places_shown == 0 else round(value, places_shown)
 
 
-def street_overlay(pieces: list[dict], rows: list[list]) -> dict:
+def street_overlay(pieces: list[dict], rows: list[list], model: dict | None = None) -> dict:
     metres = {str(level): 0.0 for level in (1, 2, 3, 4)} | {"aaa": 0.0}
     for row in rows:
         metres[str(row[2])] += float(row[1])
         if row[3]:
             metres["aaa"] += float(row[1])
-    return {
+    found = {
         "pieces": [{key: value for key, value in item.items() if key != "fix"} for item in pieces],
         "km": {key: round(value / 1000, 3) for key, value in metres.items()},
     }
+    if model is not None:
+        found |= {"model_pieces": model["pieces"], "model_km": model["km"]}
+    return found
 
 
 def option_data(item: dict) -> dict:

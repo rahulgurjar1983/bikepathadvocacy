@@ -1996,9 +1996,19 @@ uv run --frozen python artifacts/W1.1/collect_reasons.py
 
 Expect: A cycleway that crosses a four-lane road gives "crosses a busy road".
 A narrow path gives "narrower than 2.5 m". An unpaved path gives "unpaved
-surface". None gives a car-road reason. The map, place counts and all-ages
-figures still use the confirmed rating; see the spec issue in `AGENT_NOTES.md`.
+surface". None gives a car-road reason.
 Artifact: `artifacts/W1.1/reasons.json`
+
+```
+uv run --frozen pytest -q tests/test_one_rating.py
+uv run --frozen bikeplan report tests/fixtures/test-grid/region.yaml --snapshot tests/fixtures/test-grid/snapshot --out /tmp/w11
+```
+
+Expect: the street overlay in `report.html` holds `model_pieces` with a
+`model_all_ages` flag and a `model_km` total beside the confirmed pieces. The
+all-ages switch on the map follows the modelled flag. F2 is labelled as the
+confirmed count. The option steps and place counts already read the modelled
+rating. Artifact: `artifacts/W1.1/one-rating.json`
 
 ### M1.6
 
