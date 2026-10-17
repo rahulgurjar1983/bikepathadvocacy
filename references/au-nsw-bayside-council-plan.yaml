@@ -1,0 +1,20 @@
+title: Bayside's Priority Cycleway Network
+document: Bayside Bike Plan 2024, Figure 2, page 17
+publisher: Bayside Council
+url: https://www.bayside.nsw.gov.au/sites/default/files/2024-08/Cycleway.pdf
+sha256: c2936eb7537438bcac4365513b35dc6d1e99eeb4f2b695c29b803998016e7732
+read_on: 2026-10-17
+file: au-nsw-bayside-council-plan.geojson
+routes: 24
+id_field: id
+name_field: name
+method: >-
+  The PDF draws each route as a vector line in its legend colour. pdftocairo turned the page into SVG
+  and svgelements gave each line in page points. The council boundary line in the PDF was fitted to
+  the OpenStreetMap boundary of snapshot au-nsw-bayside 2026-10-01 by a least-squares affine transform
+  with nearest-point matching; the median gap is 3.9 m and the 90th percentile 10.9 m. Each route was
+  moved by the same transform into MGA zone 56, simplified to 5 m and stored in WGS84 to 5 decimals.
+  Routes NS1 and EW3 share one colour and were told apart by place. The aspirational dashed links are left out.
+limits: >-
+  The drawn line is about 105 m wide at the map's scale, so a route is indicative. Council has not
+  published the routes as data.
