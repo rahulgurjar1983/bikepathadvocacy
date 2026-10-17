@@ -183,7 +183,7 @@ def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list
     roads = link_roads(
         graph, profile.network.state_functions, profile.fit.speed_approval_body.value
     )
-    reasons = link_reasons(graph, table, fits)
+    reasons = link_reasons(graph, table, fits, scores, profile)
 
     def point(node):
         data = graph.nodes[node]
