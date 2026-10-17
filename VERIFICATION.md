@@ -2022,6 +2022,7 @@ uv run --frozen python artifacts/M1.7/prove.py regions/au-nsw-bayside.yaml data/
 Expect: the tests pass. For Forest Road, Wentworth Avenue, Bay Street and
 Croydon Road, `owned` is above zero, so the blockers name Transport for NSW.
 The run reads the Bayside snapshot dated 2026-10-01 with shipped settings.
+Part 2 adds `test_fr17_14_a_link_matching_a_crossing_local_road_still_takes_its_way_function`.
 Artifact: `artifacts/M1.7/after.json`
 
 ### W1.2
