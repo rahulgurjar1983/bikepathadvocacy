@@ -1760,9 +1760,9 @@ uv run --frozen pytest -q tests/test_snapshot_set.py
 
 Expect: the command skips each council whose manifest in `snapshots/` has the Bayside date and adapters, and fetches, verifies and publishes the rest. It exits 1 and names the councils that failed, and a rerun resumes from the cached tiles. The tests pass. Every published council passes the manifest check; the check that all 33 are published moves to the G1.5 proof.
 
-Limits: 13 councils are published. The `snapshots` workflow fetches the rest. Bayside's refetch moves to Q1.10.
+Limits: the 12 council manifests dated 2026-10-01 were removed by Q1.10 because the region files moved to 2026-10-19 and the owner cancelled those councils. Bayside is the one published council.
 
-Artifact: `snapshots/au-nsw-randwick/2026-10-01/manifest.json`
+Artifact: `regions/sets/greater-sydney.yaml`
 
 ### G1.6
 
