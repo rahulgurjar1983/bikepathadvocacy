@@ -365,3 +365,38 @@ def test_fr20_18_how_i_know_names_the_snapshot_date_and_the_modelled_ratings(gri
 def test_fr20_25_missing_cost_data_leaves_out_the_cost_tile(full_page):
     found = parse(full_page.read_text())
     assert "t-cost" not in found.ids
+
+
+def test_fr20_25_the_map_key_spot_is_an_unnumbered_dot(full_page):
+    driver = open_page(full_page)
+    try:
+        key = driver.find_element(By.CSS_SELECTOR, ".legend .dot")
+        assert key.text == ""
+    finally:
+        driver.quit()
+
+
+def test_fr20_18_a_place_count_links_to_its_own_figure_entry(grid_out):
+    text = (grid_out / "report.html").read_text()
+    want = re.search(r'<article id="(F\d+)"><h3>F\d+: Places of type school, joined', text)[1]
+    driver = open_page(grid_out / "report.html")
+    try:
+        link = driver.find_element(By.XPATH, "//a[contains(@class,'fig')][contains(., 'school')]")
+        assert link.get_attribute("href").endswith(f"#{want}")
+    finally:
+        driver.quit()
+
+
+def test_fr20_18_following_a_figure_link_opens_the_closed_part_at_the_entry(grid_out):
+    text = (grid_out / "report.html").read_text()
+    want = re.search(r'<article id="(F\d+)"><h3>F\d+: Places of type school, joined', text)[1]
+    driver = open_page(grid_out / "report.html")
+    try:
+        assert driver.execute_script("return document.getElementById('evidence').open") is False
+        driver.find_element(By.XPATH, "//a[contains(@class,'fig')][contains(., 'school')]").click()
+        WebDriverWait(driver, 10).until(
+            lambda d: d.execute_script("return document.getElementById('evidence').open")
+        )
+        assert driver.find_element(By.ID, want).is_displayed()
+    finally:
+        driver.quit()
