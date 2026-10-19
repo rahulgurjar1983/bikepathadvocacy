@@ -317,6 +317,7 @@ def build_all(
             + credits_section(summary["credits"])
             + rebuild_section(summary),
         ),
+        figures,
     )
     outputs = {
         "access_homes.geojson": dump(

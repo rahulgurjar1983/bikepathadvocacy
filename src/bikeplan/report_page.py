@@ -226,7 +226,17 @@ def credits(data: dict) -> str:
     return html.escape(text)
 
 
-def five_minute_page(region, data: dict, head: str, inner: str) -> str:
+def place_figures(figures) -> dict:
+    found = {}
+    for item in figures:
+        match = re.fullmatch(r"Places of type (\w+), joined", item["label"])
+        if match:
+            found[match[1]] = item["id"]
+    return found
+
+
+def five_minute_page(region, data: dict, head: str, inner: str, figures=()) -> str:
+    data = data | {"figs": place_figures(figures)}
     area_full = region.name.split(",")[0]
     area = area_full.removesuffix(" Council")
     day = date.fromisoformat(region.snapshot.osm_date[:10])

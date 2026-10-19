@@ -239,7 +239,7 @@ footer{padding:36px 0 60px;color:var(--ink-3);font-size:var(--step--1)}
         <span><i class="sw today"></i>All ages today</span>
         <span><i class="sw plan"></i>All ages with the plan</span>
         <span><i class="sw notyet"></i>Not yet all ages</span>
-        <span><i class="dot">1</i>Spot that needs a crossing</span>
+        <span><i class="dot"></i>Spot that needs a crossing</span>
       </div>
       <button type="button" class="touchhint" id="touchhint">Tap to move the map</button>
     </div>
@@ -486,7 +486,7 @@ document.getElementById("play").addEventListener("click",()=>{
 setStage(2);
 const listAnd=l=>l.length>1?l.slice(0,-1).join(", ")+" and "+l[l.length-1]:l[0]||"";
 const LT=[["school","school","schools"],["station","station","stations"],["town_centre","town centre","town centres"]];
-const lp=LT.filter(t=>joined[t[0]]&&joined[t[0]].joined).map(t=>{const n=joined[t[0]].joined;return '<a class="fig" href="#evidence">'+n+' '+(n===1?t[1]:t[2])+'</a>';});
+const lp=LT.filter(t=>joined[t[0]]&&joined[t[0]].joined).map(t=>{const n=joined[t[0]].joined;const f=(D.figs||{})[t[0]];return '<a class="fig" href="#'+(f||"evidence")+'">'+n+' '+(n===1?t[1]:t[2])+'</a>';});
 document.getElementById("lede").innerHTML=lp.length?"I joined "+listAnd(lp)+" with calm streets and protected bike lanes.":"I looked for calm streets and protected bike lanes between the places that matter.";
 
 function toggle(btn,layer){const on=btn.getAttribute("aria-pressed")!=="true";btn.setAttribute("aria-pressed",String(on));if(on)layer.addTo(map);else map.removeLayer(layer);}
