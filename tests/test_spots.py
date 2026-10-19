@@ -244,7 +244,7 @@ def cycleway_world(**extra):
             u,
             v,
             0,
-            **road("path", highway="cycleway", bike_facility="track", length_m=60.0, **extra),
+            **road("path", highway="cycleway", bike_facility="off_road", length_m=60.0, **extra),
         )
     table = {(0, 3, 0): row(no_fix=True, length=60.0)}
     return graph, table, {"path": {"status": "no_fit"}}
