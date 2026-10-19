@@ -2054,18 +2054,14 @@ Artifact: `artifacts/W1.2/after.json`
 ### W1.0
 
 ```sh
-uv run --frozen pytest -q tests/test_report_page.py
-git fetch origin
-git worktree add --detach /tmp/bikepath-W1.0-input-main origin/main
-uv run --frozen python artifacts/W1.0/reproduce.py /tmp/bikepath-W1.0-input-main
+uv run --frozen pytest -q tests/test_report_page.py tests/test_report.py
+uv run --frozen bikeplan run regions/test-grid.yaml --snapshot tests/fixtures/test-grid/snapshot --out /tmp/w10run
 ```
 
-Expect: the page tests pass. The probe runs the old number-link test on
-fresh main, where it passes, then with the page code, where it fails.
-The date and numbered map key in the mock cause that failure. The probe
-restores the worktree. This proves an input clash, not a finished row or
-a Bayside release. See the W1.0 spec issue in `AGENT_NOTES.md`. The PR stays
-a draft until the old page-text check and the new page rule agree.
+Expect: all tests pass. The page has an unnumbered key dot, and each
+school, station and town centre count links to its own figure entry
+(`#F78` for joined schools). Following it opens "Check every number".
+The other page numbers still link to the closed part; they need figures
+of their own, so the row stays open.
 
-Artifact: `artifacts/W1.0/input-blocker.json`, `artifacts/W1.0/base.txt`,
-`artifacts/W1.0/page.txt` and `artifacts/W1.0/page.patch`.
+Artifact: `artifacts/W1.0/report.html`.

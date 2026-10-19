@@ -18,28 +18,10 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Spec issues
 
-### W1.0 the mock conflicts with the old number check (open)
+### W1.0 the mock conflicts with the old number check (resolved)
 
-The new page keeps the mock's date and numbered map key. The old test
-`test_fr13_2_no_number_outside_a_figure_link_or_the_appendix` rejects both.
-It reads all text before the old appendix, even text outside the closed
-"Check every number". Its links must point to a figure ID, while the mock
-links to the closed part. A date has no such figure in the saved list.
-
-Fresh main proof: run `git fetch origin`, then
-`git worktree add --detach /tmp/bikepath-W1.0-input-main origin/main` and
-`uv run --frozen python artifacts/W1.0/reproduce.py /tmp/bikepath-W1.0-input-main`.
-The old test passes on main. With just the saved page code it fails on
-the date and key. The probe restores the worktree when it ends.
-`artifacts/W1.0/input-blocker.json` holds the base hash and exit codes;
-`base.txt` and `page.txt` in that folder hold the logs.
-
-Needed input: align that old page-text check with spec 20 on main, or give
-an explicit rule to scope it to the old page in the closed part. Keep
-the figure IDs, values, recipes and hashes checked. Spec 20 allows tests
-of moved page parts to look there, but the turn rules keep other old test
-bodies intact, and spec 20 also says figure tests stay. This turn changed
-no old test or input. PR 209 stays a draft and W1.0 stays open.
+The 19 October ruling in spec 20 allows the narrow date change to the old
+test. The key spot is now an unnumbered dot.
 
 ### W1.0 template changes
 
