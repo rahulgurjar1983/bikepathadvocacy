@@ -221,21 +221,15 @@ def chain_world(lengths):
     return graph, table, fits
 
 
-def test_fr20_2_two_short_pieces_in_a_row_between_calm_links_are_both_spots():
+def test_fr20_2_two_short_pieces_in_a_row_between_calm_links_are_both_spots_else_blockers():
     graph, table, fits = chain_world([40.0, 40.0])
     fixes = link_fixes(graph, table, fits, PROFILE, WEIGHTS)
     assert {key: fixes[key]["fix"] for key in fixes} == {
         (1, 2, 0): "short_path_crossing",
         (2, 3, 0): "short_path_crossing",
     }
-
-
-def test_fr20_2_pieces_in_a_row_longer_than_the_spot_limit_together_stay_blockers():
     graph, table, fits = chain_world([60.0, 60.0])
     assert link_fixes(graph, table, fits, PROFILE, WEIGHTS) == {}
-
-
-def test_fr20_2_pieces_in_a_row_with_an_open_end_stay_blockers():
     graph, table, fits = chain_world([40.0, 40.0])
     table[3, 4, 0] = row(all_ages=False, no_fix=True, length=80.0)
     assert link_fixes(graph, table, fits, PROFILE, WEIGHTS) == {}
