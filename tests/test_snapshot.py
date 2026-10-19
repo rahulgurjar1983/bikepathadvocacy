@@ -386,8 +386,10 @@ def test_fr2_1_snapshot_fetch_writes_every_file_and_the_manifest(routed_overpass
     assert code == 0
     manifest = json.loads((out / "manifest.json").read_text())
     assert manifest["region"] == "au-nsw-bayside"
-    assert manifest["snapshot_id"] == "2026-10-01"
-    assert manifest["osm_date"] == "2026-10-01T00:00:00Z"
+    osm_date = re.search(r'osm_date: "([^"]+)"', Path("regions/au-nsw-bayside.yaml").read_text())[1]
+    assert manifest["snapshot_id"] == osm_date[:10]
+    assert manifest["snapshot_id"] != "2026-10-01"
+    assert manifest["osm_date"] == osm_date
     assert manifest["config_hash"]
     assert manifest["created_at"].endswith("Z")
     names = [entry["name"] for entry in manifest["files"]]
@@ -461,3 +463,12 @@ def test_fr2_9_manifest_paths_stay_inside_the_snapshot_folder(
         "places.json",
     ]
     assert main(["snapshot", "verify", "cache/snap"]) == 0
+
+
+def test_fr18_2_every_region_file_holds_the_refreshed_snapshot_date():
+    dates = {}
+    for path in sorted(Path("regions").glob("au-nsw-*.yaml")):
+        dates[path.stem] = re.search(r"osm_date: ['\"]([^'\"]+)['\"]", path.read_text())[1]
+
+    assert len(dates) == 33
+    assert set(dates.values()) == {"2026-10-19T00:00:00Z"}
