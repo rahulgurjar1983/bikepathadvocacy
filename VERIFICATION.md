@@ -2010,6 +2010,14 @@ all-ages switch on the map follows the modelled flag. F2 is labelled as the
 confirmed count. The option steps and place counts already read the modelled
 rating. Artifact: `artifacts/W1.1/one-rating.json`
 
+```
+uv run --frozen pytest -q tests/test_one_rating.py -k never_falls_back
+```
+
+Expect: the five-minute page draws its streets from `model_pieces` only. With
+confirmed pieces and no modelled pieces it draws none.
+Artifact: `artifacts/W1.1/one-rating.json`
+
 ### M1.6
 
 ```
