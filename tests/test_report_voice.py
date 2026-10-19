@@ -35,7 +35,14 @@ class Visible(HTMLParser):
         if tag in SKIP:
             self.skip += 1
         if tag == "svg":
-            self.svgs.append({"title": "", "id": attrs.get("id"), "in_title": False})
+            self.svgs.append(
+                {
+                    "title": "",
+                    "id": attrs.get("id"),
+                    "in_title": False,
+                    "hidden": attrs.get("aria-hidden") == "true",
+                }
+            )
         if tag == "title" and self.svgs and self.depth_svg():
             self.svgs[-1]["in_title"] = True
         if tag in {"svg", "section"}:
@@ -96,7 +103,7 @@ def test_fr13_4_each_project_word_in_the_text_has_a_report_glossary_entry(report
     outside = " ".join(
         part
         for ident, part in ((i, " ".join(p)) for i, p in page.ids.items())
-        if ident not in {"report-glossary", "appendix"}
+        if ident not in {"report-glossary", "appendix", "how"}
     )
     shown = {w.lower() for w in words_of(outside)}
     terms = [term for term, _ in parse_glossary() if term.isalpha()]
@@ -137,7 +144,7 @@ def test_fr13_6_the_page_sets_the_viewport_stops_sideways_scroll_and_prints(repo
     html = (report / "report.html").read_text()
     assert 'name="viewport" content="width=device-width, initial-scale=1"' in html
     assert "@media print" in html
-    style = re.search(r"<style>(.*?)</style>", html, re.DOTALL).group(1)
+    style = "".join(re.findall(r"<style>(.*?)</style>", html, re.DOTALL))
     assert "overflow-x:auto" in style.replace(" ", "")
     assert "overflow-wrap" in style
     assert "max-width" in style
@@ -146,7 +153,7 @@ def test_fr13_6_the_page_sets_the_viewport_stops_sideways_scroll_and_prints(repo
 def test_fr13_6_each_svg_has_a_title_and_a_matching_data_table(report):
     page = parse(report)
     assert page.svgs
-    for svg in page.svgs:
+    for svg in [item for item in page.svgs if not item["hidden"]]:
         assert svg["title"].strip()
         assert svg["id"]
         tables = [

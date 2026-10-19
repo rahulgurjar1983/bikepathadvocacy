@@ -1,5 +1,6 @@
 import hashlib
 import json
+import re
 import socket
 
 import pytest
@@ -550,4 +551,6 @@ def test_fr16_10_cost_range_recipes_replay_archived_sources_beside_the_options(t
     assert 'id="options"' in page
     parsed = Page()
     parsed.feed(page)
-    assert not any(char.isdigit() for char in " ".join(parsed.outside))
+    months = "January|February|March|April|May|June|July|August|September|October|November|December"
+    dated = re.sub(rf"(\d{{1,2}} )?({months}) \d{{4}}", "", " ".join(parsed.outside))
+    assert not any(char.isdigit() for char in dated)

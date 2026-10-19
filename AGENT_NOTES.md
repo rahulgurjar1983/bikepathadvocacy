@@ -18,6 +18,28 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Spec issues
 
+### W1.0 the mock conflicts with the old number check (resolved)
+
+The 19 October ruling in spec 20 allows the narrow date change to the old
+test. The key spot is now an unnumbered dot.
+
+### W1.0 template changes
+
+The copy of the mock uses run values for its title, author, date, place
+counts, stage totals, street names, spots and TfNSW fit. It drops the mock
+banner and its example search words. It keeps the colour tokens, type,
+drawings and scripts. Parts with no data, and the empty cost tile, are
+left out. Costs, wards, council plan fit and the map backdrop wait on
+later W rows. The full-plan score comes from the last stage, not the
+ceiling. Spot parking comes from the works, not a fixed count per spot.
+
+The main map uses `plan-map` so the old map can keep its `map` section ID
+in the closed part. Extra styles keep old tables and drawings within that
+part. Opening it sends a resize event so the old map can draw. Missing
+parts have script guards. The read time comes from the page's words at
+load. These changes let the mock read real run data and keep the old
+report whole; they do not change its design.
+
 ### M1.7 the release has no road segments to read (open)
 
 The release build pulls the Bayside snapshot from `snapshots/au-nsw-bayside/2026-10-01/manifest.json`. That manifest lists five files and no `road_segments.gpkg`, `speed_zones.gpkg` or `elevation.tif`. The build reads the road function only when `road_segments.gpkg` exists, so no release link has a road function and every blocker says "Not a state road". The code of parts 1 and 2 cannot show in a release until a snapshot with the file is published.

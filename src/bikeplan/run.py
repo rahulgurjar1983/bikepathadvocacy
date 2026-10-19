@@ -16,11 +16,12 @@ from bikeplan.edition import (
     build_options_report,
     corridor_data,
     edition,
-    edition_page,
+    edition_parts,
     street_overlay,
 )
 from bikeplan.fit import segment_fit
 from bikeplan.network import bike_segments, build
+from bikeplan.network_report import choose
 from bikeplan.page import (
     ASSETS,
     assumptions_section,
@@ -45,6 +46,7 @@ from bikeplan.report import (
     segment_rows,
     segments_text,
 )
+from bikeplan.report_page import five_minute_page, report_data
 from bikeplan.snapshot import verify_snapshot
 from bikeplan.stress import score_edges, stress_features, stress_summary
 from bikeplan.trips import (
@@ -282,6 +284,9 @@ def build_all(
     figures = sorted(figures, key=lambda item: int(item["id"][1:]))
     options, marks, joined = build_options_report(graph, region, profile, snapshot, scores)
     corridor = corridor_data(graph, region, profile, snapshot, options)
+    streets = street_overlay(
+        map_payload["segments"], rows, model_data(graph, model_segment_rows(graph, profile))
+    )
     head, body, option_figures, options_json = edition(
         region,
         options,
@@ -289,23 +294,30 @@ def build_all(
         joined,
         profile.network.recommend_share,
         figures,
-        street_overlay(
-            map_payload["segments"], rows, model_data(graph, model_segment_rows(graph, profile))
-        ),
+        streets,
         corridor,
     )
     figures = sorted([*figures, *option_figures], key=lambda item: int(item["id"][1:]))
-    page_text = edition_page(
+    choice = choose(options, profile.network.recommend_share)
+    data = report_data(
+        options, choice, marks, joined.counts, streets, corridor, map_payload["boundary"]
+    )
+    page_text = five_minute_page(
         region,
+        data,
         head,
-        body,
+        edition_parts(
+            region,
+            body,
+            figures,
+            option_view(proposal)
+            + f"<script>{(ASSETS / 'option_view.js').read_text()}</script>"
+            + method_section()
+            + assumptions_section(profile)
+            + credits_section(summary["credits"])
+            + rebuild_section(summary),
+        ),
         figures,
-        option_view(proposal)
-        + f"<script>{(ASSETS / 'option_view.js').read_text()}</script>"
-        + method_section()
-        + assumptions_section(profile)
-        + credits_section(summary["credits"])
-        + rebuild_section(summary),
     )
     outputs = {
         "access_homes.geojson": dump(

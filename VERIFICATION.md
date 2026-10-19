@@ -2050,3 +2050,18 @@ a work fixes is a spot too. Spots per option went calm 3 to 11, mesh 5 to 90,
 separated 1 to 5, shortest 3 to 36; all-built scores went 44.8 to 60.0, 12.7 to
 36.2, 51.3 to 60.0 and 8.1 to 26.1.
 Artifact: `artifacts/W1.2/after.json`
+
+### W1.0
+
+```sh
+uv run --frozen pytest -q tests/test_report_page.py tests/test_report.py
+uv run --frozen bikeplan run regions/test-grid.yaml --snapshot tests/fixtures/test-grid/snapshot --out /tmp/w10run
+```
+
+Expect: all tests pass. The page has an unnumbered key dot, and each
+school, station and town centre count links to its own figure entry
+(`#F78` for joined schools). Following it opens "Check every number".
+The other page numbers still link to the closed part; they need figures
+of their own, so the row stays open.
+
+Artifact: `artifacts/W1.0/report.html`.
