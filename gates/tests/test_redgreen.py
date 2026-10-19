@@ -321,3 +321,42 @@ def test_fr0_2_conftest_that_needs_new_code_counts_as_red(mini, capsys):
     mini.commit("feat: helper")
     assert redgreen.main(["red", base]) == 0
     assert "conftest" in capsys.readouterr().out
+
+
+LOOSER_ONE = """
+from minipkg.core import one
+
+
+def test_one():
+    assert one() >= 1
+"""
+
+
+def test_fr20_25_only_an_amends_line_with_a_spec_20_rule_excuses_an_old_test(mini, capsys):
+    base = mini.head()
+    mini.write("tests/test_core.py", LOOSER_ONE)
+    mini.commit("test: loosen one")
+    assert redgreen.main(["red", base]) == 1
+    assert "FAKE: tests/test_core.py::test_one" in capsys.readouterr().out
+    mini.commit("docs: no rule\n\nAmends: tests/test_core.py::test_one")
+    assert redgreen.main(["red", base]) == 1
+    capsys.readouterr()
+    mini.append(
+        "tests/test_core.py",
+        """
+
+
+def test_one_again():
+    assert one() == 1
+""",
+    )
+    mini.commit(
+        "test: amend\n\n"
+        "Amends: tests/test_core.py::test_one per FR-20.25\n"
+        "Amends: tests/test_core.py::test_one_again per FR-20.25"
+    )
+    assert redgreen.main(["red", base]) == 1
+    out = capsys.readouterr().out
+    assert "amended: tests/test_core.py::test_one" in out
+    assert "FAKE: tests/test_core.py::test_one_again" in out
+    assert "FAKE: tests/test_core.py::test_one\n" not in out
