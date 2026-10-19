@@ -143,7 +143,14 @@ def link_spot(graph, key: tuple, link: dict, fits: dict, profile, calm: set, fla
         if not graph.has_edge(*edge):
             continue
         data = graph.edges[edge]
-        if not data["bike_ok"] or is_path(data):
+        if not data["bike_ok"]:
+            continue
+        if is_path(data):
+            if path_reasons(data, None, profile):
+                continue
+            record = crossing_spot(graph, edge, street_name(data), profile, flags())
+            if record:
+                return record
             continue
         if link["no_fix"]:
             short = link["length_m"] <= profile.fit.spot_max_m.value

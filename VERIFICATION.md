@@ -2090,3 +2090,25 @@ Release check for part 3 (pr215): download the release and list the short blocke
 Command: `gh release download v2026.10.19-pr215 -p au-nsw-bayside.tar.gz && tar -xzf au-nsw-bayside.tar.gz options.json && python3 -c "import json;[print(p['id'],sum(b['km']<=.1 for b in p['blockers'])) for p in json.load(open('options.json'))['options']]"`
 Expect: calm 5, shortest 9, separated 7, mesh 7. Bardwell Road is not a blocker. The row is not complete.
 Artifact: `artifacts/W1.2/after.json`
+
+### W1.2
+
+Path crossing part:
+
+```sh
+uv run --frozen pytest -q tests/test_spots.py
+uv run --frozen python artifacts/W1.2/prove.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-01 artifacts/W1.2/path-crossings.json
+python3 -c "import json;d=json.load(open('artifacts/W1.2/path-crossings.json'));[print(k,v['spots'],v['blockers'],v['score_all_built'],[w for w in v['spot_works'] if 'cycleway' in w['street']]) for k,v in d['options'].items()]"
+```
+
+Expect: the tests pass. A cycleway with a busy crossing gets a crossing spot;
+a narrow or unpaved path stays out of that fix. The Bayside run uses the shipped
+region and profile. Its output lists spots, blockers and the full-plan score
+for each option. The cycleway that was a short blocker now has a signal spot.
+Long roads and short roads with an open end can still be blockers. This proves
+the path crossing part; a fresh release must confirm it before the row closes.
+The summary command gives calm 15 spots and 8 blockers, mesh 122 and 43,
+separated 9 and 8, and shortest 46 and 22. All-built scores round to
+73.9%, 41.5%, 73.9% and 40.2%, in that order.
+
+Artifact: `artifacts/W1.2/path-crossings.json`.

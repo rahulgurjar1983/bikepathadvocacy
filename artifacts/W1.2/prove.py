@@ -19,6 +19,8 @@ for item in options:
     last = item["steps"][-1]["totals"]["score"]
     proof["options"][item["id"]] = {
         "blockers": len(item["blockers"]),
+        "blocker_details": item["blockers"],
+        "spot_works": spots,
         "no_fix_streets": len(item["no_fix"]),
         "spots": len(spots),
         "spot_m": round(sum(work["km"] for work in spots) * 1000),
