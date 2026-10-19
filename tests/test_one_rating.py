@@ -100,3 +100,17 @@ def test_fr20_1_the_all_ages_switch_follows_the_modelled_rating(built):
         assert driver.find_element(By.ID, "network-map")
     finally:
         driver.quit()
+
+
+def test_fr20_1_the_five_minute_page_never_falls_back_to_the_confirmed_pieces():
+    from tests.test_report_page import data_for
+
+    confirmed = [
+        {"name": "Ash Street", "aaa": True, "lines": [[[-33.91, 151.11], [-33.9, 151.12]]]}
+    ]
+    assert data_for(streets={"pieces": confirmed, "km": {"aaa": 9.0}})["streets"] == []
+    modelled = [
+        {"name": "Ash Street", "model_all_ages": True, "lines": [[[-33.8, 151.1], [-33.7, 151.2]]]}
+    ]
+    both = {"pieces": confirmed, "model_pieces": modelled, "model_km": {"aaa": 1.0}}
+    assert data_for(streets=both)["streets"] == [[[151.1, -33.8], [151.2, -33.7]]]
