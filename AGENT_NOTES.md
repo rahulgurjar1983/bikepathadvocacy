@@ -52,11 +52,11 @@ The release build pulls the Bayside snapshot from `snapshots/au-nsw-bayside/2026
 
 ### W1.1 the rest waits on the page (open)
 
-The map overlay, its km, the F2 label and the page's `model_pieces` read are shipped (the W1.0 page exists now). Left: W1.6 checks the page stage km against `model_km`.
+The map overlay, its km, the F2 label and the page's `model_pieces` read are shipped. The page stage km come from the option steps, which use the modelled rating. Left: W1.6 shows that the page tiles and stage km agree with `model_km`.
 
-- Prove it: `rg -n "model_pieces|model_km" src` finds the overlay writer in `edition.py` and the reader in `assets/network.js`, and no page code.
+- Prove it: `uv run --frozen python artifacts/W1.1/km_match.py` writes 3.0 for the map and 3.0 for the options on the test grid, so the two already agree and a new test for it would pass on base.
 - Prove it: `grep -c "FR-20.1[,)]" PROGRESS.md` prints 1, the W1.1 row, so W1.6 does not cite FR-20.1.
-- Needed input: add FR-20.1 to the W1.6 row, so its page reads `model_pieces` and `model_km` and a test shows that every all-ages figure on it is modelled. Then close W1.1 as shipped, or leave it open until W1.6 merges.
+- Needed input: add FR-20.1 to the W1.6 row, so its page tests show that every all-ages figure on it is modelled. Then close W1.1 as shipped, or leave it open until W1.6 merges.
 
 ### W1.1 one rating on the map conflicts with saved FR-15.5 tests (resolved)
 
