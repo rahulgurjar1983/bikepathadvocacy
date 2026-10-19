@@ -233,3 +233,28 @@ def test_fr20_2_two_short_pieces_in_a_row_between_calm_links_are_both_spots_else
     graph, table, fits = chain_world([40.0, 40.0])
     table[3, 4, 0] = row(all_ages=False, no_fix=True, length=80.0)
     assert link_fixes(graph, table, fits, PROFILE, WEIGHTS) == {}
+
+
+def cycleway_world(**extra):
+    graph, table, fits = crossing_world()
+    for u, v in ((0, 3), (3, 0)):
+        graph.remove_edge(u, v, 0)
+    for u, v in ((0, 3), (3, 0)):
+        graph.add_edge(
+            u,
+            v,
+            0,
+            **road("path", highway="cycleway", bike_facility="track", length_m=60.0, **extra),
+        )
+    table = {(0, 3, 0): row(no_fix=True, length=60.0)}
+    return graph, table, {"path": {"status": "no_fit"}}
+
+
+def test_fr20_2_a_cycleway_that_only_crosses_a_busy_road_gets_a_crossing_spot():
+    found = fixes_for(cycleway_world())[0, 3, 0]
+    assert found["fix"] == "raised_zebra_crossing"
+    assert found["spot"] is True
+    assert found["path_km"] == 0.0
+
+    assert fixes_for(cycleway_world(width_tag_m=1.0)) == {}
+    assert fixes_for(cycleway_world(surface="dirt")) == {}
