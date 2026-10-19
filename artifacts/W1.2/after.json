@@ -16,19 +16,19 @@
       "state_owned": 2
     },
     "mesh": {
-      "blockers": 48,
+      "blockers": 46,
       "by_fix": {
         "raised_zebra_crossing": 1,
-        "short_path_crossing": 89
+        "short_path_crossing": 109
       },
       "ceiling": 100.0,
-      "no_fix_streets": 48,
-      "parking_spaces": 476,
-      "score_all_built": 36.19957537154989,
-      "site_check": 89,
-      "spot_m": 4836,
-      "spots": 90,
-      "state_owned": 36
+      "no_fix_streets": 46,
+      "parking_spaces": 492,
+      "score_all_built": 38.747346072186836,
+      "site_check": 109,
+      "spot_m": 5324,
+      "spots": 110,
+      "state_owned": 42
     },
     "separated": {
       "blockers": 9,
@@ -48,15 +48,15 @@
       "blockers": 24,
       "by_fix": {
         "raised_zebra_crossing": 1,
-        "short_path_crossing": 35
+        "short_path_crossing": 39
       },
       "ceiling": 100.0,
       "no_fix_streets": 24,
       "parking_spaces": 220,
-      "score_all_built": 26.11464968152866,
-      "site_check": 35,
-      "spot_m": 1971,
-      "spots": 36,
+      "score_all_built": 27.282377919320595,
+      "site_check": 39,
+      "spot_m": 2042,
+      "spots": 40,
       "state_owned": 9
     }
   },

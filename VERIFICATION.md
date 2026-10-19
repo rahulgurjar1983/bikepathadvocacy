@@ -2067,6 +2067,11 @@ separated 1 to 5, shortest 3 to 36; all-built scores went 44.8 to 60.0, 12.7 to
 36.2, 51.3 to 60.0 and 8.1 to 26.1.
 Artifact: `artifacts/W1.2/after.json`
 
+Part 3: a run of short pieces in a row, at most `fit.spot_max_m` in all, with
+two calm ends is a set of spots. Same command. Expect: spots mesh 90 to 110,
+shortest 36 to 40; mesh all-built score 36.2 to 38.7. Artifact:
+`artifacts/W1.2/after.json`.
+
 ### W1.0
 
 ```sh

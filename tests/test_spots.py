@@ -197,3 +197,39 @@ def test_fr20_2_the_ladder_reaches_the_full_score_once_a_work_and_its_spot_are_b
     ladder = build_ladder(table, sorted(table), people((1, 0), (2, 3)), fixes, WEIGHTS)
     assert ladder["blockers"] == []
     assert {work["fix"] for work in ladder["works"]} == {"road_diet", "short_path_crossing"}
+
+
+def chain_world(lengths):
+    graph = nx.MultiDiGraph()
+    count = len(lengths) + 2
+    for node in range(count + 1):
+        graph.add_node(node, x=node * 40, y=0)
+    busy = {"highway": "secondary", "lanes_total": 4, "speed_kmh": 60, "footpath_width_m": 2.5}
+    busy |= {"parking:both": "yes", "road_function": "ArterialRoad"}
+    add_road(graph, 0, 1, "calm-w", length_m=80.0)
+    add_road(graph, count - 1, count, "calm-e", length_m=80.0)
+    table = {
+        (0, 1, 0): row(all_ages=True, length=80.0),
+        (count - 1, count, 0): row(all_ages=True, length=80.0),
+    }
+    fits = {"calm-w": None, "calm-e": None}
+    for index, length in enumerate(lengths, start=1):
+        add_road(graph, index, index + 1, f"busy-{index}", length_m=length, **busy)
+        table[index, index + 1, 0] = row(no_fix=True, length=length)
+        fits[f"busy-{index}"] = {"status": "no_fit"}
+    graph.graph["points"] = []
+    return graph, table, fits
+
+
+def test_fr20_2_two_short_pieces_in_a_row_between_calm_links_are_both_spots_else_blockers():
+    graph, table, fits = chain_world([40.0, 40.0])
+    fixes = link_fixes(graph, table, fits, PROFILE, WEIGHTS)
+    assert {key: fixes[key]["fix"] for key in fixes} == {
+        (1, 2, 0): "short_path_crossing",
+        (2, 3, 0): "short_path_crossing",
+    }
+    graph, table, fits = chain_world([60.0, 60.0])
+    assert link_fixes(graph, table, fits, PROFILE, WEIGHTS) == {}
+    graph, table, fits = chain_world([40.0, 40.0])
+    table[3, 4, 0] = row(all_ages=False, no_fix=True, length=80.0)
+    assert link_fixes(graph, table, fits, PROFILE, WEIGHTS) == {}
