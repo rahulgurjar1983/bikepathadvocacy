@@ -2086,3 +2086,7 @@ The other page numbers still link to the closed part; they need figures
 of their own, so the row stays open.
 
 Artifact: `artifacts/W1.0/report.html`.
+Release check for part 3 (pr215): download the release and list the short blockers.
+Command: `gh release download v2026.10.19-pr215 -p au-nsw-bayside.tar.gz && tar -xzf au-nsw-bayside.tar.gz options.json && python3 -c "import json;[print(p['id'],sum(b['km']<=.1 for b in p['blockers'])) for p in json.load(open('options.json'))['options']]"`
+Expect: calm 5, shortest 9, separated 7, mesh 7. Bardwell Road is not a blocker. The row is not complete.
+Artifact: `artifacts/W1.2/after.json`
