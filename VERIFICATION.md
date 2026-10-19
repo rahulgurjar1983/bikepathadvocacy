@@ -2018,6 +2018,14 @@ Expect: the five-minute page draws its streets from `model_pieces` only. With
 confirmed pieces and no modelled pieces it draws none.
 Artifact: `artifacts/W1.1/one-rating.json`
 
+```
+uv run --frozen python artifacts/W1.1/km_match.py
+```
+
+Expect: on the test grid the map's modelled all-ages km and the options' link
+table all-ages km are both 3.0.
+Artifact: `artifacts/W1.1/km-match.json`
+
 ### M1.6
 
 ```
