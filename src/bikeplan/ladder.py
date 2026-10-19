@@ -232,7 +232,37 @@ def link_fixes(graph, table: dict, fits: dict, profile, weights) -> dict:
                 calm.update(key[:2])
                 waiting.remove(key)
                 grown = True
+        if not grown:
+            for run in short_runs(graph, table, waiting, fits, profile, calm, flags):
+                for key, spot in run.items():
+                    found[key] = spot | {"least": disruption_score(spot, weights)}
+                    calm.update(key[:2])
+                    waiting.remove(key)
+                    grown = True
     return found
+
+
+def short_runs(graph, table: dict, waiting: list, fits: dict, profile, calm: set, flags) -> list:
+    limit = profile.fit.spot_max_m.value
+    joined = nx.Graph()
+    for key in waiting:
+        if table[key]["length_m"] <= limit:
+            joined.add_edge(key[0], key[1], keys=[key])
+    runs = []
+    for nodes in nx.connected_components(joined):
+        part = joined.subgraph(nodes)
+        keys = [key for _, _, data in part.edges(data=True) for key in data["keys"]]
+        if len(keys) < 2 or len(nodes & calm) < 2:
+            continue
+        if sum(table[key]["length_m"] for key in keys) > limit:
+            continue
+        spots = {
+            key: link_spot(graph, key, table[key], fits, profile, calm | nodes, flags)
+            for key in keys
+        }
+        if all(spots.values()):
+            runs.append(spots)
+    return runs
 
 
 def group_works(table: dict, fixes: dict, fixable: list, weights) -> list:
