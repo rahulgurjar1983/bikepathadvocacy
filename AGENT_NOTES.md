@@ -52,7 +52,7 @@ The release build pulls the Bayside snapshot from `snapshots/au-nsw-bayside/2026
 
 ### W1.1 the rest waits on the page (open)
 
-The map overlay, its km and the F2 label are shipped. The rest of W1.1 is a check on the five-minute page, and that page is not built.
+The map overlay, its km, the F2 label and the page's `model_pieces` read are shipped (the W1.0 page exists now). Left: W1.6 checks the page stage km against `model_km`.
 
 - Prove it: `rg -n "model_pieces|model_km" src` finds the overlay writer in `edition.py` and the reader in `assets/network.js`, and no page code.
 - Prove it: `grep -c "FR-20.1[,)]" PROGRESS.md` prints 1, the W1.1 row, so W1.6 does not cite FR-20.1.

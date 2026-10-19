@@ -64,7 +64,7 @@ def stage_values(step: dict) -> dict:
 
 
 def street_lines(streets: dict | None) -> list:
-    pieces = (streets or {}).get("model_pieces") or (streets or {}).get("pieces") or []
+    pieces = (streets or {}).get("model_pieces") or []
     return [
         [[round(lon, 5), round(lat, 5)] for lat, lon in line]
         for piece in pieces
