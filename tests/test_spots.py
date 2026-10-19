@@ -236,7 +236,7 @@ def test_fr20_2_two_short_pieces_in_a_row_between_calm_links_are_both_spots_else
 
 
 def cycleway_world(**extra):
-    graph, table, fits = crossing_world()
+    graph, _table, _fits = crossing_world()
     for u, v in ((0, 3), (3, 0)):
         graph.remove_edge(u, v, 0)
     for u, v in ((0, 3), (3, 0)):
