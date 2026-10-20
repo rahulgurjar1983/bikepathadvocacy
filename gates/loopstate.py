@@ -3,6 +3,7 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 from pathlib import Path
 
 
@@ -45,9 +46,22 @@ def read_state():
     return state
 
 
+def run_going(run):
+    result = subprocess.run(
+        ["gh", "run", "view", str(run), "--json", "status"],
+        check=True,
+        capture_output=True,
+        text=True,
+        timeout=float(os.environ.get("RALPH_GH_SECS", "60")),
+    )
+    return json.loads(result.stdout)["status"] != "completed"
+
+
 def is_blocked(row):
     entry = read_state().get(row)
-    return bool(entry and entry["blocked"] and entry["input_hash"] == input_hash(row))
+    if not (entry and entry["blocked"] and entry["input_hash"] == input_hash(row)):
+        return False
+    return run_going(entry["run"]) if entry.get("outcome") == "waiting_run" else True
 
 
 def finish(row, progress, max_stalls):
@@ -64,6 +78,7 @@ def finish(row, progress, max_stalls):
         "progress",
         "shipped",
         "waiting_ci",
+        "waiting_run",
         "input_blocked",
         "human_blocked",
         "no_progress",
@@ -72,6 +87,10 @@ def finish(row, progress, max_stalls):
     if outcome == "waiting_ci":
         if not isinstance(result.get("pr"), int) or result["pr"] <= 0:
             raise ValueError("waiting_ci needs a pull request number")
+    elif outcome == "waiting_run":
+        if not isinstance(result.get("run"), int) or result["run"] <= 0:
+            raise ValueError("waiting_run needs a run ID")
+        attempts = max_stalls
     elif outcome in ("input_blocked", "human_blocked"):
         if not result.get("reason"):
             raise ValueError("a blocker needs a reason")
@@ -87,6 +106,8 @@ def finish(row, progress, max_stalls):
         "outcome": outcome,
         "reason": result.get("reason", "no progress on unchanged inputs"),
     }
+    if outcome == "waiting_run":
+        state[row]["run"] = result["run"]
     path = state_path()
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(".tmp")
