@@ -272,6 +272,49 @@ def short_runs(graph, table: dict, waiting: list, fits: dict, profile, calm: set
     return runs
 
 
+def open_spots(graph, table: dict, fits: dict, profile, weights, fixes: dict) -> dict:
+    limit = profile.fit.spot_max_m.value
+    nodes = {node for key in table for node in key[:2]}
+    points: dict = {}
+
+    def flags() -> dict:
+        if not points:
+            points.update(junction_points(graph))
+        return points
+
+    found: dict = {}
+    for key, link in table.items():
+        if link["all_ages"] or key in fixes or not link["no_fix"] or link["length_m"] > limit:
+            continue
+        spot = link_spot(graph, key, link, fits, profile, nodes, flags)
+        if spot:
+            found[key] = spot | {"least": disruption_score(spot, weights)}
+    return found
+
+
+def trip_spots(table: dict, trips: list, fixes: dict, candidates: dict, limit: float) -> dict:
+    found: dict = {}
+    for _, _, path in trips:
+        if not path:
+            continue
+        calm = [table[link]["all_ages"] or link in fixes for link in path]
+        index = 0
+        while index < len(path):
+            if path[index] not in candidates:
+                index += 1
+                continue
+            end = index
+            while end + 1 < len(path) and path[end + 1] in candidates:
+                end += 1
+            run = path[index : end + 1]
+            start_calm = index == 0 or calm[index - 1]
+            end_calm = end == len(path) - 1 or calm[end + 1]
+            if start_calm and end_calm and sum(table[link]["length_m"] for link in run) <= limit:
+                found.update({link: candidates[link] for link in run})
+            index = end + 1
+    return found
+
+
 def group_works(table: dict, fixes: dict, fixable: list, weights) -> list:
     groups: dict = {}
     for key in fixable:
@@ -406,12 +449,15 @@ def build_ladder(
     max_trip_m: float | None = None,
     roads: dict | None = None,
     reasons: dict | None = None,
+    candidates: dict | None = None,
+    spot_max_m: float = 100.0,
 ) -> dict:
+    trips = option_trips(table, links, joined, max_trip_m)
+    fixes = fixes | trip_spots(table, trips, fixes, candidates or {}, spot_max_m)
     missing = [key for key in links if not table[key]["all_ages"] and key not in fixes]
     fixable = [key for key in links if not table[key]["all_ages"] and key in fixes]
     works = group_works(table, fixes, fixable, weights)
     owner = {link: index for index, work in enumerate(works) for link in work["links"]}
-    trips = option_trips(table, links, joined, max_trip_m)
     needs = trip_needs(table, trips, fixes, owner)
     fixed: set = set()
     steps = []
