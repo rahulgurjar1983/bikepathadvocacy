@@ -2183,3 +2183,15 @@ uv run --frozen python artifacts/W1.2/prove.py regions/au-nsw-bayside.yaml data/
 Expect: the tests pass. A short busy piece is a spot when a trip has a calm end there, which includes the trip's own start or end. Wollongong Road, Rocky Point Road and Joffre Crescent are spot works in every option. Short blockers of at most 100 m are 0 in calm, 2 in mesh, 0 in separated and 3 in shortest. Spots are 26, 141, 20 and 57 and the all-built scores are 91.8, 53.5, 91.8 and 49.9 percent. The run takes about 25 minutes. The next release must confirm it.
 
 Artifact: `artifacts/W1.2/open-ends.json`
+
+### W1.2 release check (pr227)
+
+```
+gh release download v2026.10.20-pr227 -R rahulgurjar1983/bikepathadvocacy -p au-nsw-bayside.tar.gz
+tar xzf au-nsw-bayside.tar.gz -C x
+python3 artifacts/W1.2/check-release.py x/options.json artifacts/W1.2/release-pr227.json
+```
+
+Expect: in all four options Wollongong Road, Rocky Point Road and Joffre Crescent have a `short_path_crossing` work and no blocker. Only mesh keeps one Joffre Crescent blocker, 103 m with 1 trip.
+
+Artifact: `artifacts/W1.2/release-pr227.json`

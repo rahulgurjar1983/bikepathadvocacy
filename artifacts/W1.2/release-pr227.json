@@ -1,0 +1,102 @@
+{
+ "calm/Joffre Crescent": {
+  "blockers": [],
+  "fixes": {
+   "road_diet": 1,
+   "short_path_crossing": 1
+  }
+ },
+ "calm/Rocky Point Road": {
+  "blockers": [],
+  "fixes": {
+   "cycleway_in_spare": 1,
+   "short_path_crossing": 1
+  }
+ },
+ "calm/Wollongong Road": {
+  "blockers": [],
+  "fixes": {
+   "cycleway_in_spare": 1,
+   "cycleway_parking_both_sides": 4,
+   "cycleway_parking_one_side": 1,
+   "short_path_crossing": 1
+  }
+ },
+ "mesh/Joffre Crescent": {
+  "blockers": [
+   {
+    "m": 103,
+    "trips": 1
+   }
+  ],
+  "fixes": {
+   "road_diet": 2,
+   "short_path_crossing": 1
+  }
+ },
+ "mesh/Rocky Point Road": {
+  "blockers": [],
+  "fixes": {
+   "cycleway_in_spare": 1,
+   "road_diet": 1,
+   "short_path_crossing": 3
+  }
+ },
+ "mesh/Wollongong Road": {
+  "blockers": [],
+  "fixes": {
+   "cycleway_in_spare": 3,
+   "cycleway_parking_both_sides": 11,
+   "cycleway_parking_one_side": 7,
+   "road_diet": 1,
+   "short_path_crossing": 1
+  }
+ },
+ "separated/Joffre Crescent": {
+  "blockers": [],
+  "fixes": {
+   "road_diet": 1,
+   "short_path_crossing": 1
+  }
+ },
+ "separated/Rocky Point Road": {
+  "blockers": [],
+  "fixes": {
+   "cycleway_in_spare": 1,
+   "short_path_crossing": 1
+  }
+ },
+ "separated/Wollongong Road": {
+  "blockers": [],
+  "fixes": {
+   "cycleway_in_spare": 1,
+   "cycleway_parking_both_sides": 4,
+   "cycleway_parking_one_side": 1,
+   "short_path_crossing": 1
+  }
+ },
+ "shortest/Joffre Crescent": {
+  "blockers": [],
+  "fixes": {
+   "road_diet": 1,
+   "short_path_crossing": 1
+  }
+ },
+ "shortest/Rocky Point Road": {
+  "blockers": [],
+  "fixes": {
+   "cycleway_in_spare": 1,
+   "road_diet": 1,
+   "short_path_crossing": 3
+  }
+ },
+ "shortest/Wollongong Road": {
+  "blockers": [],
+  "fixes": {
+   "cycleway_in_spare": 1,
+   "cycleway_parking_both_sides": 2,
+   "road_diet": 1,
+   "short_path_crossing": 1
+  }
+ }
+}

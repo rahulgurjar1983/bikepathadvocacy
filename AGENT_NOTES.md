@@ -1427,6 +1427,8 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - If `gh pr edit` fails on the retired Projects API, use `gh api --method PATCH repos/{owner}/{repo}/pulls/<pr> -f body='<body>'`. Then read the PR to check the edit.
 - W1.2 path proof: `artifacts/W1.2/path-crossings.json` lists each spot work and blocker. Rebuild with the path crossing command in `VERIFICATION.md`. Calm and separated now reach 73.9% with all works built. Short road blockers remain; the row stays open for the release check.
 
+- W1.2 closed (2026-10-20): release v2026.10.20-pr227 lists Wollongong Road, Rocky Point Road and Joffre Crescent as short path crossing spots in every option. Proof: `artifacts/W1.2/release-pr227.json`, built by `artifacts/W1.2/check-release.py`.
+
 ## Q1.10 wait (2026-10-19)
 - Region files now say osm_date 2026-10-19. Run 39283885929 of `snapshots` (councils=au-nsw-bayside) is fetching. When it ends, copy its `manifest.json` to `snapshots/au-nsw-bayside/2026-10-19/` with `gh release download`, drop the old 2026-10-01 Bayside manifest, then run `uv run pytest tests/test_snapshot_set.py tests/test_snapshot.py`.
 - The 12 other council manifests (2026-10-01) were removed: the owner cancelled those councils and `test_fr18_2_every_published_council_has_a_manifest_like_bayside` fails on any manifest with another date. Until the Bayside manifest lands, that test and CI stay red.
