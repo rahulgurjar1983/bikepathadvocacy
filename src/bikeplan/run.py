@@ -46,7 +46,7 @@ from bikeplan.report import (
     segment_rows,
     segments_text,
 )
-from bikeplan.report_page import five_minute_page, report_data
+from bikeplan.report_page import five_minute_page, page_figures, report_data
 from bikeplan.snapshot import verify_snapshot
 from bikeplan.stress import score_edges, stress_features, stress_summary
 from bikeplan.trips import (
@@ -297,8 +297,9 @@ def build_all(
         streets,
         corridor,
     )
-    figures = sorted([*figures, *option_figures], key=lambda item: int(item["id"][1:]))
     choice = choose(options, profile.network.recommend_share)
+    figures = sorted([*figures, *option_figures], key=lambda item: int(item["id"][1:]))
+    figures += page_figures(options, choice, options_json, int(figures[-1]["id"][1:]) + 1)
     data = report_data(
         options, choice, marks, joined.counts, streets, corridor, map_payload["boundary"]
     )

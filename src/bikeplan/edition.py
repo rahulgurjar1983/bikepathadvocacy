@@ -107,7 +107,7 @@ def option_data(item: dict) -> dict:
         "works": [
             {
                 key: work[key]
-                for key in ("street", "fix", "km", *SPENT, "least", "outside")
+                for key in ("street", "fix", "km", *SPENT, "least", "outside", "spot", "trips")
                 if key in work
             }
             for work in item["works"]
@@ -122,6 +122,7 @@ def option_data(item: dict) -> dict:
             for found in item.get("blockers", [])
         ],
         **({"ceiling": item["ceiling"]} if "ceiling" in item else {}),
+        **({"no_spots": item["no_spots"]} if "no_spots" in item else {}),
         **({"links": item["links"]} if "links" in item else {}),
         **({"outside": item["outside"]} if item.get("outside") else {}),
     }

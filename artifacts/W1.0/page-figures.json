@@ -1,0 +1,242 @@
+{
+  "figures": [
+    {
+      "id": "F155",
+      "inputs": [
+        {
+          "name": "options.json",
+          "sha256": "350d6782b75d21b1802bb643983f2ec271f5813d4f79febbe1c505ffd151ac9e"
+        }
+      ],
+      "label": "Spots of my pick",
+      "method": "I read the spots from options.json.",
+      "recipe": "import json;d=json.load(open('options.json'));o=d['options'];b=max(x['steps'][-1]['score'] for x in o);p=o[min((x['steps'][-1]['disruption']['score'],i) for i,x in enumerate(o) if x['steps'][-1]['score']>=b-1)[1]];s=[t['score'] for t in p['steps']];r=next(i for i,v in enumerate(s) if v>=s[0]+d['share']*(s[-1]-s[0])-1e-9);print(sum(1 for w in p['works'] if w.get('spot')))",
+      "sources": [
+        {
+          "licence": "ODbL 1.0",
+          "name": "OpenStreetMap contributors",
+          "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+        }
+      ],
+      "spec": "spec 20",
+      "unit": "spots",
+      "value": 27
+    },
+    {
+      "id": "F156",
+      "inputs": [
+        {
+          "name": "options.json",
+          "sha256": "350d6782b75d21b1802bb643983f2ec271f5813d4f79febbe1c505ffd151ac9e"
+        }
+      ],
+      "label": "Length of the spots of my pick",
+      "method": "I read the spot lengths from options.json.",
+      "recipe": "import json;d=json.load(open('options.json'));o=d['options'];b=max(x['steps'][-1]['score'] for x in o);p=o[min((x['steps'][-1]['disruption']['score'],i) for i,x in enumerate(o) if x['steps'][-1]['score']>=b-1)[1]];s=[t['score'] for t in p['steps']];r=next(i for i,v in enumerate(s) if v>=s[0]+d['share']*(s[-1]-s[0])-1e-9);print(round(sum(w['km'] for w in p['works'] if w.get('spot')),1))",
+      "sources": [
+        {
+          "licence": "ODbL 1.0",
+          "name": "OpenStreetMap contributors",
+          "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+        }
+      ],
+      "spec": "spec 20",
+      "unit": "km",
+      "value": 1.2
+    },
+    {
+      "id": "F157",
+      "inputs": [
+        {
+          "name": "options.json",
+          "sha256": "350d6782b75d21b1802bb643983f2ec271f5813d4f79febbe1c505ffd151ac9e"
+        }
+      ],
+      "label": "Safety score of my pick without its spots",
+      "method": "I read the score without spots from options.json.",
+      "recipe": "import json;d=json.load(open('options.json'));o=d['options'];b=max(x['steps'][-1]['score'] for x in o);p=o[min((x['steps'][-1]['disruption']['score'],i) for i,x in enumerate(o) if x['steps'][-1]['score']>=b-1)[1]];s=[t['score'] for t in p['steps']];r=next(i for i,v in enumerate(s) if v>=s[0]+d['share']*(s[-1]-s[0])-1e-9);print(round(p['no_spots'],1))",
+      "sources": [
+        {
+          "licence": "ODbL 1.0",
+          "name": "OpenStreetMap contributors",
+          "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+        }
+      ],
+      "spec": "spec 20",
+      "unit": "points",
+      "value": 29.9
+    },
+    {
+      "id": "F158",
+      "inputs": [
+        {
+          "name": "options.json",
+          "sha256": "350d6782b75d21b1802bb643983f2ec271f5813d4f79febbe1c505ffd151ac9e"
+        }
+      ],
+      "label": "Safety score of my pick with every work built",
+      "method": "I read the full plan score from options.json.",
+      "recipe": "import json;d=json.load(open('options.json'));o=d['options'];b=max(x['steps'][-1]['score'] for x in o);p=o[min((x['steps'][-1]['disruption']['score'],i) for i,x in enumerate(o) if x['steps'][-1]['score']>=b-1)[1]];s=[t['score'] for t in p['steps']];r=next(i for i,v in enumerate(s) if v>=s[0]+d['share']*(s[-1]-s[0])-1e-9);print(round(p['steps'][-1]['score'],1))",
+      "sources": [
+        {
+          "licence": "ODbL 1.0",
+          "name": "OpenStreetMap contributors",
+          "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+        }
+      ],
+      "spec": "spec 20",
+      "unit": "points",
+      "value": 92.1
+    },
+    {
+      "id": "F159",
+      "inputs": [
+        {
+          "name": "options.json",
+          "sha256": "350d6782b75d21b1802bb643983f2ec271f5813d4f79febbe1c505ffd151ac9e"
+        }
+      ],
+      "label": "Km of cycleway_in_spare works of my pick",
+      "method": "I read the cycleway_in_spare lengths from options.json.",
+      "recipe": "import json;d=json.load(open('options.json'));o=d['options'];b=max(x['steps'][-1]['score'] for x in o);p=o[min((x['steps'][-1]['disruption']['score'],i) for i,x in enumerate(o) if x['steps'][-1]['score']>=b-1)[1]];s=[t['score'] for t in p['steps']];r=next(i for i,v in enumerate(s) if v>=s[0]+d['share']*(s[-1]-s[0])-1e-9);print(round(sum(w['km'] for w in p['works'] if not w.get('spot') and w['fix']=='cycleway_in_spare'),1))",
+      "sources": [
+        {
+          "licence": "ODbL 1.0",
+          "name": "OpenStreetMap contributors",
+          "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+        }
+      ],
+      "spec": "spec 20",
+      "unit": "km",
+      "value": 7.9
+    },
+    {
+      "id": "F160",
+      "inputs": [
+        {
+          "name": "options.json",
+          "sha256": "350d6782b75d21b1802bb643983f2ec271f5813d4f79febbe1c505ffd151ac9e"
+        }
+      ],
+      "label": "Km of cycleway_parking_both_sides works of my pick",
+      "method": "I read the cycleway_parking_both_sides lengths from options.json.",
+      "recipe": "import json;d=json.load(open('options.json'));o=d['options'];b=max(x['steps'][-1]['score'] for x in o);p=o[min((x['steps'][-1]['disruption']['score'],i) for i,x in enumerate(o) if x['steps'][-1]['score']>=b-1)[1]];s=[t['score'] for t in p['steps']];r=next(i for i,v in enumerate(s) if v>=s[0]+d['share']*(s[-1]-s[0])-1e-9);print(round(sum(w['km'] for w in p['works'] if not w.get('spot') and w['fix']=='cycleway_parking_both_sides'),1))",
+      "sources": [
+        {
+          "licence": "ODbL 1.0",
+          "name": "OpenStreetMap contributors",
+          "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+        }
+      ],
+      "spec": "spec 20",
+      "unit": "km",
+      "value": 5.1
+    },
+    {
+      "id": "F161",
+      "inputs": [
+        {
+          "name": "options.json",
+          "sha256": "350d6782b75d21b1802bb643983f2ec271f5813d4f79febbe1c505ffd151ac9e"
+        }
+      ],
+      "label": "Km of cycleway_parking_one_side works of my pick",
+      "method": "I read the cycleway_parking_one_side lengths from options.json.",
+      "recipe": "import json;d=json.load(open('options.json'));o=d['options'];b=max(x['steps'][-1]['score'] for x in o);p=o[min((x['steps'][-1]['disruption']['score'],i) for i,x in enumerate(o) if x['steps'][-1]['score']>=b-1)[1]];s=[t['score'] for t in p['steps']];r=next(i for i,v in enumerate(s) if v>=s[0]+d['share']*(s[-1]-s[0])-1e-9);print(round(sum(w['km'] for w in p['works'] if not w.get('spot') and w['fix']=='cycleway_parking_one_side'),1))",
+      "sources": [
+        {
+          "licence": "ODbL 1.0",
+          "name": "OpenStreetMap contributors",
+          "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+        }
+      ],
+      "spec": "spec 20",
+      "unit": "km",
+      "value": 7.7
+    },
+    {
+      "id": "F162",
+      "inputs": [
+        {
+          "name": "options.json",
+          "sha256": "350d6782b75d21b1802bb643983f2ec271f5813d4f79febbe1c505ffd151ac9e"
+        }
+      ],
+      "label": "Km of new_path works of my pick",
+      "method": "I read the new_path lengths from options.json.",
+      "recipe": "import json;d=json.load(open('options.json'));o=d['options'];b=max(x['steps'][-1]['score'] for x in o);p=o[min((x['steps'][-1]['disruption']['score'],i) for i,x in enumerate(o) if x['steps'][-1]['score']>=b-1)[1]];s=[t['score'] for t in p['steps']];r=next(i for i,v in enumerate(s) if v>=s[0]+d['share']*(s[-1]-s[0])-1e-9);print(round(sum(w['km'] for w in p['works'] if not w.get('spot') and w['fix']=='new_path'),1))",
+      "sources": [
+        {
+          "licence": "ODbL 1.0",
+          "name": "OpenStreetMap contributors",
+          "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+        }
+      ],
+      "spec": "spec 20",
+      "unit": "km",
+      "value": 0.0
+    },
+    {
+      "id": "F163",
+      "inputs": [
+        {
+          "name": "options.json",
+          "sha256": "350d6782b75d21b1802bb643983f2ec271f5813d4f79febbe1c505ffd151ac9e"
+        }
+      ],
+      "label": "Km of quietway works of my pick",
+      "method": "I read the quietway lengths from options.json.",
+      "recipe": "import json;d=json.load(open('options.json'));o=d['options'];b=max(x['steps'][-1]['score'] for x in o);p=o[min((x['steps'][-1]['disruption']['score'],i) for i,x in enumerate(o) if x['steps'][-1]['score']>=b-1)[1]];s=[t['score'] for t in p['steps']];r=next(i for i,v in enumerate(s) if v>=s[0]+d['share']*(s[-1]-s[0])-1e-9);print(round(sum(w['km'] for w in p['works'] if not w.get('spot') and w['fix']=='quietway'),1))",
+      "sources": [
+        {
+          "licence": "ODbL 1.0",
+          "name": "OpenStreetMap contributors",
+          "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+        }
+      ],
+      "spec": "spec 20",
+      "unit": "km",
+      "value": 28.7
+    },
+    {
+      "id": "F164",
+      "inputs": [
+        {
+          "name": "options.json",
+          "sha256": "350d6782b75d21b1802bb643983f2ec271f5813d4f79febbe1c505ffd151ac9e"
+        }
+      ],
+      "label": "Km of road_diet works of my pick",
+      "method": "I read the road_diet lengths from options.json.",
+      "recipe": "import json;d=json.load(open('options.json'));o=d['options'];b=max(x['steps'][-1]['score'] for x in o);p=o[min((x['steps'][-1]['disruption']['score'],i) for i,x in enumerate(o) if x['steps'][-1]['score']>=b-1)[1]];s=[t['score'] for t in p['steps']];r=next(i for i,v in enumerate(s) if v>=s[0]+d['share']*(s[-1]-s[0])-1e-9);print(round(sum(w['km'] for w in p['works'] if not w.get('spot') and w['fix']=='road_diet'),1))",
+      "sources": [
+        {
+          "licence": "ODbL 1.0",
+          "name": "OpenStreetMap contributors",
+          "request": "network.osm.gz and boundary.geojson in the snapshot folder"
+        }
+      ],
+      "spec": "spec 20",
+      "unit": "km",
+      "value": 5.0
+    }
+  ],
+  "links": {
+    "fix:cycleway_in_spare": "F159",
+    "fix:cycleway_parking_both_sides": "F160",
+    "fix:cycleway_parking_one_side": "F161",
+    "fix:new_path": "F162",
+    "fix:quietway": "F163",
+    "fix:road_diet": "F164",
+    "fullplan": "F158",
+    "nospots": "F157",
+    "school": "F142",
+    "spotkm": "F156",
+    "spots": "F155",
+    "station": "F144",
+    "tf:covered": "F82",
+    "tf:missed": "F84",
+    "tf:partly": "F83",
+    "town_centre": "F146"
+  }
+}
