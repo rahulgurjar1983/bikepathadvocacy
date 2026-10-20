@@ -193,6 +193,8 @@ def build_parser() -> argparse.ArgumentParser:
                 leaf.add_argument("--endpoint", default=OVERPASS_ENDPOINT, help="Overpass endpoint")
             if (name, sub) in {("snapshot", "verify"), ("snapshot", "publish")}:
                 leaf.add_argument("directory", help="Snapshot folder")
+            if (name, sub) == ("snapshot", "verify"):
+                leaf.add_argument("--region", help="Region file that names the required adapters")
             if (name, sub) == ("snapshot", "set"):
                 leaf.add_argument("set_file", help="Set file")
                 leaf.add_argument("--root", default=".", help="Repository folder")
@@ -427,10 +429,11 @@ def snapshot_fetch(path: str, out: str, endpoint: str) -> int:
     return 0
 
 
-def snapshot_verify(directory: str) -> int:
+def snapshot_verify(directory: str, region: str | None = None) -> int:
     try:
-        passed, failed = verify_snapshot(directory)
-    except (OSError, ValueError) as error:
+        adapters = load_region(region).snapshot.adapters if region else None
+        passed, failed = verify_snapshot(directory, adapters)
+    except (ConfigError, OSError, ValueError) as error:
         print(error, file=sys.stderr)
         return 1
     for line in passed:
@@ -550,7 +553,7 @@ def main(argv: list[str] | None = None) -> int:
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "fetch"):
         return snapshot_fetch(args.region, args.out, args.endpoint)
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "verify"):
-        return snapshot_verify(args.directory)
+        return snapshot_verify(args.directory, args.region)
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "publish"):
         return snapshot_publish(args.directory)
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "set"):
