@@ -184,11 +184,38 @@ check_copied() {
   (cd "$work/last" && grep "  $name\$" SHA256SUMS | sha256sum --check --strict -)
 }
 
+map_files() {
+  printf '%s\n' "$1-map.html" "$1-map.kml" "$1-map-layers.zip"
+}
+
+map_link() {
+  [ -f "$out/$1-map.html" ] && printf ' <a href="%s">map</a>' "$1-map.html"
+  return 0
+}
+
+publish_map() {
+  local id="$1" folder="$2"
+  [ -f "$folder/MAP-SHA256SUMS" ] || return 0
+  (cd "$folder" && sha256sum --check --strict MAP-SHA256SUMS)
+  cp "$folder/map.html" "$out/$id-map.html"
+  cp "$folder/map.kml" "$out/$id-map.kml"
+  python3 -c 'import sys, zipfile
+from pathlib import Path
+folder = Path(sys.argv[1])
+with zipfile.ZipFile(sys.argv[2], "w", zipfile.ZIP_DEFLATED) as layers:
+    for path in sorted(folder.glob("*.kml")):
+        info = zipfile.ZipInfo(path.name, (1980, 1, 1, 0, 0, 0))
+        info.compress_type = zipfile.ZIP_DEFLATED
+        info.external_attr = 0o644 << 16
+        layers.writestr(info, path.read_bytes())' "$folder/map-layers" "$out/$id-map-layers.zip"
+}
+
 publish() {
   local kind="$1" id="$2" region="$3" snapshot="$4" folder="$5" html="$6" archive="$7" record="$8"
   cp "$folder/report.html" "$out/$html"
+  [ "$kind" != report ] || publish_map "$id" "$folder"
   tar --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner -cf - -C "$folder" . | gzip -n >"$out/$archive"
-  rows+="<tr><td>$kind</td><td><a href=\"$html\">$id</a></td><td>$region</td><td>$snapshot</td><td>$commit</td><td>built</td><td>$(record_field "$record" seconds)</td><td>$(record_field "$record" peak_mb)</td></tr>"$'\n'
+  rows+="<tr><td>$kind</td><td><a href=\"$html\">$id</a>$(map_link "$id")</td><td>$region</td><td>$snapshot</td><td>$commit</td><td>built</td><td>$(record_field "$record" seconds)</td><td>$(record_field "$record" peak_mb)</td></tr>"$'\n'
   count=$((count + 1))
 }
 
@@ -197,7 +224,14 @@ copy_last() {
   check_copied "$html"
   check_copied "$archive"
   cp "$work/last/$html" "$work/last/$archive" "$out/"
-  rows+="<tr><td>$kind</td><td><a href=\"$html\">$id</a></td><td>$rid</td><td>$date</td><td>$commit</td><td>copied from release $last</td><td></td><td></td></tr>"$'\n'
+  if [ "$kind" = report ] && [ -f "$work/last/$id-map.html" ]; then
+    local name
+    while read -r name; do
+      check_copied "$name"
+      cp "$work/last/$name" "$out/"
+    done < <(map_files "$id")
+  fi
+  rows+="<tr><td>$kind</td><td><a href=\"$html\">$id</a>$(map_link "$id")</td><td>$rid</td><td>$date</td><td>$commit</td><td>copied from release $last</td><td></td><td></td></tr>"$'\n'
   count=$((count + 1))
 }
 
