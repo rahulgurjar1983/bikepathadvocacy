@@ -2220,3 +2220,14 @@ python3 artifacts/W1.2/check-release.py x/options.json artifacts/W1.2/release-pr
 Expect: in all four options Wollongong Road, Rocky Point Road and Joffre Crescent have a `short_path_crossing` work and no blocker. Only mesh keeps one Joffre Crescent blocker, 103 m with 1 trip.
 
 Artifact: `artifacts/W1.2/release-pr227.json`
+
+Release check for the figure links (pr230):
+
+```sh
+gh release download v2026.10.20-pr230 -p au-nsw-bayside-report.html
+grep -o 'id="F15[5-9]"\|id="F16[0-4]"' au-nsw-bayside-report.html | wc -l
+```
+
+Expect: 10 entries, F155 (27 spots), F157 (29.9 points), F158 (92.1 points).
+The council numbers still have no entries; they wait for FR-20.24, so the row stays open.
+Artifact: `artifacts/W1.0/release-pr230.json`.
