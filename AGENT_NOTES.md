@@ -1458,3 +1458,12 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - Q1.10 (2026-10-20): `snapshot verify --region <region file>` now fails and names each required adapter whose file the manifest lacks (FR-15.9). `snapshot set` uses it before publish. Without `--region` verify still checks only listed files. The data-quality report and effective dates of FR-15.9 belong to P12.1.
 
 - M1.7 closed (2026-10-20): release v2026.10.20-pr224 has no "Not a state road" in options.json. Forest Road blockers name Transport for NSW (primary). Wentworth Avenue and Bay Street are no longer blockers in any option. The 6 "Not a state road" cells left in report.html are local residential roads and a primary_link.
+
+### W1.11 notes
+
+- W1.11 part 1: `map_data.py` builds the page data from `report_data` output, `map_page.py` fills `assets/map_template.html` (a copy of `specs/21-design/map.html` with word slots), and `map_kml.py` writes the layer files with `pykml` and checks them against its bundled OGC KML 2.2 schema.
+- The layer files go in `map-layers/` with their own `SHA256SUMS`, not the top one. The old `clean_run` helper in `tests/test_report.py` copies the `FILES` list flat, so a nested name there would break it.
+- A page section whose data is missing is cut from the template (`drop_section`); the script uses a dummy node for missing ids, so no guard is needed in each handler.
+- Cost, council plan and wards are not in the run data yet, so the map leaves out their layers. The page already reads `cost`, `council` and `wards` when W1.4 and later rows add them.
+- `checks.report_files` lists every `*.html` in a release except `checks.html` and `index.html`. When the operator adds `<region>-map.html` to the release, that function must skip it; do this in the FR-21.7 part.
+- On a busy host (load above 30) the real Bayside map page took minutes to open in headless Chromium; `artifacts/W1.11/shot.py` polls for the popup instead of waiting for the load event.

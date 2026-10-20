@@ -2244,3 +2244,16 @@ Expect: 53.6 km of bike paths (spec 21 counts 53.7), Cook Park Trail 18.285 km, 
 The run took 39 minutes 49 seconds on a busy host.
 
 Artifact: `artifacts/W1.10/bayside-paths.json`, `artifacts/W1.10/bayside-map.png`
+
+### W1.11
+
+```sh
+uv run bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-19 --out out
+uv run python artifacts/W1.11/shot.py out artifacts/W1.11
+uv run pytest tests/test_map_page.py
+```
+
+Expect: `out` holds `map.html`, `map.kml` and `map-layers/*.kml`, with 53.6 km of bike paths, Cook Park Trail at 18.285 km and M6 Shared Path at 5.889 km. The page opens with no console error and no network request, and `#path-cook-park-trail` opens that path with a Google Maps ride link and a Street View link. Every layer file passes the OGC KML 2.2 schema, holds at most 2,000 placemarks and is under 5 MB. The tests pass.
+This part has no `checks.html` measure and no axe-core proof yet.
+
+Artifact: `artifacts/W1.11/summary.json`
