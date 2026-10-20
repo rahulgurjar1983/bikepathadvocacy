@@ -18,6 +18,7 @@ from bikeplan.ladder import (
     link_reasons,
     link_roads,
     link_streets,
+    open_spots,
 )
 from bikeplan.network import bike_segments
 from bikeplan.network_report import choose, network_report
@@ -182,6 +183,7 @@ def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list
     area = region.name.split(",")[0].removesuffix(" Council")
     label = f"outside {area}"
     fixes = link_fixes(graph, table, fits, profile, weights)
+    open_ends = open_spots(graph, table, fits, profile, weights, fixes)
     streets = link_streets(graph)
     roads = link_roads(
         graph, profile.network.state_functions, profile.fit.speed_approval_body.value
@@ -216,6 +218,8 @@ def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list
             profile.network.max_trip_km * 1000,
             roads,
             reasons,
+            open_ends,
+            profile.fit.spot_max_m.value,
         )
         for work in ladder["works"]:
             if work.get("outside"):
