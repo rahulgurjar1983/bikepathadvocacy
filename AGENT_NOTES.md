@@ -1480,3 +1480,4 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 
 - W1.11 part 4: `bikeplan.axe` holds the pinned axe-core (`assets/axe.min.js`, sha256 checked on every read), `violations(driver)` and `tab_stops(driver, limit)`. W1.9 should reuse it, not add a second pin. The name `bikeplan.access` is taken by the `access` command.
 - Leaflet's `.leaflet-container a` colour (#0078a8) beats `.btn`; popup buttons need `.leaflet-container a.btn`. A popup state needs `#<id>` in the URL plus `driver.refresh()`; the hash is read only at load.
+- axe reads blended colours while a CSS transition runs, so the popup fade made CI report contrast failures the host did not. `axe.violations` now waits for `document.getAnimations()` to be empty.
