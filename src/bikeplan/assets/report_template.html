@@ -556,7 +556,7 @@ document.getElementById("streets-h").textContent=(NUM[nf]||nf)+" kind"+(nf===1?"
 }
 
 if(document.getElementById("spots")){
-const sWorks=Math.max(0,st.works.score-D.spots.reduce((a,s)=>a+s.trips,0)/st.today.trips*100), ceil=st.works.score;
+const sWorks=D.before_spots, ceil=st.works.score;
 document.getElementById("spot-h").innerHTML='<a class="fig" href="#evidence">'+spotsN+'</a> short spots hold the network back';
 document.getElementById("spot-p").innerHTML='Street changes alone make <a class="fig" href="#evidence">'+Math.round(sWorks)+'%</a> of trips all-ages. The '+spotsN+' spots add up to <a class="fig" href="#evidence">'+(spotsM/1000).toFixed(1)+' km</a>. Fix them too, and <a class="fig" href="#evidence">'+Math.round(ceil)+'%</a> of trips are all-ages.';
 document.getElementById("spot-bars").innerHTML=[["Today",st.today.score,C.notyet],["Street changes",sWorks,"#8fb3f9"],["With the spots",ceil,C.plan]]
@@ -564,7 +564,7 @@ document.getElementById("spot-bars").innerHTML=[["Today",st.today.score,C.notyet
 const sl=document.getElementById("spotlist");
 const listSpots=[];const seenSt={};D.spots.forEach(s=>{const k=streetName(s.street);if(seenSt[k]){seenSt[k].more++;return;}const c=Object.assign({more:0},s);seenSt[k]=c;listSpots.push(c);});
 listSpots.slice(0,8).forEach(s=>{const li=document.createElement("li");
-  li.innerHTML='<button type="button"><span class="num">'+s.n+'</span><span><b>'+streetName(s.street)+'</b><span class="what">'+(s.kind==="signals"?"Bike and walk signals":"Raised zebra crossing")+(s.more?" · "+(s.more+1)+" spots":"")+(s.owner?" · TfNSW road":"")+'</span></span><span class="tr">'+s.trips+'<small>trips</small></span></button>';
+  li.innerHTML='<button type="button"><span class="num">'+s.n+'</span><span><b>'+streetName(s.street)+'</b><span class="what">'+KIND[s.kind]+(s.more?" · "+(s.more+1)+" spots":"")+(s.owner?" · TfNSW road":"")+'</span></span><span class="tr">'+s.trips+'<small>'+(s.trips===1?"trip":"trips")+'</small></span></button>';
   li.firstChild.addEventListener("click",()=>{document.getElementById("top").scrollIntoView({behavior:reduce?"auto":"smooth"});map.flyTo(ll(s.at),17,{animate:!reduce});spotMarkers[s.n-1].openTooltip();});
   sl.appendChild(li);});
 document.getElementById("spotmore").textContent=listSpots.length>8?"And "+(listSpots.length-8)+" more streets with spots that hold back fewer trips.":"";

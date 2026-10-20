@@ -72,17 +72,11 @@ def street_lines(streets: dict | None) -> list:
     ]
 
 
-def spot_list(pick: dict, owner_step: dict, places: dict) -> list:
+def spot_list(pick: dict, places: dict) -> list:
     spots = []
     for index, item in enumerate(pick["works"]):
         if not item.get("spot") or index not in places:
             continue
-        step = owner_step.get(index)
-        gain = 0
-        if step:
-            before = pick["steps"][step - 1]["totals"]["safe_trips"]
-            gain = pick["steps"][step]["totals"]["safe_trips"] - before
-            gain = round(gain / len(pick["steps"][step]["works"]))
         spots.append(
             {
                 "w": index,
@@ -90,7 +84,7 @@ def spot_list(pick: dict, owner_step: dict, places: dict) -> list:
                 "m": item["km"] * 1000,
                 "street": item["street"],
                 "kind": SPOT_KINDS[item["fix"]],
-                "trips": gain,
+                "trips": item["trips"],
                 "owner": item.get("owner"),
             }
         )
@@ -150,7 +144,7 @@ def report_data(options, choice, marks, joined, streets, corridor, boundary) -> 
         "streets": street_lines(streets),
         "lines": lines,
         "works": works,
-        "spots": spot_list(pick, owner_step, places),
+        "spots": spot_list(pick, places),
         "places": [
             {
                 "name": mark["name"],
@@ -176,6 +170,7 @@ def report_data(options, choice, marks, joined, streets, corridor, boundary) -> 
         ],
         "rec": rec,
         "ceiling": pick["ceiling"],
+        "before_spots": pick["no_spots"],
         "joined": joined,
         "corridors": [],
     }

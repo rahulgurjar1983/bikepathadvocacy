@@ -55,8 +55,18 @@ def work(street, fix, km, parking, **more):
     } | more
 
 
-def spot(street, fix, km, parking, owner=None):
-    return work(street, fix, km, parking, spot=True, owner=owner, assumed=False, site_check=False)
+def spot(street, fix, km, parking, owner=None, trips=0):
+    return work(
+        street,
+        fix,
+        km,
+        parking,
+        spot=True,
+        owner=owner,
+        assumed=False,
+        site_check=False,
+        trips=trips,
+    )
 
 
 def lines(work_index, ok=False, at=(151.15, -33.95)):
@@ -74,13 +84,14 @@ def pick():
         "same_as": None,
         "km": 12.4,
         "ceiling": 95.0,
+        "no_spots": 40.0,
         "blockers": [],
         "no_fix": [],
         "unjoined": [],
         "works": [
             work("Ash Street", "quietway", 4.0, 4),
-            spot("Bay Street", "raised_zebra_crossing", 0.04, 3),
-            spot("Forest Road", "bike_walk_signals", 0.05, 3, "Transport for NSW"),
+            spot("Bay Street", "raised_zebra_crossing", 0.04, 3, trips=3),
+            spot("Forest Road", "bike_walk_signals", 0.05, 3, "Transport for NSW", 6),
         ],
         "steps": [
             step(0, 10.0, 2, 0.0, 0),

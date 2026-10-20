@@ -479,10 +479,15 @@ def build_ladder(
             break
         fixed |= added
     ceiling = option_totals(table, links, joined, frozenset(links), trips)
+    for index, work in enumerate(works):
+        if work.get("spot"):
+            work["trips"] = sum(index in need for need, _ in needs)
+    built = frozenset(link for work in works if not work.get("spot") for link in work["links"])
     return {
         "works": works,
         "no_fix": list_no_fix(table, missing, streets or {}),
         "blockers": list_blockers(table, missing, streets or {}, trips, roads or {}, reasons or {}),
         "ceiling": ceiling["score"],
+        "no_spots": option_totals(table, links, joined, built, trips)["score"],
         "steps": steps,
     }

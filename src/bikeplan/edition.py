@@ -237,6 +237,7 @@ def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list
                 "no_fix": ladder["no_fix"],
                 "blockers": ladder["blockers"],
                 "ceiling": ladder["ceiling"],
+                "no_spots": ladder["no_spots"],
                 "outside": [index for index, link in enumerate(item["links"]) if link in far],
                 "links": [line(link) for link in item["links"]],
                 "lines": [
