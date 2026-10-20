@@ -22,10 +22,9 @@
 :root{color-scheme:light}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#e8ecf4;--ink-2:#b4bccb;--ink-3:#8e97a8;--paper:#0f1522;--card:#172033;--line:#2a3550;--land:#1a2233;--mapland:#1a2233;--mapwater:#0e2a44;--mappark:#1d3324;--mapair:#232b3b;--mapstreet:#2f3a50;--maprail:#56607a;--mapout:#0f1522;--mapline:#c9d3e6;--mark:#172033;--soft:#1e283c;--seg:#1e283c;--track:#26314a;--plan:#4c8dff;--today:#40c463;color-scheme:dark}}
 :root[data-theme="dark"]{--ink:#e8ecf4;--ink-2:#b4bccb;--ink-3:#8e97a8;--paper:#0f1522;--card:#172033;--line:#2a3550;--land:#1a2233;--mapland:#1a2233;--mapwater:#0e2a44;--mappark:#1d3324;--mapair:#232b3b;--mapstreet:#2f3a50;--maprail:#56607a;--mapout:#0f1522;--mapline:#c9d3e6;--mark:#172033;--soft:#1e283c;--seg:#1e283c;--track:#26314a;--plan:#4c8dff;--today:#40c463;color-scheme:dark}
-:root{--bikepath:#0f766e}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bikepath:#2dd4bf}}
-:root[data-theme="dark"]{--bikepath:#2dd4bf}
-:root[data-theme="light"]{--bikepath:#0f766e}
+html{--bikepath:#0f766e}
+@media (prefers-color-scheme:dark){html:not([data-theme="light"]){--bikepath:#2dd4bf}}
+html[data-theme="dark"]{--bikepath:#2dd4bf}
 *{box-sizing:border-box}
 .vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 html{scroll-behavior:smooth}
