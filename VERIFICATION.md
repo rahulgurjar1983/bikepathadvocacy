@@ -2278,3 +2278,15 @@ uv run python artifacts/W1.11/release-check.py /tmp/w111/out /tmp/w111/release a
 Expect: the Bayside release folder with the three map files has no FR-21.7 problem. Removing any one of the three prints `is not in the release` for it.
 
 Artifact: `artifacts/W1.11/release-check.json`
+
+### W1.11 access
+
+```sh
+uv run pytest tests/test_map_access.py -v
+uv run bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-19 --out /tmp/w111/out
+uv run python -I artifacts/W1.11/axe.py /tmp/w111/out artifacts/W1.11
+```
+
+Expect: 8 passed. The Bayside `map.html` has 0 axe-core 4.14.0 violations of impact serious or critical at 390 by 844 and 1440 by 900, at load and with the first street change popup open. Tab reaches 102 stops at load, each with a focus ring.
+
+Artifact: `artifacts/W1.11/axe.json`

@@ -1,0 +1,46 @@
+{
+ "axe": "4.14.0",
+ "change": "banks-avenue-cycleway-in-spare-1",
+ "states": [
+  {
+   "size": [
+    390,
+    844
+   ],
+   "popup": false,
+   "violations": [],
+   "tab_stops": 102,
+   "tab_stops_without_ring": []
+  },
+  {
+   "size": [
+    390,
+    844
+   ],
+   "popup": true,
+   "violations": [],
+   "tab_stops": 0,
+   "tab_stops_without_ring": []
+  },
+  {
+   "size": [
+    1440,
+    900
+   ],
+   "popup": false,
+   "violations": [],
+   "tab_stops": 102,
+   "tab_stops_without_ring": []
+  },
+  {
+   "size": [
+    1440,
+    900
+   ],
+   "popup": true,
+   "violations": [],
+   "tab_stops": 0,
+   "tab_stops_without_ring": []
+  }
+ ]
+}

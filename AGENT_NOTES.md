@@ -1477,3 +1477,7 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - `map-layers/SHA256SUMS` is not a layer file. The check counts only `*.kml`.
 
 - W1.11 part 3: `map_checks.release_problems` compares the release's `<id>-map.html`, `<id>-map.kml` and `<id>-map-layers.zip` byte for byte with the archive. `pack` in `tests/test_checks_map.py` now writes all three, so old FR-21.7 cases still see a true release.
+
+- W1.11 part 4: `bikeplan.axe` holds the pinned axe-core (`assets/axe.min.js`, sha256 checked on every read), `violations(driver)` and `tab_stops(driver, limit)`. W1.9 should reuse it, not add a second pin. The name `bikeplan.access` is taken by the `access` command.
+- Leaflet's `.leaflet-container a` colour (#0078a8) beats `.btn`; popup buttons need `.leaflet-container a.btn`. A popup state needs `#<id>` in the URL plus `driver.refresh()`; the hash is read only at load.
+- axe reads blended colours while a CSS transition runs, so the popup fade made CI report contrast failures the host did not. `axe.violations` now waits for `document.getAnimations()` to be empty.
