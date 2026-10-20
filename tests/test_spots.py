@@ -304,11 +304,11 @@ def test_fr20_2_a_short_piece_ending_at_a_trips_own_end_is_a_spot_for_that_trip(
 def test_fr20_2_a_short_piece_whose_trips_go_on_along_a_long_busy_road_stays_a_blocker():
     ladder = ladder_with_open_ends(open_world(far=500.0), [(1, 0), (2, 3)])
     assert ladder["works"] == []
-    assert {item["street"] for item in ladder["blockers"]} == {"busy", "long"}
+    assert [item["links"] for item in ladder["blockers"]] == [[(1, 2, 0), (2, 3, 0)]]
 
 
 def test_fr20_2_a_short_piece_is_a_spot_when_one_of_its_trips_ends_there_and_another_goes_on():
     ladder = ladder_with_open_ends(open_world(far=500.0), [(1, 0), (2, 2), (3, 3)])
     assert [work["links"] for work in ladder["works"]] == [[(1, 2, 0)]]
     assert ladder["steps"][-1]["totals"]["score"] > ladder["steps"][0]["totals"]["score"]
-    assert [item["street"] for item in ladder["blockers"]] == ["long"]
+    assert [item["links"] for item in ladder["blockers"]] == [[(2, 3, 0)]]
