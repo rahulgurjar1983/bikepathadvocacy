@@ -1,0 +1,11 @@
+tests/test_checks_map.py::test_fr21_7_the_release_list_skips_the_map_page PASSED
+tests/test_checks_map.py::test_fr21_7_the_map_check_is_a_release_check PASSED
+tests/test_checks_map.py::test_fr21_7_a_true_map_passes_every_measure PASSED
+tests/test_checks_map.py::test_fr21_7_a_console_error_fails PASSED
+tests/test_checks_map.py::test_fr21_7_a_network_request_fails PASSED
+tests/test_checks_map.py::test_fr21_7_a_wrong_layer_count_fails PASSED
+tests/test_checks_map.py::test_fr21_7_a_work_left_out_of_every_street_change_fails PASSED
+tests/test_checks_map.py::test_fr21_7_a_bike_path_km_off_the_figure_fails PASSED
+tests/test_checks_map.py::test_fr21_7_a_google_link_off_its_form_fails PASSED
+tests/test_checks_map.py::test_fr21_7_a_layer_file_that_is_not_kml_fails PASSED
+============================= 10 passed in 31.68s ==============================
