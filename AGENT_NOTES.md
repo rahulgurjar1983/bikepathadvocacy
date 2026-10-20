@@ -41,6 +41,17 @@ parts have script guards. The read time comes from the page's words at
 load. These changes let the mock read real run data and keep the old
 report whole; they do not change its design.
 
+### W1.0 page figures
+
+`page_figures` in `report_page.py` makes the spot, street-change and score
+figures after the option figures, so the older IDs do not move. A run with
+no spots and no works makes none, so the test grid still has F1 to F85.
+`place_figures` maps figure labels to the keys the page script reads with
+`fg(key)`. A key with no figure falls back to the closed part. The council
+keys `council_share` and `council_km` wait for FR-20.24. The test grid has
+no works, so figure link tests build their data from the `pick()` helper.
+The local Bayside report takes about 33 minutes.
+
 ### M1.7 the release has no road segments to read (open)
 
 The release build pulls the Bayside snapshot from `snapshots/au-nsw-bayside/2026-10-01/manifest.json`. That manifest lists five files and no `road_segments.gpkg`, `speed_zones.gpkg` or `elevation.tif`. The build reads the road function only when `road_segments.gpkg` exists, so no release link has a road function and every blocker says "Not a state road". The code of parts 1 and 2 cannot show in a release until a snapshot with the file is published.

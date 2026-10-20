@@ -2112,6 +2112,31 @@ are the safe trips that pass through it. A count of one reads "1 trip".
 The test grid holds no spots, so the artifact shows none; the Bayside
 release is the real check, and the row stays open until then.
 Artifact: `artifacts/W1.0/spot-facts.json`.
+
+Release check for the spot faults (pr228):
+
+```sh
+gh release download v2026.10.20-pr228 -p au-nsw-bayside-report.html
+python3 -c "import re,json;t=open('au-nsw-bayside-report.html').read();d=json.loads(re.search(r'<script id=\"data\" type=\"application/json\">(.*?)</script>',t,re.S)[1]);print(d['before_spots'],len(d['spots']),sorted({s['kind'] for s in d['spots']}),max(s['trips'] for s in d['spots']))"
+```
+
+Expect: `29.8661...`, 27 spots, kinds `path` and `signals`, most trips 192.
+
+Page figures (FR-20.18):
+
+```sh
+uv run --frozen pytest -q tests/test_report_page.py
+uv run --frozen bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-19 --out /tmp/w10bay
+python3 -c "import json;d=json.load(open('artifacts/W1.0/page-figures.json'));print(d['links']['spots'],len(d['figures']))"
+```
+
+Expect: the tests pass. The spot count, spot length, score without spots,
+full plan score and the km of each street change are figures F155 to F164.
+Each recipe prints its value from `options.json`. The spot, street-change
+and TfNSW numbers on the page link to those entries and to F82 to F84.
+The council numbers stay on the closed part until the council plan data
+lands, so the row stays open.
+Artifact: `artifacts/W1.0/page-figures.json`.
 Release check for part 3 (pr215): download the release and list the short blockers.
 Command: `gh release download v2026.10.19-pr215 -p au-nsw-bayside.tar.gz && tar -xzf au-nsw-bayside.tar.gz options.json && python3 -c "import json;[print(p['id'],sum(b['km']<=.1 for b in p['blockers'])) for p in json.load(open('options.json'))['options']]"`
 Expect: calm 5, shortest 9, separated 7, mesh 7. Bardwell Road is not a blocker. The row is not complete.
