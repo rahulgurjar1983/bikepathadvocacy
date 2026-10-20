@@ -203,6 +203,8 @@ def csv_bytes(records: list[dict], kinds: list) -> bytes:
 
 
 LAYER_FOLDER = "map-layers"
+MAP_FILES = ("map.html", "map.kml")
+MAP_SUMS = "MAP-SHA256SUMS"
 
 
 def build_all(
@@ -396,9 +398,11 @@ def write_report(
     check_leaks(outputs["report.html"].decode(), out, snapshot)
     check_leaks(files["map.html"].decode(), out, snapshot)
     layers = {name: blob for name, blob in files.items() if name.startswith(f"{LAYER_FOLDER}/")}
-    top = {name: blob for name, blob in files.items() if name not in layers}
+    mapped = {name: blob for name, blob in files.items() if name in MAP_FILES}
+    top = {name: blob for name, blob in files.items() if name not in layers and name not in mapped}
     lines = write_files(Path(out), {**top, "report.html": outputs["report.html"]})
     (Path(out) / "SHA256SUMS").write_text("".join(lines))
+    (Path(out) / MAP_SUMS).write_text("".join(write_files(Path(out), mapped)))
     folder = Path(out) / LAYER_FOLDER
     if layers:
         inner = write_files(folder, {name.split("/", 1)[1]: blob for name, blob in layers.items()})
