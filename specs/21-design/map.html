@@ -1,0 +1,354 @@
+<title>Bayside Bike Plan Map</title>
+<meta name="description" content="Every street change, spot and route in Rahul Gurjar's Bayside bike plan, on one map that opens in Google Maps.">
+<style>
+{{LEAFLET_CSS}}
+/* Layout: a field map. Panel of layers and street changes on the left, the map on the right; on a phone the map sits on top and the panel follows. */
+:root{
+  --ink:#16213a;--ink-2:#4a5568;--ink-3:#6b7280;--paper:#fbfaf7;--card:#ffffff;--line:#e6e2da;--soft:#f1eee8;
+  --today:#2f9e44;--plan:#1c64f2;--plan-2:#6d9cf6;--spot:#c2410c;--notyet:#868e96;--council:#7c3aed;--tfnsw:#343a40;--path:#0f766e;--lane:#a16207;
+  --land:#f4f2ee;--water:#cfe2f3;--park:#dcebd2;--air:#ece8e1;--street:#d6d1c7;--rail:#a8a196;--out:#e9e6e0;--edge:#16213a;
+  --school:#f2b705;--station:#16213a;--centre:#0b7285;--focus:#1c64f2;
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --step--1:.8125rem;--step-0:.9375rem;--step-1:1.125rem;--step-2:1.5rem;
+  --r:10px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ink:#e8ecf4;--ink-2:#b4bccb;--ink-3:#8e97a8;--paper:#0f1522;--card:#172033;--line:#2a3550;--soft:#1e283c;
+  --today:#40c463;--plan:#4c8dff;--plan-2:#8fb6ff;--notyet:#9aa3ad;--council:#a78bfa;--tfnsw:#c9d3e6;--path:#2dd4bf;--lane:#e3b341;
+  --land:#1a2233;--water:#0e2a44;--park:#1d3324;--air:#232b3b;--street:#2f3a50;--rail:#56607a;--out:#121a29;--edge:#c9d3e6;
+  --station:#e8ecf4;--centre:#3bc9db;--focus:#8fb6ff;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --ink:#e8ecf4;--ink-2:#b4bccb;--ink-3:#8e97a8;--paper:#0f1522;--card:#172033;--line:#2a3550;--soft:#1e283c;
+  --today:#40c463;--plan:#4c8dff;--plan-2:#8fb6ff;--notyet:#9aa3ad;--council:#a78bfa;--tfnsw:#c9d3e6;--path:#2dd4bf;--lane:#e3b341;
+  --land:#1a2233;--water:#0e2a44;--park:#1d3324;--air:#232b3b;--street:#2f3a50;--rail:#56607a;--out:#121a29;--edge:#c9d3e6;
+  --station:#e8ecf4;--centre:#3bc9db;--focus:#8fb6ff;color-scheme:dark}
+html,body{height:100%}
+[hidden]{display:none!important}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 var(--step-0)/1.5 var(--font)}
+a{color:var(--plan)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.app{display:grid;grid-template-columns:minmax(320px,400px) 1fr;height:100%}
+.panel{overflow-y:auto;border-right:1px solid var(--line);background:var(--paper);padding-inline:20px;padding-block:20px 32px;display:flex;flex-direction:column;gap:22px;min-width:0}
+#map{height:100%;background:var(--land)}
+@media (max-width:760px){
+  .app{display:flex;flex-direction:column;height:auto}
+  #map{height:62vh;order:-1;position:sticky;top:env(safe-area-inset-top,0px);z-index:1;border-bottom:1px solid var(--line)}
+  .panel{overflow:visible;border-right:0;padding-inline:16px}
+}
+.eyebrow{font-size:var(--step--1);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:0 0 4px}
+h1{font-size:var(--step-2);line-height:1.15;margin:0;text-wrap:balance;letter-spacing:-.01em}
+h2{font-size:var(--step-1);margin:0 0 10px;text-wrap:balance}
+p{margin:0}
+.lede{color:var(--ink-2);margin-top:8px}
+.stages{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stage{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;min-width:0}
+.stage b{display:block;font-size:var(--step-2);line-height:1.1;font-variant-numeric:tabular-nums}
+.stage span{font-size:var(--step--1);color:var(--ink-2)}
+.facts{font-size:var(--step--1);color:var(--ink-2);margin-top:8px;font-variant-numeric:tabular-nums}
+.gm{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.gm ol{margin:0;padding-left:20px;display:grid;gap:6px}
+.files{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.files a,.btn{display:inline-flex;align-items:center;gap:6px;font-size:var(--step--1);font-weight:600;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:5px 11px;color:var(--ink);background:var(--soft)}
+.files a:hover,.btn:hover{border-color:var(--plan)}
+.note{font-size:var(--step--1);color:var(--ink-3);margin-top:10px}
+.layers{display:grid;gap:2px}
+.layer{display:flex;align-items:center;gap:10px;padding:6px 4px;border-radius:8px;cursor:pointer}
+.layer:hover{background:var(--soft)}
+.layer input{margin:0;width:16px;height:16px;accent-color:var(--plan)}
+.layer .lab{flex:1;min-width:0}
+.layer .n{font-size:var(--step--1);color:var(--ink-3);font-variant-numeric:tabular-nums}
+.sw{width:22px;height:0;border-top:4px solid;flex:none;border-radius:2px}
+.sw.dash{border-top-style:dashed}
+.sw.dot{width:12px;height:12px;border:0;border-radius:50%}
+.sw.area{width:16px;height:12px;border:1.5px dashed;border-radius:3px}
+.search{width:100%;box-sizing:border-box;font:inherit;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.chip{font:inherit;font-size:var(--step--1);border:1px solid var(--line);background:var(--card);color:var(--ink-2);border-radius:999px;padding:4px 10px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.list{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.item{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;width:100%;text-align:left;font:inherit;color:inherit;background:none;border:0;border-radius:8px;padding:7px 6px;cursor:pointer}
+.item:hover,.item[aria-current="true"]{background:var(--soft)}
+.item .t{min-width:0}
+.item .t b{display:block;font-weight:600;overflow-wrap:anywhere}
+.item .t span{font-size:var(--step--1);color:var(--ink-2)}
+.item .k{font-size:var(--step--1);color:var(--ink-3);font-variant-numeric:tabular-nums;text-align:right}
+.num{width:22px;height:22px;border-radius:50%;background:var(--spot);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center}
+.more{font:inherit;font-size:var(--step--1);margin-top:8px}
+.pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;border-radius:999px;padding:1px 8px;border:1px solid}
+.pill.covered{color:var(--today);border-color:var(--today)}
+.pill.partly{color:var(--plan);border-color:var(--plan)}
+.pill.missed{color:var(--ink-3);border-color:var(--notyet)}
+footer{font-size:var(--step--1);color:var(--ink-3);border-top:1px solid var(--line);padding-top:14px;display:grid;gap:6px}
+.leaflet-container{font:inherit;background:var(--land)}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--card);color:var(--ink);box-shadow:0 4px 18px rgba(0,0,0,.18)}
+.leaflet-popup-content{margin:14px 16px;min-width:220px}
+.pop h3{font-size:var(--step-0);margin:0 0 2px}
+.pop .fx{color:var(--ink-2);margin-bottom:8px}
+.pop dl{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;margin:0 0 10px;font-size:var(--step--1);font-variant-numeric:tabular-nums}
+.pop dt{color:var(--ink-3)}
+.pop dd{margin:0}
+.pop .go{display:flex;flex-wrap:wrap;gap:6px}
+.leaflet-bar a{background:var(--card);color:var(--ink);border-color:var(--line)}
+.leaflet-control-attribution{background:color-mix(in srgb,var(--card) 80%,transparent)!important;color:var(--ink-3)}
+.leaflet-control-attribution a{color:var(--ink-2)}
+.smark{width:24px;height:24px;border-radius:50%;background:var(--spot);color:#fff;font:700 11px/24px var(--font);text-align:center;box-shadow:0 0 0 2px var(--card)}
+.pmark{width:9px;height:9px;box-shadow:0 0 0 1.5px var(--card)}
+.pmark.school{background:var(--school);border-radius:3px}
+.pmark.station{background:var(--station);border-radius:50%}
+.pmark.town_centre{background:var(--centre);transform:rotate(45deg);border-radius:1px;width:8px;height:8px}
+.wlab{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap;text-shadow:0 0 3px var(--land)}
+@media (prefers-reduced-motion:reduce){.leaflet-zoom-anim .leaflet-zoom-animated{transition:none!important}}
+</style>
+<div class="app">
+  <aside class="panel" aria-label="Map layers and street changes">
+    <header>
+      <p class="eyebrow">Bayside · my pick: Main roads with separation</p>
+      <h1>Bayside Bike Plan Map</h1>
+      <p class="lede">Every street change in the plan, drawn on Bayside's streets. Tap a street to see what changes there, then open it in Google Maps or Street View.</p>
+    </header>
+    <section aria-labelledby="h-stages">
+      <h2 id="h-stages" class="eyebrow">Trips that are safe for all ages</h2>
+      <div class="stages" id="stages"></div>
+      <p class="facts" id="facts"></p>
+    </section>
+    <section class="gm" aria-labelledby="h-gm">
+      <h2 id="h-gm">Open it in Google Maps</h2>
+      <p>Every street, spot and place on this map opens in Google Maps. Tap one, then choose <b>Ride it in Google Maps</b> for a bike route along it, or <b>Street View</b> to see it today.</p>
+      <div class="files"><a href="https://www.google.com/maps/@?api=1&amp;map_action=map&amp;center=-33.955%2C151.165&amp;zoom=13&amp;layer=bicycling" target="_blank" rel="noopener">Bayside with Google's bike layer</a></div>
+      <p class="note">Google's bike layer shows the paths and lanes there today. This map shows them too, with what the plan adds.</p>
+    </section>
+    <section aria-labelledby="h-layers">
+      <h2 id="h-layers">Layers</h2>
+      <div class="layers" id="layers"></div>
+    </section>
+    <section aria-labelledby="h-changes">
+      <h2 id="h-changes">Street changes</h2>
+      <label for="q" class="eyebrow">Find a street</label>
+      <input id="q" class="search" type="search" placeholder="Try Bay Street or Rockdale" autocomplete="off">
+      <div class="chips" id="chips" role="group" aria-label="Show one kind of change"></div>
+      <ul class="list" id="list"></ul>
+      <button class="btn more" id="more" type="button" hidden></button>
+    </section>
+    <section aria-labelledby="h-paths">
+      <h2 id="h-paths">Bike paths today</h2>
+      <p class="lede" style="margin:0 0 10px" id="pathnote"></p>
+      <ul class="list" id="paths"></ul>
+      <button class="btn more" id="morepaths" type="button" hidden></button>
+    </section>
+    <section aria-labelledby="h-spots">
+      <h2 id="h-spots">Spots</h2>
+      <p class="lede" style="margin:0 0 10px">A spot is a short piece of busy road where a route crosses or runs along it. A crossing or a short path fixes it.</p>
+      <ul class="list" id="spots"></ul>
+    </section>
+    <section aria-labelledby="h-council">
+      <h2 id="h-council">Council's 2024 bike plan</h2>
+      <p class="lede" style="margin:0 0 10px" id="councilnote"></p>
+      <ul class="list" id="council"></ul>
+    </section>
+    <footer id="foot"></footer>
+  </aside>
+  <main id="map" aria-label="Map of Bayside"></main>
+</div>
+<script id="data" type="application/json">{{DATA_JSON}}</script>
+<script>{{LEAFLET_JS}}</script>
+<script>
+(function(){
+const D=JSON.parse(document.getElementById("data").textContent);
+const $=s=>document.querySelector(s);
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const ll=c=>[c[1],c[0]];
+const lls=cs=>cs.map(ll);
+const fmt=(n,d=0)=>n.toLocaleString("en-AU",{minimumFractionDigits:d,maximumFractionDigits:d});
+const money=x=>x<1e6?"$"+fmt(Math.round(x/1e4)*10)+"k":"$"+fmt(x/1e6,1)+"M";
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const SHORT={quietway:"Quiet street",cycleway_in_spare:"Protected bike lane",cycleway_parking_one_side:"Bike lane, parking one side",cycleway_parking_both_sides:"Bike lanes, parking both sides",road_diet:"Bike lane, one traffic lane",verge_path:"Path beside the road",new_path:"New path"};
+const STAGE={1:"First stage",2:"Full plan"};
+const TYPE={school:"School",station:"Station",town_centre:"Town centre"};
+const G={
+  pin:a=>"https://www.google.com/maps/search/?api=1&query="+a[1]+"%2C"+a[0],
+  sv:a=>"https://www.google.com/maps/@?api=1&map_action=pano&viewpoint="+a[1]+"%2C"+a[0],
+  ride:(a,b)=>"https://www.google.com/maps/dir/?api=1&origin="+a[1]+"%2C"+a[0]+"&destination="+b[1]+"%2C"+b[0]+"&travelmode=bicycling"
+};
+const go=(links)=>'<div class="go">'+links.map(([t,u])=>'<a class="btn" href="'+u+'" target="_blank" rel="noopener">'+t+'</a>').join("")+'</div>';
+
+const S=D.stages;
+$("#stages").innerHTML=[["Today",S.today.score],["First stage",S.first.score],["Full plan",S.works.score]].map(([t,v])=>'<div class="stage"><b>'+fmt(v)+'%</b><span>'+t+'</span></div>').join("");
+const kmAll=D.changes.reduce((a,c)=>a+c.km,0),park=D.changes.reduce((a,c)=>a+c.park,0),cost=D.changes.reduce((a,c)=>a+c.cost[1],0);
+$("#facts").textContent=fmt(D.changes.length)+" street changes on "+fmt(kmAll,1)+" km. "+fmt(park)+" parking spaces change. Likely cost "+money(cost)+" for the street changes, before the spots.";
+
+const R=L.canvas({padding:.5,tolerance:8});
+const map=L.map("map",{renderer:R,zoomSnap:.25,preferCanvas:true,attributionControl:true});
+map.attributionControl.setPrefix(false).addAttribution("© OpenStreetMap contributors · Bayside Council · TfNSW");
+const panes=["base","council","tfnsw","paths","today","plan","hi"];
+panes.forEach((p,i)=>{map.createPane(p).style.zIndex=300+i*10});
+
+const C={};
+function colours(){["--today","--path","--lane","--plan","--plan-2","--spot","--notyet","--council","--tfnsw","--land","--water","--park","--air","--street","--rail","--out","--edge","--ink-3","--card"].forEach(n=>C[n]=css(n))}
+colours();
+
+const base=L.layerGroup().addTo(map);
+const baseItems=[];
+function drawBase(){
+  base.clearLayers();
+  (D.base.water||[]).forEach(p=>base.addLayer(L.polygon(p.map(lls),{pane:"base",interactive:false,stroke:false,fillColor:C["--water"],fillOpacity:1})));
+  (D.base.park||[]).forEach(p=>base.addLayer(L.polygon(p.map(lls),{pane:"base",interactive:false,stroke:false,fillColor:C["--park"],fillOpacity:1})));
+  (D.base.air||[]).forEach(p=>base.addLayer(L.polygon(p.map(lls),{pane:"base",interactive:false,stroke:false,fillColor:C["--air"],fillOpacity:1})));
+  base.addLayer(L.polyline(D.streets.map(lls),{pane:"base",interactive:false,color:C["--street"],weight:1}));
+  base.addLayer(L.polyline((D.base.rail||[]).map(lls),{pane:"base",interactive:false,color:C["--rail"],weight:1.5,dashArray:"5 4"}));
+  (D.base.outside||[]).forEach(p=>base.addLayer(L.polygon(p.map(lls),{pane:"base",interactive:false,stroke:false,fillColor:C["--out"],fillOpacity:.72})));
+  (D.base.boundary||[]).forEach(p=>base.addLayer(L.polygon(p.map(lls),{pane:"base",interactive:false,fill:false,color:C["--edge"],weight:1.5,opacity:.55})));
+}
+drawBase();
+const bounds=L.latLngBounds(D.base.boundary[0][0].map(ll));
+map.fitBounds(bounds,{padding:[12,12]});
+
+const groups={};
+const LAYERS=[
+  {id:"plan1",label:"First stage changes",sw:"--plan",on:true},
+  {id:"plan2",label:"Full plan changes",sw:"--plan-2",dash:true,on:true},
+  {id:"today",label:"All ages today on my pick",sw:"--today",on:true},
+  {id:"paths",label:"Bike paths today",sw:"--path",on:true},
+  {id:"lanes",label:"Painted bike lanes today",sw:"--lane",dash:true,on:false},
+  {id:"spots",label:"Spots",sw:"--spot",dot:true,on:true},
+  {id:"blockers",label:"Not fixed yet",sw:"--notyet",dash:true,on:true},
+  {id:"places",label:"Schools, stations, town centres",sw:"--station",dot:true,on:true},
+  {id:"council",label:"Council's 2024 bike plan",sw:"--council",on:false},
+  {id:"tfnsw",label:"TfNSW strategic corridors",sw:"--tfnsw",on:false},
+  {id:"wards",label:"Wards",sw:"--ink-3",area:true,on:false}
+];
+LAYERS.forEach(l=>groups[l.id]=L.layerGroup());
+
+const changeLayer={};
+function changeStyle(c,dim){return{pane:"plan",color:c.stage===1?C["--plan"]:C["--plan-2"],weight:c.stage===1?4.5:4,dashArray:c.stage===1?null:"7 5",opacity:dim?.15:1,lineCap:"round"}}
+function changePop(c){
+  const rows=[["Stage",STAGE[c.stage]],["Length",fmt(c.km,2)+" km"]];
+  if(c.park)rows.push(["Parking",fmt(c.park)+" spaces change"]);
+  if(c.lane>0.005)rows.push(["Traffic lane",fmt(c.lane,2)+" km becomes a bike lane"]);
+  if(c.slow>0.005)rows.push(["30 km/h",fmt(c.slow,2)+" km"]);
+  rows.push(["Likely cost",money(c.cost[1])+" ("+money(c.cost[0])+" to "+money(c.cost[2])+")"]);
+  return '<div class="pop"><h3>'+esc(c.street)+'</h3><p class="fx">'+esc(D.plain[c.fix])+'</p><dl>'+rows.map(([a,b])=>'<dt>'+a+'</dt><dd>'+b+'</dd>').join("")+'</dl>'+go([["Ride it in Google Maps",G.ride(c.ends[0],c.ends[1])],["Street View",G.sv(c.at)]])+'</div>';
+}
+D.changes.forEach(c=>{
+  const pl=L.polyline(c.lines.map(lls),changeStyle(c));
+  pl.bindPopup(()=>changePop(c),{maxWidth:300});
+  pl.on("click",()=>mark(c.id));
+  pl.bindTooltip(esc(c.street)+": "+SHORT[c.fix],{sticky:true,direction:"top"});
+  changeLayer[c.id]=pl;
+  groups[c.stage===1?"plan1":"plan2"].addLayer(pl);
+});
+groups.today.addLayer(L.polyline(D.today.map(lls),{pane:"today",color:C["--today"],weight:3.5,interactive:false}));
+groups.blockers.addLayer(L.polyline(D.blockers.map(lls),{pane:"today",color:C["--notyet"],weight:3,dashArray:"4 5",interactive:false}));
+
+const pathLayer={};
+function pathPop(p){
+  const on=Math.round(p.on_pick*100);
+  return '<div class="pop"><h3>'+esc(p.name)+'</h3><p class="fx">Bike path or shared path, open today</p><dl><dt>Length</dt><dd>'+fmt(p.km,2)+' km in Bayside</dd><dt>On my pick</dt><dd>'+(on?on+'% of it':'Not yet')+'</dd></dl>'+go([["Ride it in Google Maps",G.ride(p.ends[0],p.ends[1])],["Street View",G.sv(p.at)]])+'</div>';
+}
+D.paths.forEach(p=>{
+  const pl=L.polyline(p.lines.map(lls),{pane:"paths",color:C["--path"],weight:3.5,lineCap:"round"});
+  pl.bindPopup(()=>pathPop(p),{maxWidth:300});
+  pl.bindTooltip(esc(p.name),{sticky:true,direction:"top"});
+  pathLayer[p.id]=pl;groups.paths.addLayer(pl);
+});
+D.lanes.forEach(p=>{
+  const pl=L.polyline(p.lines.map(lls),{pane:"paths",color:C["--lane"],weight:2.5,dashArray:"2 4",lineCap:"round"});
+  pl.bindPopup('<div class="pop"><h3>'+esc(p.name)+'</h3><p class="fx">Painted bike lane on the road, open today</p><dl><dt>Length</dt><dd>'+fmt(p.km,2)+' km in Bayside</dd></dl>'+go([["Street View",G.sv(p.at)]])+'</div>',{maxWidth:280});
+  groups.lanes.addLayer(pl);
+});
+const spotMarker={};
+D.spots.forEach(s=>{
+  const m=L.marker(ll(s.at),{icon:L.divIcon({className:"",html:'<div class="smark">'+s.n+'</div>',iconSize:[24,24],iconAnchor:[12,12]}),title:"Spot "+s.n+": "+s.street,keyboard:false});
+  m.bindPopup('<div class="pop"><h3>Spot '+s.n+': '+esc(s.street)+'</h3><p class="fx">'+D.kind[s.kind]+'</p><dl><dt>Length</dt><dd>'+fmt(s.m)+' m of busy road</dd><dt>Owner</dt><dd>'+esc(s.owner)+'</dd></dl>'+go([["Google Maps",G.pin(s.at)],["Street View",G.sv(s.at)]])+'</div>',{maxWidth:300});
+  spotMarker[s.n]=m;groups.spots.addLayer(m);
+});
+D.places.forEach(p=>{
+  const m=L.marker(ll(p.at),{icon:L.divIcon({className:"",html:'<div class="pmark '+p.type+'"></div>',iconSize:[9,9],iconAnchor:[4.5,4.5]}),title:p.name,keyboard:false});
+  m.bindPopup('<div class="pop"><h3>'+esc(p.name)+'</h3><p class="fx">'+TYPE[p.type]+'</p>'+go([["Google Maps",G.pin(p.at)],["Street View",G.sv(p.at)]])+'</div>',{maxWidth:280});
+  groups.places.addLayer(m);
+});
+const councilLayer={};
+D.council.forEach(r=>{
+  const pl=L.polyline(r.lines.map(lls),{pane:"council",color:C["--council"],weight:7,opacity:.45,lineCap:"round"});
+  pl.bindPopup('<div class="pop"><h3>'+r.id+': '+esc(r.name)+'</h3><p class="fx">Bayside Bike Plan 2024 route</p><dl><dt>Length</dt><dd>'+fmt(r.km,1)+' km</dd><dt>On my pick</dt><dd>'+Math.round(r.share*100)+'% within 100 m · '+r.v+'</dd></dl></div>',{maxWidth:280});
+  councilLayer[r.id]=pl;groups.council.addLayer(pl);
+});
+D.corridors.forEach(r=>{
+  const pl=L.polyline(r.lines.map(lls),{pane:"tfnsw",color:C["--tfnsw"],weight:9,opacity:.22,lineCap:"round"});
+  pl.bindTooltip("TfNSW corridor "+r.id,{sticky:true});
+  groups.tfnsw.addLayer(pl);
+});
+D.wards.forEach(w=>{
+  w.poly.forEach(p=>groups.wards.addLayer(L.polygon(p.map(lls),{pane:"base",fill:false,color:C["--ink-3"],weight:1.5,dashArray:"2 5",interactive:false})));
+  groups.wards.addLayer(L.marker(ll(w.at),{icon:L.divIcon({className:"",html:'<div class="wlab">'+esc(w.name)+'</div>',iconSize:null}),interactive:false,keyboard:false}));
+});
+
+const counts={plan1:D.changes.filter(c=>c.stage===1).length,plan2:D.changes.filter(c=>c.stage===2).length,today:fmt(S.today.km,1)+" km",paths:fmt(D.paths_km,1)+" km",lanes:fmt(D.lanes_km,1)+" km",spots:D.spots.length,blockers:D.blockers.length,places:D.places.length,council:D.council.length,tfnsw:D.corridors.length,wards:D.wards.length};
+$("#layers").innerHTML=LAYERS.map(l=>'<label class="layer"><input type="checkbox" id="L-'+l.id+'"'+(l.on?" checked":"")+'><span class="sw'+(l.dash?" dash":"")+(l.dot?" dot":"")+(l.area?" area":"")+'" style="'+(l.dot?"background:":l.area?"border-color:":"border-top-color:")+'var('+l.sw+')"></span><span class="lab">'+l.label+'</span><span class="n">'+counts[l.id]+'</span></label>').join("");
+LAYERS.forEach(l=>{
+  const box=$("#L-"+l.id);
+  const set=()=>box.checked?groups[l.id].addTo(map):groups[l.id].remove();
+  box.addEventListener("change",set);set();
+});
+
+let fix="all",query="",shown=40,current=null;
+const fixes=[...new Set(D.changes.map(c=>c.fix))].sort((a,b)=>D.changes.filter(c=>c.fix===b).length-D.changes.filter(c=>c.fix===a).length);
+$("#chips").innerHTML=['<button type="button" class="chip" data-f="all" aria-pressed="true">All</button>'].concat(fixes.map(f=>'<button type="button" class="chip" data-f="'+f+'" aria-pressed="false">'+SHORT[f]+'</button>')).join("");
+$("#chips").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;fix=b.dataset.f;document.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",x===b));shown=40;render()});
+$("#q").addEventListener("input",e=>{query=e.target.value.trim().toLowerCase();shown=40;render()});
+$("#more").addEventListener("click",()=>{shown+=80;render()});
+function swatch(c){return '<span class="sw'+(c.stage===2?" dash":"")+'" style="border-top-color:var('+(c.stage===1?"--plan":"--plan-2")+')"></span>'}
+function render(){
+  const hit=D.changes.filter(c=>(fix==="all"||c.fix===fix)&&(!query||c.street.toLowerCase().includes(query)||SHORT[c.fix].toLowerCase().includes(query)));
+  D.changes.forEach(c=>changeLayer[c.id].setStyle(changeStyle(c,fix!=="all"&&c.fix!==fix)));
+  $("#list").innerHTML=hit.slice(0,shown).map(c=>'<li><button type="button" class="item" data-id="'+c.id+'"'+(c.id===current?' aria-current="true"':'')+'>'+swatch(c)+'<span class="t"><b>'+esc(c.street)+'</b><span>'+SHORT[c.fix]+' · '+STAGE[c.stage]+'</span></span><span class="k">'+fmt(c.km,2)+' km'+(c.park?'<br>'+fmt(c.park)+' spaces':'')+'</span></button></li>').join("")||'<li class="note">No street change matches. Try another street name.</li>';
+  const more=$("#more");more.hidden=hit.length<=shown;more.textContent="Show "+fmt(Math.min(80,hit.length-shown))+" more of "+fmt(hit.length);
+}
+render();
+$("#list").addEventListener("click",e=>{const b=e.target.closest(".item");if(b)focusChange(b.dataset.id,true)});
+const hi=L.layerGroup().addTo(map);
+function mark(id){current=id;document.querySelectorAll("#list .item").forEach(x=>x.toggleAttribute("aria-current",x.dataset.id===id));try{history.replaceState(null,"","#"+id)}catch(e){}}
+function focusChange(id,fly){
+  const c=D.changes.find(x=>x.id===id);if(!c)return;
+  mark(id);hi.clearLayers();
+  hi.addLayer(L.polyline(c.lines.map(lls),{pane:"hi",color:C["--card"],weight:11,opacity:.9,interactive:false}));
+  hi.addLayer(L.polyline(c.lines.map(lls),{pane:"hi",color:c.stage===1?C["--plan"]:C["--plan-2"],weight:6,interactive:false}));
+  const b=L.latLngBounds(c.lines.flat().map(ll));
+  if(fly)map.flyToBounds(b,{maxZoom:17,padding:[60,60],duration:.6});
+  setTimeout(()=>L.popup({maxWidth:300}).setLatLng(ll(c.at)).setContent(changePop(c)).openOn(map),fly?650:0);
+  if(window.matchMedia("(max-width:760px)").matches)$("#map").scrollIntoView({block:"start"});
+}
+$("#spots").innerHTML=D.spots.map(s=>'<li><button type="button" class="item" data-n="'+s.n+'"><span class="num">'+s.n+'</span><span class="t"><b>'+esc(s.street)+'</b><span>'+D.kind[s.kind]+' · '+esc(s.owner)+'</span></span><span class="k">'+fmt(s.m)+' m</span></button></li>').join("");
+$("#spots").addEventListener("click",e=>{const b=e.target.closest(".item");if(!b)return;const s=D.spots.find(x=>x.n==b.dataset.n);if(!$("#L-spots").checked){$("#L-spots").checked=true;groups.spots.addTo(map)}map.flyTo(ll(s.at),17,{duration:.6});setTimeout(()=>spotMarker[s.n].openPopup(),650);if(window.matchMedia("(max-width:760px)").matches)$("#map").scrollIntoView({block:"start"})});
+let pathsShown=12;
+function renderPaths(){
+  $("#paths").innerHTML=D.paths.slice(0,pathsShown).map(p=>'<li><button type="button" class="item" data-p="'+p.id+'"><span class="sw" style="border-top-color:var(--path)"></span><span class="t"><b>'+esc(p.name)+'</b><span>'+(p.on_pick>=0.05?Math.round(p.on_pick*100)+'% on my pick':'Not on my pick yet')+'</span></span><span class="k">'+fmt(p.km,1)+' km</span></button></li>').join("");
+  const b=$("#morepaths");b.hidden=D.paths.length<=pathsShown;b.textContent="Show all "+fmt(D.paths.length)+" paths";
+}
+renderPaths();
+$("#morepaths").addEventListener("click",()=>{pathsShown=D.paths.length;renderPaths()});
+function focusPath(id,fly){
+  const p=D.paths.find(x=>x.id===id);if(!p)return;
+  if(!$("#L-paths").checked){$("#L-paths").checked=true;groups.paths.addTo(map)}
+  mark(id);hi.clearLayers();
+  hi.addLayer(L.polyline(p.lines.map(lls),{pane:"hi",color:C["--card"],weight:10,opacity:.9,interactive:false}));
+  hi.addLayer(L.polyline(p.lines.map(lls),{pane:"hi",color:C["--path"],weight:5,interactive:false}));
+  if(fly)map.flyToBounds(L.latLngBounds(p.lines.flat().map(ll)),{maxZoom:17,padding:[50,50],duration:.6});
+  setTimeout(()=>L.popup({maxWidth:300}).setLatLng(ll(p.at)).setContent(pathPop(p)).openOn(map),fly?650:0);
+  if(window.matchMedia("(max-width:760px)").matches)$("#map").scrollIntoView({block:"start"});
+}
+$("#paths").addEventListener("click",e=>{const b=e.target.closest(".item");if(b)focusPath(b.dataset.p,true)});
+$("#pathnote").textContent=fmt(D.paths_km,1)+" km of bike paths and shared paths are open in Bayside today, and "+fmt(D.lanes_km,1)+" km of painted lanes. My pick uses "+fmt(D.paths_on_pick_km,1)+" km of the paths. Tap one to ride it in Google Maps.";
+$("#councilnote").textContent=fmt(D.council_share*100)+"% of council's "+fmt(D.council_km,1)+" km of planned routes lies within 100 m of my pick. Turn on the layer to compare.";
+$("#council").innerHTML=D.council.slice().sort((a,b)=>b.share-a.share).map(r=>'<li><button type="button" class="item" data-r="'+r.id+'"><span class="sw" style="border-top-color:var(--council)"></span><span class="t"><b>'+r.id+': '+esc(r.name)+'</b><span>'+fmt(r.km,1)+' km · '+Math.round(r.share*100)+'% on my pick</span></span><span class="k"><span class="pill '+r.v+'">'+r.v+'</span></span></button></li>').join("");
+$("#council").addEventListener("click",e=>{const b=e.target.closest(".item");if(!b)return;const pl=councilLayer[b.dataset.r];if(!$("#L-council").checked){$("#L-council").checked=true;groups.council.addTo(map)}map.flyToBounds(pl.getBounds(),{padding:[50,50],duration:.6});setTimeout(()=>pl.openPopup(pl.getBounds().getCenter()),650);if(window.matchMedia("(max-width:760px)").matches)$("#map").scrollIntoView({block:"start"})});
+$("#foot").innerHTML='<p>Map by Rahul Gurjar, Kogarah.</p><p>Street data © OpenStreetMap contributors, 19 October 2026, release '+esc(D.tag)+'. Ratings are modelled from open data, not measured on site.</p><p>Council plan: Bayside Bike Plan 2024, page 17. Corridors: TfNSW, '+'Strategic cycleway corridors, February 2023. Wards: Bayside Council.</p><p>Costs: Infrastructure Victoria 2025 rates for design and building, likely value with a range of 20% under to 30% over.</p>';
+
+const start=location.hash.slice(1);
+if(start&&D.changes.some(c=>c.id===start))setTimeout(()=>focusChange(start,true),300);
+if(start&&D.paths.some(p=>p.id===start))setTimeout(()=>focusPath(start,true),300);
+const mq=window.matchMedia("(prefers-color-scheme: dark)");
+const restyle=()=>{try{location.reload()}catch(e){}};
+if(mq.addEventListener)mq.addEventListener("change",restyle);
+new MutationObserver(restyle).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+})();
+</script>

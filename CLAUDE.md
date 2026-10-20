@@ -18,6 +18,7 @@ Every step that spends model tokens must show its value in numbers, or it goes.
 
 ## Review work
 
+- Read spec 21 when a row cites FR-21: the map page with Google Maps links, its KML layer files, and the bike paths today on both maps. FR-21.2 amends the FR-20.9 map.
 - Read spec 20 when a row cites FR-20: the five-minute page, its spots, stages, costs, wards and council plan. It wins over specs 13, 15, 16, 17 and 19 for the page. Its rulings answer the open input asks.
 - Read spec 19 when a row cites FR-19: how my pick fits the TfNSW strategic corridors.
 - Read spec 18 when a row cites FR-18. Releases build Bayside only; the Corridors first option and the Superhighway review apply to Bayside. No council gets its own tuned settings.
