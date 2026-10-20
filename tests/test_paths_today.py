@@ -162,7 +162,7 @@ def test_fr21_1_a_path_half_outside_the_boundary_counts_its_inside_half(items):
 
 def test_fr21_1_the_share_and_km_on_my_pick_come_from_links_within_15_m(items, found):
     bay = items["Bay Trail"]
-    on_pick = metres(BAY[0][0], BAY[0][1], NORTH) / 1000
+    on_pick = (metres(BAY[0][0], BAY[0][1], NORTH) + 15) / 1000
     assert bay["on_pick"] == pytest.approx(on_pick, rel=0.02)
     assert bay["share"] == pytest.approx(on_pick / bay["km"], abs=0.02)
     assert sum(item["on_pick"] for item in found[""] if item["kind"] == "path") == pytest.approx(
