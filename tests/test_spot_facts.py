@@ -17,7 +17,9 @@ def spot_world():
 
 def ladder_for():
     table, fixes = spot_world()
-    return build_ladder(table, sorted(table), people((1, 0), (2, 2), (3, 3)), fixes, WEIGHTS)
+    return build_ladder(
+        table, sorted(table), people((1, 0), (2, 0), (3, 2), (4, 3)), fixes, WEIGHTS
+    )
 
 
 def test_fr20_13_the_score_without_spots_is_recomputed_over_all_trips():
@@ -32,7 +34,7 @@ def test_fr20_13_the_score_without_spots_is_recomputed_over_all_trips():
 def test_fr20_13_a_spots_trips_are_the_safe_trips_that_pass_through_it():
     works = ladder_for()["works"]
     by_fix = {work["fix"]: work for work in works}
-    assert by_fix["short_path_crossing"]["trips"] == 2
+    assert by_fix["short_path_crossing"]["trips"] == 4
     assert "trips" not in by_fix["road_diet"]
 
 
