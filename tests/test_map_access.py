@@ -122,3 +122,21 @@ def test_fr21_8_tab_reaches_the_search_the_chips_the_layer_boxes_and_each_list_i
         assert [s["ring"] for s in stops if s["ring"] is False] == []
     finally:
         driver.quit()
+
+
+def test_fr21_8_axe_runs_only_after_every_animation_has_finished(page):
+    from bikeplan import axe
+
+    driver = sized(page, SIZES[1])
+    try:
+        driver.execute_script(
+            "document.body.style.opacity='0.5';"
+            "void document.body.offsetWidth;"
+            "document.body.style.transition='opacity 1.5s';"
+            "document.body.style.opacity='1';"
+        )
+        assert driver.execute_script("return document.getAnimations().length") > 0
+        assert axe.violations(driver) == []
+        assert driver.execute_script("return document.getAnimations().length") == 0
+    finally:
+        driver.quit()
