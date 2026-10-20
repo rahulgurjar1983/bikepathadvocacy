@@ -1434,3 +1434,5 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - The test `test_fr18_2_every_published_council_has_a_manifest_like_bayside` stays red on PR 219 until that manifest lands: Bayside shows 3 problems today, and the other 32 councils have none.
 
 - Q1.10 (2026-10-20): run 39373869552 succeeded. `snapshots/au-nsw-bayside/2026-10-19/manifest.json` lists eight files including `road_segments.gpkg`, `speed_zones.gpkg` and `elevation.tif`; the old 2026-10-01 manifest is removed. Next for M1.7: after this merges, a release builds from the new snapshot; read its `options.json` blockers for Forest Road, Wentworth Avenue and Bay Street.
+
+- Q1.10 (2026-10-20): release v2026.10.20-pr219 was built from the 2026-10-19 snapshot. Its Forest Road blockers name Transport for NSW with road type primary. The row stays open (no test is named for FR-15.9); M1.7 reads the remaining blockers and the report text.

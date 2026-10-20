@@ -2124,7 +2124,11 @@ uv run --frozen pytest -q tests/test_snapshot_set.py tests/test_snapshot.py
 
 Expect: the first command prints 33. Verify prints `ok` with a sha256 for `boundary.geojson`, `network.osm.gz`, `places.json`, `population.gpkg`, `parcels.gpkg`, `elevation.tif`, `road_segments.gpkg` and `speed_zones.gpkg`. The tests pass. The snapshot comes from `snapshots` run 39373869552 and release `snapshot-au-nsw-bayside-2026-10-19`.
 
-Limits: the check that a release shows road functions and Transport for NSW owners is M1.7, which stays open until a release is built from this snapshot.
+Release check (pr219, built from this snapshot):
+`gh release download v2026.10.20-pr219 -p au-nsw-bayside.tar.gz && tar -xzf au-nsw-bayside.tar.gz ./options.json && python3 -c "import json;print({b['owner'] for p in json.load(open('options.json'))['options'] for b in p['blockers'] if b['street']=='Forest Road'})"`
+Expect: `{'Transport for NSW'}`.
+
+Limits: M1.7 still reads the Wentworth Avenue and Bay Street blockers and the report text.
 
 Artifact: `artifacts/Q1.10/files.json`
 
