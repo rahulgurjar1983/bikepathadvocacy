@@ -20,6 +20,9 @@ from bikeplan.edition import (
     street_overlay,
 )
 from bikeplan.fit import segment_fit
+from bikeplan.map_data import map_data as page_data
+from bikeplan.map_kml import kml_layers, kml_problems, map_kml
+from bikeplan.map_page import map_page
 from bikeplan.network import bike_segments, build
 from bikeplan.network_report import choose
 from bikeplan.page import (
@@ -199,6 +202,11 @@ def csv_bytes(records: list[dict], kinds: list) -> bytes:
     return buffer.getvalue().encode()
 
 
+LAYER_FOLDER = "map-layers"
+MAP_FILES = ("map.html", "map.kml")
+MAP_SUMS = "MAP-SHA256SUMS"
+
+
 def build_all(
     region, profile, snapshot: str | Path, proposal_inputs=None
 ) -> tuple[dict, dict, dict, list[dict]]:
@@ -353,6 +361,14 @@ def build_all(
     }
     if paths:
         files["paths.json"] = paths_text.encode()
+    mapped = page_data(data, pick, paths, region, manifest["snapshot_id"])
+    layers = kml_layers(mapped)
+    problems = [text for name, blob in layers.items() for text in kml_problems(name, blob)]
+    if problems:
+        raise ConfigError("; ".join(problems))
+    files["map.html"] = map_page(region, mapped).encode()
+    files["map.kml"] = map_kml(layers)
+    files |= {f"{LAYER_FOLDER}/{name}.kml": blob for name, blob in layers.items()}
     return summary, outputs, files, figures
 
 
@@ -380,6 +396,15 @@ def write_report(
         raise ConfigError("report.author is missing: the report needs the name and suburb")
     _, outputs, files, figures = build_all(region, profile, snapshot, proposal_inputs)
     check_leaks(outputs["report.html"].decode(), out, snapshot)
-    lines = write_files(Path(out), {**files, "report.html": outputs["report.html"]})
+    check_leaks(files["map.html"].decode(), out, snapshot)
+    layers = {name: blob for name, blob in files.items() if name.startswith(f"{LAYER_FOLDER}/")}
+    mapped = {name: blob for name, blob in files.items() if name in MAP_FILES}
+    top = {name: blob for name, blob in files.items() if name not in layers and name not in mapped}
+    lines = write_files(Path(out), {**top, "report.html": outputs["report.html"]})
     (Path(out) / "SHA256SUMS").write_text("".join(lines))
+    (Path(out) / MAP_SUMS).write_text("".join(write_files(Path(out), mapped)))
+    folder = Path(out) / LAYER_FOLDER
+    if layers:
+        inner = write_files(folder, {name.split("/", 1)[1]: blob for name, blob in layers.items()})
+        (folder / "SHA256SUMS").write_text("".join(inner))
     return figures

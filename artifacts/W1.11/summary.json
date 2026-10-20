@@ -1,0 +1,35 @@
+{
+ "console_errors": [],
+ "layers": [
+  "First stage changes\n281",
+  "Full plan changes\n48",
+  "All ages today on my pick\n13.9 km",
+  "Bike paths today\n53.6 km",
+  "Painted bike lanes today\n7.3 km",
+  "Spots\n27",
+  "Not fixed yet\n2",
+  "Schools, stations, town centres\n67",
+  "TfNSW strategic corridors\n13"
+ ],
+ "popup_links": [
+  "https://www.google.com/maps/dir/?api=1&origin=-34.00763%2C151.12783&destination=-33.93418%2C151.1627&travelmode=bicycling",
+  "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=-34.00303%2C151.13817"
+ ],
+ "paths_km": 53.6,
+ "paths": {
+  "Cook Park Trail": 18.285,
+  "M6 Shared Path": 5.889
+ },
+ "street_changes": 329,
+ "files": [
+  "map-layers/all-ages-today.kml",
+  "map-layers/bike-paths-today.kml",
+  "map-layers/painted-lanes-today.kml",
+  "map-layers/places.kml",
+  "map-layers/spots.kml",
+  "map-layers/street-changes.kml",
+  "map-layers/tfnsw-corridors.kml",
+  "map.html",
+  "map.kml"
+ ]
+}
