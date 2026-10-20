@@ -489,6 +489,8 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 
 Ask: may a short piece with one calm end and one open end (a dead end or a trunk junction) be a spot? Spec 20's Spot term says two calm ends. Until a ruling, the row stays open and the remaining 4 to 7 short blockers per option stay blockers.
 
+- W1.2 part 5 (open ends, ruling of 20 October): `open_spots` in `ladder.py` lists every short no-fix link as a spot candidate, and `build_ladder` takes them with `candidates`. `trip_spots` keeps a run of candidates (at most `fit.spot_max_m` in all) for any trip whose path has a calm end at each side, where the trip's own start or end is calm. `link_fixes` is unchanged, so the global rule stays. Bayside 2026-10-01 (`artifacts/W1.2/open-ends.json`): spots calm 26, mesh 141, separated 20, shortest 57; the three named roads are spots. Short blockers left: mesh 2, shortest 3.
+
 ## BLOCKED
 
 - Q1.6 PR 141: the fix for the CI failure is committed on `loop/Q1.6-option-view` but not pushed. `git push` fails with "could not read Username" and `gh api user` returns HTTP 401: the token in `~/.config/gh/hosts.yml` is invalid. Run `gh auth login -h github.com`, then push that branch and run `scripts/wait-ci.sh 141`.
