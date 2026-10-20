@@ -2128,9 +2128,13 @@ Release check (pr219, built from this snapshot):
 `gh release download v2026.10.20-pr219 -p au-nsw-bayside.tar.gz && tar -xzf au-nsw-bayside.tar.gz ./options.json && python3 -c "import json;print({b['owner'] for p in json.load(open('options.json'))['options'] for b in p['blockers'] if b['street']=='Forest Road'})"`
 Expect: `{'Transport for NSW'}`.
 
+Required adapters (FR-15.9):
+`uv run --frozen bikeplan snapshot verify data/cache/au-nsw-bayside/2026-10-01 --region regions/au-nsw-bayside.yaml; echo $?`
+Expect: stderr names `copernicus_glo30`, `nsw_road_segment` and `tfnsw_speed_zones` as missing, and the exit code is 1. The same command on the 2026-10-19 folder exits 0. Tests: `uv run --frozen pytest -q tests/test_snapshot_required.py`.
+
 Limits: M1.7 still reads the Wentworth Avenue and Bay Street blockers and the report text.
 
-Artifact: `artifacts/Q1.10/files.json`
+Artifact: `artifacts/Q1.10/files.json`, `artifacts/Q1.10/verify.txt`
 
 ### W1.2
 

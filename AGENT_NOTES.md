@@ -1436,3 +1436,5 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - Q1.10 (2026-10-20): run 39373869552 succeeded. `snapshots/au-nsw-bayside/2026-10-19/manifest.json` lists eight files including `road_segments.gpkg`, `speed_zones.gpkg` and `elevation.tif`; the old 2026-10-01 manifest is removed. Next for M1.7: after this merges, a release builds from the new snapshot; read its `options.json` blockers for Forest Road, Wentworth Avenue and Bay Street.
 
 - Q1.10 (2026-10-20): release v2026.10.20-pr219 was built from the 2026-10-19 snapshot. Its Forest Road blockers name Transport for NSW with road type primary. The row stays open (no test is named for FR-15.9); M1.7 reads the remaining blockers and the report text.
+
+- Q1.10 (2026-10-20): `snapshot verify --region <region file>` now fails and names each required adapter whose file the manifest lacks (FR-15.9). `snapshot set` uses it before publish. Without `--region` verify still checks only listed files. The data-quality report and effective dates of FR-15.9 belong to P12.1.

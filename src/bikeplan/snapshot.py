@@ -20,6 +20,7 @@ from itertools import pairwise
 from pathlib import Path
 from urllib.parse import urlencode, urlsplit
 
+from bikeplan.adapters import OUTPUT_FILES
 from bikeplan.config import Region, config_hash, load_profile
 
 OVERPASS_ENDPOINT = "https://overpass-api.de/api/interpreter"
@@ -609,10 +610,17 @@ def fetch_snapshot(region: Region, out: str | Path, endpoint: str = OVERPASS_END
     return manifest
 
 
-def verify_snapshot(directory: str | Path) -> tuple[list[str], list[str]]:
+def verify_snapshot(
+    directory: str | Path, adapters: list[str] | None = None
+) -> tuple[list[str], list[str]]:
     base = Path(directory)
     manifest = json.loads((base / "manifest.json").read_text())
     passed, failed = [], []
+    listed = {entry["name"] for entry in manifest["files"]}
+    for adapter in adapters or []:
+        name = OUTPUT_FILES[adapter]
+        if name not in listed:
+            failed.append(f"{adapter} missing: {name} is not in the manifest")
     for entry in manifest["files"]:
         path = base / entry["path"]
         if not path.is_file():

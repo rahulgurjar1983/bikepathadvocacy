@@ -81,7 +81,7 @@ def publish_missing(
                 fetch_snapshot(region, out)
             finally:
                 signal.setitimer(signal.ITIMER_REAL, 0)
-            _, bad = verify_snapshot(out)
+            _, bad = verify_snapshot(out, region.snapshot.adapters)
             if bad:
                 raise OSError("; ".join(bad))
             publish_snapshot(out, root)
