@@ -1467,3 +1467,8 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - Cost, council plan and wards are not in the run data yet, so the map leaves out their layers. The page already reads `cost`, `council` and `wards` when W1.4 and later rows add them.
 - `checks.report_files` lists every `*.html` in a release except `checks.html` and `index.html`. When the operator adds `<region>-map.html` to the release, that function must skip it; do this in the FR-21.7 part.
 - On a busy host (load above 30) the real Bayside map page took minutes to open in headless Chromium; `artifacts/W1.11/shot.py` polls for the popup instead of waiting for the load event.
+
+### W1.11 tips
+- Gate `contracts` lets the `FILES` fixtures grow only with `.json` or `.csv` names. `map.html` and `map.kml` are hashed in `MAP-SHA256SUMS`, not `SHA256SUMS`.
+- Gate `generic` bans region names in `src/bikeplan`, so popup words there must avoid them.
+- Gate `deps` wants every imported package declared with `uv add`.
