@@ -12,6 +12,7 @@ from bikeplan.change import (
     frontier_data,
 )
 from bikeplan.config import ConfigError, config_hash
+from bikeplan.cost import load_rates
 from bikeplan.edition import (
     build_options_report,
     corridor_data,
@@ -318,7 +319,15 @@ def build_all(
     paths_text = json.dumps({"items": paths}, sort_keys=True) + "\n"
     figures += path_figures(paths, paths_text, int(figures[-1]["id"][1:]) + 1)
     data = report_data(
-        options, choice, marks, joined.counts, streets, corridor, map_payload["boundary"], paths
+        options,
+        choice,
+        marks,
+        joined.counts,
+        streets,
+        corridor,
+        map_payload["boundary"],
+        paths,
+        load_rates(),
     )
     page_text = five_minute_page(
         region,

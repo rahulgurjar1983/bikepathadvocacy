@@ -4,6 +4,7 @@ import json
 import re
 from datetime import date
 
+from bikeplan.cost import stage_cost, work_cost
 from bikeplan.edition import PICK, fact
 from bikeplan.report import ASSETS, MONTHS, SOURCES
 
@@ -94,7 +95,23 @@ def spot_list(pick: dict, places: dict) -> list:
     return [{"n": number} | found for number, found in enumerate(spots, 1)]
 
 
-def report_data(options, choice, marks, joined, streets, corridor, boundary, paths=()) -> dict:
+def stage_costs(works: list, built: set, rates: dict) -> dict:
+    chosen = [item for index, item in enumerate(works) if index in built]
+    found = stage_cost(chosen, rates)
+    return {
+        "cost": found["likely"],
+        "cost_low": found["low"],
+        "cost_high": found["high"],
+        "cost_text": found["text"],
+        "cost_missing": found["missing"],
+        "n_works": sum(not item.get("spot") for item in chosen),
+        "n_spots": sum(bool(item.get("spot")) for item in chosen),
+    }
+
+
+def report_data(
+    options, choice, marks, joined, streets, corridor, boundary, paths=(), rates=None
+) -> dict:
     pick = next(item for item in options if item["id"] == choice["pick"])
     rec = choice["step"]
     steps = pick["steps"]
@@ -134,6 +151,10 @@ def report_data(options, choice, marks, joined, streets, corridor, boundary, pat
         for index, item in enumerate(pick["works"])
         if not item.get("spot")
     ]
+    if rates:
+        for found in works:
+            cost = work_cost(pick["works"][found["i"]], rates)
+            found["cost"] = None if cost is None else cost / 1_000_000
     data = {
         "base": {
             "water": [],
@@ -185,6 +206,15 @@ def report_data(options, choice, marks, joined, streets, corridor, boundary, pat
         "joined": joined,
         "corridors": [],
     }
+    if rates:
+        everything = set(range(len(pick["works"])))
+        early = {index for index in everything if owner_step.get(index, len(steps)) <= rec}
+        for name, built in (("today", set()), ("first", early), ("works", everything)):
+            data["stages"][name] |= stage_costs(pick["works"], built, rates)
+        data["cost_note"] = rates["note"]
+        data["spot_cost"] = sum(
+            (work_cost(item, rates) or 0) / 1_000_000 for item in pick["works"] if item.get("spot")
+        )
     if corridor:
         data["corridors"] = [
             {"id": route["id"], "lines": route["lines"]} for route in corridor["routes"]
