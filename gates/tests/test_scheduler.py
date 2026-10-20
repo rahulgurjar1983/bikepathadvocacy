@@ -1,4 +1,5 @@
 import json
+import os
 
 import pytest
 
@@ -125,3 +126,31 @@ def test_fr0_34_blocker_uses_controller_inputs_and_reopens_for_gate_change(
     (control / "gates").mkdir()
     (control / "gates/inputs.py").write_text("new operator rule\n")
     assert input_hash("C1.4") != original
+
+
+def test_fr0_34_a_run_wait_holds_its_row_only_while_the_run_goes(repo, tmp_path, monkeypatch):
+    from gates.loopstate import finish, is_blocked
+    from gates.scheduler import choose
+
+    prepared(repo)
+    status = tmp_path / "status"
+    status.write_text("in_progress")
+    tools = tmp_path / "bin"
+    tools.mkdir()
+    (tools / "gh").write_text(
+        '#!/bin/sh\n[ "$1 $2 $3 $4 $5" = "run view 42 --json status" ] || exit 9\n'
+        f'printf \'{{"status": "%s"}}\' "$(cat {status})"\n'
+    )
+    (tools / "gh").chmod(0o755)
+    monkeypatch.setenv("PATH", f"{tools}:{os.environ['PATH']}")
+    result = {"row": "Q1.2", "status": "waiting_run", "reason": "snapshots run 42 still fetching"}
+    repo.write(".ralph/turn-result.json", json.dumps(result))
+    with pytest.raises(ValueError, match="run ID"):
+        finish("Q1.2", "no", 3)
+    repo.write(".ralph/turn-result.json", json.dumps(result | {"run": 42}))
+    finish("Q1.2", "no", 3)
+    assert is_blocked("Q1.2")
+    assert choose([])["row"] == "C1.4"
+    status.write_text("completed")
+    assert not is_blocked("Q1.2")
+    assert choose([])["row"] == "Q1.2"
