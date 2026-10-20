@@ -1,7 +1,10 @@
 import math
 import re
+import subprocess
+import sys
 from html.parser import HTMLParser
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 from selenium import webdriver
@@ -143,10 +146,10 @@ def data_for(**more):
     return report_data(**(given | more))
 
 
-def page_for(data, evidence='<section id="options"><h2>Options</h2></section>'):
+def page_for(data, evidence='<section id="options"><h2>Options</h2></section>', figures=()):
     from bikeplan.report_page import five_minute_page
 
-    return five_minute_page(load_region("regions/au-nsw-bayside.yaml"), data, "", evidence)
+    return five_minute_page(load_region("regions/au-nsw-bayside.yaml"), data, "", evidence, figures)
 
 
 class Ids(HTMLParser):
@@ -409,5 +412,111 @@ def test_fr20_18_following_a_figure_link_opens_the_closed_part_at_the_entry(grid
             lambda d: d.execute_script("return document.getElementById('evidence').open")
         )
         assert driver.find_element(By.ID, want).is_displayed()
+    finally:
+        driver.quit()
+
+
+def corridor_figures(first):
+    return [
+        {
+            "id": f"F{first + number}",
+            "label": f"Corridor segments {name} by my pick",
+            "value": value,
+        }
+        for number, (name, value) in enumerate([("covered", 2), ("partly", 1), ("missed", 3)])
+    ]
+
+
+@pytest.fixture(scope="module")
+def page_figs():
+    from bikeplan.edition import options_text
+    from bikeplan.report_page import page_figures
+
+    options = [pick()]
+    joined = SimpleNamespace(counts=JOINED, unjoined=[])
+    text = options_text(options, 0.9, joined)
+    return page_figures(options, CHOICE, text, 100), text
+
+
+def test_fr20_18_page_figures_hold_the_spot_street_change_and_score_numbers(page_figs):
+    figures, _ = page_figs
+    assert [item["id"] for item in figures] == [f"F{n}" for n in range(100, 105)]
+    found = {item["label"]: item["value"] for item in figures}
+    assert found == {
+        "Spots of my pick": 2,
+        "Length of the spots of my pick": 0.1,
+        "Safety score of my pick without its spots": 40.0,
+        "Safety score of my pick with every work built": 90.0,
+        "Km of quietway works of my pick": 4.0,
+    }
+    for item in figures:
+        assert set(item) == {
+            "id",
+            "label",
+            "value",
+            "unit",
+            "spec",
+            "method",
+            "inputs",
+            "sources",
+            "recipe",
+        }
+
+
+def test_fr20_18_each_page_figure_recipe_prints_its_value_from_options_json(page_figs, tmp_path):
+    figures, text = page_figs
+    (tmp_path / "options.json").write_text(text)
+    for item in figures:
+        shown = subprocess.run(
+            [sys.executable, "-I", "-c", item["recipe"]],
+            cwd=tmp_path,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout
+        assert float(shown) == pytest.approx(item["value"])
+
+
+def test_fr20_18_a_run_without_spots_or_works_makes_no_page_figures():
+    from bikeplan.edition import options_text
+    from bikeplan.report_page import page_figures
+
+    bare = pick() | {"works": [], "steps": [step(0, 10.0, 2, 0.0, 0)]}
+    joined = SimpleNamespace(counts=JOINED, unjoined=[])
+    text = options_text([bare], 0.9, joined)
+    assert page_figures([bare], CHOICE | {"step": 0}, text, 100) == []
+
+
+def test_fr20_18_the_spot_street_change_and_corridor_numbers_link_to_their_own_figures(
+    page_figs, tmp_path
+):
+    figures, _ = page_figs
+    ids = {item["label"]: item["id"] for item in figures}
+    path = tmp_path / "report.html"
+    path.write_text(page_for(data_for(), figures=[*figures, *corridor_figures(200)]))
+    driver = open_page(path)
+    try:
+
+        def target(xpath):
+            return driver.find_element(By.XPATH, xpath).get_attribute("href").split("#")[1]
+
+        heading = "//*[@id='spot-h']/a"
+        assert target(heading) == ids["Spots of my pick"]
+        links = driver.find_elements(By.CSS_SELECTOR, "#spot-p a.fig")
+        assert [link.get_attribute("href").split("#")[1] for link in links] == [
+            ids["Safety score of my pick without its spots"],
+            ids["Length of the spots of my pick"],
+            ids["Safety score of my pick with every work built"],
+        ]
+        assert (
+            target("//article[contains(@class,'fix')][.//h3[.='Quiet street']]//a")
+            == (ids["Km of quietway works of my pick"])
+        )
+        links = driver.find_elements(By.CSS_SELECTOR, "#tf-text a.fig")
+        assert [link.get_attribute("href").split("#")[1] for link in links] == [
+            "F200",
+            "F201",
+            "F202",
+        ]
     finally:
         driver.quit()
