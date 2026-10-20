@@ -11,6 +11,7 @@ dependencies = [
     "networkx>=3.7",
     "numpy>=2.5.3",
     "osmnx>=2.1.1",
+    "pykml>=0.2.0",
     "pyproj>=3.8.0",
     "pyyaml>=6",
     "rasterio>=1.5.2",
