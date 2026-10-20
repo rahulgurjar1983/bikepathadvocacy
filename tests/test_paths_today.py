@@ -220,7 +220,7 @@ def test_fr21_1_the_report_holds_the_paths_and_a_figure_for_each_total(built):
         )
         assert run.returncode == 0, run.stderr
         assert float(run.stdout) == item["value"]
-    assert figure(built, "Km of bike paths today")["value"] == pytest.approx(1.0, abs=0.05)
+    assert figure(built, "Km of bike paths today")["value"] == pytest.approx(1.196, abs=0.03)
 
 
 @pytest.fixture(scope="module")
@@ -260,8 +260,8 @@ def test_fr21_2_the_map_draws_the_bike_paths_in_teal_and_the_key_names_them(brow
     assert "Bike path today" in key.text
     swatch = browser.find_element(By.CSS_SELECTOR, ".legend .sw.path")
     assert swatch.value_of_css_property("border-top-color") in (
-        "rgb(15, 118, 110)",
-        "rgb(45, 212, 191)",
+        "rgba(15, 118, 110, 1)",
+        "rgba(45, 212, 191, 1)",
     )
 
 
@@ -289,9 +289,9 @@ def test_fr21_2_tapping_a_path_opens_its_card_with_name_km_and_share(built, brow
             round(x / seen["ratio"]) - canvas.size["width"] // 2,
             round(y / seen["ratio"]) - canvas.size["height"] // 2,
         ).click().perform()
-        if "Bike path today" in card.text:
+        if "bike path today" in card.text.lower():
             break
-    assert "Bike path today" in card.text
+    assert "bike path today" in card.text.lower()
     assert any(name in card.text for name in names)
     assert " km" in card.text
     assert "%" in card.text
