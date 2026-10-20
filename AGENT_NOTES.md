@@ -483,6 +483,12 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 
 - Speed zones come from `https://portal.data.nsw.gov.au/arcgis/rest/services/Hosted/TFNSW_Speed_Zones_Public/FeatureServer/0` with no key. The service lowercases its fields (`objectid`, `type`, `speed` such as `50 km/h`). Only permanent types are kept; school, variable, road work and wet weather zones are dropped. A tile fetch is fast (28 s for 266 tiles) but the Bayside build takes 21 minutes.
 
+### W1.2 pieces with an open end
+
+- W1.2 release check (pr221, `gh release download v2026.10.20-pr221 -p au-nsw-bayside.tar.gz`, `options.json`): the unnamed cycleway with 135 trips is no longer a blocker, and calm all-built score is 73.8%. Short blockers of at most 100 m fell from calm 5, shortest 9, separated 7, mesh 7 (pr215) to 4, 7, 6, 5. Each left piece has an open end, so spec 20's Spot term ("between two links of the option that are all-ages today or have a fix") rules it out. Wollongong Road (71 m, 30 trips in calm): node 15186774 has one edge, so it is a dead end. Rocky Point Road (14 m, 20 trips): one end meets Princes Highway, a trunk road, the other an 82 m primary link. Joffre Crescent (96 m, 12 trips): both ends meet footways. Rebuild the neighbours with a `build` and `score_edges` run on the 2026-10-01 snapshot (32 minutes) and list the edges at each node.
+
+Ask: may a short piece with one calm end and one open end (a dead end or a trunk junction) be a spot? Spec 20's Spot term says two calm ends. Until a ruling, the row stays open and the remaining 4 to 7 short blockers per option stay blockers.
+
 ## BLOCKED
 
 - Q1.6 PR 141: the fix for the CI failure is committed on `loop/Q1.6-option-view` but not pushed. `git push` fails with "could not read Username" and `gh api user` returns HTTP 401: the token in `~/.config/gh/hosts.yml` is invalid. Run `gh auth login -h github.com`, then push that branch and run `scripts/wait-ci.sh 141`.

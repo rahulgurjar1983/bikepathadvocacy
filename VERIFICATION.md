@@ -2127,3 +2127,12 @@ Expect: the first command prints 33. Verify prints `ok` with a sha256 for `bound
 Limits: the check that a release shows road functions and Transport for NSW owners is M1.7, which stays open until a release is built from this snapshot.
 
 Artifact: `artifacts/Q1.10/files.json`
+
+### W1.2
+
+Release check for path crossings (pr221):
+`gh release download v2026.10.20-pr221 -p au-nsw-bayside.tar.gz && tar -xzf au-nsw-bayside.tar.gz ./options.json && python3 -c "import json;[print(p['id'],len(p['blockers']),sum(b['km']<=.1 for b in p['blockers'])) for p in json.load(open('options.json'))['options']]"`
+
+Expect: calm 8 and 4, shortest 30 and 7, separated 9 and 6, mesh 58 and 5. The cycleway that crossed a busy road is not a blocker. The short blockers left have an open end, so the row is not complete.
+
+Artifact: `artifacts/W1.2/path-crossings.json`
