@@ -30,7 +30,7 @@ def make_snapshot(directory: Path, names: list[str]) -> Path:
 
 
 def test_fr15_9_verify_names_each_required_adapter_the_manifest_lacks(tmp_path):
-    directory = make_snapshot(tmp_path / "snap", CORE + [OUTPUT_FILES["kontur_population"]])
+    directory = make_snapshot(tmp_path / "snap", [*CORE, OUTPUT_FILES["kontur_population"]])
 
     passed, failed = verify_snapshot(
         directory, ["kontur_population", "copernicus_glo30", "nsw_road_segment"]
@@ -44,7 +44,7 @@ def test_fr15_9_verify_names_each_required_adapter_the_manifest_lacks(tmp_path):
 
 
 def test_fr15_9_verify_passes_when_every_required_adapter_file_is_listed(tmp_path):
-    names = CORE + list(OUTPUT_FILES.values())
+    names = [*CORE, *OUTPUT_FILES.values()]
     directory = make_snapshot(tmp_path / "snap", names)
 
     passed, failed = verify_snapshot(directory, list(OUTPUT_FILES))
@@ -54,7 +54,7 @@ def test_fr15_9_verify_passes_when_every_required_adapter_file_is_listed(tmp_pat
 
 
 def test_fr15_9_verify_command_reads_the_required_adapters_from_the_region_file(tmp_path, capsys):
-    directory = make_snapshot(tmp_path / "snap", CORE + [OUTPUT_FILES["kontur_population"]])
+    directory = make_snapshot(tmp_path / "snap", [*CORE, OUTPUT_FILES["kontur_population"]])
 
     code = main(["snapshot", "verify", str(directory), "--region", str(BAYSIDE)])
 
