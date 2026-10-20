@@ -52,6 +52,14 @@ keys `council_share` and `council_km` wait for FR-20.24. The test grid has
 no works, so figure link tests build their data from the `pick()` helper.
 The local Bayside report takes about 33 minutes.
 
+### W1.0 council figures wait for W1.4 (open)
+
+Everything else in W1.0 is shipped and checked on release pr232. Left: the council share and km need figure entries and links (`council_share`, `council_km` in `place_figures`).
+
+- Prove it: `grep -n "council_share\|council_km" src/bikeplan/*.py` prints nothing, so no code makes that data. The page template reads it behind a guard and drops the council card when it is missing.
+- Prove it: `grep "FR-20.18" PROGRESS.md | grep -c "W1.4"` prints 0, so W1.4 does not cite FR-20.18, the figure rule.
+- Needed input: add FR-20.18 to the W1.4 row, so the council numbers get figure entries when the data lands. Then close W1.0 as shipped.
+
 ### M1.7 the release has no road segments to read (open)
 
 The release build pulls the Bayside snapshot from `snapshots/au-nsw-bayside/2026-10-01/manifest.json`. That manifest lists five files and no `road_segments.gpkg`, `speed_zones.gpkg` or `elevation.tif`. The build reads the road function only when `road_segments.gpkg` exists, so no release link has a road function and every blocker says "Not a state road". The code of parts 1 and 2 cannot show in a release until a snapshot with the file is published.
