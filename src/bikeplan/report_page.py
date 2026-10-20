@@ -94,7 +94,7 @@ def spot_list(pick: dict, places: dict) -> list:
     return [{"n": number} | found for number, found in enumerate(spots, 1)]
 
 
-def report_data(options, choice, marks, joined, streets, corridor, boundary) -> dict:
+def report_data(options, choice, marks, joined, streets, corridor, boundary, paths=()) -> dict:
     pick = next(item for item in options if item["id"] == choice["pick"])
     rec = choice["step"]
     steps = pick["steps"]
@@ -144,6 +144,15 @@ def report_data(options, choice, marks, joined, streets, corridor, boundary) -> 
             "boundary": boundary_polygons(boundary),
         },
         "streets": street_lines(streets),
+        "paths": [
+            {key: item[key] for key in ("id", "name", "km", "share", "lines")}
+            for item in paths
+            if item["kind"] == "path"
+        ],
+        "path_km": {
+            "all": round(sum(item["km"] for item in paths if item["kind"] == "path"), 1),
+            "pick": round(sum(item["on_pick"] for item in paths if item["kind"] == "path"), 1),
+        },
         "lines": lines,
         "works": works,
         "spots": spot_list(pick, places),
@@ -277,15 +286,53 @@ def page_figures(options, choice, text, first) -> list[dict]:
                 f"the {fix} lengths",
             )
         )
+    return fact_figures(facts, first, "options.json", digest)
+
+
+def path_figures(items, text, first) -> list[dict]:
+    if not items:
+        return []
+    digest = hashlib.sha256(text.encode()).hexdigest()
+    load = "import json;items=json.load(open('paths.json'))['items'];"
+    facts = [
+        fact(
+            "Km of bike paths today",
+            sum(item["km"] for item in items if item["kind"] == "path"),
+            "km",
+            1,
+            f"{load}print(round(sum(i['km'] for i in items if i['kind']=='path'),1))",
+            "the length of every bike path today",
+        ),
+        fact(
+            "Km of painted bike lanes today",
+            sum(item["km"] for item in items if item["kind"] == "lane"),
+            "km",
+            1,
+            f"{load}print(round(sum(i['km'] for i in items if i['kind']=='lane'),1))",
+            "the length of every painted bike lane today",
+        ),
+        fact(
+            "Km of bike paths today on my pick",
+            sum(item["on_pick"] for item in items if item["kind"] == "path"),
+            "km",
+            1,
+            f"{load}print(round(sum(i['on_pick'] for i in items if i['kind']=='path'),1))",
+            "the length of bike paths within 15 m of my pick",
+        ),
+    ]
+    return fact_figures(facts, first, "paths.json", digest)
+
+
+def fact_figures(facts, first, name, digest) -> list[dict]:
     return [
         {
             "id": f"F{first + number}",
             "label": item["label"],
             "value": item["value"],
             "unit": item["unit"],
-            "spec": "spec 20",
-            "method": f"I read {item['method']} from options.json.",
-            "inputs": [{"name": "options.json", "sha256": digest}],
+            "spec": "spec 20" if name == "options.json" else "spec 21",
+            "method": f"I read {item['method']} from {name}.",
+            "inputs": [{"name": name, "sha256": digest}],
             "sources": SOURCES,
             "recipe": item["recipe"],
         }
@@ -301,6 +348,8 @@ PAGE_LABELS = (
     (r"Safety score of my pick with every work built", "fullplan"),
     (r"Km of (\w+) works of my pick", "fix:{}"),
     (r"Corridor segments (covered|partly|missed) by my pick", "tf:{}"),
+    (r"Km of bike paths today", "pathkm"),
+    (r"Km of bike paths today on my pick", "pickkm"),
 )
 
 

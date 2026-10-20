@@ -22,6 +22,9 @@
 :root{color-scheme:light}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#e8ecf4;--ink-2:#b4bccb;--ink-3:#8e97a8;--paper:#0f1522;--card:#172033;--line:#2a3550;--land:#1a2233;--mapland:#1a2233;--mapwater:#0e2a44;--mappark:#1d3324;--mapair:#232b3b;--mapstreet:#2f3a50;--maprail:#56607a;--mapout:#0f1522;--mapline:#c9d3e6;--mark:#172033;--soft:#1e283c;--seg:#1e283c;--track:#26314a;--plan:#4c8dff;--today:#40c463;color-scheme:dark}}
 :root[data-theme="dark"]{--ink:#e8ecf4;--ink-2:#b4bccb;--ink-3:#8e97a8;--paper:#0f1522;--card:#172033;--line:#2a3550;--land:#1a2233;--mapland:#1a2233;--mapwater:#0e2a44;--mappark:#1d3324;--mapair:#232b3b;--mapstreet:#2f3a50;--maprail:#56607a;--mapout:#0f1522;--mapline:#c9d3e6;--mark:#172033;--soft:#1e283c;--seg:#1e283c;--track:#26314a;--plan:#4c8dff;--today:#40c463;color-scheme:dark}
+html{--bikepath:#0f766e}
+@media (prefers-color-scheme:dark){html:not([data-theme="light"]){--bikepath:#2dd4bf}}
+html[data-theme="dark"]{--bikepath:#2dd4bf}
 *{box-sizing:border-box}
 .vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 html{scroll-behavior:smooth}
@@ -63,6 +66,8 @@ h1{font-size:var(--step-3);line-height:1.05;letter-spacing:-.02em;margin:0;font-
 .sw{display:inline-block;width:26px;height:0;border-top:4px solid}
 .sw.today{border-color:var(--today)}
 .sw.plan{border-color:var(--plan);border-top-width:5px}
+.sw.path{border-color:var(--bikepath);border-top-width:2px}
+.mapnote{margin:8px 0 0;font-size:.85rem;color:var(--ink-2)}
 .sw.notyet{border-color:var(--notyet);border-top-style:dashed;border-top-width:3px}
 .dot{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--spot);color:#fff;font-size:.65rem;font-weight:800}
 .mapctl{position:absolute;right:12px;top:12px;z-index:500;display:flex;flex-direction:column;gap:6px}
@@ -239,10 +244,12 @@ footer{padding:36px 0 60px;color:var(--ink-3);font-size:var(--step--1)}
         <span><i class="sw today"></i>All ages today</span>
         <span><i class="sw plan"></i>All ages with the plan</span>
         <span><i class="sw notyet"></i>Not yet all ages</span>
+        <span id="key-path" hidden><i class="sw path"></i>Bike path today</span>
         <span><i class="dot"></i>Spot that needs a crossing</span>
       </div>
       <button type="button" class="touchhint" id="touchhint">Tap to move the map</button>
     </div>
+    <p class="mapnote" id="pathnote" hidden></p>
   </div>
 </div>
 
@@ -363,7 +370,7 @@ const D=JSON.parse(document.getElementById("data").textContent);
 const fg=k=>"#"+((D.figs||{})[k]||"evidence");
 const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-const C={today:css("--today"),plan:css("--plan"),spot:css("--spot"),notyet:css("--notyet"),council:css("--council"),tfnsw:css("--mapline"),
+const C={today:css("--today"),plan:css("--plan"),spot:css("--spot"),notyet:css("--notyet"),council:css("--council"),tfnsw:css("--mapline"),bikepath:css("--bikepath"),
   water:css("--mapwater"),park:css("--mappark"),air:css("--mapair"),street:css("--mapstreet"),rail:css("--maprail"),outside:css("--mapout"),line:css("--mapline")};
 const fmt=n=>Math.round(n).toLocaleString("en-AU");
 const FIX={path:"Short path and crossing",quietway:"Quiet street",cycleway_in_spare:"Protected bike lane in spare road space",
@@ -380,7 +387,7 @@ const streetName=s=>named(s)?s:"A path";
 const slug=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
 
 const st=D.stages, steps=D.steps, rec=D.rec, last=steps.length-1;
-D.spots=D.spots||[];D.works=D.works||[];D.places=D.places||[];D.wards=D.wards||[];D.council=D.council||[];D.corridors=D.corridors||[];
+D.spots=D.spots||[];D.works=D.works||[];D.places=D.places||[];D.wards=D.wards||[];D.council=D.council||[];D.corridors=D.corridors||[];D.paths=D.paths||[];
 const KIND={zebra:"Raised zebra crossing",signals:"Bike and walk signals",path:"Short path and crossing"};
 const NUM=["No","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten"];
 const spotsN=D.spots.length, spotsM=D.spots.reduce((a,s)=>a+s.m,0);
@@ -412,6 +419,8 @@ const wardLayer=L.layerGroup(D.wards.map(w=>L.polygon(w.poly.map(polyLL),{render
 const councilLayer=L.layerGroup(D.council.map(r=>L.polyline(r.lines.map(l=>l.map(ll)),{renderer:R,color:C.council,weight:5,opacity:.55,dashArray:"2 8",lineCap:"round"}).bindTooltip(r.id+" "+r.name+": "+Math.round(r.share*100)+"% on my routes",{sticky:true})));
 const tfLayer=L.layerGroup(D.corridors.map(c=>L.polyline(c.lines.map(l=>l.map(ll)),{renderer:R,color:C.tfnsw,weight:3,opacity:.75,dashArray:"10 6"}).bindTooltip("TfNSW corridor "+c.id,{sticky:true})));
 
+const pathLayer=L.layerGroup(D.paths.map(p=>L.polyline(p.lines,{renderer:R,color:C.bikepath,weight:2,opacity:1,lineCap:"round"})
+  .bindTooltip(p.name+": bike path today",{sticky:true}).on("click",()=>showPath(p)))).addTo(map);
 const workStep={};
 steps.forEach((s,i)=>s.w.forEach(w=>{if(!(w in workStep))workStep[w]=i;}));
 const worksById={};D.works.forEach(w=>worksById[w.i]=w);
@@ -669,6 +678,17 @@ function showWard(w){
   res.classList.add("show");if(lw.getAttribute("aria-pressed")!=="true")lw.click();
   document.getElementById("top").scrollIntoView({behavior:reduce?"auto":"smooth"});
   map.flyToBounds(L.latLngBounds(w.poly.flat(1).map(ll)),{padding:[20,20],animate:!reduce});
+}
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function showPath(p){
+  res.innerHTML='<p class="eyebrow">Bike path today</p><h3>'+esc(p.name)+'</h3><div class="facts"><div class="fact"><b>'+(p.km<1?p.km.toFixed(2):p.km.toFixed(1))+' km</b><span>long</span></div><div class="fact"><b>'+Math.round(p.share*100)+'%</b><span>of it on my pick</span></div></div><p style="margin-top:12px">'+copyBtn()+'</p>';
+  res.classList.add("show");res.scrollIntoView({behavior:reduce?"auto":"smooth",block:"center"});
+}
+if(D.paths.length){
+  document.getElementById("key-path").hidden=false;
+  const note=document.getElementById("pathnote");
+  note.innerHTML='<a class="fig" href="'+fg("pathkm")+'">'+D.path_km.all.toFixed(1)+'</a> km of bike paths are open today; my pick uses <a class="fig" href="'+fg("pickkm")+'">'+D.path_km.pick.toFixed(1)+'</a> km of them.';
+  note.hidden=false;
 }
 function inside(pt,ring){let c=false;for(let i=0,j=ring.length-1;i<ring.length;j=i++){const a=ring[i],b=ring[j];if(((a[1]>pt[1])!==(b[1]>pt[1]))&&(pt[0]<(b[0]-a[0])*(pt[1]-a[1])/(b[1]-a[1])+a[0]))c=!c;}return c;}
 const hm=location.hash.match(/^#find-(.+)$/);if(hm){const e=idx.find(x=>x.slug===hm[1]);if(e){q.value=e.label;e.go();}}
