@@ -2290,3 +2290,15 @@ uv run python -I artifacts/W1.11/axe.py /tmp/w111/out artifacts/W1.11
 Expect: 8 passed. The Bayside `map.html` has 0 axe-core 4.14.0 violations of impact serious or critical at 390 by 844 and 1440 by 900, at load and with the first street change popup open. Tab reaches 102 stops at load, each with a focus ring.
 
 Artifact: `artifacts/W1.11/axe.json`
+
+### W1.3
+
+```sh
+uv run bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-19 --out out
+python3 -I -c "import json,re;t=open('out/report.html').read();d=json.loads(re.search(r'<script id=.data. type=.application/json.>(.*?)</script>',t,re.S).group(1));print({k:v['cost_text'] for k,v in d['stages'].items()},d['cost_note'])"
+uv run pytest tests/test_stage_cost.py
+```
+
+Expect: the stage costs are Today "$0", First stage "$38 to 64 million" and Full plan "$46 to 77 million", with the note "rough cost from 2025 Victorian rates". No fix lacks a rate, so no stage says "at least". The run took 35 minutes.
+
+Artifact: `artifacts/W1.3/bayside-stages.json`

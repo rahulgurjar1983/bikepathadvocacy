@@ -1,0 +1,69 @@
+{
+ "cost_note": "rough cost from 2025 Victorian rates",
+ "spot_cost": 21.689958361668673,
+ "stages": {
+  "first": {
+   "cost": 48.46982173455131,
+   "cost_high": 63.010768254916705,
+   "cost_low": 38.775857387641054,
+   "cost_missing": 0,
+   "cost_text": "$38 to 64 million",
+   "km": 62.63346759992464,
+   "lane": 2.5012842012408365,
+   "n_spots": 21,
+   "n_works": 452,
+   "park": 1908,
+   "places": {
+    "school": 45,
+    "station": 9,
+    "town_centre": 5
+   },
+   "safe": 826,
+   "score": 85.0669412976313,
+   "slow": 26.08141726280572,
+   "trips": 971
+  },
+  "today": {
+   "cost": 0.0,
+   "cost_high": 0.0,
+   "cost_low": 0.0,
+   "cost_missing": 0,
+   "cost_text": "$0",
+   "km": 13.87925267462038,
+   "lane": 0,
+   "n_spots": 0,
+   "n_works": 0,
+   "park": 0,
+   "places": {
+    "school": 0,
+    "station": 0,
+    "town_centre": 0
+   },
+   "safe": 0,
+   "score": 0.0,
+   "slow": 0,
+   "trips": 971
+  },
+  "works": {
+   "cost": 58.668175835638785,
+   "cost_high": 76.26862858633042,
+   "cost_low": 46.93454066851103,
+   "cost_missing": 0,
+   "cost_text": "$46 to 77 million",
+   "km": 69.2049562130961,
+   "lane": 4.974768268165823,
+   "n_spots": 27,
+   "n_works": 515,
+   "park": 2142,
+   "places": {
+    "school": 46,
+    "station": 11,
+    "town_centre": 9
+   },
+   "safe": 894,
+   "score": 92.07003089598352,
+   "slow": 28.724133127960787,
+   "trips": 971
+  }
+ }
+}
