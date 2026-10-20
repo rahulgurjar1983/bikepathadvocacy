@@ -477,8 +477,10 @@ def test_fr21_3_the_report_run_writes_the_page_the_whole_file_and_the_layer_file
     assert layers == ["bike-paths-today.kml", "painted-lanes-today.kml"]
     whole = etree.fromstring((built / "map.kml").read_bytes())
     assert len(whole.findall(f".//{KML}Folder")) == len(layers)
-    sums = (built / "SHA256SUMS").read_text()
+    sums = (built / "MAP-SHA256SUMS").read_text()
     assert "  map.html\n" in sums and "  map.kml\n" in sums
+    top = (built / "SHA256SUMS").read_text()
+    assert "  map.html\n" not in top and "  map.kml\n" not in top
     inner = (built / "map-layers" / "SHA256SUMS").read_text().splitlines()
     assert [line.split("  ")[1] for line in inner] == layers
 

@@ -18,9 +18,7 @@ COMMITTED = Path("tests/fixtures/test-grid/snapshot")
 FILES = [
     "figures.json",
     "frontier.json",
-    "map.html",
     "map.json",
-    "map.kml",
     "options.json",
     "proposal.json",
     "report.html",
