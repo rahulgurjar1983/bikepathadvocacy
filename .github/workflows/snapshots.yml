@@ -98,7 +98,9 @@ jobs:
       - name: Fetch, check and publish
         run: |
           uv run --frozen bikeplan snapshot set regions/sets/greater-sydney.yaml --only "${{ matrix.council }}" --seconds 19800
-          manifest="$(ls snapshots/${{ matrix.council }}/*/manifest.json)"
+          date="$(python3 -c 'import re, sys; print(re.search(r"osm_date:\s*[\"\x27]?(\d{4}-\d{2}-\d{2})", open(sys.argv[1]).read())[1])' "regions/${{ matrix.council }}.yaml")"
+          manifest="snapshots/${{ matrix.council }}/$date/manifest.json"
+          test -f "$manifest"
           tag="snapshot-$(python3 -c 'import json, sys; m = json.load(open(sys.argv[1])); print(m["region"] + "-" + m["snapshot_id"])' "$manifest")"
           gh release upload "$tag" "$manifest" --clobber
           echo "snapshots: $tag has its manifest"
