@@ -1,0 +1,47 @@
+{
+ "region": "au-nsw-bayside",
+ "snapshot_id": "2026-10-19",
+ "osm_date": "2026-10-19T00:00:00Z",
+ "files": [
+  {
+   "path": "boundary.geojson",
+   "sha256": "ac3759ea1b3cfbefc117487220db2b242e7add55c0a7a2afe448697410037ce2",
+   "bytes": 23148
+  },
+  {
+   "path": "network.osm.gz",
+   "sha256": "bb6855851740aa49f56b6ed4c4a399ae45224be37f89a4d672c66dd62d5cbe5e",
+   "bytes": 5797361
+  },
+  {
+   "path": "places.json",
+   "sha256": "f18eb0be3fb914837fb449a77dd030452b6e6253eca9133b66b1f8772dcc9825",
+   "bytes": 924187
+  },
+  {
+   "path": "population.gpkg",
+   "sha256": "7228344d8fad1e6995db2c42c2dc7de2119d7175c5c4a7022824021541697897",
+   "bytes": 98304
+  },
+  {
+   "path": "parcels.gpkg",
+   "sha256": "d23f4d626ebe0362bfc311cbb5900f4994a82c8e1dc5b77469167e69b639b937",
+   "bytes": 48848896
+  },
+  {
+   "path": "elevation.tif",
+   "sha256": "936fc73e4fb35bd5aed94775c669245456894b5775b09bae22bd0c885b204a17",
+   "bytes": 952293
+  },
+  {
+   "path": "road_segments.gpkg",
+   "sha256": "09f7ec06bfdda52e8c9bf8c178549a59113fd208c5faaf75b62e00411f6d71a0",
+   "bytes": 6131712
+  },
+  {
+   "path": "speed_zones.gpkg",
+   "sha256": "cd297432d46d2c3c048afd94ff3ff49f8b4e0681378a6d3dfa9936871ac5e9db",
+   "bytes": 3932160
+  }
+ ]
+}

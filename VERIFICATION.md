@@ -1760,9 +1760,9 @@ uv run --frozen pytest -q tests/test_snapshot_set.py
 
 Expect: the command skips each council whose manifest in `snapshots/` has the Bayside date and adapters, and fetches, verifies and publishes the rest. It exits 1 and names the councils that failed, and a rerun resumes from the cached tiles. The tests pass. Every published council passes the manifest check; the check that all 33 are published moves to the G1.5 proof.
 
-Limits: 13 councils are published. The `snapshots` workflow fetches the rest. Bayside's refetch moves to Q1.10.
+Limits: the 12 council manifests dated 2026-10-01 were removed by Q1.10 because the region files moved to 2026-10-19 and the owner cancelled those councils. Bayside is the one published council.
 
-Artifact: `snapshots/au-nsw-randwick/2026-10-01/manifest.json`
+Artifact: `regions/sets/greater-sydney.yaml`
 
 ### G1.6
 
@@ -2112,3 +2112,18 @@ separated 9 and 8, and shortest 46 and 22. All-built scores round to
 73.9%, 41.5%, 73.9% and 40.2%, in that order.
 
 Artifact: `artifacts/W1.2/path-crossings.json`.
+
+### Q1.10
+
+```sh
+grep -c "osm_date: .2026-10-19" regions/*.yaml | grep -c ":1"
+uv run --frozen bikeplan snapshot pull snapshots/au-nsw-bayside/2026-10-19/manifest.json
+uv run --frozen bikeplan snapshot verify data/cache/au-nsw-bayside/2026-10-19
+uv run --frozen pytest -q tests/test_snapshot_set.py tests/test_snapshot.py
+```
+
+Expect: the first command prints 33. Verify prints `ok` with a sha256 for `boundary.geojson`, `network.osm.gz`, `places.json`, `population.gpkg`, `parcels.gpkg`, `elevation.tif`, `road_segments.gpkg` and `speed_zones.gpkg`. The tests pass. The snapshot comes from `snapshots` run 39373869552 and release `snapshot-au-nsw-bayside-2026-10-19`.
+
+Limits: the check that a release shows road functions and Transport for NSW owners is M1.7, which stays open until a release is built from this snapshot.
+
+Artifact: `artifacts/Q1.10/files.json`
