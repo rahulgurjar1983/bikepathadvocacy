@@ -1438,3 +1438,5 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - Q1.10 (2026-10-20): release v2026.10.20-pr219 was built from the 2026-10-19 snapshot. Its Forest Road blockers name Transport for NSW with road type primary. The row stays open (no test is named for FR-15.9); M1.7 reads the remaining blockers and the report text.
 
 - Q1.10 (2026-10-20): `snapshot verify --region <region file>` now fails and names each required adapter whose file the manifest lacks (FR-15.9). `snapshot set` uses it before publish. Without `--region` verify still checks only listed files. The data-quality report and effective dates of FR-15.9 belong to P12.1.
+
+- M1.7 closed (2026-10-20): release v2026.10.20-pr224 has no "Not a state road" in options.json. Forest Road blockers name Transport for NSW (primary). Wentworth Avenue and Bay Street are no longer blockers in any option. The 6 "Not a state road" cells left in report.html are local residential roads and a primary_link.
