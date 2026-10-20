@@ -2059,9 +2059,9 @@ tar xzf au-nsw-bayside.tar.gz options.json
 grep -c "Not a state road" options.json
 ```
 
-Expect: `0`. Forest Road blockers show owner Transport for NSW with road type
+Expect: `0`, and the artifact lists Forest Road with Transport for NSW. Forest Road blockers show owner Transport for NSW with road type
 primary. Wentworth Avenue and Bay Street are no longer blockers in any option.
-Artifact: `options.json` in the release asset `au-nsw-bayside.tar.gz`.
+Artifact: `artifacts/M1.7/release-check.json`.
 
 ### W1.2
 
