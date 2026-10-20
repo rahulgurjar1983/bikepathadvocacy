@@ -1,9 +1,9 @@
 import networkx as nx
 import pytest
 
+from bikeplan import ladder as ladder_module
 from bikeplan.config import load_profile, load_region
 from bikeplan.fit import disruption_score, parking_spaces
-from bikeplan import ladder as ladder_module
 from bikeplan.ladder import build_ladder, link_fixes
 from tests.test_option_ladder import people, row
 
