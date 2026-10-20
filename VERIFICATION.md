@@ -2051,6 +2051,18 @@ The run reads the Bayside snapshot dated 2026-10-01 with shipped settings.
 Part 2 adds `test_fr17_14_a_link_matching_a_crossing_local_road_still_takes_its_way_function`.
 Artifact: `artifacts/M1.7/after.json`
 
+Release check on v2026.10.20-pr224, built from snapshot 2026-10-19:
+
+```
+gh release download v2026.10.20-pr224 -p au-nsw-bayside.tar.gz
+tar xzf au-nsw-bayside.tar.gz options.json
+grep -c "Not a state road" options.json
+```
+
+Expect: `0`, and the artifact lists Forest Road with Transport for NSW. Forest Road blockers show owner Transport for NSW with road type
+primary. Wentworth Avenue and Bay Street are no longer blockers in any option.
+Artifact: `artifacts/M1.7/release-check.json`.
+
 ### W1.2
 
 ```

@@ -1,0 +1,18 @@
+{
+ "release": "v2026.10.20-pr224",
+ "not_a_state_road_in_options": 0,
+ "blockers": [
+  {
+   "street": "Forest Road",
+   "owner": "Transport for NSW",
+   "road_type": "primary",
+   "km": 0.08142322234731551
+  },
+  {
+   "street": "Forest Road",
+   "owner": "Transport for NSW",
+   "road_type": "primary",
+   "km": 0.08142322234731551
+  }
+ ]
+}
