@@ -1472,3 +1472,7 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - Gate `contracts` lets the `FILES` fixtures grow only with `.json` or `.csv` names. `map.html` and `map.kml` are hashed in `MAP-SHA256SUMS`, not `SHA256SUMS`.
 - Gate `generic` bans region names in `src/bikeplan`, so popup words there must avoid them.
 - Gate `deps` wants every imported package declared with `uv add`.
+- W1.11 part 2: `map_checks.py` holds the FR-21.7 release check. It reads `map.html`, `report.html`, `figures.json`, `map.kml` and `map-layers/*.kml` from each region archive and opens the page in headless Chromium.
+- Tests must import `bikeplan.checks` as a module, so they still collect on base.
+- `map-layers/SHA256SUMS` is not a layer file. The check counts only `*.kml`.
+

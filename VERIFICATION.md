@@ -2257,3 +2257,13 @@ Expect: `out` holds `map.html`, `map.kml` and `map-layers/*.kml`, with 53.6 km o
 This part has no `checks.html` measure and no axe-core proof yet.
 
 Artifact: `artifacts/W1.11/summary.json`
+
+### W1.11 checks
+
+```sh
+uv run pytest tests/test_checks_map.py -v | tee artifacts/W1.11/map-checks.txt
+```
+
+Expect: 10 passed. A true release passes every FR-21.7 measure. A planted console error, network request, wrong layer count, stray work, wrong bike path km, bad Google link or bad layer file each fails it, and the release file list skips `*-map.html`.
+
+Artifact: `artifacts/W1.11/map-checks.txt`

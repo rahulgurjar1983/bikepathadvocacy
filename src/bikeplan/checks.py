@@ -13,6 +13,7 @@ from pathlib import Path
 import shapely
 from shapely.geometry import LineString, Point
 
+from bikeplan.map_checks import map_problems
 from bikeplan.report import FIGURES, MAP_FIGURE
 
 SPEC_ID = re.compile(r"\b(?:FR-\d+\.\d+|NFR-\d+)\b")
@@ -39,7 +40,9 @@ VERIFY_ARTIFACT = re.compile(r"^Artifact:\s*`([^`]+)`", re.M)
 
 def report_files(release: Path) -> list[Path]:
     return sorted(
-        path for path in release.glob("*.html") if path.name not in ("checks.html", "index.html")
+        path
+        for path in release.glob("*.html")
+        if path.name not in ("checks.html", "index.html") and not path.name.endswith("-map.html")
     )
 
 
@@ -316,6 +319,12 @@ RELEASE_CHECKS = {
         opening_problems,
         "lists the four options, my pick and my ask, with every number linked to a figure "
         "whose recipe prints the same value from options.json",
+    ),
+    "FR-21.7": (
+        map_problems,
+        "opens in a browser with no console error and no network request, shows the counts "
+        "of its data, holds every work in a street change and uses valid layer files and "
+        "Google links",
     ),
     "FR-17.15": (
         audit_problems,
