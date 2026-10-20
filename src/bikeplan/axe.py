@@ -2,6 +2,7 @@ import hashlib
 from pathlib import Path
 
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
 
 AXE_VERSION = "4.14.0"
 AXE_SHA256 = "20c09fe157a8a34a30e241aaa1fcdade657734f08ab379ecfbeb7d45cc46e878"
@@ -16,6 +17,8 @@ axe.run(document, {resultTypes: ['violations']}).then(found => done(
     .map(v => ({id: v.id, impact: v.impact, nodes: v.nodes.map(n => n.target.join(' '))}))
 ));
 """
+
+SETTLED = "return document.getAnimations().length === 0"
 
 STOP = """
 const e = document.activeElement;
@@ -39,6 +42,7 @@ def axe_source() -> str:
 
 
 def violations(driver, impacts=IMPACTS) -> list[dict]:
+    WebDriverWait(driver, 30).until(lambda d: d.execute_script(SETTLED))
     driver.execute_script(axe_source())
     return driver.execute_async_script(RUN, list(impacts))
 
