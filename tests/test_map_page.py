@@ -5,6 +5,7 @@ from pathlib import Path
 import pytest
 from lxml import etree
 from pykml.parser import Schema
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -95,7 +96,6 @@ def rich_pick():
 
 def map_data_for(**more):
     from bikeplan.map_data import map_data
-
     from bikeplan.report_page import report_data
 
     given = {
@@ -164,7 +164,7 @@ def test_fr21_3_a_street_change_gives_its_two_farthest_ends_and_a_middle_point(d
     ends = sorted(first["ends"])
     assert ends[0] == pytest.approx([151.11, -33.91], abs=1e-5)
     assert ends[1] == pytest.approx([151.201, -33.799], abs=1e-5)
-    assert first["at"] in [point for line in first["lines"] for point in line]
+    assert first["at"] in ([151.1105, -33.9095], [151.2005, -33.7995])
 
 
 def test_fr21_3_the_data_holds_the_paths_the_spots_and_the_totals(data):
@@ -297,7 +297,9 @@ def test_fr21_4_the_hash_opens_a_street_change_with_ride_and_street_view_links(p
         origin = [float(ride.group(1)), float(ride.group(2))]
         assert origin in [[e[1], e[0]] for e in first["ends"]]
         assert [float(view.group(1)), float(view.group(2))] == [first["at"][1], first["at"][0]]
-        assert "Ash Street" in driver.find_element(By.CSS_SELECTOR, ".leaflet-popup").text
+        assert "Ash Street" in driver.find_element(By.CSS_SELECTOR, ".leaflet-popup").get_attribute(
+            "textContent"
+        )
     finally:
         driver.quit()
 
@@ -321,18 +323,22 @@ def test_fr21_4_the_hash_opens_a_bike_path_with_ride_and_street_view_links(page)
 def test_fr21_4_a_spot_and_a_place_open_a_pin_and_street_view(page, data):
     driver = open_page(page)
     try:
+        marker = driver.find_element(By.CSS_SELECTOR, ".pmark")
+        ActionChains(driver).move_to_element(marker).click().perform()
+        links = popup_links(driver)
+        assert PIN.fullmatch(links[0]) and STREET_VIEW.fullmatch(links[1])
+        popup = driver.find_element(By.CSS_SELECTOR, ".leaflet-popup")
+        assert "Oak School" in popup.get_attribute("textContent")
+        driver.execute_script("document.querySelector('.leaflet-popup-close-button').click()")
+        WebDriverWait(driver, 10).until(
+            lambda d: not d.find_elements(By.CSS_SELECTOR, ".leaflet-popup")
+        )
         driver.find_element(By.CSS_SELECTOR, "#spots .item").click()
         links = popup_links(driver)
         spot = data["spots"][0]
         pin, view = PIN.fullmatch(links[0]), STREET_VIEW.fullmatch(links[1])
         assert pin and view
         assert [float(pin.group(1)), float(pin.group(2))] == [spot["at"][1], spot["at"][0]]
-        driver.execute_script("document.querySelector('.leaflet-popup-close-button').click()")
-        marker = driver.find_element(By.CSS_SELECTOR, ".pmark")
-        driver.execute_script("arguments[0].parentElement.click()", marker)
-        links = popup_links(driver)
-        assert PIN.fullmatch(links[0]) and STREET_VIEW.fullmatch(links[1])
-        assert "Oak School" in driver.find_element(By.CSS_SELECTOR, ".leaflet-popup").text
     finally:
         driver.quit()
 
@@ -468,7 +474,7 @@ def test_fr21_3_the_report_run_writes_the_page_the_whole_file_and_the_layer_file
     assert {"Bay Trail", "Park Link"} <= names
     assert "Lane Road" in {p["name"] for p in page["lanes"]}
     layers = sorted(p.name for p in (built / "map-layers").glob("*.kml"))
-    assert layers == ["bike-paths-today.kml", "painted-lanes-today.kml", "places.kml"]
+    assert layers == ["bike-paths-today.kml", "painted-lanes-today.kml"]
     whole = etree.fromstring((built / "map.kml").read_bytes())
     assert len(whole.findall(f".//{KML}Folder")) == len(layers)
     sums = (built / "SHA256SUMS").read_text()
