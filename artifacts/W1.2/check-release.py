@@ -3,7 +3,8 @@ import json
 import sys
 
 streets = ["Wollongong Road", "Rocky Point Road", "Joffre Crescent"]
-options = json.load(open(sys.argv[1]))["options"]
+with open(sys.argv[1]) as handle:
+    options = json.load(handle)["options"]
 out = {}
 for option in options:
     for street in streets:
@@ -14,4 +15,5 @@ for option in options:
             if b["street"] == street
         ]
         out[option["id"] + "/" + street] = {"fixes": dict(fixes), "blockers": blockers}
-json.dump(out, open(sys.argv[2], "w"), indent=1, sort_keys=True)
+with open(sys.argv[2], "w") as handle:
+    json.dump(out, handle, indent=1, sort_keys=True)
