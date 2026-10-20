@@ -360,6 +360,7 @@ footer{padding:36px 0 60px;color:var(--ink-3);font-size:var(--step--1)}
 (function(){
 "use strict";
 const D=JSON.parse(document.getElementById("data").textContent);
+const fg=k=>"#"+((D.figs||{})[k]||"evidence");
 const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const C={today:css("--today"),plan:css("--plan"),spot:css("--spot"),notyet:css("--notyet"),council:css("--council"),tfnsw:css("--mapline"),
@@ -545,11 +546,11 @@ const fixesEl=document.getElementById("fixes");
 if(fixesEl){
 Object.entries(byFix).sort((a,b)=>b[1].km-a[1].km).forEach(([fix,v])=>{
   const el=document.createElement("article");el.className="card fix";
-  el.innerHTML='<h3>'+(FIX[fix]||fix)+'</h3><div class="km"><a class="fig" href="#evidence">'+v.km.toFixed(1)+'</a> <small>km</small></div>'+pair(fix)+'<p>'+(FIXTXT[fix]||"")+' <b>'+(v.park?fmt(v.park)+" parking spaces.":"No parking lost.")+'</b></p>';
+  el.innerHTML='<h3>'+(FIX[fix]||fix)+'</h3><div class="km"><a class="fig" href="'+fg("fix:"+fix)+'">'+v.km.toFixed(1)+'</a> <small>km</small></div>'+pair(fix)+'<p>'+(FIXTXT[fix]||"")+' <b>'+(v.park?fmt(v.park)+" parking spaces.":"No parking lost.")+'</b></p>';
   fixesEl.appendChild(el);});
 if(spotsN){const cross=document.createElement("article");cross.className="card fix";
 const nSig=D.spots.filter(s=>s.kind==="signals").length;const nPath=D.spots.filter(s=>s.kind==="path").length;
-cross.innerHTML='<h3>Crossings at the spots</h3><div class="km"><a class="fig" href="#evidence">'+spotsN+'</a> <small>spots</small></div><div class="xs"><figure><figcaption>Raised zebra crossing</figcaption><svg viewBox="0 0 320 88" role="img" aria-label="A raised zebra crossing across a two-lane street"><rect x="0" y="0" width="320" height="88" fill="#e9e5dc"/><rect x="0" y="16" width="320" height="56" fill="#5b6270"/>'+Array.from({length:7},(_,i)=>'<rect x="'+(130+i*9)+'" y="16" width="5" height="56" fill="#fff"/>').join("")+'<rect x="120" y="16" width="80" height="56" fill="#2f9e44" opacity=".25"/><text x="160" y="84" text-anchor="middle" font-size="9" fill="currentColor">Cars give way. Raised to slow them.</text></svg></figure></div><p>'+(spotsN-nSig-nPath)+' spots get a raised zebra crossing. '+nSig+' on bigger roads need bike and walk signals.'+(nPath?' '+nPath+' are a short path with a crossing.':'')+'</p>';
+cross.innerHTML='<h3>Crossings at the spots</h3><div class="km"><a class="fig" href="'+fg("spots")+'">'+spotsN+'</a> <small>spots</small></div><div class="xs"><figure><figcaption>Raised zebra crossing</figcaption><svg viewBox="0 0 320 88" role="img" aria-label="A raised zebra crossing across a two-lane street"><rect x="0" y="0" width="320" height="88" fill="#e9e5dc"/><rect x="0" y="16" width="320" height="56" fill="#5b6270"/>'+Array.from({length:7},(_,i)=>'<rect x="'+(130+i*9)+'" y="16" width="5" height="56" fill="#fff"/>').join("")+'<rect x="120" y="16" width="80" height="56" fill="#2f9e44" opacity=".25"/><text x="160" y="84" text-anchor="middle" font-size="9" fill="currentColor">Cars give way. Raised to slow them.</text></svg></figure></div><p>'+(spotsN-nSig-nPath)+' spots get a raised zebra crossing. '+nSig+' on bigger roads need bike and walk signals.'+(nPath?' '+nPath+' are a short path with a crossing.':'')+'</p>';
 fixesEl.appendChild(cross);}
 const nf=Object.keys(byFix).length;
 document.getElementById("streets-h").textContent=(NUM[nf]||nf)+" kind"+(nf===1?"":"s")+" of street change"+(nf===1?"":"s")+" do the work";
@@ -557,8 +558,8 @@ document.getElementById("streets-h").textContent=(NUM[nf]||nf)+" kind"+(nf===1?"
 
 if(document.getElementById("spots")){
 const sWorks=D.before_spots, ceil=st.works.score;
-document.getElementById("spot-h").innerHTML='<a class="fig" href="#evidence">'+spotsN+'</a> short spots hold the network back';
-document.getElementById("spot-p").innerHTML='Street changes alone make <a class="fig" href="#evidence">'+Math.round(sWorks)+'%</a> of trips all-ages. The '+spotsN+' spots add up to <a class="fig" href="#evidence">'+(spotsM/1000).toFixed(1)+' km</a>. Fix them too, and <a class="fig" href="#evidence">'+Math.round(ceil)+'%</a> of trips are all-ages.';
+document.getElementById("spot-h").innerHTML='<a class="fig" href="'+fg("spots")+'">'+spotsN+'</a> short spots hold the network back';
+document.getElementById("spot-p").innerHTML='Street changes alone make <a class="fig" href="'+fg("nospots")+'">'+Math.round(sWorks)+'%</a> of trips all-ages. The '+spotsN+' spots add up to <a class="fig" href="'+fg("spotkm")+'">'+(spotsM/1000).toFixed(1)+' km</a>. Fix them too, and <a class="fig" href="'+fg("fullplan")+'">'+Math.round(ceil)+'%</a> of trips are all-ages.';
 document.getElementById("spot-bars").innerHTML=[["Today",st.today.score,C.notyet],["Street changes",sWorks,"#8fb3f9"],["With the spots",ceil,C.plan]]
   .map(([l,v,c])=>'<div class="bar"><span>'+l+'</span><span class="track"><span class="fill" style="display:block;width:'+Math.max(v,1)+'%;background:'+c+'"></span></span><b>'+Math.round(v)+'%</b></div>').join("");
 const sl=document.getElementById("spotlist");
@@ -588,12 +589,12 @@ D.wards.forEach(w=>{
 }
 if(document.getElementById("cp-text")){
 const cps=D.council_share;
-document.getElementById("cp-text").innerHTML='My routes follow <a class="fig" href="#evidence">'+Math.round(cps*100)+'%</a> of council’s <a class="fig" href="#evidence">'+Math.round(D.council_km)+' km</a> priority network. Mine take the shortest calm way between schools and stations. Council’s also follows the bay and the main roads.';
+document.getElementById("cp-text").innerHTML='My routes follow <a class="fig" href="'+fg("council_share")+'">'+Math.round(cps*100)+'%</a> of council’s <a class="fig" href="'+fg("council_km")+'">'+Math.round(D.council_km)+' km</a> priority network. Mine take the shortest calm way between schools and stations. Council’s also follows the bay and the main roads.';
 document.getElementById("cp-meter").innerHTML='<i style="width:'+(cps*100)+'%;background:var(--plan)"></i><i style="flex:1;background:#c9c4ba"></i>';
 }
 if(document.getElementById("tf-text")){
 const cc=D.corridor_counts, ctot=cc.covered+cc.partly+cc.missed;
-document.getElementById("tf-text").innerHTML='Of the TfNSW corridor pieces inside Bayside, my routes cover <a class="fig" href="#evidence">'+cc.covered+'</a> in full and <a class="fig" href="#evidence">'+cc.partly+'</a> in part. They miss <a class="fig" href="#evidence">'+cc.missed+'</a>.';
+document.getElementById("tf-text").innerHTML='Of the TfNSW corridor pieces inside Bayside, my routes cover <a class="fig" href="'+fg("tf:covered")+'">'+cc.covered+'</a> in full and <a class="fig" href="'+fg("tf:partly")+'">'+cc.partly+'</a> in part. They miss <a class="fig" href="'+fg("tf:missed")+'">'+cc.missed+'</a>.';
 document.getElementById("tf-meter").innerHTML='<i style="width:'+(cc.covered/ctot*100)+'%;background:var(--plan)"></i><i style="width:'+(cc.partly/ctot*100)+'%;background:#8fb3f9"></i><i style="flex:1;background:#c9c4ba"></i>';
 
 }

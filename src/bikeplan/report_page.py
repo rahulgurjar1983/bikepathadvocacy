@@ -1,9 +1,11 @@
+import hashlib
 import html
 import json
 import re
 from datetime import date
 
-from bikeplan.report import ASSETS, MONTHS
+from bikeplan.edition import PICK, fact
+from bikeplan.report import ASSETS, MONTHS, SOURCES
 
 TEMPLATE = ASSETS / "report_template.html"
 SPOT_KINDS = {
@@ -221,12 +223,94 @@ def credits(data: dict) -> str:
     return html.escape(text)
 
 
+def page_figures(options, choice, text, first) -> list[dict]:
+    pick = next(item for item in options if item["id"] == choice["pick"])
+    spots = [item for item in pick["works"] if item.get("spot")]
+    plain = [item for item in pick["works"] if not item.get("spot")]
+    digest = hashlib.sha256(text.encode()).hexdigest()
+    keep = "w.get('spot')"
+    facts = []
+    if spots:
+        facts += [
+            fact(
+                "Spots of my pick",
+                len(spots),
+                "spots",
+                0,
+                f"{PICK}print(sum(1 for w in p['works'] if {keep}))",
+                "the spots",
+            ),
+            fact(
+                "Length of the spots of my pick",
+                sum(item["km"] for item in spots),
+                "km",
+                1,
+                f"{PICK}print(round(sum(w['km'] for w in p['works'] if {keep}),1))",
+                "the spot lengths",
+            ),
+            fact(
+                "Safety score of my pick without its spots",
+                pick["no_spots"],
+                "points",
+                1,
+                f"{PICK}print(round(p['no_spots'],1))",
+                "the score without spots",
+            ),
+            fact(
+                "Safety score of my pick with every work built",
+                pick["steps"][-1]["totals"]["score"],
+                "points",
+                1,
+                f"{PICK}print(round(p['steps'][-1]['score'],1))",
+                "the full plan score",
+            ),
+        ]
+    for fix in sorted({item["fix"] for item in plain}):
+        facts.append(
+            fact(
+                f"Km of {fix} works of my pick",
+                sum(item["km"] for item in plain if item["fix"] == fix),
+                "km",
+                1,
+                f"{PICK}print(round(sum(w['km'] for w in p['works'] "
+                f"if not {keep} and w['fix']=={fix!r}),1))",
+                f"the {fix} lengths",
+            )
+        )
+    return [
+        {
+            "id": f"F{first + number}",
+            "label": item["label"],
+            "value": item["value"],
+            "unit": item["unit"],
+            "spec": "spec 20",
+            "method": f"I read {item['method']} from options.json.",
+            "inputs": [{"name": "options.json", "sha256": digest}],
+            "sources": SOURCES,
+            "recipe": item["recipe"],
+        }
+        for number, item in enumerate(facts)
+    ]
+
+
+PAGE_LABELS = (
+    (r"Places of type (\w+), joined", "{}"),
+    (r"Spots of my pick", "spots"),
+    (r"Length of the spots of my pick", "spotkm"),
+    (r"Safety score of my pick without its spots", "nospots"),
+    (r"Safety score of my pick with every work built", "fullplan"),
+    (r"Km of (\w+) works of my pick", "fix:{}"),
+    (r"Corridor segments (covered|partly|missed) by my pick", "tf:{}"),
+)
+
+
 def place_figures(figures) -> dict:
     found = {}
     for item in figures:
-        match = re.fullmatch(r"Places of type (\w+), joined", item["label"])
-        if match:
-            found[match[1]] = item["id"]
+        for pattern, key in PAGE_LABELS:
+            match = re.fullmatch(pattern, item["label"])
+            if match:
+                found[key.format(*match.groups())] = item["id"]
     return found
 
 
