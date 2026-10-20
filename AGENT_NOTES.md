@@ -16,6 +16,8 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 - Profiles live in `profiles/<id>.yaml`; `load_profile(id, directory)` reads them. `Num` keeps `value`, `source` and an `assumption` flag. Tests build bad files from a copy of the real `au-nsw` file.
 - Region files live in `regions/<id>.yaml`. `test-grid` points at `tests/fixtures/test-grid/snapshot/boundary.geojson`, which the P11 fixture row must create. `bikeplan config show` prints one `key value (source)` line per profile value.
 - `uv add <package>` works on this host and may use the network. Python's built-in request tools work with the local replay server used by snapshot tests.
+- `bikeplan.paths_today.read_paths` reads `network.osm.gz` for the bike paths and painted lanes of spec 21. A run writes `paths.json` and figures F-last three only when it finds paths, so the test grid keeps F1 to F85. A report test file may not add `:root` rules; the page's `:root` blocks must equal the mock.
+- The shipped spec counts 16.8 km of painted lanes. The spec 21 definition gives 7.3 km on `data/cache/au-nsw-bayside/2026-10-19`; adding `cycleway=shared_lane` ways would give 17.0 km. The row follows the written definition.
 
 ## Spec issues
 

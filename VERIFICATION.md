@@ -2231,3 +2231,16 @@ grep -o 'id="F15[5-9]"\|id="F16[0-4]"' au-nsw-bayside-report.html | wc -l
 Expect: 10 entries, F155 (27 spots), F157 (29.9 points), F158 (92.1 points).
 The council numbers still have no entries; they wait for FR-20.24, so the row stays open.
 Artifact: `artifacts/W1.0/release-pr230.json`.
+
+### W1.10
+
+```sh
+uv run bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-19 --out out
+python3 -c "import json;d=json.load(open('out/paths.json'))['items'];print(round(sum(i['km'] for i in d if i['kind']=='path'),1),[(i['name'],i['km']) for i in d if i['name'] in ('Cook Park Trail','M6 Shared Path')])"
+uv run python artifacts/W1.10/shot.py out/report.html artifacts/W1.10/bayside-map.png
+```
+
+Expect: 53.6 km of bike paths (spec 21 counts 53.7), Cook Park Trail 18.285 km, M6 Shared Path 5.889 km, 7.3 km of painted lanes, 11.7 km of paths on my pick. Figures F165 to F167 hold them. The caption reads "53.6 km of bike paths are open today; my pick uses 11.7 km of them." The key lists "Bike path today" and the map draws the teal lines.
+The run took 39 minutes 49 seconds on a busy host.
+
+Artifact: `artifacts/W1.10/bayside-paths.json`, `artifacts/W1.10/bayside-map.png`
