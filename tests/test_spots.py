@@ -3,6 +3,7 @@ import pytest
 
 from bikeplan.config import load_profile, load_region
 from bikeplan.fit import disruption_score, parking_spaces
+from bikeplan import ladder as ladder_module
 from bikeplan.ladder import build_ladder, link_fixes
 from tests.test_option_ladder import people, row
 
@@ -258,3 +259,56 @@ def test_fr20_2_a_cycleway_that_only_crosses_a_busy_road_gets_a_crossing_spot():
 
     assert fixes_for(cycleway_world(width_tag_m=1.0)) == {}
     assert fixes_for(cycleway_world(surface="dirt")) == {}
+
+
+def open_world(far=None):
+    graph = nx.MultiDiGraph()
+    xs = (-80, 0, 60, 60 + (far or 0))
+    for node, x in enumerate(xs[: 4 if far else 3]):
+        graph.add_node(node, x=x, y=0)
+    busy = {"highway": "secondary", "lanes_total": 4, "speed_kmh": 60, "footpath_width_m": 2.5}
+    busy |= {"parking:both": "yes", "road_function": "ArterialRoad"}
+    add_road(graph, 0, 1, "calm-w", length_m=80.0)
+    add_road(graph, 1, 2, "busy", length_m=60.0, **busy)
+    table = {
+        (0, 1, 0): row(all_ages=True, length=80.0),
+        (1, 2, 0): row(no_fix=True, length=60.0),
+    }
+    fits = {"calm-w": None, "busy": {"status": "no_fit"}}
+    if far:
+        add_road(graph, 2, 3, "long", length_m=far, **busy)
+        table[2, 3, 0] = row(no_fix=True, length=far)
+        fits["long"] = {"status": "no_fit"}
+    graph.graph["points"] = []
+    return graph, table, fits
+
+
+def ladder_with_open_ends(world, pairs):
+    graph, table, fits = world
+    fixes = link_fixes(graph, table, fits, PROFILE, WEIGHTS)
+    assert (1, 2, 0) not in fixes
+    candidates = ladder_module.open_spots(graph, table, fits, PROFILE, WEIGHTS, fixes)
+    return build_ladder(table, sorted(table), people(*pairs), fixes, WEIGHTS, candidates=candidates)
+
+
+def test_fr20_2_a_short_piece_ending_at_a_trips_own_end_is_a_spot_for_that_trip():
+    ladder = ladder_with_open_ends(open_world(), [(1, 0), (2, 2)])
+    (work,) = ladder["works"]
+    assert work["fix"] == "short_path_crossing"
+    assert work["spot"] is True
+    assert work["links"] == [(1, 2, 0)]
+    assert ladder["blockers"] == []
+    assert ladder["steps"][-1]["totals"]["score"] > ladder["steps"][0]["totals"]["score"]
+
+
+def test_fr20_2_a_short_piece_whose_trips_go_on_along_a_long_busy_road_stays_a_blocker():
+    ladder = ladder_with_open_ends(open_world(far=500.0), [(1, 0), (2, 3)])
+    assert ladder["works"] == []
+    assert {item["street"] for item in ladder["blockers"]} == {"busy", "long"}
+
+
+def test_fr20_2_a_short_piece_is_a_spot_when_one_of_its_trips_ends_there_and_another_goes_on():
+    ladder = ladder_with_open_ends(open_world(far=500.0), [(1, 0), (2, 2), (3, 3)])
+    assert [work["links"] for work in ladder["works"]] == [[(1, 2, 0)]]
+    assert ladder["steps"][-1]["totals"]["score"] > ladder["steps"][0]["totals"]["score"]
+    assert [item["street"] for item in ladder["blockers"]] == ["long"]
