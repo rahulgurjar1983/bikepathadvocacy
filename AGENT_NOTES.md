@@ -1421,3 +1421,8 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 ## Q1.10 wait (2026-10-19)
 - Region files now say osm_date 2026-10-19. Run 39283885929 of `snapshots` (councils=au-nsw-bayside) is fetching. When it ends, copy its `manifest.json` to `snapshots/au-nsw-bayside/2026-10-19/` with `gh release download`, drop the old 2026-10-01 Bayside manifest, then run `uv run pytest tests/test_snapshot_set.py tests/test_snapshot.py`.
 - The 12 other council manifests (2026-10-01) were removed: the owner cancelled those councils and `test_fr18_2_every_published_council_has_a_manifest_like_bayside` fails on any manifest with another date. Until the Bayside manifest lands, that test and CI stay red.
+
+### Q1.10 notes
+
+- Q1.10 (2026-10-20): the 2026-10-19 snapshot run 39283885929 fetched Bayside for 2 h 20 min, then failed at publish: `ls snapshots/au-nsw-bayside/*/manifest.json` matched the 2026-10-01 and 2026-10-19 folders. PR 220 fixed that on main (the step reads `osm_date` from the region file). Main is merged into this branch. Run 39373869552 started 2026-10-20T05:14Z with ref `loop/Q1.10-bayside-snapshot`; the tile cache from the failed run is restored, so it should end sooner. Check: `gh run view 39373869552 --json status,conclusion`. When it succeeds, copy `snapshots/au-nsw-bayside/2026-10-19/manifest.json` from the release (`snapshot pull`), then run M1.7.
+- The test `test_fr18_2_every_published_council_has_a_manifest_like_bayside` stays red on PR 219 until that manifest lands: Bayside shows 3 problems today, and the other 32 councils have none.
