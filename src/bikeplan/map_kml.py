@@ -231,7 +231,7 @@ def corridor_marks(data: dict) -> list:
     return [
         line_mark(
             f"TfNSW corridor {route['id']}",
-            words(f"TfNSW corridor {route['id']}", "Transport for NSW strategic corridor", [], []),
+            words(f"TfNSW corridor {route['id']}", "TfNSW strategic corridor", [], []),
             route["lines"],
             line_style(COLOURS["tfnsw"], 6, "60"),
         )
