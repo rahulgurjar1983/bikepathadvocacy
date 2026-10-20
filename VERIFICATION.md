@@ -2264,6 +2264,17 @@ Artifact: `artifacts/W1.11/summary.json`
 uv run pytest tests/test_checks_map.py -v | tee artifacts/W1.11/map-checks.txt
 ```
 
-Expect: 10 passed. A true release passes every FR-21.7 measure. A planted console error, network request, wrong layer count, stray work, wrong bike path km, bad Google link or bad layer file each fails it, and the release file list skips `*-map.html`.
+Expect: 15 passed. A true release passes every FR-21.7 measure, and a release without `<id>-map.html`, `<id>-map.kml` or `<id>-map-layers.zip`, or with a copy that differs from the archive, fails it. A planted console error, network request, wrong layer count, stray work, wrong bike path km, bad Google link or bad layer file each fails it, and the release file list skips `*-map.html`.
 
 Artifact: `artifacts/W1.11/map-checks.txt`
+
+### W1.11 release files
+
+```sh
+uv run bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-19 --out /tmp/w111/out
+uv run python artifacts/W1.11/release-check.py /tmp/w111/out /tmp/w111/release artifacts/W1.11
+```
+
+Expect: the Bayside release folder with the three map files has no FR-21.7 problem. Removing any one of the three prints `is not in the release` for it.
+
+Artifact: `artifacts/W1.11/release-check.json`

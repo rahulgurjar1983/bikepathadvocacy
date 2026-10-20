@@ -3,6 +3,7 @@ import json
 import re
 import shutil
 import tarfile
+import zipfile
 from pathlib import Path
 
 import pytest
@@ -25,6 +26,10 @@ def built(tmp_path_factory):
 def pack(built: Path, release: Path, edit=None):
     release.mkdir()
     shutil.copy(built / "map.html", release / f"{NAME}-map.html")
+    shutil.copy(built / "map.kml", release / f"{NAME}-map.kml")
+    with zipfile.ZipFile(release / f"{NAME}-map-layers.zip", "w") as layers:
+        for path in sorted((built / "map-layers").glob("*.kml")):
+            layers.write(path, path.name)
     (release / f"{NAME}-report.html").write_text((built / "report.html").read_text())
     with tarfile.open(release / f"{NAME}.tar.gz", "w:gz") as tar:
         for path in sorted(built.rglob("*")):
@@ -121,3 +126,33 @@ def test_fr21_7_a_layer_file_that_is_not_kml_fails(built, tmp_path):
     edit = plant("map-layers/bike-paths-today.kml", "<Placemark>", "<Placemarks>")
     problems = checks.map_problems(pack(built, tmp_path / "rel", edit))
     assert any("bike-paths-today.kml" in text and "KML" in text for text in problems)
+
+
+@pytest.mark.parametrize("name", ["map.html", "map.kml", "map-layers.zip"])
+def test_fr21_7_a_release_without_a_map_file_fails(built, tmp_path, name):
+    release = pack(built, tmp_path / "rel")
+    (release / f"{NAME}-{name}").unlink()
+    problems = checks.map_problems(release)
+    assert any(f"{NAME}-{name}" in text and "not in the release" in text for text in problems)
+
+
+def test_fr21_7_a_release_map_page_that_is_not_the_archive_copy_fails(built, tmp_path):
+    release = pack(built, tmp_path / "rel")
+    page = release / f"{NAME}-map.html"
+    page.write_text(page.read_text().replace("</html>", "<!-- stale --></html>"))
+    problems = checks.map_problems(release)
+    assert any(f"{NAME}-map.html" in text and "differs" in text for text in problems)
+
+
+def test_fr21_7_a_release_layer_zip_that_is_not_the_archive_layers_fails(built, tmp_path):
+    release = pack(built, tmp_path / "rel")
+    zip_path = release / f"{NAME}-map-layers.zip"
+    with zipfile.ZipFile(zip_path) as layers:
+        kept = {info.filename: layers.read(info) for info in layers.infolist()}
+    dropped = sorted(kept)[0]
+    del kept[dropped]
+    with zipfile.ZipFile(zip_path, "w") as layers:
+        for name, blob in kept.items():
+            layers.writestr(name, blob)
+    problems = checks.map_problems(release)
+    assert any(f"{NAME}-map-layers.zip" in text and dropped in text for text in problems)

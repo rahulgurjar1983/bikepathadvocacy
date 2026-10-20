@@ -1476,3 +1476,4 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - Tests must import `bikeplan.checks` as a module, so they still collect on base.
 - `map-layers/SHA256SUMS` is not a layer file. The check counts only `*.kml`.
 
+- W1.11 part 3: `map_checks.release_problems` compares the release's `<id>-map.html`, `<id>-map.kml` and `<id>-map-layers.zip` byte for byte with the archive. `pack` in `tests/test_checks_map.py` now writes all three, so old FR-21.7 cases still see a true release.

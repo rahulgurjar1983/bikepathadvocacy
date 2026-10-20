@@ -3,6 +3,7 @@ import json
 import re
 import tarfile
 import tempfile
+import zipfile
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -212,9 +213,38 @@ def archive_problems(archive: Path) -> list[str]:
     return [f"{name}: {problem}" for problem in found]
 
 
+def release_problems(release: Path, archive: Path) -> list[str]:
+    name = archive.name.removesuffix(".tar.gz")
+    problems = []
+    for member, kept in (("map.html", f"{name}-map.html"), ("map.kml", f"{name}-map.kml")):
+        path = release / kept
+        if not path.is_file():
+            problems.append(f"{name}: {kept} is not in the release")
+        elif path.read_bytes() != archive_member(archive, member):
+            problems.append(f"{name}: {kept} differs from {member} in the archive")
+    kept = f"{name}-map-layers.zip"
+    if not (release / kept).is_file():
+        return [*problems, f"{name}: {kept} is not in the release"]
+    with zipfile.ZipFile(release / kept) as layers:
+        held = {info.filename: layers.read(info) for info in layers.infolist()}
+    wanted = {layer.removeprefix("map-layers/"): layer for layer in layer_names(archive)}
+    for layer in sorted(wanted.keys() - held.keys()):
+        problems.append(f"{name}: {kept} lacks {layer}")
+    for layer in sorted(held.keys() - wanted.keys()):
+        problems.append(f"{name}: {kept} holds {layer}, which is not in the archive")
+    for layer in sorted(held.keys() & wanted.keys()):
+        if held[layer] != archive_member(archive, wanted[layer]):
+            problems.append(f"{name}: {kept} differs from {layer} in the archive")
+    return problems
+
+
 def map_problems(release: Path) -> list[str]:
     archives = sorted(p for p in release.glob("*.tar.gz") if p.name != "artifacts.tar.gz")
     found = [archive for archive in archives if archive_member(archive, "options.json")]
     if not found:
         return ["no region report in the release holds a map"]
-    return [problem for archive in found for problem in archive_problems(archive)]
+    return [
+        problem
+        for archive in found
+        for problem in archive_problems(archive) + release_problems(release, archive)
+    ]
