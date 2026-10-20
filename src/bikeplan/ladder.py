@@ -483,11 +483,13 @@ def build_ladder(
         if work.get("spot"):
             work["trips"] = sum(index in need for need, _ in needs)
     built = frozenset(link for work in works if not work.get("spot") for link in work["links"])
+    without_spots = option_totals(table, links, joined, built, trips)
     return {
         "works": works,
         "no_fix": list_no_fix(table, missing, streets or {}),
         "blockers": list_blockers(table, missing, streets or {}, trips, roads or {}, reasons or {}),
         "ceiling": ceiling["score"],
-        "no_spots": option_totals(table, links, joined, built, trips)["score"],
+        "no_spots": without_spots["score"],
+        "no_spots_safe": without_spots["safe_trips"],
         "steps": steps,
     }
