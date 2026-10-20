@@ -2098,6 +2098,20 @@ The other page numbers still link to the closed part; they need figures
 of their own, so the row stays open.
 
 Artifact: `artifacts/W1.0/report.html`.
+
+Spot facts (FR-20.13):
+
+```sh
+uv run --frozen pytest -q tests/test_spot_facts.py
+python3 -c "import json;d=json.load(open('artifacts/W1.0/spot-facts.json'));print(d['before_spots'],d['full_plan'],len(d['spots']))"
+```
+
+Expect: the tests pass. The score without spots is recomputed over all
+trips and is no ladder step. Each spot shows its own fix, and its trips
+are the safe trips that pass through it. A count of one reads "1 trip".
+The test grid holds no spots, so the artifact shows none; the Bayside
+release is the real check, and the row stays open until then.
+Artifact: `artifacts/W1.0/spot-facts.json`.
 Release check for part 3 (pr215): download the release and list the short blockers.
 Command: `gh release download v2026.10.19-pr215 -p au-nsw-bayside.tar.gz && tar -xzf au-nsw-bayside.tar.gz options.json && python3 -c "import json;[print(p['id'],sum(b['km']<=.1 for b in p['blockers'])) for p in json.load(open('options.json'))['options']]"`
 Expect: calm 5, shortest 9, separated 7, mesh 7. Bardwell Road is not a blocker. The row is not complete.

@@ -4,6 +4,7 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Notes
 
+- The ladder gives `no_spots` (score with every work but the spots, over all trips) and a `trips` count on each spot work. The page reads them as `before_spots` and each spot's trips. The test grid holds no spots, so only a Bayside release can show them.
 - Run every gate through `scripts/gate.sh`; CI runs the same script.
 - Tests run with `--import-mode=importlib` and `pythonpath = ["src", "."]`, so `tests/` and `gates/tests/` may hold files with the same name.
 - The red-green gate runs each new or changed test against the base code. Put a new case in a new test function, never as a new row of a test that already passes.
