@@ -30,6 +30,7 @@ from bikeplan.page import (
     method_section,
     rebuild_section,
 )
+from bikeplan.paths_today import read_paths
 from bikeplan.proposal_inputs import (
     cost_figures,
     load_proposal_inputs,
@@ -46,7 +47,6 @@ from bikeplan.report import (
     segment_rows,
     segments_text,
 )
-from bikeplan.paths_today import read_paths
 from bikeplan.report_page import five_minute_page, page_figures, path_figures, report_data
 from bikeplan.snapshot import verify_snapshot
 from bikeplan.stress import score_edges, stress_features, stress_summary
