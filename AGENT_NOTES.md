@@ -1494,3 +1494,4 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - W1.4: a full `bikeplan report` on Bayside took over 55 minutes on this host and was killed at 3300 s. Start it with the whole turn left, or leave the row open and let CI and a release prove it.
 
 - W1.4 part 2: `option_totals` now lists `served` place ids and marks carry `id`; `ward_fit` reads them from each step's totals (steps 0, 1 and last). A full Bayside report took 38 minutes in one foreground call.
+- W1.4 part 3: ward cards are `div` elements, not buttons, so figure links inside them are valid. A full Bayside report took 36 minutes in one foreground call.
