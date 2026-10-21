@@ -145,6 +145,7 @@ def report_data(
     rates=None,
     council=None,
     areas=None,
+    backdrop=None,
 ) -> dict:
     pick = next(item for item in options if item["id"] == choice["pick"])
     rec = choice["step"]
@@ -191,11 +192,11 @@ def report_data(
             found["cost"] = None if cost is None else cost / 1_000_000
     data = {
         "base": {
-            "water": [],
-            "park": [],
-            "air": [],
-            "outside": [],
-            "rail": [],
+            "water": (backdrop or {}).get("water", []),
+            "park": (backdrop or {}).get("park", []),
+            "air": (backdrop or {}).get("air", []),
+            "outside": (backdrop or {}).get("outside", []),
+            "rail": (backdrop or {}).get("rail", []),
             "boundary": boundary_polygons(boundary),
         },
         "streets": street_lines(streets),

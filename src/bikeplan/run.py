@@ -7,6 +7,7 @@ from importlib.metadata import version
 from pathlib import Path
 
 from bikeplan.access import write_access
+from bikeplan.backdrop import backdrop_layers
 from bikeplan.change import (
     change_figures,
     frontier_data,
@@ -353,6 +354,7 @@ def build_all(
         load_rates(),
         council,
         None if wards is None else wards["areas"],
+        backdrop_layers(Path(snapshot), map_payload["boundary"], region.analysis_buffer_m),
     )
     page_text = five_minute_page(
         region,

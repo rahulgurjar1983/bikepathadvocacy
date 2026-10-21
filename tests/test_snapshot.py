@@ -472,3 +472,34 @@ def test_fr18_2_every_region_file_holds_the_refreshed_snapshot_date():
 
     assert len(dates) == 33
     assert set(dates.values()) == {"2026-10-19T00:00:00Z"}
+
+
+def test_fr20_9_snapshot_fetch_asks_for_the_coastline_and_the_backdrop_shapes(
+    routed_overpass_server, tmp_path
+):
+    import json
+
+    from bikeplan import main
+
+    endpoint, requests = routed_overpass_server
+    out = tmp_path / "snap"
+    region = bayside_without_adapters(tmp_path, "[osm_backdrop]")
+
+    code = main(["snapshot", "fetch", str(region), "--out", str(out), "--endpoint", endpoint])
+
+    assert code == 0
+    manifest = json.loads((out / "manifest.json").read_text())
+    names = [entry["name"] for entry in manifest["files"]]
+    assert names == ["boundary.geojson", "network.osm.gz", "places.json", "backdrop.json"]
+    request = manifest["files"][-1]["request"]
+    assert request in requests
+    assert '[date:"' in request and "out geom" in request
+    for tag in (
+        '"natural"="coastline"',
+        '"natural"="water"',
+        '"leisure"="park"',
+        '"railway"',
+        '"aeroway"="aerodrome"',
+    ):
+        assert tag in request
+    assert (out / "backdrop.json").read_bytes() == PLACES_JSON

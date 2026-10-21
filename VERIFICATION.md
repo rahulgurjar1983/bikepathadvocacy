@@ -2341,3 +2341,13 @@ uv run pytest tests/test_map_page.py -k council -q | tee artifacts/W1.4/council-
 
 Expect: every council plan placemark in `map-layers/council-plan.kml` and `map.kml` holds its length, its share on my pick and its plan verdict, as the map page popup does (FR-21.5). The Bayside release check is still open.
 Artifact: `artifacts/W1.4/council-kml.txt`
+
+### W1.5
+
+```sh
+uv run pytest tests/test_backdrop.py tests/test_snapshot.py -q
+uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-19 --out /tmp/w15-run
+```
+
+Expect: tests pass. With `backdrop.json` fetched by `osm_backdrop`, `base` in the data block of `report.html` holds 199 water, 902 park, 2 air, 1124 rail and 1 outside shape. Botany Bay and the open sea are water; Malabar and Rockdale are not; Sydney airport is air.
+Artifact: `artifacts/W1.5/bayside-backdrop.txt`

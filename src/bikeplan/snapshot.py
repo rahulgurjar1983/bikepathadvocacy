@@ -210,6 +210,24 @@ def places_query(box: tuple[float, float, float, float]) -> str:
     return f"[out:json][timeout:{QUERY_TIMEOUT_SECONDS}];({filters});out center tags;"
 
 
+def backdrop_query(box: tuple[float, float, float, float]) -> str:
+    area = box_text(box)
+    filters = "".join(
+        f"{kind}{tag}({area});"
+        for kind, tag in (
+            ("way", '["natural"="coastline"]'),
+            ("nwr", '["natural"="water"]'),
+            ("nwr", '["waterway"="riverbank"]'),
+            ("nwr", '["leisure"="park"]'),
+            ("nwr", '["leisure"="nature_reserve"]'),
+            ("nwr", '["landuse"="recreation_ground"]'),
+            ("nwr", '["aeroway"="aerodrome"]'),
+            ("way", '["railway"~"^(rail|light_rail)$"]'),
+        )
+    )
+    return f"[out:json][timeout:{QUERY_TIMEOUT_SECONDS}];({filters});out geom;"
+
+
 def boundary_query(relation: int) -> str:
     return f"[out:json][timeout:{QUERY_TIMEOUT_SECONDS}];relation({relation});out geom;"
 
@@ -552,11 +570,24 @@ def kontur_population(
 ADAPTERS["kontur_population"] = kontur_population
 
 
+def osm_backdrop(client: OverpassClient, osm_date: str, box: tuple, out: Path) -> ManifestEntry:
+    entry = client.fetch(
+        backdrop_query(box),
+        osm_date,
+        out / "backdrop.json",
+        licence="ODbL 1.0",
+        attribution="© OpenStreetMap contributors",
+    )
+    return replace(entry, path=entry.name)
+
+
 def fetch_snapshot(region: Region, out: str | Path, endpoint: str = OVERPASS_ENDPOINT) -> dict:
     for name in region.snapshot.adapters:
         if name not in ADAPTERS and importlib.util.find_spec(f"bikeplan.adapters.{name}"):
             importlib.import_module(f"bikeplan.adapters.{name}")
-    unknown = [name for name in region.snapshot.adapters if name not in ADAPTERS]
+    unknown = [
+        name for name in region.snapshot.adapters if name not in ADAPTERS and name != "osm_backdrop"
+    ]
     if unknown:
         raise OverpassError(f"no adapter named {', '.join(unknown)}")
     out_path = Path(out)
@@ -596,7 +627,10 @@ def fetch_snapshot(region: Region, out: str | Path, endpoint: str = OVERPASS_END
         replace(places, path=places.name),
     ]
     for name in region.snapshot.adapters:
-        entries.extend(ADAPTERS[name](region, box, out_path))
+        if name == "osm_backdrop":
+            entries.append(osm_backdrop(client, osm_date, box, out_path))
+        else:
+            entries.extend(ADAPTERS[name](region, box, out_path))
     manifest = {
         "region": region.id,
         "snapshot_id": osm_date[:10],
