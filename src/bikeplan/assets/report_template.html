@@ -573,16 +573,16 @@ function secPair(w){
 const lenText=km=>km<1?Math.round(km*1000)+" m":km.toFixed(1)+" km";
 
 const byFix={};D.works.forEach(w=>{const f=byFix[w.fix]||(byFix[w.fix]={km:0,park:0,n:0});f.km+=w.km;f.park+=w.park;f.n++;});
-const FIXTXT={quietway:"A 30 km/h limit and a few planters stop cars cutting through.",
+const FIXTXT={quietway:"A 30 km/h limit and planters stop cars cutting through.",
   cycleway_in_spare:"The road has room to spare, so a lane with a kerb fits.",
-  cycleway_parking_one_side:"Parking on one side makes way for the lane. The other side keeps its parking.",
+  cycleway_parking_one_side:"Parking on one side makes way for the lane.",
   cycleway_parking_both_sides:"Parking on both sides makes way for a protected lane each way.",
   road_diet:"A road with lanes to spare gives one to bikes.",
   verge_path:"A shared path runs beside the road, off the carriageway.",
   new_path:"A new path joins places that no street links."};
 const fixesEl=document.getElementById("fixes");
 const CROSS={zebra:["Raised zebra crossing","A raised zebra crossing across a two-lane street","Cars give way. Raised to slow them.","A raised crossing slows cars where a route crosses a two-lane street."],
-  signals:["Bike and walk signals","Bike and walk signals at a crossing of a bigger road","Signals stop cars so bikes and people cross.","A bigger road needs signals so bikes and people cross together."],
+  signals:["Bike and walk signals","Bike and walk signals at a crossing of a bigger road","Signals stop cars so bikes and people cross.","A bigger road needs signals for bikes and people."],
   path:["Short path and crossing","A short shared path that ends at a crossing","A short path, then a crossing.","A short shared path and a crossing finish the route."]};
 const crossSvg=k=>'<div class="xs"><figure><svg viewBox="0 0 320 88" role="img" aria-label="'+CROSS[k][1]+'"><rect x="0" y="0" width="320" height="88" fill="#e9e5dc"/><rect x="0" y="16" width="320" height="56" fill="#5b6270"/>'+Array.from({length:7},(_,i)=>'<rect x="'+(130+i*9)+'" y="16" width="5" height="56" fill="#fff"/>').join("")+(k==="path"?'<rect x="0" y="4" width="320" height="10" fill="#7fb98d"/>':'<rect x="120" y="16" width="80" height="56" fill="#2f9e44" opacity=".25"/>')+'<text x="160" y="84" text-anchor="middle" font-size="9" fill="currentColor">'+CROSS[k][2]+'</text></svg></figure></div>';
 if(fixesEl){
@@ -673,7 +673,7 @@ const top=Object.entries(km).sort((a,b)=>b[1]-a[1]).map(e=>e[0]);
 const nWords=t=>(t.match(/[A-Za-z0-9]+/g)||[]).length;
 const stateSpots=D.spots.filter(s=>s.owner);
 const asks=['<li><div><b>Adopt this network as '+AREA+'’s bike network plan.</b></div></li>'];
-if(top.length){let k=Math.min(3,top.length);
+if(top.length){let k=Math.min(10,top.length);
   const build=n=>"Fund the design of the first stage, starting with "+top.slice(0,n).join(", ")+(top.length>n?" and "+(top.length-n)+" more street"+(top.length-n===1?"":"s"):"")+".";
   while(k>1&&nWords(build(k))>25)k--;
   asks.push('<li><div><b>'+build(k)+'</b></div></li>');}
