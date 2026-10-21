@@ -399,7 +399,7 @@ def test_fr20_10_the_area_card_holds_the_same_values_as_the_ward_card_on_the_pag
         assert got == want
         assert got[0] == "4 km of routes"
         assert found.find_element(By.CSS_SELECTOR, ".ward p").text == "Alpha, Beta"
-        words = " ".join(got + [found.find_element(By.TAG_NAME, "h3").text]).split()
+        words = " ".join([*got, found.find_element(By.TAG_NAME, "h3").text]).split()
         assert len(words) <= 40
     finally:
         driver.quit()
