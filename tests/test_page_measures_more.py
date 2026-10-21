@@ -3,9 +3,15 @@ import re
 import pytest
 
 from bikeplan import checks, main
-from tests.test_page_measures import JUNIT, NAME, good_page, line_of, release_with  # noqa: F401
+from tests.test_page_measures import line_of, release_with
+from tests.test_report_page import data_for, page_for
 
 SPEC_IDS = ["FR-20.7", "FR-20.8", "FR-20.19", "FR-20.20", "FR-20.21", "FR-20.22", "FR-20.25"]
+
+
+@pytest.fixture(scope="module")
+def good_page():
+    return page_for(data_for())
 
 
 def measured(folder, text):
