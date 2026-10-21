@@ -1509,6 +1509,8 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - Big numbers and the print rule sit in `EVIDENCE_CSS`, because the `:root` tokens must equal the mock.
 - Pytest cannot import fixtures from `test_report_page` without a `noqa` comment; make local fixtures.
 
+- Part 2: a full Bayside run took 38 minutes. Stage tiles count up for 500 ms, so wait 1.2 s after a click before you read them.
+
 ### W1.7 part 1
 
 - Place cards show safe trips by stage and joined places from `partners` in `option_totals`. Each work carries a `section` from `fuse` and the fit strips, drawn to scale in the page.
