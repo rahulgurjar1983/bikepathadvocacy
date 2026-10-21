@@ -4,6 +4,7 @@ from functools import lru_cache
 from itertools import pairwise
 from pathlib import Path
 
+import textstat
 from selenium.webdriver.common.print_page_options import PrintOptions
 
 from bikeplan.axe import tab_stops, violations
@@ -12,6 +13,8 @@ from bikeplan.shots import offline_driver, remote_requests
 MAX_PAGE_BYTES = 4 * 1024 * 1024
 MAX_WORDS = 1000
 MAX_PRINT_PAGES = 4
+MAX_GRADE = 8.0
+MAX_LINE = 70
 ORDER = ("top", "find", "spots", "streets", "wards", "plans", "cost", "ask", "how", "evidence")
 PLACES = ("School", "Station", "Town centre")
 WORDS = (
@@ -46,6 +49,32 @@ return {
   fonts: document.fonts.size,
 };
 """
+PROSE = """
+return [...document.querySelectorAll('h1, h2, h3, p, li, figcaption')]
+  .filter(e => !e.closest('details') && e.innerText.trim())
+  .map(e => e.innerText.trim());
+"""
+LINES = """
+let longest = 0;
+for (const e of document.querySelectorAll('main p, main li')) {
+  if (!e.offsetParent || e.closest('details')) continue;
+  const walk = document.createTreeWalker(e, NodeFilter.SHOW_TEXT);
+  const rows = new Map();
+  for (let n = walk.nextNode(); n; n = walk.nextNode()) {
+    for (let i = 0; i < n.length; i++) {
+      const r = document.createRange();
+      r.setStart(n, i);
+      r.setEnd(n, i + 1);
+      const box = r.getBoundingClientRect();
+      if (!box.width) continue;
+      const key = Math.round(box.top);
+      rows.set(key, (rows.get(key) || 0) + 1);
+    }
+  }
+  longest = Math.max(longest, ...rows.values(), 0);
+}
+return longest;
+"""
 IDS = "return [...document.querySelectorAll('[id]')].map(e => e.id);"
 EYEBROW = "const e = document.querySelector('#result .eyebrow'); return e ? e.textContent : '';"
 CHIPS = "return document.querySelectorAll('#chips button').length;"
@@ -69,13 +98,18 @@ PAGES = re.compile(rb"/Count (\d+)")
 SPEC_IDS = ("FR-20.7", "FR-20.8", "FR-20.19", "FR-20.20", "FR-20.21", "FR-20.22", "FR-20.25")
 
 
-def measure(spec_id: str, label: str, name: str, value: int, limit: int) -> dict:
+def measure(spec_id: str, label: str, name: str, value: float, limit: float) -> dict:
     return {
         "spec": spec_id,
         "line": f"{name}: {label}: {value:,} of at most {limit:,}, "
         + ("met" if value <= limit else "fails"),
         "met": value <= limit,
     }
+
+
+def grade(parts: list[str]) -> float:
+    text = " ".join(part if part[-1] in ".!?" else part + "." for part in parts)
+    return round(textstat.flesch_kincaid_grade(text), 1)
 
 
 def long_numbers(text: str) -> int:
@@ -151,6 +185,8 @@ def page_measures(path: str, size: int) -> tuple:
         found = len(violations(driver))
         words = driver.execute_script(WORDS)
         text = driver.execute_script(TEXT)
+        level = grade(driver.execute_script(PROSE))
+        longest = driver.execute_script(LINES)
         ids = driver.execute_script(IDS)
         hero = {"1440 by 900": driver.execute_script(HERO)}
         cards = card_violations(driver)
@@ -170,6 +206,7 @@ def page_measures(path: str, size: int) -> tuple:
     big = hero["1440 by 900"]
     out = [
         measure("FR-20.7", "words at load", name, words, MAX_WORDS),
+        measure("FR-20.7", "Flesch-Kincaid grade of the prose", name, level, MAX_GRADE),
         measure("FR-20.8", "words in the title", name, big["title"], 10),
         measure("FR-20.8", "words in the opening sentence", name, big["lede"], 25),
         measure(
@@ -191,6 +228,13 @@ def page_measures(path: str, size: int) -> tuple:
             "pixels a big number is short of 40 at 390 px",
             name,
             max(0, round(40 - phone["big"])),
+            0,
+        ),
+        measure(
+            "FR-20.20",
+            "characters the longest line is over 70",
+            name,
+            max(0, longest - MAX_LINE),
             0,
         ),
         measure("FR-20.20", "font downloads", name, wide["fonts"], 0),

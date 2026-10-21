@@ -151,3 +151,31 @@ def test_fr20_23_checks_html_lists_the_new_measures_for_every_named_requirement(
     text = out.read_text()
     assert code == 0, re.findall(r"[^<>]*fails[^<>]*", text)[:5]
     assert text.count('<p class="status">met</p>') == len(SPEC_IDS)
+
+
+def test_fr20_23_the_reading_level_and_line_length_are_measured_on_the_page(good_page, tmp_path):
+    release = measured(tmp_path / "ok", good_page)
+    met(release, "FR-20.7", "Flesch-Kincaid grade of the prose")
+    met(release, "FR-20.20", "characters the longest line is over 70")
+
+
+def test_fr20_23_hard_prose_fails_the_reading_level_measure(good_page, tmp_path):
+    hard = (
+        "<p>Notwithstanding considerable infrastructural complications, municipal "
+        "administrators characteristically deliberate extraordinarily comprehensive "
+        "transportation reorganisation methodologies, notwithstanding "
+        "disproportionate environmental considerations and unquestionably "
+        "multidimensional accessibility prerequisites.</p>"
+    )
+    bad = good_page.replace("</main>", hard * 6 + "</main>", 1)
+    fails(measured(tmp_path / "bad", bad), "FR-20.7", "Flesch-Kincaid grade of the prose")
+
+
+def test_fr20_23_a_very_wide_paragraph_fails_the_line_length_measure(good_page, tmp_path):
+    words = " ".join(["street"] * 80)
+    wide = good_page.replace(
+        "</main>",
+        f'<p style="max-width:none;width:1300px">{words}</p></main>',
+        1,
+    )
+    fails(measured(tmp_path / "wide", wide), "FR-20.20", "characters the longest line is over 70")
