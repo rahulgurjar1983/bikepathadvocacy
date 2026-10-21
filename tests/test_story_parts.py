@@ -267,7 +267,8 @@ def test_fr20_14_a_ward_card_has_its_top_streets_and_safe_places_in_40_words(tmp
     try:
         cards = driver.find_elements(By.CSS_SELECTOR, "#wardcards .ward")
         assert len(cards) == 2
-        for card, safe in zip(cards, ["Safe trip to 4 of 7 places", "Safe trip to 3 of 3 places"]):
+        safes = ["Safe trip to 4 of 7 places", "Safe trip to 3 of 3 places"]
+        for card, safe in zip(cards, safes, strict=True):
             assert "Ash Street, Bay Street, Cook Street" in card.text
             assert safe in card.text
             assert words(card.text) <= 40
