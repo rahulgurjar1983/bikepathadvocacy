@@ -217,6 +217,7 @@ def council_marks(data: dict) -> list:
                 [
                     ("Length", f"{route['km']:.1f} km"),
                     ("On my pick", f"{round(route['share'] * 100)}%"),
+                    ("Verdict", route["v"]),
                 ],
                 [],
             ),

@@ -2332,3 +2332,12 @@ Part 3: ward-card numbers link to their figure entries. Run the same report, the
 Expect: 35 `ward:` keys (five wards, seven values each), each naming an `F` entry on the page. The run took 36 minutes.
 Artifact: `artifacts/W1.4/bayside-ward-links.json`
 
+
+### W1.4 council KML
+
+```sh
+uv run pytest tests/test_map_page.py -k council -q | tee artifacts/W1.4/council-kml.txt
+```
+
+Expect: every council plan placemark in `map-layers/council-plan.kml` and `map.kml` holds its length, its share on my pick and its plan verdict, as the map page popup does (FR-21.5). The Bayside release check is still open.
+Artifact: `artifacts/W1.4/council-kml.txt`

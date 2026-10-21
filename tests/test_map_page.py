@@ -492,3 +492,21 @@ def test_fr21_3_the_report_run_map_holds_the_bike_path_km_of_the_paths_file(buil
     assert page["paths_km"] == pytest.approx(total, abs=0.05)
     assert [p["id"] for p in page["paths"]] == [i["id"] for i in items if i["kind"] == "path"]
     assert all(len(p["ends"]) == 2 for p in page["paths"])
+
+
+def test_fr21_5_a_council_placemark_holds_its_plan_verdict_and_share(data):
+    council = [
+        {
+            "id": "R1",
+            "name": "Bay route",
+            "km": 3.0,
+            "share": 0.5,
+            "v": "partly",
+            "lines": [[[151.1, -33.9], [151.2, -33.9]]],
+        }
+    ]
+    layers = kml_files(data | {"council": council})
+    mark = placemarks(layers["council-plan"])[0]
+    text = "".join(mark.find(f"{KML}description").itertext())
+    assert "Verdict: partly" in text
+    assert "On my pick: 50%" in text
