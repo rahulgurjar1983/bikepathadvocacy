@@ -20,6 +20,7 @@ from bikeplan.review_report import write_review
 from bikeplan.review_source import capture_source
 from bikeplan.route import RouteError, write_corridor
 from bikeplan.run import run_all, write_report
+from bikeplan.shots import write_shots
 from bikeplan.snapshot import (
     OVERPASS_ENDPOINT,
     OverpassError,
@@ -44,6 +45,7 @@ STRESS_HELP = "Score the stress level of each road edge"
 REPORT_HELP = "Build the public report and its data files"
 REVIEW_HELP = "Review a route and build its report"
 CHECKS_HELP = "Build checks.html from a test run and the specs"
+SHOTS_HELP = "Take phone and desktop pictures of a report page"
 
 GROUPS = {
     "config": {"show": "Show the resolved config"},
@@ -128,6 +130,9 @@ def build_parser() -> argparse.ArgumentParser:
     checks.add_argument("--root", default=".", help="Repository folder")
     checks.add_argument("--out", required=True, help="Output file")
     checks.add_argument("--release", required=True, help="Folder holding the release reports")
+    shots = commands.add_parser("shots", help=SHOTS_HELP, description=SHOTS_HELP)
+    shots.add_argument("page", help="Report page")
+    shots.add_argument("--out", required=True, help="Output folder")
     for name, subs in GROUPS.items():
         group = commands.add_parser(name, help=GROUP_HELP[name], description=GROUP_HELP[name])
         group_commands = group.add_subparsers(
@@ -491,6 +496,8 @@ def main(argv: list[str] | None = None) -> int:
         return report(args.region, args.snapshot, args.out, args.proposal_inputs)
     if args.command == "review":
         return review(args.route, args.claims, args.region, args.snapshot, args.out, args.reply)
+    if args.command == "shots":
+        return write_shots(args.page, args.out)
     if args.command == "checks":
         return write_checks(args.root, args.junit, args.out, args.release)
     if (args.command, getattr(args, "subcommand", None)) == ("config", "show"):
