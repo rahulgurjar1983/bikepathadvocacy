@@ -299,13 +299,21 @@ def ward_fit(graph, areas: list, option: dict, places: list, suburbs: list) -> l
                 "subs": sorted({sub for sub, point in suburbs if area.contains(point)}),
             }
         )
-    best: dict = {}
+    owner = {}
+    for index, item in enumerate(works):
+        if not item.get("spot") or not shapes[index]:
+            continue
+        line = shapely.union_all(shapes[index])
+        owner[index] = min(
+            range(len(rows)),
+            key=lambda number: (
+                -rows[number]["parts"].get(index, 0.0),
+                areas[number][1].distance(line),
+                number,
+            ),
+        )
     for number, row in enumerate(rows):
-        for index, fraction in row["parts"].items():
-            if works[index].get("spot") and fraction > best.get(index, (0.0, 0))[0]:
-                best[index] = (fraction, number)
-    for number, row in enumerate(rows):
-        row["spots"] = sorted(index for index, (_, owner) in best.items() if owner == number)
+        row["spots"] = sorted(index for index, found in owner.items() if found == number)
     return rows
 
 
