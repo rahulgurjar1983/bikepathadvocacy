@@ -28,7 +28,10 @@ return {
   id: e.id,
   cls: e.className,
   data: Object.assign({}, e.dataset),
-  ring: e.matches(':focus-visible') && s.outlineStyle !== 'none' && parseFloat(s.outlineWidth) >= 2,
+  ring: e.matches(':focus-visible') && (
+    (s.outlineStyle !== 'none' && parseFloat(s.outlineWidth) >= 2) || s.boxShadow !== 'none'),
+  spot: !!e.closest('#spotlist'),
+  ward: !!e.closest('#wardcards'),
   body: e === document.body
 };
 """
