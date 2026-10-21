@@ -1,5 +1,8 @@
-import json, re, sys
+import json
+import re
+import sys
 from pathlib import Path
+
 import textstat
 from selenium import webdriver
 
@@ -31,7 +34,7 @@ try:
         if(p.offsetParent===null&&getComputedStyle(p).position!=='fixed')continue;
         s.push(n.textContent)}
       return s.join(' ')""")
-    words = re.findall(r"[A-Za-z0-9'’-]+", body)
+    words = re.findall(r"[A-Za-z0-9'-]+", body)
     res["words_at_load"] = len(words)
     res["fk"] = textstat.flesch_kincaid_grade(body)
     m = re.search(r'"model_km":\{"aaa":([\d.]+)\}', text)
@@ -52,9 +55,13 @@ try:
     from pathlib import Path as P
 
     banned = [
-        l[2:].strip()
-        for l in P("VOICE.md").read_text().split("## Banned words")[1].split("##")[0].splitlines()
-        if l.startswith("- ")
+        line[2:].strip()
+        for line in P("VOICE.md")
+        .read_text()
+        .split("## Banned words")[1]
+        .split("##")[0]
+        .splitlines()
+        if line.startswith("- ")
     ]
     res["banned_found"] = [
         b
@@ -68,7 +75,9 @@ try:
     d.execute_script("window.scrollTo(0,0)")
     res["first_screen_390"] = (
         d.execute_script("""const r=e=>e?Math.round(e.getBoundingClientRect().bottom):null;
-      return {hero:r(document.querySelector('h1')),map:r(document.querySelector('#map,svg,.map')),tiles:r(document.querySelector('.tiles')),vh:innerHeight}""")
+      return {hero:r(document.querySelector('h1')),
+      map:r(document.querySelector('#map,svg,.map')),
+      tiles:r(document.querySelector('.tiles')),vh:innerHeight}""")
     )
 finally:
     d.quit()
