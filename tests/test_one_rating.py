@@ -114,3 +114,12 @@ def test_fr20_1_the_five_minute_page_never_falls_back_to_the_confirmed_pieces():
     ]
     both = {"pieces": confirmed, "model_pieces": modelled, "model_km": {"aaa": 1.0}}
     assert data_for(streets=both)["streets"] == [[[151.1, -33.8], [151.2, -33.7]]]
+
+
+def test_fr20_22_the_page_data_packs_each_modelled_street_as_whole_number_steps(built):
+    text = built.read_text()
+    data = json.loads(re.search(r'id="network-data">(.*?)</script>', text, re.S).group(1))
+    packed = data["streets"]["model_pieces"]
+    assert all("lines" not in item for item in packed)
+    assert packed[0]["d"] == [[-3390000, 15115000, 0, 200]]
+    assert packed[0]["model_all_ages"] is True
