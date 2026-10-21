@@ -25,6 +25,8 @@ EVIDENCE_CSS = (
     "#evidence .in input{max-width:100%}#evidence .in label{display:block}"
     "#network-map{height:24rem;border:1px solid #444}"
     ".tiles .tile:last-child:nth-child(odd){grid-column:1/-1}"
+    ".tile .n,.tile.cost .n{font-size:max(2.5rem,var(--num))}"
+    "@media print{#find,#streets,#plans,#cost,#evidence{display:none!important}}"
 )
 
 
@@ -52,13 +54,21 @@ def boundary_polygons(boundary) -> list:
     return [[[round_point(point) for point in ring] for ring in polygon] for polygon in polygons]
 
 
-def stage_values(step: dict) -> dict:
+def stage_km(step: dict, steps: list, streets: dict | None) -> float:
+    modelled = ((streets or {}).get("model_km") or {}).get("aaa")
+    km = step["totals"]["km_all_ages"]
+    if modelled is None:
+        return km
+    return round(modelled + km - steps[0]["totals"]["km_all_ages"], 3)
+
+
+def stage_values(step: dict, km: float) -> dict:
     totals = step["totals"]
     return {
         "score": totals["score"],
         "safe": totals["safe_trips"],
         "trips": totals["trips"],
-        "km": totals["km_all_ages"],
+        "km": km,
         "places": totals["places_safe"],
         "park": step["disruption"]["parking_spaces"],
         "lane": step["disruption"]["lane_km"],
@@ -221,15 +231,15 @@ def report_data(
             for mark in marks
         ],
         "stages": {
-            "today": stage_values(steps[0]),
-            "first": stage_values(steps[rec]),
-            "works": stage_values(steps[-1]),
+            "today": stage_values(steps[0], stage_km(steps[0], steps, streets)),
+            "first": stage_values(steps[rec], stage_km(steps[rec], steps, streets)),
+            "works": stage_values(steps[-1], stage_km(steps[-1], steps, streets)),
         },
         "steps": [
             {
                 "w": step["works"],
                 "score": step["totals"]["score"],
-                "km": step["totals"]["km_all_ages"],
+                "km": stage_km(step, steps, streets),
                 "park": step["disruption"]["parking_spaces"],
                 "schools": step["totals"]["places_safe"].get("school", 0),
             }
