@@ -1,0 +1,12 @@
+Before: release run 39681068820 (merge of PR 261), Bayside page 4,540,848 bytes, measured with bikeplan.page_measures.measures
+{'spec': 'FR-20.7', 'line': 'au-nsw-bayside-report.html: words at load: 1,160 of at most 1,000, fails', 'met': False}
+{'spec': 'FR-20.20', 'line': 'au-nsw-bayside-report.html: characters the longest line is over 70: 4 of at most 0, fails', 'met': False}
+{'spec': 'FR-20.20', 'line': 'au-nsw-bayside-report.html: pages printed on A4: 6 of at most 4, fails', 'met': False}
+{'spec': 'FR-20.22', 'line': 'au-nsw-bayside-report.html: page size in bytes: 4,540,848 of at most 4,194,304, fails', 'met': False}
+
+After: the same page with the template edits applied by string replacement (not a fresh build), measured the same way
+{'spec': 'FR-20.7', 'line': 'patched-report.html: words at load: 987 of at most 1,000, met', 'met': True}
+{'spec': 'FR-20.20', 'line': 'patched-report.html: characters the longest line is over 70: 0 of at most 0, met', 'met': True}
+{'spec': 'FR-20.20', 'line': 'patched-report.html: pages printed on A4: 4 of at most 4, met', 'met': True}
+Page size: 4540980 bytes on the patched copy, which has no line packing. packed_streets cuts model_pieces from 966,546 to 509,201 bytes, so 4083635 of at most 4,194,304 (computed, not measured on a build)
+Proof still owed: a fresh release build from this branch

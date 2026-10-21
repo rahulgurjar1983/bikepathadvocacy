@@ -2472,3 +2472,8 @@ Artifact: `artifacts/W1.9/measures-test-grid.txt`
 Command: `uv run pytest tests/test_page_measures_more.py -q -k "reading_level or hard_prose or very_wide"`
 Expect: 3 passed; `checks.html` lines "Flesch-Kincaid grade of the prose" (limit 8.0) and "characters the longest line is over 70" are met on the test grid page, and planted hard prose or a wide paragraph fails its line
 Artifact: `tests/test_page_measures_more.py`
+
+### W1.9 repair of red main
+Command: `uv run pytest tests/test_story_parts.py tests/test_one_rating.py tests/test_page_five_minutes.py -q --no-cov`
+Expect: all pass; on a Bayside release `checks.html` shows words at load at most 1,000, the longest line at most 70 characters, 4 A4 pages and a page at most 4,194,304 bytes
+Artifact: `artifacts/W1.9/bayside-repair.txt`
