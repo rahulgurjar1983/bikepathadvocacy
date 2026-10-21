@@ -123,6 +123,7 @@ def ward_cards(areas: list, pick: dict, spot_numbers: dict, rates) -> list:
             {key: area[key] for key in ("name", "poly", "plan_km", "works_km", "park")}
             | {"cost": cost, **({"at": area["at"]} if "at" in area else {})}
             | {key: area[key] for key in ("schools", "stations", "centres", "top")}
+            | ({"safe": area["safe"]} if "safe" in area else {})
             | {
                 "spots": sorted(
                     spot_numbers[index] for index in area["spots"] if index in spot_numbers
@@ -419,6 +420,19 @@ def ward_facts(wards: dict) -> list[dict]:
                     f"{words} in {area['name']}",
                 )
             )
+        for key, words, unit in SAFE_VALUES:
+            for stage, when in enumerate(SAFE_STAGES):
+                if "safe" in area:
+                    facts.append(
+                        fact(
+                            f"{area['name']}: {words} with a safe trip {when}",
+                            area["safe"][key][stage],
+                            unit,
+                            0,
+                            f"{load}[{number}];print(w['safe']['{key}'][{stage}])",
+                            f"{words} with a safe trip {when} in {area['name']}",
+                        )
+                    )
     return facts
 
 
@@ -563,6 +577,12 @@ WARD_VALUES = (
     ("centres", "town centres joined", "town centres", 0),
     ("spots", "spots", "spots", 0),
 )
+SAFE_VALUES = (
+    ("schools", "schools", "schools"),
+    ("stations", "stations", "stations"),
+    ("centres", "town centres", "town centres"),
+)
+SAFE_STAGES = ("today", "at the first stage", "in the full plan")
 PAGE_LABELS = (
     (r"Share of the council plan that my pick covers", "council_share"),
     (r"Km of the council plan inside the boundary", "council_km"),

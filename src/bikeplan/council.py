@@ -34,6 +34,7 @@ WARD_FIELDS = (
     "credit",
     "name_field",
 )
+STAGE_STEPS = (0, 1, -1)
 PLACE_KEYS = {"school": "schools", "station": "stations", "town_centre": "centres"}
 TOP_STREETS = 3
 
@@ -262,6 +263,14 @@ def ward_fit(graph, areas: list, option: dict, places: list, suburbs: list) -> l
         ]
         for item in works
     ]
+    steps = option["steps"]
+    stages = []
+    if all("served" in step.get("totals", {}) for step in steps):
+        stages = [
+            set(steps[min(index, len(steps) - 1)]["totals"]["served"])
+            for index in STAGE_STEPS
+            if steps
+        ]
     rows = []
     for name, area in areas:
         parts = {}
@@ -278,9 +287,12 @@ def ward_fit(graph, areas: list, option: dict, places: list, suburbs: list) -> l
                 streets[street] = streets.get(street, 0.0) + item["km"] * fraction
         top = sorted(streets, key=lambda street: (-streets[street], street))[:TOP_STREETS]
         counts = dict.fromkeys(PLACE_KEYS.values(), 0)
-        for kind, point in places:
+        safe = {key: [0] * len(stages) for key in PLACE_KEYS.values()}
+        for kind, point, *ident in places:
             if kind in PLACE_KEYS and area.contains(point):
                 counts[PLACE_KEYS[kind]] += 1
+                for number, served in enumerate(stages):
+                    safe[PLACE_KEYS[kind]][number] += bool(ident) and ident[0] in served
         rows.append(
             {
                 "name": name,
@@ -294,6 +306,7 @@ def ward_fit(graph, areas: list, option: dict, places: list, suburbs: list) -> l
                     works[index]["parking_spaces"] * fraction for index, fraction in parts.items()
                 ),
                 **counts,
+                **({"safe": safe} if stages else {}),
                 "top": top,
                 "parts": parts,
                 "subs": sorted({sub for sub, point in suburbs if area.contains(point)}),
@@ -330,7 +343,9 @@ def polygons(area) -> list:
 def ward_report(graph, wards: Wards, option: dict, marks: list, snapshot) -> dict:
     project = to_metres(graph.graph["crs"])
     areas = [(item.name, transform(project, item.shape)) for item in wards.areas]
-    places = [(mark["type"], Point(*project(mark["lon"], mark["lat"]))) for mark in marks]
+    places = [
+        (mark["type"], Point(*project(mark["lon"], mark["lat"])), mark.get("id")) for mark in marks
+    ]
     suburbs = suburb_points(
         Path(snapshot), Transformer.from_crs(4326, graph.graph["crs"], always_xy=True)
     )
@@ -347,6 +362,8 @@ def compact_wards(found: dict) -> dict:
     return {
         "source": found["source"],
         "areas": [
-            {key: row[key] for key in keep} | {"spots": len(row["spots"])} for row in found["areas"]
+            {key: row[key] for key in keep + (("safe",) if "safe" in row else ())}
+            | {"spots": len(row["spots"])}
+            for row in found["areas"]
         ],
     }

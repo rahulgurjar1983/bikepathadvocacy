@@ -292,6 +292,7 @@ def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list
             "lat": point(place["node"])[1],
             "type": place["type"],
             "name": place["name"],
+            "id": place["id"],
         }
         for place in joined.joined
     ]
