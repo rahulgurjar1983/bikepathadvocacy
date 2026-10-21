@@ -466,17 +466,10 @@ const placeMarkers=D.places.map(p=>L.marker(ll(p.at),{keyboard:false,icon:L.divI
 const labels=L.layerGroup(D.places.map(p=>L.marker(ll(p.at),{interactive:false,keyboard:false,icon:L.divIcon({className:"plabel",html:p.name.replace(/[<>&]/g,""),iconSize:null,iconAnchor:[-14,9]})})));
 map.on("zoomend",()=>{if(map.getZoom()>=14.5)labels.addTo(map);else map.removeLayer(labels);});
 let stage=2;
-function animateNum(el,to,f){
-  const from=parseFloat(el.dataset.v||"0");el.dataset.v=to;
-  if(reduce){el.textContent=f(to);return;}
-  const t0=performance.now(),d=500;
-  function tick(t){const k=Math.min(1,(t-t0)/d),e=1-Math.pow(1-k,3);el.textContent=f(from+(to-from)*e);if(k<1)requestAnimationFrame(tick);}
-  requestAnimationFrame(tick);
-}
 function setNumbers(v){
-  animateNum(document.getElementById("t-km"),v.km,x=>Math.round(x));
-  animateNum(document.getElementById("t-sch"),v.sch,x=>Math.round(x));
-  animateNum(document.getElementById("t-park"),v.park,x=>fmt(x));
+  document.getElementById("t-km").textContent=Math.round(v.km);
+  document.getElementById("t-sch").textContent=Math.round(v.sch);
+  document.getElementById("t-park").textContent=fmt(v.park);
   const tc=document.getElementById("t-cost");if(tc&&v.cost)tc.textContent=money(v.cost);
   document.getElementById("t-sch-l").textContent="of "+nSch+" schools with an all-ages ride";
   document.getElementById("scoreline").innerHTML="<b>"+Math.round(v.score)+"%</b> of "+st.today.trips+" short trips between these places are all-ages.";
