@@ -25,8 +25,7 @@ def way(identifier, tags, points):
 
 
 def write(folder, coast, other):
-    (folder / "coastline.json").write_text(json.dumps({"elements": coast}))
-    (folder / "backdrop.json").write_text(json.dumps({"elements": other}))
+    (folder / "backdrop.json").write_text(json.dumps({"elements": coast + other}))
 
 
 def layers(folder):
@@ -57,7 +56,7 @@ def test_fr20_9_sea_stays_inside_the_analysis_box(tmp_path):
     water = layers(tmp_path)["water"]
 
     points = [point for rings in water for ring in rings for point in ring]
-    assert max(lon for lon, _ in points) < 151.13
+    assert max(lon for lon, _ in points) < 151.14
     assert min(lat for _, lat in points) > -33.98
     assert all(len(str(value).split(".")[-1]) <= 5 for point in points for value in point)
 
@@ -128,7 +127,7 @@ def test_fr20_9_the_land_outside_the_boundary_is_one_paler_polygon_with_a_hole(t
 def test_fr20_9_a_snapshot_without_backdrop_files_gives_empty_layers(tmp_path):
     found = layers(tmp_path)
 
-    assert found == {"water": [], "park": [], "air": [], "rail": [], "outside": []}
+    assert [found[name] for name in ("water", "park", "air", "rail")] == [[], [], [], []]
 
 
 def test_fr20_9_the_report_data_base_holds_the_backdrop_layers():

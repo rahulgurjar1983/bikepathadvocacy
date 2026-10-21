@@ -393,13 +393,7 @@ def test_fr2_1_snapshot_fetch_writes_every_file_and_the_manifest(routed_overpass
     assert manifest["config_hash"]
     assert manifest["created_at"].endswith("Z")
     names = [entry["name"] for entry in manifest["files"]]
-    assert names == [
-        "boundary.geojson",
-        "network.osm.gz",
-        "places.json",
-        "coastline.json",
-        "backdrop.json",
-    ]
+    assert names == ["boundary.geojson", "network.osm.gz", "places.json"]
     assert gzip.decompress((out / "network.osm.gz").read_bytes()) == NETWORK_XML
     assert (out / "places.json").read_bytes() == PLACES_JSON
     assert json.loads((out / "boundary.geojson").read_text())["geometry"]["type"] == "Polygon"
@@ -489,18 +483,23 @@ def test_fr20_9_snapshot_fetch_asks_for_the_coastline_and_the_backdrop_shapes(
 
     endpoint, requests = routed_overpass_server
     out = tmp_path / "snap"
-    region = bayside_without_adapters(tmp_path)
+    region = bayside_without_adapters(tmp_path, "[osm_backdrop]")
 
-    main(["snapshot", "fetch", str(region), "--out", str(out), "--endpoint", endpoint])
+    code = main(["snapshot", "fetch", str(region), "--out", str(out), "--endpoint", endpoint])
 
+    assert code == 0
     manifest = json.loads((out / "manifest.json").read_text())
-    entries = {entry["name"]: entry for entry in manifest["files"]}
-    coast = entries["coastline.json"]["request"]
-    backdrop = entries["backdrop.json"]["request"]
-    assert coast in requests and backdrop in requests
-    assert '[date:"' in coast and 'way["natural"="coastline"]' in coast and "out geom" in coast
-    for tag in ('"natural"="water"', '"leisure"="park"', '"railway"', '"aeroway"="aerodrome"'):
-        assert tag in backdrop
-    assert "out geom" in backdrop
-    for name in ("coastline.json", "backdrop.json"):
-        assert (out / name).read_bytes() == PLACES_JSON
+    names = [entry["name"] for entry in manifest["files"]]
+    assert names == ["boundary.geojson", "network.osm.gz", "places.json", "backdrop.json"]
+    request = manifest["files"][-1]["request"]
+    assert request in requests
+    assert '[date:"' in request and "out geom" in request
+    for tag in (
+        '"natural"="coastline"',
+        '"natural"="water"',
+        '"leisure"="park"',
+        '"railway"',
+        '"aeroway"="aerodrome"',
+    ):
+        assert tag in request
+    assert (out / "backdrop.json").read_bytes() == PLACES_JSON
