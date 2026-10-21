@@ -503,3 +503,40 @@ def test_fr20_9_snapshot_fetch_asks_for_the_coastline_and_the_backdrop_shapes(
     ):
         assert tag in request
     assert (out / "backdrop.json").read_bytes() == PLACES_JSON
+
+
+def test_fr18_6_snapshot_fetch_asks_for_the_corridor_lines_and_open_land(
+    routed_overpass_server, tmp_path
+):
+    import json
+
+    from bikeplan import main
+    from bikeplan.adapters import OUTPUT_FILES
+
+    endpoint, requests = routed_overpass_server
+    out = tmp_path / "snap"
+    region = bayside_without_adapters(tmp_path, "[osm_corridors]")
+
+    code = main(["snapshot", "fetch", str(region), "--out", str(out), "--endpoint", endpoint])
+
+    assert code == 0
+    assert OUTPUT_FILES["osm_corridors"] == "corridors.json"
+    manifest = json.loads((out / "manifest.json").read_text())
+    names = [entry["name"] for entry in manifest["files"]]
+    assert names == ["boundary.geojson", "network.osm.gz", "places.json", "corridors.json"]
+    entry = manifest["files"][-1]
+    assert entry["path"] == "corridors.json"
+    assert entry["request"] in requests
+    assert '[date:"' in entry["request"] and "out geom" in entry["request"]
+    for tag in (
+        '"railway"="rail"',
+        '"highway"="motorway"',
+        '"waterway"~"^(river|canal)$"',
+        '"leisure"="golf_course"',
+        '"landuse"',
+        '"natural"',
+        '"leisure"',
+    ):
+        assert tag in entry["request"]
+    assert (out / "corridors.json").read_bytes() == PLACES_JSON
+    assert main(["snapshot", "verify", str(out)]) == 0
