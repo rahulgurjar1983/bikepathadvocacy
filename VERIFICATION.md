@@ -2452,3 +2452,13 @@ Artifact: `tests/test_report_page.py`
 Command: `uv run bikeplan run regions/test-grid.yaml --snapshot tests/fixtures/test-grid/snapshot --out /tmp/w19/out && uv run bikeplan shots /tmp/w19/out/report.html --out artifacts/W1.9`
 Expect: `phone.png` at 390 by 844 and `desktop.png` at 1440 by 900; `bikeplan checks` lists the words, size, network and axe-core measures of the page, each met.
 Artifact: `artifacts/W1.9/measures.txt`
+
+### W1.8
+
+```sh
+gh release download v2026.10.21-pr256 -p au-nsw-bayside-report.html -D /tmp/w18p2 --clobber
+grep -o 'parking_total":[0-9]*' /tmp/w18p2/au-nsw-bayside-report.html
+```
+
+Expect: `parking_total":85367`, and the page holds the plan card `line` paragraphs and the share code. All FR-20.12 to FR-20.17 parts are shipped.
+Artifact: `tests/test_plan_lines.py`
