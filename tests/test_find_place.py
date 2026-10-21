@@ -354,3 +354,61 @@ def test_fr20_11_the_page_data_carries_each_works_section():
     assert ash["sec"] == {"w": 12.0, "b": ASH_BEFORE, "a": ASH_AFTER}
     birch = next(item for item in data["works"] if item["street"] == "Birch Road")
     assert birch["sec"] == {"w": None, "b": TYPICAL, "a": None}
+
+
+@pytest.fixture(scope="module")
+def area_page(tmp_path_factory):
+    from tests.test_council_plan import council_block, report_with_areas
+
+    routes, areas = report_with_areas()
+    data = data_for(
+        options=[street_pick()],
+        marks=PLACES,
+        council=council_block() | {"routes": routes},
+        areas=areas,
+    )
+    path = tmp_path_factory.mktemp("area") / "report.html"
+    path.write_text(page_for(data))
+    return path
+
+
+def test_fr20_10_choosing_an_area_opens_the_ward_card_with_its_map_and_values(area_page):
+    driver = open_page(area_page)
+    try:
+        box = driver.find_element(By.ID, "q")
+        box.send_keys("ward 2")
+        WebDriverWait(driver, 5).until(lambda d: d.find_elements(By.CSS_SELECTOR, "#qlist li"))
+        assert driver.find_element(By.CSS_SELECTOR, "#qlist li").text.startswith("Ward 2")
+        box.send_keys(Keys.ENTER)
+        found = card(driver)
+        assert found.find_element(By.TAG_NAME, "h3").text == "Ward 2"
+        assert found.find_elements(By.CSS_SELECTOR, "svg polygon")
+        assert found.find_element(By.CSS_SELECTOR, "button.copy").text == "Copy link"
+        assert driver.current_url.endswith("#find-ward-2")
+    finally:
+        driver.quit()
+
+
+def test_fr20_10_the_area_card_holds_the_same_values_as_the_ward_card_on_the_page(area_page):
+    driver = open_hash(area_page, "#find-ward-1")
+    try:
+        found = card(driver)
+        page_card = driver.find_elements(By.CSS_SELECTOR, "#wardcards .ward")[0]
+        want = [item.text for item in page_card.find_elements(By.CSS_SELECTOR, "li")]
+        got = [item.text for item in found.find_elements(By.CSS_SELECTOR, ".ward li")]
+        assert got == want
+        assert got[0] == "4 km of routes"
+        assert found.find_element(By.CSS_SELECTOR, ".ward p").text == "Alpha, Beta"
+        words = " ".join(got + [found.find_element(By.TAG_NAME, "h3").text]).split()
+        assert len(words) <= 40
+    finally:
+        driver.quit()
+
+
+def test_fr20_10_the_area_card_numbers_link_to_figure_entries(area_page):
+    driver = open_hash(area_page, "#find=ward-1")
+    try:
+        links = card(driver).find_elements(By.CSS_SELECTOR, ".ward a.fig")
+        assert len(links) == 5
+    finally:
+        driver.quit()
