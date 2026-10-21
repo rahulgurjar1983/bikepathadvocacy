@@ -144,5 +144,6 @@ def option_totals(
         "km_by_level": km_by_level,
         "km_all_ages": km_all_ages,
         "places_safe": places_safe,
+        "served": sorted(served),
         "assumed_share": assumed_km / total_km if total_km else 0.0,
     }
