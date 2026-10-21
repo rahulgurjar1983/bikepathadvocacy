@@ -259,7 +259,7 @@ def test_fr20_11_an_unknown_width_says_typical_width_and_a_path_is_labelled(card
 def test_fr20_11_link_fixes_carry_the_width_and_the_before_and_after_strips():
     graph = fix_graph()
     for _, _, data in graph.edges(data=True):
-        data["width_m"] = 12.0
+        data["width_measured_m"] = 12.0
     fits = {
         "s01": {
             "status": "fix",
@@ -282,7 +282,7 @@ def test_fr20_11_link_fixes_carry_the_width_and_the_before_and_after_strips():
 def test_fr20_11_a_fix_other_than_the_fit_pick_draws_its_own_after_strips():
     graph = fix_graph()
     for _, _, data in graph.edges(data=True):
-        data["width_m"] = 14.0
+        data["width_measured_m"] = 14.0
     fits = {
         "s01": {
             "status": "fix",
