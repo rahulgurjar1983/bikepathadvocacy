@@ -1,0 +1,4 @@
+release v2026.10.21-pr248 (release run 39580799578: success)
+options.json ids: calm, shortest, separated, mesh, council
+council-plan.kml placemarks: 24, each with a plan verdict
+report.html figure entries: 294; checks.html: 0 failed

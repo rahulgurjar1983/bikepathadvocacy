@@ -2361,6 +2361,15 @@ uv run pytest tests/test_checks_opening.py -k fr20_24 -q | tee artifacts/W1.4/re
 Expect: FR-17.12 passes for four options plus Council plan first. Releases pr243 to pr246 failed on "5 options, not four". The next Bayside release run shows whether it is green.
 Artifact: `artifacts/W1.4/release-options.txt`
 
+### W1.4 Bayside release check
+
+```sh
+gh release download v2026.10.21-pr248 -p au-nsw-bayside.tar.gz -p checks.html
+```
+
+Expect: the Bayside release holds the five options with Council plan first, 24 council plan placemarks with verdicts, ward values on the page, and no failed check in `checks.html`.
+Artifact: `artifacts/W1.4/release-pr248.txt`
+
 ### W1.6 part 1 stage km, big numbers and print
 
 ```sh
