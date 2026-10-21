@@ -107,7 +107,17 @@ def option_data(item: dict) -> dict:
         "works": [
             {
                 key: work[key]
-                for key in ("street", "fix", "km", *SPENT, "least", "outside", "spot", "trips")
+                for key in (
+                    "street",
+                    "fix",
+                    "km",
+                    *SPENT,
+                    "least",
+                    "outside",
+                    "spot",
+                    "trips",
+                    "price",
+                )
                 if key in work
             }
             for work in item["works"]
@@ -123,6 +133,7 @@ def option_data(item: dict) -> dict:
         ],
         **({"ceiling": item["ceiling"]} if "ceiling" in item else {}),
         **({"no_spots": item["no_spots"]} if "no_spots" in item else {}),
+        **({"no_spots_safe": item["no_spots_safe"]} if "no_spots_safe" in item else {}),
         **({"links": item["links"]} if "links" in item else {}),
         **({"outside": item["outside"]} if item.get("outside") else {}),
     }
@@ -239,6 +250,7 @@ def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list
                 "blockers": ladder["blockers"],
                 "ceiling": ladder["ceiling"],
                 "no_spots": ladder["no_spots"],
+                "no_spots_safe": ladder["no_spots_safe"],
                 "outside": [index for index, link in enumerate(item["links"]) if link in far],
                 "links": [line(link) for link in item["links"]],
                 "lines": [

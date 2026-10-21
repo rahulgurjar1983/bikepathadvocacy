@@ -262,6 +262,44 @@ def credits(data: dict) -> str:
     return html.escape(text)
 
 
+def price_works(options, rates) -> None:
+    for option in options:
+        for item in option["works"]:
+            cost = work_cost(item, rates)
+            if cost is not None:
+                item["price"] = [cost * rates["low"], cost * rates["high"]]
+
+
+def stage_cost_facts(pick, rec) -> list[dict]:
+    built = {
+        "first stage": (
+            f"w={{i for s in p['steps'][:{rec}+1] for i in s['works']}};",
+            {index for step in pick["steps"][: rec + 1] for index in step["works"]},
+        ),
+        "full plan": ("w=set(range(len(p['works'])));", set(range(len(pick["works"])))),
+    }
+    facts = []
+    for name, (pick_works, chosen) in built.items():
+        for end, key in (("low", 0), ("high", 1)):
+            total = sum(
+                item["price"][key]
+                for index, item in enumerate(pick["works"])
+                if index in chosen and "price" in item
+            )
+            facts.append(
+                fact(
+                    f"Cost of the {name} of my pick, {end} end",
+                    total / 1_000_000,
+                    "$ million",
+                    2,
+                    f"{PICK}{pick_works}print(round(sum(x['price'][{key}] "
+                    "for i,x in enumerate(p['works']) if i in w and 'price' in x)/1e6,2))",
+                    f"the {end} end of the cost of the {name}",
+                )
+            )
+    return facts
+
+
 def page_figures(options, choice, text, first) -> list[dict]:
     pick = next(item for item in options if item["id"] == choice["pick"])
     spots = [item for item in pick["works"] if item.get("spot")]
@@ -304,6 +342,21 @@ def page_figures(options, choice, text, first) -> list[dict]:
                 "the full plan score",
             ),
         ]
+    if spots and "no_spots_safe" in pick:
+        last = pick["steps"][-1]["totals"]
+        facts.append(
+            fact(
+                "Share of trips made safe by spots alone",
+                (last["safe_trips"] - pick["no_spots_safe"]) / last["trips"] * 100,
+                "%",
+                1,
+                f"{PICK}s=p['steps'][-1];"
+                "print(round((s['safe_trips']-p['no_spots_safe'])/s['trips']*100,1))",
+                "the trips made safe by the spots",
+            )
+        )
+    if any("price" in item for item in pick["works"]):
+        facts += stage_cost_facts(pick, choice["step"])
     for fix in sorted({item["fix"] for item in plain}):
         facts.append(
             fact(

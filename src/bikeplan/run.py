@@ -51,7 +51,13 @@ from bikeplan.report import (
     segment_rows,
     segments_text,
 )
-from bikeplan.report_page import five_minute_page, page_figures, path_figures, report_data
+from bikeplan.report_page import (
+    five_minute_page,
+    page_figures,
+    path_figures,
+    price_works,
+    report_data,
+)
 from bikeplan.snapshot import verify_snapshot
 from bikeplan.stress import score_edges, stress_features, stress_summary
 from bikeplan.trips import (
@@ -297,6 +303,7 @@ def build_all(
     streets = street_overlay(
         map_payload["segments"], rows, model_data(graph, model_segment_rows(graph, profile))
     )
+    price_works(options, load_rates())
     head, body, option_figures, options_json = edition(
         region,
         options,
