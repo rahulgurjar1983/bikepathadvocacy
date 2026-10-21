@@ -1490,3 +1490,5 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - `report_data` takes `rates` from `bikeplan.cost.load_rates()`. Without it the stages hold no cost keys, so old tests stand.
 - A short path spot costs its km at the short path rate plus one crossing. Signals apply when the spot is `assumed`, else a raised zebra.
 - A stage cost rounds the low end down and the high end up to whole millions.
+
+- W1.4: a full `bikeplan report` on Bayside took over 55 minutes on this host and was killed at 3300 s. Start it with the whole turn left, or leave the row open and let CI and a release prove it.

@@ -109,8 +109,41 @@ def stage_costs(works: list, built: set, rates: dict) -> dict:
     }
 
 
+def ward_cards(areas: list, pick: dict, spot_numbers: dict, rates) -> list:
+    cards = []
+    for area in areas:
+        cost = None
+        if rates:
+            cost = sum(
+                (work_cost(pick["works"][index], rates) or 0) * share
+                for index, share in area["parts"].items()
+            )
+            cost /= 1_000_000
+        cards.append(
+            {key: area[key] for key in ("name", "poly", "plan_km", "works_km", "park")}
+            | {"cost": cost, **({"at": area["at"]} if "at" in area else {})}
+            | {key: area[key] for key in ("schools", "stations", "centres", "top")}
+            | {
+                "spots": sorted(
+                    spot_numbers[index] for index in area["spots"] if index in spot_numbers
+                )
+            }
+        )
+    return cards
+
+
 def report_data(
-    options, choice, marks, joined, streets, corridor, boundary, paths=(), rates=None
+    options,
+    choice,
+    marks,
+    joined,
+    streets,
+    corridor,
+    boundary,
+    paths=(),
+    rates=None,
+    council=None,
+    areas=None,
 ) -> dict:
     pick = next(item for item in options if item["id"] == choice["pick"])
     rec = choice["step"]
@@ -215,6 +248,18 @@ def report_data(
         data["spot_cost"] = sum(
             (work_cost(item, rates) or 0) / 1_000_000 for item in pick["works"] if item.get("spot")
         )
+    if council:
+        data["council"] = [
+            {key: row[key] for key in ("id", "name", "km", "share", "lines")}
+            | {"v": row["verdict"]}
+            for row in council["routes"]
+        ]
+        data["council_share"] = council["share"]
+        data["council_km"] = council["km"]
+    if areas:
+        numbers = {item["w"]: item["n"] for item in data["spots"]}
+        data["wards"] = ward_cards(areas, pick, numbers, rates)
+        data["subs"] = {area["name"]: area["subs"] for area in areas}
     if corridor:
         data["corridors"] = [
             {"id": route["id"], "lines": route["lines"]} for route in corridor["routes"]
@@ -234,6 +279,12 @@ def drop_card(text: str, name: str) -> str:
         "",
         text,
         flags=re.S,
+    )
+
+
+def drop_last_card(text: str, name: str) -> str:
+    return re.sub(
+        rf'\s*<div class="card" id="card-{name}">.*?</p>\s*</div>', "", text, count=1, flags=re.S
     )
 
 
@@ -300,7 +351,78 @@ def stage_cost_facts(pick, rec) -> list[dict]:
     return facts
 
 
-def page_figures(options, choice, text, first) -> list[dict]:
+def council_facts(council: dict) -> list[dict]:
+    load = "import json;c=json.load(open('options.json'))['council'];"
+    facts = [
+        fact(
+            "Share of the council plan that my pick covers",
+            council["share"] * 100,
+            "%",
+            0,
+            f"{load}print(round(c['share']*100))",
+            "the share of the council plan that my pick covers",
+        ),
+        fact(
+            "Km of the council plan inside the boundary",
+            council["km"],
+            "km",
+            1,
+            f"{load}print(round(c['km'],1))",
+            "the km of the council plan",
+        ),
+        fact(
+            "Km of my pick off the council plan",
+            council["off_km"],
+            "km",
+            2,
+            f"{load}print(round(c['off_km'],2))",
+            "the km of my pick off the council plan",
+        ),
+    ]
+    for name, words in COUNCIL_COUNTS:
+        facts.append(
+            fact(
+                f"Council plan routes {words} by my pick",
+                council["counts"][name],
+                "routes",
+                0,
+                f"{load}print(c['counts']['{name}'])",
+                "the council plan verdicts",
+            )
+        )
+    for number, row in enumerate(council["routes"]):
+        facts.append(
+            fact(
+                f"Council route {row['id']}: share on my pick",
+                row["share"] * 100,
+                "%",
+                0,
+                f"{load}print(round(c['routes'][{number}]['share']*100))",
+                f"the share of route {row['id']} on my pick",
+            )
+        )
+    return facts
+
+
+def ward_facts(wards: dict) -> list[dict]:
+    load = "import json;w=json.load(open('options.json'))['wards']['areas']"
+    facts = []
+    for number, area in enumerate(wards["areas"]):
+        for key, words, unit, shown in WARD_VALUES:
+            facts.append(
+                fact(
+                    f"{area['name']}: {words}",
+                    area[key],
+                    unit,
+                    shown,
+                    f"{load}[{number}];print(round(w['{key}'],{shown}))",
+                    f"{words} in {area['name']}",
+                )
+            )
+    return facts
+
+
+def page_figures(options, choice, text, first, council=None, wards=None) -> list[dict]:
     pick = next(item for item in options if item["id"] == choice["pick"])
     spots = [item for item in pick["works"] if item.get("spot")]
     plain = [item for item in pick["works"] if not item.get("spot")]
@@ -357,6 +479,10 @@ def page_figures(options, choice, text, first) -> list[dict]:
         )
     if any("price" in item for item in pick["works"]):
         facts += stage_cost_facts(pick, choice["step"])
+    if council:
+        facts += council_facts(council)
+    if wards:
+        facts += ward_facts(wards)
     for fix in sorted({item["fix"] for item in plain}):
         facts.append(
             fact(
@@ -423,7 +549,23 @@ def fact_figures(facts, first, name, digest) -> list[dict]:
     ]
 
 
+COUNCIL_COUNTS = (
+    ("covered", "covered"),
+    ("partly", "partly covered"),
+    ("missed", "missed"),
+)
+WARD_VALUES = (
+    ("plan_km", "km of my pick", "km", 2),
+    ("works_km", "km of works", "km", 2),
+    ("park", "parking spaces removed", "spaces", 1),
+    ("schools", "schools joined", "schools", 0),
+    ("stations", "stations joined", "stations", 0),
+    ("centres", "town centres joined", "town centres", 0),
+    ("spots", "spots", "spots", 0),
+)
 PAGE_LABELS = (
+    (r"Share of the council plan that my pick covers", "council_share"),
+    (r"Km of the council plan inside the boundary", "council_km"),
     (r"Places of type (\w+), joined", "{}"),
     (r"Spots of my pick", "spots"),
     (r"Length of the spots of my pick", "spotkm"),
@@ -455,20 +597,24 @@ def five_minute_page(region, data: dict, head: str, inner: str, figures=()) -> s
     have = {
         "spots": bool(data["spots"]),
         "streets": bool(data["works"]),
-        "plans": bool(data["corridors"]),
+        "plans": bool(data["corridors"] or data.get("council")),
     }
     for name, kept in have.items():
         if not kept:
             text = drop_section(text, name)
-    for name in ("wards", "cost"):
-        text = drop_section(text, name)
+    if not data.get("wards"):
+        text = drop_section(text, "wards")
+        text = drop_button(text, "wards")
+    text = drop_section(text, "cost")
     if "cost" not in data["stages"]["works"]:
         text = re.sub(r'<div class="tile cost">.*?</div>', "", text, flags=re.S)
-    text = drop_button(drop_button(text, "council"), "wards")
-    if have["plans"]:
+    if not data.get("council"):
+        text = drop_button(text, "council")
         text = drop_card(text, "council")
-    else:
+    if not data["corridors"]:
         text = drop_button(text, "tfnsw")
+        text = drop_last_card(text, "tfnsw")
+    if 'id="ly-' not in text:
         text = re.sub(r'\s*<div class="mapctl".*?</div>', "", text, count=1, flags=re.S)
     headline = f"All-ages bike routes for {area}\u2019s schools, stations and shops"
     for key, value in {

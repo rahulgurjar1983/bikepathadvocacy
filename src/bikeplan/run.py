@@ -13,12 +13,15 @@ from bikeplan.change import (
 )
 from bikeplan.config import ConfigError, config_hash
 from bikeplan.cost import load_rates
+from bikeplan.council import compact_council, compact_wards
 from bikeplan.edition import (
     build_options_report,
     corridor_data,
+    council_data,
     edition,
     edition_parts,
     street_overlay,
+    ward_data,
 )
 from bikeplan.fit import segment_fit
 from bikeplan.map_data import map_data as page_data
@@ -300,6 +303,10 @@ def build_all(
     figures = sorted(figures, key=lambda item: int(item["id"][1:]))
     options, marks, joined = build_options_report(graph, region, profile, snapshot, scores)
     corridor = corridor_data(graph, region, profile, snapshot, options)
+    council = council_data(graph, region, profile, options)
+    wards = ward_data(graph, region, profile, options, marks, snapshot)
+    council_json = None if council is None else compact_council(council)
+    wards_json = None if wards is None else compact_wards(wards)
     streets = street_overlay(
         map_payload["segments"], rows, model_data(graph, model_segment_rows(graph, profile))
     )
@@ -313,10 +320,19 @@ def build_all(
         figures,
         streets,
         corridor,
+        council_json,
+        wards_json,
     )
     choice = choose(options, profile.network.recommend_share)
     figures = sorted([*figures, *option_figures], key=lambda item: int(item["id"][1:]))
-    figures += page_figures(options, choice, options_json, int(figures[-1]["id"][1:]) + 1)
+    figures += page_figures(
+        options,
+        choice,
+        options_json,
+        int(figures[-1]["id"][1:]) + 1,
+        council_json,
+        wards_json,
+    )
     pick = next(item for item in options if item["id"] == choice["pick"])
     paths = read_paths(
         snapshot,
@@ -335,6 +351,8 @@ def build_all(
         map_payload["boundary"],
         paths,
         load_rates(),
+        council,
+        None if wards is None else wards["areas"],
     )
     page_text = five_minute_page(
         region,

@@ -183,6 +183,7 @@ class Network:
     snap_max_m: float = 300.0
     corridor_match_m: float = 100.0
     corridor_cover_share: float = 0.8
+    council_plan_factor: float = 0.5
     state_functions: tuple[str, ...] = ()
 
 
@@ -412,6 +413,7 @@ class ProfileReader(Reader):
             "snap_max_m",
             "corridor_match_m",
             "corridor_cover_share",
+            "council_plan_factor",
             "state_functions",
         }
         data = self.mapping(raw, "network", keys, set())
@@ -462,6 +464,11 @@ class ProfileReader(Reader):
             if not 0 < cover <= 1:
                 raise self.fail("network.corridor_cover_share", "must be above 0 and at most 1")
             found["corridor_cover_share"] = cover
+        if "council_plan_factor" in data:
+            factor = float(self.number(data["council_plan_factor"], "network.council_plan_factor"))
+            if not 0 < factor <= 1:
+                raise self.fail("network.council_plan_factor", "must be above 0 and at most 1")
+            found["council_plan_factor"] = factor
         if "state_functions" in data:
             names = data["state_functions"]
             if not isinstance(names, list):
