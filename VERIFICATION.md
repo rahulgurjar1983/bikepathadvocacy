@@ -2453,7 +2453,7 @@ Command: `uv run bikeplan run regions/test-grid.yaml --snapshot tests/fixtures/t
 Expect: `phone.png` at 390 by 844 and `desktop.png` at 1440 by 900; `bikeplan checks` lists the words, size, network and axe-core measures of the page, each met.
 Artifact: `artifacts/W1.9/measures.txt`
 
-### W1.8 real Bayside check
+### W1.8
 
 ```sh
 gh release download v2026.10.21-pr256 -p au-nsw-bayside-report.html -D /tmp/w18p2 --clobber
