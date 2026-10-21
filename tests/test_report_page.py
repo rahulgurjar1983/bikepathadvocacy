@@ -299,7 +299,7 @@ ROOT_BLOCK = re.compile(r":root[^{]*\{[^}]*\}")
 
 
 def squeeze(text):
-    return re.sub(r"\s+", "", text)
+    return re.sub(r"\s+", "", text).replace(";}", "}")
 
 
 def with_override(block, tokens):
@@ -318,8 +318,7 @@ def mock_blocks_after_overrides():
     blocks = ROOT_BLOCK.findall(MOCK.read_text())
     out = []
     for block in blocks:
-        head = block[: block.index("{")]
-        if "dark" in head:
+        if "color-scheme:dark" in squeeze(block) or 'data-theme="dark"' in block:
             block = with_override(block, found["dark"])
         elif "color-scheme" not in block:
             block = with_override(block, found["light"])
