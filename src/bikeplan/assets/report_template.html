@@ -10,7 +10,7 @@
 :root{
   --mapland:#f4f2ee;--mapwater:#cfe2f3;--mappark:#dcebd2;--mapair:#ece8e1;--mapstreet:#d6d1c7;--maprail:#a8a196;--mapout:#ffffff;--mapline:#16213a;--mark:#ffffff;--soft:#f6f5f1;--seg:#f1efe9;--track:#eeebe4;
   --ink:#16213a;--ink-2:#4a5568;--ink-3:#6b7280;--paper:#fbfaf7;--card:#ffffff;--line:#e6e2da;
-  --today:#2f9e44;--plan:#1c64f2;--spot:#e8590c;--notyet:#868e96;--council:#7c3aed;--tfnsw:#343a40;
+  --today:#2f9e44;--plan:#1c64f2;--spot:#c2410c;--notyet:#868e96;--council:#7c3aed;--tfnsw:#343a40;
   --land:#f4f2ee;--water:#cfe2f3;--park:#dcebd2;--air:#ece8e1;--street:#d6d1c7;--rail:#a8a196;
   --accent:#1c64f2;--accent-ink:#ffffff;--focus:#f59f00;
   --r:14px;--shadow:0 1px 2px rgba(22,33,58,.06),0 8px 24px rgba(22,33,58,.08);
@@ -18,10 +18,11 @@
   --step--1:clamp(.84rem,.8rem + .2vw,.92rem);--step-0:clamp(1.0625rem,1rem + .25vw,1.15rem);
   --step-1:clamp(1.3rem,1.15rem + .6vw,1.6rem);--step-2:clamp(1.6rem,1.3rem + 1.4vw,2.3rem);
   --step-3:clamp(2rem,1.55rem + 1.5vw,2.7rem);--num:clamp(2.1rem,1.7rem + 1.2vw,2.6rem);
+  --spot-done:#1d4ed8;
 }
 :root{color-scheme:light}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#e8ecf4;--ink-2:#b4bccb;--ink-3:#8e97a8;--paper:#0f1522;--card:#172033;--line:#2a3550;--land:#1a2233;--mapland:#1a2233;--mapwater:#0e2a44;--mappark:#1d3324;--mapair:#232b3b;--mapstreet:#2f3a50;--maprail:#56607a;--mapout:#0f1522;--mapline:#c9d3e6;--mark:#172033;--soft:#1e283c;--seg:#1e283c;--track:#26314a;--plan:#4c8dff;--today:#40c463;color-scheme:dark}}
-:root[data-theme="dark"]{--ink:#e8ecf4;--ink-2:#b4bccb;--ink-3:#8e97a8;--paper:#0f1522;--card:#172033;--line:#2a3550;--land:#1a2233;--mapland:#1a2233;--mapwater:#0e2a44;--mappark:#1d3324;--mapair:#232b3b;--mapstreet:#2f3a50;--maprail:#56607a;--mapout:#0f1522;--mapline:#c9d3e6;--mark:#172033;--soft:#1e283c;--seg:#1e283c;--track:#26314a;--plan:#4c8dff;--today:#40c463;color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#e8ecf4;--ink-2:#b4bccb;--ink-3:#8e97a8;--paper:#0f1522;--card:#172033;--line:#2a3550;--land:#1a2233;--mapland:#1a2233;--mapwater:#0e2a44;--mappark:#1d3324;--mapair:#232b3b;--mapstreet:#2f3a50;--maprail:#56607a;--mapout:#0f1522;--mapline:#c9d3e6;--mark:#172033;--soft:#1e283c;--seg:#1e283c;--track:#26314a;--plan:#4c8dff;--today:#40c463;color-scheme:dark;--spot-done:#1d4ed8}}
+:root[data-theme="dark"]{--ink:#e8ecf4;--ink-2:#b4bccb;--ink-3:#8e97a8;--paper:#0f1522;--card:#172033;--line:#2a3550;--land:#1a2233;--mapland:#1a2233;--mapwater:#0e2a44;--mappark:#1d3324;--mapair:#232b3b;--mapstreet:#2f3a50;--maprail:#56607a;--mapout:#0f1522;--mapline:#c9d3e6;--mark:#172033;--soft:#1e283c;--seg:#1e283c;--track:#26314a;--plan:#4c8dff;--today:#40c463;color-scheme:dark;--spot-done:#1d4ed8}
 html{--bikepath:#0f766e}
 @media (prefers-color-scheme:dark){html:not([data-theme="light"]){--bikepath:#2dd4bf}}
 html[data-theme="dark"]{--bikepath:#2dd4bf}
@@ -178,7 +179,7 @@ footer{padding:36px 0 60px;color:var(--ink-3);font-size:var(--step--1)}
 .pmark{display:grid;place-items:center;border-radius:50%;background:var(--mark);border:2px solid var(--ink);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.25)}
 .pmark svg{width:11px;height:11px}
 .smark{display:grid;place-items:center;border-radius:50%;background:var(--spot);color:#fff;font:800 11px var(--font);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35)}
-.smark.done{background:var(--plan)}
+.smark.done{background:var(--spot-done)}
 
 @media (max-width:900px){
   .hero-grid{grid-template-columns:1fr}
