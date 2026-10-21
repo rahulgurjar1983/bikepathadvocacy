@@ -1520,3 +1520,8 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - The test grid has no works, so real cross-sections need a Bayside build.
 - Part 2: release v2026.10.21-pr251 (real Bayside) holds 67 place cards and 514 works with sections. Local runs cannot build Bayside because the snapshot files sit in releases.
 - Left: the area card, which waits on the FR-20.14 ward cards of W1.8.
+
+### W1.7 part 3
+
+- The ward card is one function, `wardCardHtml(w, pre)`, in the page script. The page cards and the search result both use it, so their values cannot drift. `pre` keeps the clip path ids apart.
+- A full Bayside run took over 50 minutes on this busy host and hit a 3,000 second limit. To check a template change on real data, fill the new template with the data from the latest Bayside release page: `artifacts/W1.7/area_check.py`.
