@@ -1501,3 +1501,10 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 `osm_backdrop` is a snapshot adapter, not a core file, so old tests that list the three core files stay intact. One Overpass query holds coastline, water, parks, airport and rails in `backdrop.json`. `backdrop_layers` in `backdrop.py` cuts the sea: it splits the analysis box by the coastline and keeps the pieces to the right of the way direction. A snapshot with no `backdrop.json` gives empty layers. Q1.12 must add `osm_backdrop` to the region adapters and refresh the snapshot.
 
 - Release check FR-17.12 counted exactly four options; Council plan first (FR-20.24) made five and failed releases pr243 to pr246. The check now counts four plus that option. Watch the next release run.
+
+### W1.6 part 1
+
+- On the test grid page, words at load are 221 (limit 1,000), Flesch-Kincaid is 4.6, no code word shows and the page does not scroll sideways at 360 px. Tests for these pass on base, so they were not added (they would be fakes).
+- Page stage km are `model_km` plus the ladder gain since step 0. The ladder alone started at 0 km, so Today showed 0 on a map with 3.0 km all-ages.
+- Big numbers and the print rule sit in `EVIDENCE_CSS`, because the `:root` tokens must equal the mock.
+- Pytest cannot import fixtures from `test_report_page` without a `noqa` comment; make local fixtures.

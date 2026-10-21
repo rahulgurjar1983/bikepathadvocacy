@@ -2360,3 +2360,13 @@ uv run pytest tests/test_checks_opening.py -k fr20_24 -q | tee artifacts/W1.4/re
 
 Expect: FR-17.12 passes for four options plus Council plan first. Releases pr243 to pr246 failed on "5 options, not four". The next Bayside release run shows whether it is green.
 Artifact: `artifacts/W1.4/release-options.txt`
+
+### W1.6 part 1 stage km, big numbers and print
+
+```sh
+uv run pytest tests/test_page_five_minutes.py -q
+uv run --frozen bikeplan run regions/test-grid.yaml --snapshot tests/fixtures/test-grid/snapshot --out /tmp/w16
+```
+
+Expect: four tests pass. On the test grid, `model_km` is 3.0 and the three stage km of the page are 3.0, 3.0 and 3.0. Before, Today showed 0. At 390 px the big numbers are 40 px or more and the A4 print has 4 pages or fewer.
+Artifact: `artifacts/W1.6/km.json`
