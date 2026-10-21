@@ -218,7 +218,7 @@ def test_fr20_17_the_second_ask_names_at_most_ten_streets_and_counts_the_rest(tm
         ask = texts(driver, "#asks li")[1]
         named = [name for name in [*names, "Ash Street"] if name in ask]
         assert len(named) == 10
-        assert named == ["Ash Street", *names[:9]]
+        assert named == [*names[:9], "Ash Street"]
         assert "and 3 more streets" in ask
         assert words(ask) <= 25
     finally:
@@ -256,8 +256,9 @@ def ward_data():
     for area in areas:
         area |= {
             "top": ["Ash Street", "Bay Street", "Cook Street"],
-            "safe": {"schools": [0, 1, 2], "stations": [0, 0, 1], "centres": [0, 1, 1]},
         }
+    areas[0]["safe"] = {"schools": [0, 1, 2], "stations": [0, 0, 1], "centres": [0, 1, 1]}
+    areas[1]["safe"] = {"schools": [0, 1, 2], "stations": [0, 0, 0], "centres": [0, 0, 1]}
     return data_for(council=council_block() | {"routes": routes}, areas=areas)
 
 
@@ -266,9 +267,9 @@ def test_fr20_14_a_ward_card_has_its_top_streets_and_safe_places_in_40_words(tmp
     try:
         cards = driver.find_elements(By.CSS_SELECTOR, "#wardcards .ward")
         assert len(cards) == 2
-        for card in cards:
+        for card, safe in zip(cards, ["Safe trip to 4 of 7 places", "Safe trip to 3 of 3 places"]):
             assert "Ash Street, Bay Street, Cook Street" in card.text
-            assert "Safe trip to 4 of 7 places" in card.text
+            assert safe in card.text
             assert words(card.text) <= 40
     finally:
         driver.quit()
