@@ -131,8 +131,8 @@ p{margin:0 0 14px}
 .xs figcaption{font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
 .xs svg{width:100%;height:auto;display:block;color:var(--ink-2)}
 .xl,.xn{margin:2px 0 0;font-size:.75rem;color:var(--ink-3)}
-.sw{border-top:1px solid var(--line);padding-top:10px;margin-top:10px}
-.sw:first-child{border-top:0;padding-top:0;margin-top:0}
+.swork{border-top:1px solid var(--line);padding-top:10px;margin-top:10px}
+.swork:first-child{border-top:0;padding-top:0;margin-top:0}
 .fix p{font-size:.95rem;color:var(--ink-2);margin:0}
 
 .wards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-top:18px}
@@ -702,7 +702,7 @@ function showPlace(p){
 function showStreet(s){
   const ws=D.works.filter(w=>w.street===s);if(!ws.length)return;
   res.innerHTML='<div class="result-grid"><div><p class="eyebrow">Street</p><h3>'+esc(s)+'</h3><div class="facts"><div class="fact"><b>'+lenText(ws.reduce((a,w)=>a+w.km,0))+'</b><span>of works</span></div><div class="fact"><b>'+fmt(ws.reduce((a,w)=>a+w.park,0))+'</b><span>parking spaces change</span></div><div class="fact"><b>'+(ws.some(w=>w.stage===1)?"First":"Later")+'</b><span>stage</span></div></div><p style="margin-top:12px">'+copyBtn()+'</p></div><div>'+
-   ws.map(w=>'<article class="sw"><p><b>'+FIX[w.fix]+'</b></p><p><b>'+lenText(w.km)+'</b> · '+(w.stage===1?"First stage":"Full plan")+' · '+(w.park?w.park+" parking space"+(w.park===1?"":"s"):"No parking lost")+' · '+(w.lane?w.lane.toFixed(1)+" km of traffic lane":"No traffic lane lost")+'</p>'+secPair(w)+'</article>').join("")+'</div></div>';
+   ws.map(w=>'<article class="swork"><p><b>'+FIX[w.fix]+'</b></p><p><b>'+lenText(w.km)+'</b> · '+(w.stage===1?"First stage":"Full plan")+' · '+(w.park?w.park+" parking space"+(w.park===1?"":"s"):"No parking lost")+' · '+(w.lane?w.lane.toFixed(1)+" km of traffic lane":"No traffic lane lost")+'</p>'+secPair(w)+'</article>').join("")+'</div></div>';
   res.classList.add("show");
   const pts=ws.filter(w=>w.at).map(w=>ll(w.at));
   document.getElementById("top").scrollIntoView({behavior:reduce?"auto":"smooth"});
