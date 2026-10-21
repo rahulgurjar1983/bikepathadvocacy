@@ -1,0 +1,7 @@
+FR-20.7
+  test-grid-report.html: words at load: 213 of at most 1,000, met
+FR-20.21
+  test-grid-report.html: serious or critical axe-core violations at load: 0 of at most 0, met
+FR-20.22
+  test-grid-report.html: page size in bytes: 342,984 of at most 4,194,304, met
+  test-grid-report.html: network requests at load: 0 of at most 0, met

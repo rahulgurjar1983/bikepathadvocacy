@@ -2447,3 +2447,8 @@ Artifact: `tests/test_plan_lines.py`
 Command: `uv run pytest tests/test_report_page.py -q -k "root_tokens or override_rule or white_numbers"`
 Expect: 3 passed; the page has `--spot:#c2410c`, `--spot-done:#1d4ed8` in light and dark, and white on each reaches 4.5 to 1.
 Artifact: `tests/test_report_page.py`
+
+### W1.9 part 2
+Command: `uv run bikeplan run regions/test-grid.yaml --snapshot tests/fixtures/test-grid/snapshot --out /tmp/w19/out && uv run bikeplan shots /tmp/w19/out/report.html --out artifacts/W1.9`
+Expect: `phone.png` at 390 by 844 and `desktop.png` at 1440 by 900; `bikeplan checks` lists the words, size, network and axe-core measures of the page, each met.
+Artifact: `artifacts/W1.9/measures.txt`
