@@ -605,6 +605,10 @@ def place_figures(figures) -> dict:
             match = re.fullmatch(pattern, item["label"])
             if match:
                 found[key.format(*match.groups())] = item["id"]
+        name, _, words = item["label"].partition(": ")
+        for key, ward_words, _, _ in WARD_VALUES:
+            if words == ward_words:
+                found[f"ward:{name}:{key}"] = item["id"]
     return found
 
 
