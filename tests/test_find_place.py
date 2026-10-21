@@ -178,7 +178,7 @@ def test_fr20_10_a_hash_change_opens_the_card_without_a_reload(card_page):
 
 
 def street_cards(driver):
-    return driver.find_elements(By.CSS_SELECTOR, "#result.show .sw")
+    return driver.find_elements(By.CSS_SELECTOR, "#result.show .swork")
 
 
 def test_fr20_11_the_street_card_has_one_block_per_work_with_its_facts(card_page):
