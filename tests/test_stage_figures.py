@@ -54,11 +54,8 @@ def test_fr20_3_the_share_of_trips_made_safe_by_spots_alone_is_a_figure(tmp_path
     assert share["value"] == 35.0
     assert share["unit"] == "%"
     assert run_recipe(share, text, tmp_path) == pytest.approx(35.0)
-
-
-def test_fr20_3_without_the_safe_trip_count_there_is_no_spots_alone_figure():
-    figures, _ = figures_for(pick())
-    assert "Share of trips made safe by spots alone" not in {item["label"] for item in figures}
+    bare, _ = figures_for(pick())
+    assert "Share of trips made safe by spots alone" not in {item["label"] for item in bare}
 
 
 def test_fr20_4_the_stage_cost_figures_hold_the_low_and_high_cost_in_millions(tmp_path):
@@ -74,11 +71,8 @@ def test_fr20_4_the_stage_cost_figures_hold_the_low_and_high_cost_in_millions(tm
     for label, value in want.items():
         assert found[label]["unit"] == "$ million"
         assert run_recipe(found[label], text, tmp_path) == pytest.approx(value)
-
-
-def test_fr20_4_unpriced_works_leave_the_stage_cost_figures_out():
-    figures, _ = figures_for(pick())
-    assert not [item for item in figures if item["label"].startswith("Cost of")]
+    bare, _ = figures_for(pick())
+    assert not [item for item in bare if item["label"].startswith("Cost of")]
 
 
 def test_fr20_4_price_works_adds_the_low_and_high_cost_of_each_known_fix():
