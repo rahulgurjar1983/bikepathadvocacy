@@ -44,7 +44,19 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  const streetPieces = data.streets.model_pieces || data.streets.pieces;
+  function unpacked(piece) {
+    return Object.assign({}, piece, {
+      lines: piece.d.map(function (flat) {
+        const line = [[flat[0] / 1e5, flat[1] / 1e5]];
+        for (let i = 2; i < flat.length; i += 2) {
+          const last = line[line.length - 1];
+          line.push([last[0] + flat[i] / 1e5, last[1] + flat[i + 1] / 1e5]);
+        }
+        return line;
+      }),
+    });
+  }
+  const streetPieces = data.streets.model_pieces ? data.streets.model_pieces.map(unpacked) : data.streets.pieces;
   const streetLayers = streetPieces.map(function (piece) {
     const layer = L.polyline(piece.lines, {
       pane: "streets",

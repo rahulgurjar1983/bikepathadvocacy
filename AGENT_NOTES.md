@@ -1564,3 +1564,14 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - The line measure counts characters per rendered line with one range per character. On the first run it found 72 to 77 characters in `.prose` and the ask steps, because `64ch` is the width of a zero and text is narrower. They are now `50ch`: CI has a narrower fallback font and showed 72 characters at `56ch` where this host showed 69.
 - The grade joins heading and list text into sentences, adding a full stop when one is missing.
 - Left: check the grade and line length on the real Bayside release page, and the release script running `shots` (operator).
+
+
+### W1.9 repair of red main
+
+- The watchdog restarted the loop after turn 8 ran 49 minutes with an empty log. Its transcript is lost, so the cause of the silence is not proven. What is proven: main CI and the release run both failed at 21:43Z on the merge of PR 261, and the loop must fix a red main before any other work.
+- CI failed `test_fr20_1_every_stage_tile_on_the_grid_page_shows_the_modelled_km`. The stage numbers counted up over 500 ms, so a click read a middle value (2 instead of 3). Stage buttons now set the numbers at once.
+- The release failed FR-20.7, FR-20.20 and FR-20.22 on the real Bayside page: 1,160 words, a 74-character credit line, 6 print pages and 4,540,848 bytes. Artifact: `artifacts/W1.9/bayside-repair.txt`.
+- Size: the page data held `model_pieces` lines as full coordinates. They are now whole number steps (`d`), which saves 457 KB. `pieces` stays for the old tests.
+- Words and print differ from the mock, for FR-20.7 and FR-20.20: no street intro line, short find hint and spot note, three shorter card sentences, ward cards end at "places", cards after the fourth sit in a closed "more kinds of change" details. Print drops find, streets, plans, cost and how, and lists five spots.
+- The host had 48 GB free against a 60 GB floor for the other loop, and its disk reaper ran for most of this turn, so every browser run took minutes. That slows turns but does not stop this loop.
+- Left: a fresh Bayside release from this branch must show all four measures met. The operator adds `shots` to the release script.

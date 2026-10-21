@@ -124,7 +124,7 @@ p{margin:0 0 14px}
 .spotlist .tr{font-weight:800;text-align:right;line-height:1.1}
 .spotlist .tr small{display:block;font-weight:500;color:var(--ink-3);font-size:.75rem}
 
-.fixes{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:18px;margin-top:18px}
+.more-fixes{grid-column:1/-1}.more-fixes summary{cursor:pointer;font-weight:700;margin-top:6px}.fixes{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:18px;margin-top:18px}
 .fix h3{font-size:1.15rem}
 .fix .km{font-size:2rem;font-weight:800;line-height:1;color:var(--plan)}
 .fix .km small{font-size:.9rem;color:var(--ink-2);font-weight:600}
@@ -149,7 +149,7 @@ p{margin:0 0 14px}
 .meter{height:22px;border-radius:99px;background:var(--track);overflow:hidden;display:flex;margin:12px 0 8px}
 .meter i{display:block;height:100%}
 .keys{display:flex;flex-wrap:wrap;gap:12px;font-size:.85rem;color:var(--ink-2)}
-.credit{margin:10px 0 0;font-size:.85rem;color:var(--ink-3)}
+.credit{margin:10px 0 0;font-size:.85rem;color:var(--ink-3);max-width:44ch}
 .keys span{display:inline-flex;gap:6px;align-items:center}
 .keys i{width:12px;height:12px;border-radius:3px;display:inline-block}
 
@@ -198,9 +198,9 @@ footer{padding:36px 0 60px;color:var(--ink-3);font-size:var(--step--1)}
   .bar{grid-template-columns:96px 1fr 46px}
 }
 @media print{
-  .mockbar,.stages,.mapctl,.touchhint,.search,.chips,#result,.copy{display:none!important}
+  .mockbar,.stages,.mapctl,.touchhint,.search,.chips,#result,.copy,#find,#streets,#plans,#cost,#how{display:none!important}
   body{background:#fff;font-size:11pt}
-  .hero-grid{grid-template-columns:1fr}.mapbox{min-height:520px;break-inside:avoid}
+  .hero-grid{grid-template-columns:1fr}.mapbox{min-height:380px;break-inside:avoid}#spotlist li:nth-child(n+6){display:none}
   section.band{padding:18px 0;break-inside:avoid-page}
   .card,.panel,.compare,.asks li{box-shadow:none;border:1px solid #ddd}
 }
@@ -263,7 +263,7 @@ footer{padding:36px 0 60px;color:var(--ink-3);font-size:var(--step--1)}
   <div class="wrap">
     <p class="eyebrow">Find your place</p>
     <h2>What changes near you?</h2>
-    <p class="prose">Type the name of a school, station, town centre or street. The map shows the routes there and each street change.</p>
+    <p class="prose">Type a school, station, town centre or street.</p>
     <div class="search" role="search">
       <svg class="mag" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
       <input id="q" type="text" role="combobox" aria-expanded="false" aria-controls="qlist" aria-autocomplete="list" autocomplete="off" placeholder="Type at least two letters" aria-label="Find a school, station, street or ward">
@@ -281,7 +281,7 @@ footer{padding:36px 0 60px;color:var(--ink-3);font-size:var(--step--1)}
       <h2 id="spot-h"></h2>
       <p class="prose" id="spot-p"></p>
       <div class="bars" id="spot-bars"></div>
-      <p class="prose" style="color:var(--ink-2);font-size:.95rem">A spot is where a route crosses or runs along a busy road. A raised zebra crossing fits a two-lane street. A bigger road needs bike and walk signals.</p>
+      <p class="prose" style="color:var(--ink-2);font-size:.95rem">A spot is where a route crosses or runs along a busy road.</p>
     </div>
     <div>
       <ol class="spotlist" id="spotlist" aria-label="Spots, most trips first"></ol>
@@ -294,7 +294,6 @@ footer{padding:36px 0 60px;color:var(--ink-3);font-size:var(--step--1)}
   <div class="wrap">
     <p class="eyebrow">What changes on the street</p>
     <h2 id="streets-h">Street changes</h2>
-    <p class="prose">Quiet streets need the least. Busier streets get a bike lane with a kerb between bikes and cars.</p>
     <div class="fixes" id="fixes"></div>
   </div>
 </section>
@@ -303,7 +302,7 @@ footer{padding:36px 0 60px;color:var(--ink-3);font-size:var(--step--1)}
   <div class="wrap">
     <p class="eyebrow">In your ward</p>
     <h2>Every ward gets routes to its schools</h2>
-    <p class="prose">Tap a ward to see it on the map.</p>
+    <p class="prose">Full plan, by ward.</p>
     <div class="wards" id="wardcards"></div>
   </div>
 </section>
@@ -466,17 +465,10 @@ const placeMarkers=D.places.map(p=>L.marker(ll(p.at),{keyboard:false,icon:L.divI
 const labels=L.layerGroup(D.places.map(p=>L.marker(ll(p.at),{interactive:false,keyboard:false,icon:L.divIcon({className:"plabel",html:p.name.replace(/[<>&]/g,""),iconSize:null,iconAnchor:[-14,9]})})));
 map.on("zoomend",()=>{if(map.getZoom()>=14.5)labels.addTo(map);else map.removeLayer(labels);});
 let stage=2;
-function animateNum(el,to,f){
-  const from=parseFloat(el.dataset.v||"0");el.dataset.v=to;
-  if(reduce){el.textContent=f(to);return;}
-  const t0=performance.now(),d=500;
-  function tick(t){const k=Math.min(1,(t-t0)/d),e=1-Math.pow(1-k,3);el.textContent=f(from+(to-from)*e);if(k<1)requestAnimationFrame(tick);}
-  requestAnimationFrame(tick);
-}
 function setNumbers(v){
-  animateNum(document.getElementById("t-km"),v.km,x=>Math.round(x));
-  animateNum(document.getElementById("t-sch"),v.sch,x=>Math.round(x));
-  animateNum(document.getElementById("t-park"),v.park,x=>fmt(x));
+  document.getElementById("t-km").textContent=Math.round(v.km);
+  document.getElementById("t-sch").textContent=Math.round(v.sch);
+  document.getElementById("t-park").textContent=fmt(v.park);
   const tc=document.getElementById("t-cost");if(tc&&v.cost)tc.textContent=money(v.cost);
   document.getElementById("t-sch-l").textContent="of "+nSch+" schools with an all-ages ride";
   document.getElementById("scoreline").innerHTML="<b>"+Math.round(v.score)+"%</b> of "+st.today.trips+" short trips between these places are all-ages.";
@@ -581,16 +573,16 @@ function secPair(w){
 const lenText=km=>km<1?Math.round(km*1000)+" m":km.toFixed(1)+" km";
 
 const byFix={};D.works.forEach(w=>{const f=byFix[w.fix]||(byFix[w.fix]={km:0,park:0,n:0});f.km+=w.km;f.park+=w.park;f.n++;});
-const FIXTXT={quietway:"A 30 km/h limit and a few planters stop cars cutting through.",
+const FIXTXT={quietway:"A 30 km/h limit and planters stop cars cutting through.",
   cycleway_in_spare:"The road has room to spare, so a lane with a kerb fits.",
-  cycleway_parking_one_side:"Parking on one side makes way for the lane. The other side keeps its parking.",
+  cycleway_parking_one_side:"Parking on one side makes way for the lane.",
   cycleway_parking_both_sides:"Parking on both sides makes way for a protected lane each way.",
   road_diet:"A road with lanes to spare gives one to bikes.",
   verge_path:"A shared path runs beside the road, off the carriageway.",
   new_path:"A new path joins places that no street links."};
 const fixesEl=document.getElementById("fixes");
 const CROSS={zebra:["Raised zebra crossing","A raised zebra crossing across a two-lane street","Cars give way. Raised to slow them.","A raised crossing slows cars where a route crosses a two-lane street."],
-  signals:["Bike and walk signals","Bike and walk signals at a crossing of a bigger road","Signals stop cars so bikes and people cross.","A bigger road needs signals so bikes and people cross together."],
+  signals:["Bike and walk signals","Bike and walk signals at a crossing of a bigger road","Signals stop cars so bikes and people cross.","A bigger road needs signals for bikes and people."],
   path:["Short path and crossing","A short shared path that ends at a crossing","A short path, then a crossing.","A short shared path and a crossing finish the route."]};
 const crossSvg=k=>'<div class="xs"><figure><svg viewBox="0 0 320 88" role="img" aria-label="'+CROSS[k][1]+'"><rect x="0" y="0" width="320" height="88" fill="#e9e5dc"/><rect x="0" y="16" width="320" height="56" fill="#5b6270"/>'+Array.from({length:7},(_,i)=>'<rect x="'+(130+i*9)+'" y="16" width="5" height="56" fill="#fff"/>').join("")+(k==="path"?'<rect x="0" y="4" width="320" height="10" fill="#7fb98d"/>':'<rect x="120" y="16" width="80" height="56" fill="#2f9e44" opacity=".25"/>')+'<text x="160" y="84" text-anchor="middle" font-size="9" fill="currentColor">'+CROSS[k][2]+'</text></svg></figure></div>';
 if(fixesEl){
@@ -598,7 +590,10 @@ const cards=Object.entries(byFix).map(([fix,v])=>({km:v.km,html:'<h3>'+(FIX[fix]
 Object.keys(CROSS).forEach(k=>{const own=D.spots.filter(s=>s.kind===k);if(!own.length)return;
   const park=own.reduce((a,s)=>a+s.park,0);
   cards.push({km:own.reduce((a,s)=>a+s.m,0)/1000,html:'<h3>'+CROSS[k][0]+'</h3><div class="km"><a class="fig" href="'+fg("spots")+'">'+own.length+'</a> <small>spot'+(own.length===1?"":"s")+'</small></div>'+crossSvg(k)+'<p>'+CROSS[k][3]+' <b>'+(park?fmt(park)+" parking spaces"+(k==="signals"?" (assumed).":"."):"No parking lost.")+'</b></p>'});});
-cards.sort((x,y)=>y.km-x.km).forEach(c=>{const el=document.createElement("article");el.className="card fix";el.innerHTML=c.html;fixesEl.appendChild(el);});
+cards.sort((x,y)=>y.km-x.km);
+const card=c=>{const el=document.createElement("article");el.className="card fix";el.innerHTML=c.html;return el;};
+cards.slice(0,4).forEach(c=>fixesEl.appendChild(card(c)));
+if(cards.length>4){const more=document.createElement("details");more.className="more-fixes";more.innerHTML="<summary>"+(NUM[cards.length-4]||cards.length-4)+" more kind"+(cards.length===5?"":"s")+" of change</summary><div class=\"fixes\"></div>";cards.slice(4).forEach(c=>more.lastChild.appendChild(card(c)));fixesEl.appendChild(more);}
 const nf=cards.length;
 document.getElementById("streets-h").textContent=(NUM[nf]||nf)+" kind"+(nf===1?"":"s")+" of street change"+(nf===1?"":"s")+" do the work";
 }
@@ -629,7 +624,7 @@ function wardCardHtml(w,pre){
   const lines=inW.map(l=>'<polyline points="'+l.c.map(P).join(" ")+'" fill="none" stroke="'+(l.s===0?C.today:C.plan)+'" stroke-width="1.6"/>').join("");
   const lastSafe=w.safe?Object.values(w.safe).reduce((a,v)=>a+v[v.length-1],0):null;
   const total=w.schools+w.stations+w.centres;
-  const build=(subs,safe)=>'<svg viewBox="0 0 200 120" aria-hidden="true"><defs><clipPath id="'+pre+slug(w.name)+'">'+w.poly.map(pg=>pg.map(r=>'<polygon points="'+r.map(P).join(" ")+'"/>').join("")).join("")+'</clipPath></defs>'+shape+'<g clip-path="url(#'+pre+slug(w.name)+')">'+lines+'</g></svg><h3>'+w.name+'</h3>'+(subs?'<p style="margin:2px 0 0;font-size:.85rem;color:var(--ink-3)">'+(SUBS[w.name]||[]).slice(0,3).join(", ")+'</p>':'')+'<ul><li><b>'+wl(w,"plan_km",w.plan_km.toFixed(0)+' km')+'</b> of routes</li><li><b>'+wl(w,"schools",w.schools)+'</b> schools'+(w.stations?', <b>'+wl(w,"stations",w.stations)+'</b> station'+(w.stations>1?'s':''):'')+'</li><li><b>'+wl(w,"park",fmt(w.park))+'</b> parking spaces</li><li><b>'+wl(w,"spots",w.spots.length)+'</b> spots</li>'+((w.top||[]).length?'<li>Most works: '+w.top.join(", ")+'</li>':'')+(safe&&lastSafe!==null?'<li>Safe trip to '+lastSafe+' of '+total+' places in the full plan</li>':'')+'</ul>';
+  const build=(subs,safe)=>'<svg viewBox="0 0 200 120" aria-hidden="true"><defs><clipPath id="'+pre+slug(w.name)+'">'+w.poly.map(pg=>pg.map(r=>'<polygon points="'+r.map(P).join(" ")+'"/>').join("")).join("")+'</clipPath></defs>'+shape+'<g clip-path="url(#'+pre+slug(w.name)+')">'+lines+'</g></svg><h3>'+w.name+'</h3>'+(subs?'<p style="margin:2px 0 0;font-size:.85rem;color:var(--ink-3)">'+(SUBS[w.name]||[]).slice(0,3).join(", ")+'</p>':'')+'<ul><li><b>'+wl(w,"plan_km",w.plan_km.toFixed(0)+' km')+'</b> of routes</li><li><b>'+wl(w,"schools",w.schools)+'</b> schools'+(w.stations?', <b>'+wl(w,"stations",w.stations)+'</b> station'+(w.stations>1?'s':''):'')+'</li><li><b>'+wl(w,"park",fmt(w.park))+'</b> parking spaces</li><li><b>'+wl(w,"spots",w.spots.length)+'</b> spots</li>'+((w.top||[]).length?'<li>Most works: '+w.top.join(", ")+'</li>':'')+(safe&&lastSafe!==null?'<li>Safe trip to '+lastSafe+' of '+total+' places</li>':'')+'</ul>';
   const count=h=>(h.replace(/<[^>]*>/g," ").match(/[A-Za-z0-9]+/g)||[]).length;
   for(const [subs,safe] of [[true,true],[false,true],[false,false]]){const h=build(subs,safe);if(count(h)<=40)return h;}
   return build(false,false);
@@ -647,14 +642,14 @@ D.wards.forEach(w=>{
 if(document.getElementById("cp-text")){
 const cps=D.council_share;
 document.getElementById("cp-text").innerHTML='My routes follow <a class="fig" href="'+fg("council_share")+'">'+Math.round(cps*100)+'%</a> of council’s <a class="fig" href="'+fg("council_km")+'">'+Math.round(D.council_km)+' km</a> priority network.';
-document.getElementById("cp-text2").textContent="Mine take the shortest calm way between schools and stations. Council’s also follows the bay and the main roads.";
+document.getElementById("cp-text2").textContent="Mine take the shortest calm way. Council’s also follows the bay and main roads.";
 document.getElementById("cp-credit").innerHTML=src(D.council_source.url,D.council_source.title,D.council_source.date);
 document.getElementById("cp-meter").innerHTML='<i style="width:'+(cps*100)+'%;background:var(--plan)"></i><i style="flex:1;background:#c9c4ba"></i>';
 }
 if(document.getElementById("tf-text")){
 const cc=D.corridor_counts, ctot=cc.covered+cc.partly+cc.missed;
 document.getElementById("tf-text").innerHTML='Of the TfNSW corridor pieces inside Bayside, my routes cover <a class="fig" href="'+fg("tf:covered")+'">'+cc.covered+'</a> in full and <a class="fig" href="'+fg("tf:partly")+'">'+cc.partly+'</a> in part. They miss <a class="fig" href="'+fg("tf:missed")+'">'+cc.missed+'</a>.';
-document.getElementById("tf-text2").textContent="The map switch below draws the corridors, so you can see the missed pieces.";
+document.getElementById("tf-text2").textContent="The map switch draws the corridors.";
 document.getElementById("tf-credit").innerHTML=src(D.corridor_source.url,D.corridor_source.title,D.corridor_source.date);
 document.getElementById("tf-meter").innerHTML='<i style="width:'+(cc.covered/ctot*100)+'%;background:var(--plan)"></i><i style="width:'+(cc.partly/ctot*100)+'%;background:#8fb3f9"></i><i style="flex:1;background:#c9c4ba"></i>';
 

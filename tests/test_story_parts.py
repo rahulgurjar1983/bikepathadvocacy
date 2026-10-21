@@ -304,3 +304,114 @@ def test_fr20_12_a_run_without_spots_has_no_spot_card(tmp_path):
         assert texts(driver, "#fixes .fix h3") == [QUIET]
     finally:
         driver.quit()
+
+
+FIVE_KINDS = [
+    ("Ash Street", "quietway"),
+    ("Bay Street", "cycleway_in_spare"),
+    ("Cook Street", "cycleway_parking_one_side"),
+    ("Dee Street", "cycleway_parking_both_sides"),
+    ("Elm Street", "road_diet"),
+]
+
+
+def five_kinds():
+    found = pick()
+    index = len(found["works"])
+    for number, (name, fix) in enumerate(FIVE_KINDS):
+        found["works"].append(work(name, fix, 3.0 - number * 0.1, number))
+    found["steps"][1]["works"] = [0, *range(index, index + len(FIVE_KINDS))]
+    return found
+
+
+def test_fr20_7_street_cards_after_the_fourth_wait_in_a_closed_details(tmp_path):
+    driver = open_page(shown(tmp_path, data_for(options=[five_kinds()])))
+    try:
+        cards = driver.find_elements(By.CSS_SELECTOR, "#fixes .fix")
+        assert len(cards) >= 6
+        assert [card.is_displayed() for card in cards[:4]] == [True] * 4
+        assert not any(card.is_displayed() for card in cards[4:])
+        more = driver.find_element(By.CSS_SELECTOR, "#fixes details.more-fixes")
+        assert more.get_attribute("open") is None
+        assert "more kind" in more.find_element(By.TAG_NAME, "summary").text
+        assert len(more.find_elements(By.CSS_SELECTOR, ".fix")) == len(cards) - 4
+    finally:
+        driver.quit()
+
+
+def test_fr20_7_the_find_hint_and_the_ward_line_are_short_and_the_street_part_has_no_intro(
+    tmp_path,
+):
+    driver = open_page(shown(tmp_path, ward_data()))
+    try:
+        assert texts(driver, "#find .prose") == ["Type a school, station, town centre or street."]
+        assert texts(driver, "#streets .prose") == []
+        assert texts(driver, "#wards .prose") == ["Full plan, by ward."]
+        for card in driver.find_elements(By.CSS_SELECTOR, "#wardcards .ward"):
+            assert "in the full plan" not in card.text
+    finally:
+        driver.quit()
+
+
+def test_fr20_7_the_spot_note_is_one_sentence(tmp_path):
+    driver = open_page(shown(tmp_path, data_for()))
+    try:
+        note = driver.find_element(By.CSS_SELECTOR, "#spots .prose[style]")
+        assert note.text == "A spot is where a route crosses or runs along a busy road."
+    finally:
+        driver.quit()
+
+
+def test_fr20_20_in_print_the_extra_parts_and_spots_past_the_fifth_are_left_out(tmp_path):
+    routes, areas = report_with_areas()
+    data = data_for(
+        options=[many_spots(12)], council=council_block() | {"routes": routes}, areas=areas
+    )
+    driver = open_page(shown(tmp_path, data))
+    try:
+        driver.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "print"})
+        shown_parts = driver.execute_script(
+            "return ['find','streets','plans','cost','how','top','spots','wards','ask']"
+            ".map(id => document.getElementById(id))"
+            ".filter(e => e && e.offsetParent !== null).map(e => e.id)"
+        )
+        assert shown_parts == ["top", "spots", "wards", "ask"]
+        listed = driver.execute_script(
+            "return [...document.querySelectorAll('#spotlist li')]"
+            ".filter(e => e.offsetParent !== null).length"
+        )
+        assert listed == 5
+    finally:
+        driver.quit()
+
+
+def test_fr20_20_a_credit_line_holds_at_most_60_characters(tmp_path):
+    routes, _ = report_with_areas()
+    block = council_block() | {"routes": routes}
+    block["source"] = block["source"] | {
+        "title": "Bayside Council Priority Cycleway Network and Bike Plan",
+        "read_on": "2026-10-17",
+    }
+    driver = open_page(shown(tmp_path, data_for(council=block)))
+    try:
+        longest = driver.execute_script(
+            "let best = 0;"
+            "for (const e of document.querySelectorAll('.credit')) {"
+            "  const walk = document.createTreeWalker(e, NodeFilter.SHOW_TEXT);"
+            "  const rows = new Map();"
+            "  for (let n = walk.nextNode(); n; n = walk.nextNode()) {"
+            "    for (let i = 0; i < n.length; i++) {"
+            "      const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + 1);"
+            "      const box = r.getBoundingClientRect();"
+            "      if (!box.width) continue;"
+            "      const key = Math.round(box.top);"
+            "      rows.set(key, (rows.get(key) || 0) + 1);"
+            "    }"
+            "  }"
+            "  best = Math.max(best, ...rows.values(), 0);"
+            "}"
+            "return best;"
+        )
+        assert 0 < longest <= 60
+    finally:
+        driver.quit()
