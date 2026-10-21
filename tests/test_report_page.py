@@ -294,9 +294,49 @@ def test_fr20_25_the_ids_of_the_page_are_unique(full_page):
     assert len(ids) == len(set(ids))
 
 
+OVERRIDES = Path("specs/20-design/token-overrides.json")
+ROOT_BLOCK = re.compile(r":root[^{]*\{[^}]*\}")
+
+
+def squeeze(text):
+    return re.sub(r"\s+", "", text).replace(";}", "}")
+
+
+def with_override(block, tokens):
+    body = block[block.index("{") + 1 : block.rindex("}")]
+    for name, value in tokens.items():
+        body, hits = re.subn(rf"{re.escape(name)}:[^;}}]*", f"{name}:{value}", body)
+        if not hits:
+            body = body.rstrip().rstrip(";") + f";{name}:{value}"
+    return block[: block.index("{") + 1] + body.rstrip().rstrip(";") + ";}"
+
+
+def mock_blocks_after_overrides():
+    import json
+
+    found = json.loads(OVERRIDES.read_text())
+    blocks = ROOT_BLOCK.findall(MOCK.read_text())
+    out = []
+    for block in blocks:
+        if "color-scheme:dark" in squeeze(block) or 'data-theme="dark"' in block:
+            block = with_override(block, found["dark"])
+        elif "color-scheme" not in block:
+            block = with_override(block, found["light"])
+        out.append(squeeze(block))
+    return out
+
+
 def test_fr20_25_the_root_tokens_equal_the_mock(full_page):
-    pattern = re.compile(r":root[^{]*\{[^}]*\}")
-    assert pattern.findall(full_page.read_text()) == pattern.findall(MOCK.read_text())
+    page = [squeeze(block) for block in ROOT_BLOCK.findall(full_page.read_text())]
+    assert page == mock_blocks_after_overrides()
+    assert any("--spot:#c2410c" in block for block in page)
+    assert not any("--spot:#e8590c" in block for block in page)
+
+
+def test_fr20_25_finished_spots_use_the_override_rule(full_page):
+    text = squeeze(full_page.read_text())
+    assert squeeze(".smark.done{background:var(--spot-done)}") in text
+    assert squeeze(".smark.done{background:var(--plan)}") not in text
 
 
 def test_fr20_25_the_mock_banner_and_data_are_not_on_the_page(full_page):
@@ -524,3 +564,23 @@ def test_fr20_18_the_spot_street_change_and_corridor_numbers_link_to_their_own_f
         ]
     finally:
         driver.quit()
+
+
+def test_fr20_21_white_numbers_on_the_spot_colours_reach_4_5_to_1(full_page):
+    driver = open_page(full_page)
+    try:
+        colours = driver.execute_script(
+            "const s=getComputedStyle(document.documentElement);"
+            "return ['--spot', '--spot-done'].map(n => s.getPropertyValue(n).trim());"
+        )
+    finally:
+        driver.quit()
+
+    def luminance(hexcode):
+        parts = [int(hexcode[i : i + 2], 16) / 255 for i in (1, 3, 5)]
+        lin = [c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4 for c in parts]
+        return 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2]
+
+    assert colours == ["#c2410c", "#1d4ed8"]
+    for colour in colours:
+        assert 1.05 / (luminance(colour) + 0.05) >= 4.5
