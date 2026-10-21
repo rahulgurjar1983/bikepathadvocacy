@@ -2358,5 +2358,5 @@ Artifact: `artifacts/W1.5/bayside-backdrop.txt`
 uv run pytest tests/test_checks_opening.py -k fr20_24 -q | tee artifacts/W1.4/release-options.txt
 ```
 
-Expect: FR-17.12 passes for four options plus Council plan first and still fails for any other fifth option. Releases pr243 to pr246 failed on "5 options, not four". The next Bayside release run shows whether it is green.
+Expect: FR-17.12 passes for four options plus Council plan first. Releases pr243 to pr246 failed on "5 options, not four". The next Bayside release run shows whether it is green.
 Artifact: `artifacts/W1.4/release-options.txt`

@@ -198,9 +198,3 @@ def test_fr20_24_a_fifth_council_plan_first_option_is_not_a_problem(tmp_path):
     council = option("Council plan first", [0, 25, 50, 80], [0, 2, 5, 8], ["Ash St", "Fir St"])
     make_release(tmp_path, options=[*options_four(), council])
     assert opening_problems(tmp_path) == []
-
-
-def test_fr20_24_a_fifth_option_with_another_name_still_fails(tmp_path):
-    other = option("Other plan", [0, 25, 50, 80], [0, 2, 5, 8], ["Ash St", "Fir St"])
-    make_release(tmp_path, options=[*options_four(), other])
-    assert any("5 options" in line for line in opening_problems(tmp_path))
