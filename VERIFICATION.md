@@ -2314,3 +2314,13 @@ uv run pytest tests/test_stage_figures.py
 Expect: five figures, F159 62.2 %, then first stage 38.78 to 63.01 and full plan 46.93 to 76.27 million dollars. Each recipe, run in `out`, prints the same value. The run took 36 minutes.
 
 Artifact: `artifacts/W1.3/bayside-figures.json`
+
+### W1.4
+
+```sh
+uv run bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-19 --out out
+uv run pytest tests/test_council_plan.py
+```
+
+Expect: the page data holds the Bayside ward values found by region ID, a plan verdict for each council plan route, and a "Council plan first" option; each council number has its own figure entry in `out/figures.json`. The run took 38 minutes. Part 1 only: per-ward safe-trip places, links on ward-card numbers and council layers in the map page are left.
+Artifact: `artifacts/W1.4/bayside-council.json`
