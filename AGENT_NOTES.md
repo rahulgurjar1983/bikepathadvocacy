@@ -1508,3 +1508,10 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - Page stage km are `model_km` plus the ladder gain since step 0. The ladder alone started at 0 km, so Today showed 0 on a map with 3.0 km all-ages.
 - Big numbers and the print rule sit in `EVIDENCE_CSS`, because the `:root` tokens must equal the mock.
 - Pytest cannot import fixtures from `test_report_page` without a `noqa` comment; make local fixtures.
+
+### W1.7 part 1
+
+- Place cards show safe trips by stage and joined places from `partners` in `option_totals`. Each work carries a `section` from `fuse` and the fit strips, drawn to scale in the page.
+- Unknown width: `fuse` gives `width_source == "lanes"`; the section keeps `None` and the page says "typical width".
+- The test grid has no works, so real cross-sections need a Bayside build.
+- Left: a Bayside run that shows the cards, and the area card, which waits on the FR-20.14 ward cards of W1.8.

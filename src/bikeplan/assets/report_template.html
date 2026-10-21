@@ -130,6 +130,9 @@ p{margin:0 0 14px}
 .xs figure{margin:0}
 .xs figcaption{font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
 .xs svg{width:100%;height:auto;display:block;color:var(--ink-2)}
+.xl,.xn{margin:2px 0 0;font-size:.75rem;color:var(--ink-3)}
+.swork{border-top:1px solid var(--line);padding-top:10px;margin-top:10px}
+.swork:first-child{border-top:0;padding-top:0;margin-top:0}
 .fix p{font-size:.95rem;color:var(--ink-2);margin:0}
 
 .wards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-top:18px}
@@ -543,6 +546,32 @@ function xsec(kind,wide){
 const BEFORE={quietway:["base",false],cycleway_in_spare:["wide",true],cycleway_parking_one_side:["base",false],cycleway_parking_both_sides:["base",false],road_diet:["road4",false],verge_path:["road4",false]};
 function pair(fix){if(!LAYOUT[fix])return "";const b=BEFORE[fix]||["base",false];return '<div class="xs"><figure><figcaption>Before</figcaption>'+xsec(b[0],b[1])+'</figure><figure><figcaption>After</figcaption>'+xsec(fix,fix==="cycleway_in_spare")+'</figure></div>';}
 
+const KM={footpath:2.4,kerb:0.2,path:3.0};
+const XCOL={footpath:"#e9e5dc",kerb:"#16213a",parking:"#b8b3a8",through:"#5b6270",painted_lane:"#2f9e44",cycleway:"#2f9e44",separator:"#16213a",median:"#8a8f98",spare:"#d9d4c7",path:"#7fb98d"};
+const XNAME={footpath:"footpath",kerb:"kerb",parking:"parking",through:"traffic lane",painted_lane:"bike lane",cycleway:"bike lane",separator:"kerb",median:"median",spare:"spare space",path:"path"};
+function xstrips(b,fix,after){
+  let out=b.filter(x=>x[1]>0.05);
+  if(after&&fix==="verge_path")out=out.concat([["path",KM.path]]);
+  return [["footpath",KM.footpath],["kerb",KM.kerb]].concat(out,[["kerb",KM.kerb],["footpath",KM.footpath]]);
+}
+function xdraw(list,total,slow){
+  const sc=20,H=70,own=list.reduce((a,x)=>a+x[1],0);let x=(total-own)*sc/2,out="";
+  list.forEach(([k,m])=>{const w=m*sc;
+    out+='<rect data-kind="'+k+'" data-m="'+m+'" x="'+x.toFixed(2)+'" y="14" width="'+w.toFixed(2)+'" height="40" fill="'+XCOL[k]+'"/>';
+    x+=w;});
+  if(slow)out+='<circle cx="'+(total*sc/2).toFixed(1)+'" cy="34" r="13" fill="#fff" stroke="#e03131" stroke-width="3"/><text x="'+(total*sc/2).toFixed(1)+'" y="38.5" text-anchor="middle" font-size="12" font-weight="800" fill="#16213a">30</text>';
+  const names=[...new Set(list.map(e=>XNAME[e[0]]))];
+  return '<svg viewBox="0 0 '+(total*sc).toFixed(1)+' '+H+'" role="img" aria-label="'+names.join(", ")+'">'+out+'</svg><p class="xl">'+names.join(" · ")+(slow?" · 30 km/h":"")+'</p>';
+}
+function secPair(w){
+  const sec=w.sec;
+  if(!sec||!sec.b||!(sec.a||w.fix==="verge_path"||w.fix==="quietway"))return pair(w.fix)+(LAYOUT[w.fix]?'<p class="xn">typical width</p>':"");
+  const before=xstrips(sec.b,w.fix,false),after=xstrips(sec.a||sec.b,w.fix,true);
+  const total=Math.max(before.reduce((a,x)=>a+x[1],0),after.reduce((a,x)=>a+x[1],0));
+  return '<div class="xs"><figure><figcaption>Before</figcaption>'+xdraw(before,total,false)+'</figure><figure><figcaption>After</figcaption>'+xdraw(after,total,w.fix==="quietway")+'</figure></div><p class="xn">'+(sec.w==null?"typical width":"Road "+sec.w.toFixed(1)+" m kerb to kerb")+'</p>';
+}
+const lenText=km=>km<1?Math.round(km*1000)+" m":km.toFixed(1)+" km";
+
 const byFix={};D.works.forEach(w=>{const f=byFix[w.fix]||(byFix[w.fix]={km:0,park:0,n:0});f.km+=w.km;f.park+=w.park;f.n++;});
 const FIXTXT={quietway:"A 30 km/h limit and a few planters stop cars cutting through.",
   cycleway_in_spare:"The road has room to spare, so a lane with a kerb fits.",
@@ -657,19 +686,23 @@ function copyBtn(){return '<button type="button" class="copy" onclick="const b=t
 function focusMap(at,z){document.getElementById("top").scrollIntoView({behavior:reduce?"auto":"smooth"});map.flyTo(ll(at),z,{animate:!reduce});}
 function showPlace(p){
   const near=D.works.filter(w=>w.at&&dist(w.at,p.at)<500);const byS={};near.forEach(w=>{const k=streetName(w.street);(byS[k]=byS[k]||[]).push(w);});
-  const ns=D.spots.map(s=>[s,dist(s.at,p.at)]).sort((a,b)=>a[1]-b[1])[0];
+  const sp=D.spots.filter(s=>s.at&&dist(s.at,p.at)<500);
   const ward=D.wards.find(w=>w.poly.some(pg=>inside(p.at,pg[0])));
-  res.innerHTML='<div class="result-grid"><div><p class="eyebrow">'+({school:"School",station:"Station",town_centre:"Town centre"}[p.type])+(ward?" · "+ward.name:"")+'</p><h3>'+p.name+'</h3>'+
-   '<div class="facts"><div class="fact"><b>'+Object.keys(byS).length+'</b><span>streets with works within 500 m</span></div><div class="fact"><b>'+fmt(near.reduce((a,w)=>a+w.park,0))+'</b><span>parking spaces change nearby</span></div><div class="fact"><b>'+(ns?(ns[1]<1000?Math.round(ns[1]/10)*10+" m":(ns[1]/1000).toFixed(1)+" km"):"–")+'</b><span>to the nearest spot</span></div></div>'+
+  const names=(p.j||[]).map(i=>D.places[i].name).sort();
+  const trip=(id,n,t)=>'<div class="fact" id="'+id+'"><b>'+n+'</b><span>'+t+'</span></div>';
+  const trips=p.t?'<div class="facts">'+trip("pc-today",p.t[0],"safe trips today")+trip("pc-first",p.t[1],"at the first stage")+trip("pc-full",p.t[2],"in the full plan")+'</div>':"";
+  const joins=p.t?'<p class="eyebrow">Joined by an all-ages trip in the full plan</p>'+(names.length?'<ul class="worklist" id="pc-joins">'+names.slice(0,8).map(n=>'<li>'+esc(n)+'</li>').join("")+'</ul>'+(names.length>8?'<p><small>and '+(names.length-8)+' more</small></p>':""):'<p id="pc-joins"><small>None yet.</small></p>'):"";
+  res.innerHTML='<div class="result-grid"><div><p class="eyebrow">'+({school:"School",station:"Station",town_centre:"Town centre"}[p.type])+(ward?" · "+ward.name:"")+'</p><h3>'+esc(p.name)+'</h3>'+trips+joins+
+   '<p id="pc-works" style="margin-top:12px"><b>'+Object.keys(byS).length+'</b> streets with works within 500 m, <span id="pc-park">'+fmt(near.reduce((a,w)=>a+w.park,0))+'</span> parking spaces change</p>'+
+   '<p id="pc-spots"><b>'+sp.length+'</b> spots within 500 m'+(sp.length?': '+[...new Set(sp.map(s=>streetName(s.street)))].slice(0,4).join(", "):"")+'</p>'+
    '<ul class="worklist">'+Object.entries(byS).slice(0,6).map(([s,ws])=>'<li><span><b>'+s+'</b><br><small>'+[...new Set(ws.map(w=>SHORT[w.fix]))].join(", ")+'</small></span><small>'+(ws.some(w=>w.stage===1)?"First stage":"Full plan")+'</small></li>').join("")+'</ul>'+
-   '<p style="margin-top:12px">'+copyBtn()+'</p></div><div>'+(near[0]?'<p class="eyebrow">The main change nearby</p>'+pair(near.sort((a,b)=>b.km-a.km)[0].fix):'')+'</div></div>';
+   '<p style="margin-top:12px">'+copyBtn()+'</p></div><div>'+(near[0]?'<p class="eyebrow">The main change nearby</p>'+secPair(near.sort((a,b)=>b.km-a.km)[0]):'')+'</div></div>';
   res.classList.add("show");focusMap(p.at,16);
 }
 function showStreet(s){
   const ws=D.works.filter(w=>w.street===s);if(!ws.length)return;
-  const main=ws.slice().sort((a,b)=>b.km-a.km)[0];
-  res.innerHTML='<div class="result-grid"><div><p class="eyebrow">Street</p><h3>'+s+'</h3><div class="facts"><div class="fact"><b>'+ws.reduce((a,w)=>a+w.km,0).toFixed(1)+' km</b><span>of works</span></div><div class="fact"><b>'+fmt(ws.reduce((a,w)=>a+w.park,0))+'</b><span>parking spaces change</span></div><div class="fact"><b>'+(ws.some(w=>w.stage===1)?"First":"Later")+'</b><span>stage</span></div></div>'+
-   '<ul class="worklist">'+ws.map(w=>'<li><span>'+FIX[w.fix]+'</span><small>'+(w.km*1000).toFixed(0)+' m · '+w.park+' spaces</small></li>').slice(0,6).join("")+'</ul><p style="margin-top:12px">'+copyBtn()+'</p></div><div><p class="eyebrow">'+FIX[main.fix]+'</p>'+pair(main.fix)+'<p style="font-size:.85rem;color:var(--ink-3)">Drawn at a typical width. The real widths are in the evidence.</p></div></div>';
+  res.innerHTML='<div class="result-grid"><div><p class="eyebrow">Street</p><h3>'+esc(s)+'</h3><div class="facts"><div class="fact"><b>'+lenText(ws.reduce((a,w)=>a+w.km,0))+'</b><span>of works</span></div><div class="fact"><b>'+fmt(ws.reduce((a,w)=>a+w.park,0))+'</b><span>parking spaces change</span></div><div class="fact"><b>'+(ws.some(w=>w.stage===1)?"First":"Later")+'</b><span>stage</span></div></div><p style="margin-top:12px">'+copyBtn()+'</p></div><div>'+
+   ws.map(w=>'<article class="swork"><p><b>'+FIX[w.fix]+'</b></p><p><b>'+lenText(w.km)+'</b> · '+(w.stage===1?"First stage":"Full plan")+' · '+(w.park?w.park+" parking space"+(w.park===1?"":"s"):"No parking lost")+' · '+(w.lane?w.lane.toFixed(1)+" km of traffic lane":"No traffic lane lost")+'</p>'+secPair(w)+'</article>').join("")+'</div></div>';
   res.classList.add("show");
   const pts=ws.filter(w=>w.at).map(w=>ll(w.at));
   document.getElementById("top").scrollIntoView({behavior:reduce?"auto":"smooth"});
@@ -693,7 +726,8 @@ if(D.paths.length){
   note.hidden=false;
 }
 function inside(pt,ring){let c=false;for(let i=0,j=ring.length-1;i<ring.length;j=i++){const a=ring[i],b=ring[j];if(((a[1]>pt[1])!==(b[1]>pt[1]))&&(pt[0]<(b[0]-a[0])*(pt[1]-a[1])/(b[1]-a[1])+a[0]))c=!c;}return c;}
-const hm=location.hash.match(/^#find-(.+)$/);if(hm){const e=idx.find(x=>x.slug===hm[1]);if(e){q.value=e.label;e.go();}}
+function openHash(){const hm=location.hash.match(/^#find[-=](.+)$/);if(hm){const e=idx.find(x=>x.slug===hm[1]);if(e){q.value=e.label;e.go();}}}
+openHash();window.addEventListener("hashchange",openHash);
 
 const ev=document.getElementById("evidence");
 ev.addEventListener("toggle",()=>window.dispatchEvent(new Event("resize")));

@@ -3,12 +3,13 @@ from fractions import Fraction
 import networkx as nx
 
 from bikeplan.access import sort_key
-from bikeplan.fit import disruption_counts, disruption_score
+from bikeplan.fit import after_strips, disruption_counts, disruption_score
 from bikeplan.network import first
 from bikeplan.options import is_unpaved, link_id
 from bikeplan.rating import option_totals, option_trips
 from bikeplan.spots import SPOT_FIELDS, crossing_spot, short_path_spot
 from bikeplan.stress import FOOT_PATHS, OFF_ROAD_FACILITIES, junction_points, path_min_width
+from bikeplan.width import fuse
 
 COUNTS = ("parking_spaces", "lane_km", "speed_km", "path_km")
 FIX_WORDS = {
@@ -163,6 +164,28 @@ def link_spot(graph, key: tuple, link: dict, fits: dict, profile, calm: set, fla
     return None
 
 
+def strip_pairs(strips: list) -> list:
+    return [[strip["kind"], round(strip["width_m"], 2)] for strip in strips]
+
+
+def work_section(data: dict, fit: dict, fix: str, profile) -> dict | None:
+    if fit.get("before") is None:
+        return None
+    fused = fuse(data, profile)
+    after = fit.get("after") if fix == fit.get("fix") else None
+    if after is None:
+        found = next(
+            (item for item in fit.get("candidates", []) if item["fix"] == fix and item["accepted"]),
+            None,
+        )
+        after = after_strips({**data, **fused}, found, profile) if found else None
+    return {
+        "width": None if fused["width_source"] == "lanes" else fused["width_m"],
+        "before": strip_pairs(fit["before"]),
+        "after": strip_pairs(after) if after is not None else None,
+    }
+
+
 def link_fixes(graph, table: dict, fits: dict, profile, weights) -> dict:
     found: dict = {}
     calm = {node for key, link in table.items() if link["all_ages"] for node in key[:2]}
@@ -220,6 +243,9 @@ def link_fixes(graph, table: dict, fits: dict, profile, weights) -> dict:
                 name: counts[name] for name in COUNTS
             }
             record["least"] = min(disruption_score(option[1], weights) for option in options)
+            section = work_section(data, fit, fix, profile)
+            if section:
+                record["section"] = section
             if best is None or disruption_score(record, weights) > disruption_score(best, weights):
                 best = record
         if best is None:
@@ -341,6 +367,8 @@ def group_works(table: dict, fixes: dict, fixable: list, weights) -> list:
                 work["outside"] = True
             if fixes[links[0]].get("spot"):
                 work |= {name: fixes[links[0]][name] for name in SPOT_FIELDS}
+            if "section" in fixes[links[0]]:
+                work["section"] = fixes[links[0]]["section"]
             work["km"] = sum(table[link]["length_m"] for link in links) / 1000
             for name in COUNTS:
                 work[name] = sum(fixes[link][name] for link in links)
