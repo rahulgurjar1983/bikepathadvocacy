@@ -313,7 +313,8 @@ footer{padding:36px 0 60px;color:var(--ink-3);font-size:var(--step--1)}
     <div class="plans">
       <div class="card" id="card-council">
         <h3>Council’s Priority Cycleway Network</h3>
-        <p id="cp-text"></p>
+        <p class="line" id="cp-text"></p>
+        <p class="line" id="cp-text2"></p>
         <div class="meter" id="cp-meter"></div>
         <div class="keys"><span><i style="background:var(--plan)"></i>On my routes</span><span><i style="background:#c9c4ba"></i>Not on my routes</span></div>
         <p class="credit" id="cp-credit"></p>
@@ -321,7 +322,8 @@ footer{padding:36px 0 60px;color:var(--ink-3);font-size:var(--step--1)}
       </div>
       <div class="card" id="card-tfnsw">
         <h3>TfNSW strategic cycleway corridors</h3>
-        <p id="tf-text"></p>
+        <p class="line" id="tf-text"></p>
+        <p class="line" id="tf-text2"></p>
         <div class="meter" id="tf-meter"></div>
         <div class="keys"><span><i style="background:var(--plan)"></i>Covered</span><span><i style="background:#8fb3f9"></i>Partly</span><span><i style="background:#c9c4ba"></i>Missed</span></div>
         <p class="credit" id="tf-credit"></p>
@@ -642,13 +644,15 @@ D.wards.forEach(w=>{
 }
 if(document.getElementById("cp-text")){
 const cps=D.council_share;
-document.getElementById("cp-text").innerHTML='My routes follow <a class="fig" href="'+fg("council_share")+'">'+Math.round(cps*100)+'%</a> of council’s <a class="fig" href="'+fg("council_km")+'">'+Math.round(D.council_km)+' km</a> priority network. Mine take the shortest calm way between schools and stations. Council’s also follows the bay and the main roads.';
+document.getElementById("cp-text").innerHTML='My routes follow <a class="fig" href="'+fg("council_share")+'">'+Math.round(cps*100)+'%</a> of council’s <a class="fig" href="'+fg("council_km")+'">'+Math.round(D.council_km)+' km</a> priority network.';
+document.getElementById("cp-text2").textContent="Mine take the shortest calm way between schools and stations. Council’s also follows the bay and the main roads.";
 document.getElementById("cp-credit").innerHTML=src(D.council_source.url,D.council_source.title,D.council_source.date);
 document.getElementById("cp-meter").innerHTML='<i style="width:'+(cps*100)+'%;background:var(--plan)"></i><i style="flex:1;background:#c9c4ba"></i>';
 }
 if(document.getElementById("tf-text")){
 const cc=D.corridor_counts, ctot=cc.covered+cc.partly+cc.missed;
 document.getElementById("tf-text").innerHTML='Of the TfNSW corridor pieces inside Bayside, my routes cover <a class="fig" href="'+fg("tf:covered")+'">'+cc.covered+'</a> in full and <a class="fig" href="'+fg("tf:partly")+'">'+cc.partly+'</a> in part. They miss <a class="fig" href="'+fg("tf:missed")+'">'+cc.missed+'</a>.';
+document.getElementById("tf-text2").textContent="The map switch below draws the corridors, so you can see the missed pieces.";
 document.getElementById("tf-credit").innerHTML=src(D.corridor_source.url,D.corridor_source.title,D.corridor_source.date);
 document.getElementById("tf-meter").innerHTML='<i style="width:'+(cc.covered/ctot*100)+'%;background:var(--plan)"></i><i style="width:'+(cc.partly/ctot*100)+'%;background:#8fb3f9"></i><i style="flex:1;background:#c9c4ba"></i>';
 
@@ -657,7 +661,9 @@ if(document.getElementById("compare")){
 const f=stageVals[1],g=stageVals[2];
 const placesOf=v=>Object.values(v.places).reduce((a,n)=>a+n,0),placesAll=Object.values(joined).reduce((a,x)=>a+x.joined,0);
 document.getElementById("cost-note").textContent="Each cost is a "+D.cost_note+".";
-const rows=[["Rough cost",st.first.cost_text,st.works.cost_text],["Parking spaces that change",fmt(f.park),fmt(g.park)],["Traffic lanes removed",st.first.lane.toFixed(1)+" km",st.works.lane.toFixed(1)+" km"],["Streets set to 30 km/h",st.first.slow.toFixed(0)+" km",st.works.slow.toFixed(0)+" km"]];
+const pt=D.parking_total,pk=v=>pt?fmt(v)+" ("+Math.round(v/pt*100)+"%)":fmt(v);
+if(pt)document.getElementById("cost-note").textContent+=" Shares of parking are out of the "+fmt(pt)+" street parking spaces the tool counted.";
+const rows=[["Rough cost",st.first.cost_text,st.works.cost_text],["Parking spaces that change",pk(f.park),pk(g.park)],["Traffic lanes removed",st.first.lane.toFixed(1)+" km",st.works.lane.toFixed(1)+" km"],["Streets set to 30 km/h",st.first.slow.toFixed(0)+" km",st.works.slow.toFixed(0)+" km"]];
 const gains=[["Trips that are all-ages",Math.round(f.score)+"%",Math.round(g.score)+"%"],["Places with an all-ages ride",placesOf(st.first)+" of "+placesAll,placesOf(st.works)+" of "+placesAll]];
 document.getElementById("compare").innerHTML='<caption class="sr" style="caption-side:bottom;text-align:left;padding:10px 16px;color:var(--ink-3);font-size:.85rem">Spot parking is an estimate: 30 m of kerb at each crossing.</caption><thead><tr><th scope="col"><span class="vh">Measure</span></th><th scope="col">First stage</th><th scope="col">Full plan</th></tr></thead><tbody>'+
   gains.map(r=>'<tr class="gainrow"><th scope="row">'+r[0]+'</th><td class="v">'+r[1]+'</td><td class="v">'+r[2]+'</td></tr>').join("")+

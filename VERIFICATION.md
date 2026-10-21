@@ -2432,3 +2432,13 @@ uv run --frozen python artifacts/W1.8/check.py /tmp/w18rel/au-nsw-bayside-report
 
 Expect: 16 tests pass. On the real Bayside data the page shows the plain fix names, the spot sentence "Fix these 27 spots, 1,184 m in all, and all-ages trips rise from 30% to 92%.", 10 listed spots and "And 17 more spots", a credit under each plan card, ward cards of 35 to 39 words, and three asks of at most 25 words. The page code is this branch's template filled with the data of that release, plus the spot parking and the two plan sources taken from its `options.json`, because a full Bayside run takes over 50 minutes here.
 Artifact: `artifacts/W1.8/bayside.json`
+
+### W1.8 story parts, part 2
+
+```sh
+uv run pytest tests/test_plan_lines.py -q
+gh release download <release after this PR> -p au-nsw-bayside-report.html -D /tmp/w18p2 --clobber
+```
+
+Expect: 3 tests pass. The released Bayside page shows each parking figure with its share of all street parking, and two short lines under each plan card. The share needs a full run, so only the release build can show it.
+Artifact: `tests/test_plan_lines.py`

@@ -176,6 +176,7 @@ def report_data(
     council=None,
     areas=None,
     backdrop=None,
+    parking_total=None,
 ) -> dict:
     pick = next(item for item in options if item["id"] == choice["pick"])
     rec = choice["step"]
@@ -278,6 +279,8 @@ def report_data(
         for name, built in (("today", set()), ("first", early), ("works", everything)):
             data["stages"][name] |= stage_costs(pick["works"], built, rates)
         data["cost_note"] = rates["note"]
+        if parking_total:
+            data["parking_total"] = parking_total
         data["spot_cost"] = sum(
             (work_cost(item, rates) or 0) / 1_000_000 for item in pick["works"] if item.get("spot")
         )

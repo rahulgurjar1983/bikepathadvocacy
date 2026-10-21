@@ -13,6 +13,7 @@ from shapely.geometry import LineString
 from shapely.ops import linemerge, transform
 
 from bikeplan.config import ConfigError, Profile, Region
+from bikeplan.fit import parked_flags, parking_spaces
 from bikeplan.network import bike_segments
 from bikeplan.stress import score_edges
 from bikeplan.width import fuse
@@ -129,6 +130,15 @@ def model_segment_rows(graph, profile: Profile) -> list[list]:
             ]
         )
     return sorted(rows)
+
+
+def street_parking(graph, profile: Profile) -> int:
+    return sum(
+        parking_spaces(
+            segment["inside_m"], sum(parked_flags(segment["edges"][0][1], profile)), profile
+        )
+        for segment in bike_segments(graph).values()
+    )
 
 
 def segments_text(rows: list[list]) -> str:

@@ -54,6 +54,7 @@ from bikeplan.report import (
     model_segment_rows,
     segment_rows,
     segments_text,
+    street_parking,
 )
 from bikeplan.report_page import (
     five_minute_page,
@@ -355,6 +356,7 @@ def build_all(
         council,
         None if wards is None else wards["areas"],
         backdrop_layers(Path(snapshot), map_payload["boundary"], region.analysis_buffer_m),
+        street_parking(graph, profile),
     )
     page_text = five_minute_page(
         region,
