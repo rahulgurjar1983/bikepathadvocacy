@@ -663,3 +663,34 @@ def test_fr20_5_an_option_with_one_step_repeats_it_for_every_stage():
     option = OPTION | {"steps": SAFE_STEPS[:1]}
     rows = {item["name"]: item for item in ward_fit(graph, WARDS, option, SAFE_POINTS, SUBURBS)}
     assert rows["West"]["safe"]["schools"] == [1, 1, 1]
+
+
+def test_fr20_5_the_ward_card_numbers_link_to_their_own_figure_entries(tmp_path):
+    from bikeplan.edition import options_text
+    from bikeplan.report_page import page_figures
+    from tests.test_report_page import open_page
+
+    routes, areas = report_with_areas()
+    joined = SimpleNamespace(counts=JOINED, unjoined=[])
+    text = options_text([pick()], 0.9, joined, council=council_block(), wards=wards_block())
+    figures = page_figures([pick()], CHOICE, text, 100, council_block(), wards_block())
+    ids = {item["label"]: item["id"] for item in figures}
+    data = data_for(council=council_block() | {"routes": routes}, areas=areas)
+    path = tmp_path / "report.html"
+    path.write_text(page_for(data, figures=figures))
+    driver = open_page(path)
+    try:
+        from selenium.webdriver.common.by import By
+
+        card = driver.find_elements(By.CSS_SELECTOR, "#wardcards .ward")[0]
+        links = card.find_elements(By.CSS_SELECTOR, "a.fig")
+        got = [link.get_attribute("href").split("#")[1] for link in links]
+        assert got == [
+            ids["Ward 1: km of my pick"],
+            ids["Ward 1: schools joined"],
+            ids["Ward 1: stations joined"],
+            ids["Ward 1: parking spaces removed"],
+            ids["Ward 1: spots"],
+        ]
+    finally:
+        driver.quit()
