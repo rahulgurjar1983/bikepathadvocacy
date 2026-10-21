@@ -1550,3 +1550,11 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 
 - `bikeplan shots` is in `shots.py`; it fails if the page asks the network for anything. `page_measures.py` opens each `*-report.html` once at 1440 by 900 and measures words, size, network requests and axe-core violations at load. The result is cached by path and size.
 - Left: axe with a place card and a street card open; keyboard reach; the FR-20.8, 20.19, 20.20, 20.25 measures and the reading level (textstat is a dev package, so it needs `uv add` first); the release script runs `shots` (operator).
+
+### W1.9 part 3
+
+- `page_measures.py` now also measures the hero words and first screen, plain words, sideways scroll, text sizes, fonts, A4 pages, axe with a place card and a street card open, Tab reach, focus rings, section order and unfilled slots. Each is a line in `checks.html`.
+- Traps: the 360 px test needs `mobile=False`, since mobile emulation widens the viewport to fit wide content and hides the scroll. Hero words count by spaces, so "All-ages" is one word. New axe lines must not contain "axe-core", because the older test finds its line by that text.
+- On the test grid the title has 12 words, only because the made-up area name is long. Bayside gives 8. Check the Bayside release page.
+- Left: the line length of 70 characters, the reading level (textstat), the token check on the release page, the release script running `shots` (operator), and the real Bayside `checks.html`.
+
