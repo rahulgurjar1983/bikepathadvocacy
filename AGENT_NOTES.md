@@ -1514,4 +1514,5 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - Place cards show safe trips by stage and joined places from `partners` in `option_totals`. Each work carries a `section` from `fuse` and the fit strips, drawn to scale in the page.
 - Unknown width: `fuse` gives `width_source == "lanes"`; the section keeps `None` and the page says "typical width".
 - The test grid has no works, so real cross-sections need a Bayside build.
-- Left: a Bayside run that shows the cards, and the area card, which waits on the FR-20.14 ward cards of W1.8.
+- Part 2: release v2026.10.21-pr251 (real Bayside) holds 67 place cards and 514 works with sections. Local runs cannot build Bayside because the snapshot files sit in releases.
+- Left: the area card, which waits on the FR-20.14 ward cards of W1.8.
