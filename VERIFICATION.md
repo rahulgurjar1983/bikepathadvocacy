@@ -2379,3 +2379,13 @@ uv run --frozen bikeplan run regions/test-grid.yaml --snapshot tests/fixtures/te
 
 Expect: four tests pass. On the test grid, `model_km` is 3.0 and the three stage km of the page are 3.0, 3.0 and 3.0. Before, Today showed 0. At 390 px the big numbers are 40 px or more and the A4 print has 4 pages or fewer.
 Artifact: `artifacts/W1.6/km.json`
+
+### W1.7 part 1 place cards, street cards and find links
+
+```sh
+uv run pytest tests/test_find_place.py -q
+uv run --frozen bikeplan run regions/test-grid.yaml --snapshot tests/fixtures/test-grid/snapshot --out /tmp/w17
+```
+
+Expect: 16 tests pass. In the test-grid page data, `Grid School` carries `t` and `j` (safe trips and joined places per stage); that grid holds no works, so no section shows there. Bayside cards need a fresh Bayside run.
+Artifact: `artifacts/W1.7/find.json`
