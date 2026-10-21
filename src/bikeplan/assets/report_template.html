@@ -147,6 +147,7 @@ p{margin:0 0 14px}
 .meter{height:22px;border-radius:99px;background:var(--track);overflow:hidden;display:flex;margin:12px 0 8px}
 .meter i{display:block;height:100%}
 .keys{display:flex;flex-wrap:wrap;gap:12px;font-size:.85rem;color:var(--ink-2)}
+.credit{margin:10px 0 0;font-size:.85rem;color:var(--ink-3)}
 .keys span{display:inline-flex;gap:6px;align-items:center}
 .keys i{width:12px;height:12px;border-radius:3px;display:inline-block}
 
@@ -315,6 +316,7 @@ footer{padding:36px 0 60px;color:var(--ink-3);font-size:var(--step--1)}
         <p id="cp-text"></p>
         <div class="meter" id="cp-meter"></div>
         <div class="keys"><span><i style="background:var(--plan)"></i>On my routes</span><span><i style="background:#c9c4ba"></i>Not on my routes</span></div>
+        <p class="credit" id="cp-credit"></p>
         <p style="margin-top:12px"><button type="button" class="copy" data-layer="council">Show it on the map</button></p>
       </div>
       <div class="card" id="card-tfnsw">
@@ -322,6 +324,7 @@ footer{padding:36px 0 60px;color:var(--ink-3);font-size:var(--step--1)}
         <p id="tf-text"></p>
         <div class="meter" id="tf-meter"></div>
         <div class="keys"><span><i style="background:var(--plan)"></i>Covered</span><span><i style="background:#8fb3f9"></i>Partly</span><span><i style="background:#c9c4ba"></i>Missed</span></div>
+        <p class="credit" id="tf-credit"></p>
         <p style="margin-top:12px"><button type="button" class="copy" data-layer="tfnsw">Show them on the map</button></p>
       </div>
     </div>
@@ -332,7 +335,7 @@ footer{padding:36px 0 60px;color:var(--ink-3);font-size:var(--step--1)}
   <div class="wrap">
     <p class="eyebrow">What it costs and what changes</p>
     <h2>The gain sits next to the cost</h2>
-    <p class="prose">Costs are rough. They use 2025 Victorian rates for the same kinds of work.</p>
+    <p class="prose" id="cost-note"></p>
     <table class="compare" id="compare"></table>
   </div>
 </section>
@@ -376,11 +379,12 @@ const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim
 const C={today:css("--today"),plan:css("--plan"),spot:css("--spot"),notyet:css("--notyet"),council:css("--council"),tfnsw:css("--mapline"),bikepath:css("--bikepath"),
   water:css("--mapwater"),park:css("--mappark"),air:css("--mapair"),street:css("--mapstreet"),rail:css("--maprail"),outside:css("--mapout"),line:css("--mapline")};
 const fmt=n=>Math.round(n).toLocaleString("en-AU");
-const FIX={path:"Short path and crossing",quietway:"Quiet street",cycleway_in_spare:"Protected bike lane in spare road space",
+const src=(u,t,d)=>'Source: <a class="src" href="'+u+'">'+t+'</a>'+(d?', '+d:'')+'.';
+const FIX={path:"Short path and crossing",quietway:"Quiet street: 30 km/h and fewer cars cutting through",cycleway_in_spare:"Protected bike lane in spare road space",
   cycleway_parking_one_side:"Protected bike lane in place of parking on one side",
   cycleway_parking_both_sides:"Protected bike lanes in place of parking on both sides",
   road_diet:"Protected bike lane in place of a traffic lane",verge_path:"Shared path beside the road",new_path:"New path",
-  zebra:"Raised zebra crossing for bikes and people",signals:"Bike and walk signals"};
+  zebra:"Raised zebra crossing",signals:"Bike and walk signals"};
 const SHORT={quietway:"Quiet street",cycleway_in_spare:"Bike lane in spare space",cycleway_parking_one_side:"Bike lane, parking one side",
   cycleway_parking_both_sides:"Bike lanes, parking both sides",road_diet:"Bike lane, one less traffic lane",verge_path:"Shared path",new_path:"New path"};
 const SUBS=D.subs||{};
@@ -581,32 +585,33 @@ const FIXTXT={quietway:"A 30 km/h limit and a few planters stop cars cutting thr
   verge_path:"A shared path runs beside the road, off the carriageway.",
   new_path:"A new path joins places that no street links."};
 const fixesEl=document.getElementById("fixes");
+const CROSS={zebra:["Raised zebra crossing","A raised zebra crossing across a two-lane street","Cars give way. Raised to slow them.","A raised crossing slows cars where a route crosses a two-lane street."],
+  signals:["Bike and walk signals","Bike and walk signals at a crossing of a bigger road","Signals stop cars so bikes and people cross.","A bigger road needs signals so bikes and people cross together."],
+  path:["Short path and crossing","A short shared path that ends at a crossing","A short path, then a crossing.","A short shared path and a crossing finish the route."]};
+const crossSvg=k=>'<div class="xs"><figure><svg viewBox="0 0 320 88" role="img" aria-label="'+CROSS[k][1]+'"><rect x="0" y="0" width="320" height="88" fill="#e9e5dc"/><rect x="0" y="16" width="320" height="56" fill="#5b6270"/>'+Array.from({length:7},(_,i)=>'<rect x="'+(130+i*9)+'" y="16" width="5" height="56" fill="#fff"/>').join("")+(k==="path"?'<rect x="0" y="4" width="320" height="10" fill="#7fb98d"/>':'<rect x="120" y="16" width="80" height="56" fill="#2f9e44" opacity=".25"/>')+'<text x="160" y="84" text-anchor="middle" font-size="9" fill="currentColor">'+CROSS[k][2]+'</text></svg></figure></div>';
 if(fixesEl){
-Object.entries(byFix).sort((a,b)=>b[1].km-a[1].km).forEach(([fix,v])=>{
-  const el=document.createElement("article");el.className="card fix";
-  el.innerHTML='<h3>'+(FIX[fix]||fix)+'</h3><div class="km"><a class="fig" href="'+fg("fix:"+fix)+'">'+v.km.toFixed(1)+'</a> <small>km</small></div>'+pair(fix)+'<p>'+(FIXTXT[fix]||"")+' <b>'+(v.park?fmt(v.park)+" parking spaces.":"No parking lost.")+'</b></p>';
-  fixesEl.appendChild(el);});
-if(spotsN){const cross=document.createElement("article");cross.className="card fix";
-const nSig=D.spots.filter(s=>s.kind==="signals").length;const nPath=D.spots.filter(s=>s.kind==="path").length;
-cross.innerHTML='<h3>Crossings at the spots</h3><div class="km"><a class="fig" href="'+fg("spots")+'">'+spotsN+'</a> <small>spots</small></div><div class="xs"><figure><figcaption>Raised zebra crossing</figcaption><svg viewBox="0 0 320 88" role="img" aria-label="A raised zebra crossing across a two-lane street"><rect x="0" y="0" width="320" height="88" fill="#e9e5dc"/><rect x="0" y="16" width="320" height="56" fill="#5b6270"/>'+Array.from({length:7},(_,i)=>'<rect x="'+(130+i*9)+'" y="16" width="5" height="56" fill="#fff"/>').join("")+'<rect x="120" y="16" width="80" height="56" fill="#2f9e44" opacity=".25"/><text x="160" y="84" text-anchor="middle" font-size="9" fill="currentColor">Cars give way. Raised to slow them.</text></svg></figure></div><p>'+(spotsN-nSig-nPath)+' spots get a raised zebra crossing. '+nSig+' on bigger roads need bike and walk signals.'+(nPath?' '+nPath+' are a short path with a crossing.':'')+'</p>';
-fixesEl.appendChild(cross);}
-const nf=Object.keys(byFix).length;
+const cards=Object.entries(byFix).map(([fix,v])=>({km:v.km,html:'<h3>'+(FIX[fix]||fix)+'</h3><div class="km"><a class="fig" href="'+fg("fix:"+fix)+'">'+v.km.toFixed(1)+'</a> <small>km</small></div>'+pair(fix)+'<p>'+(FIXTXT[fix]||"")+' <b>'+(v.park?fmt(v.park)+" parking spaces.":"No parking lost.")+'</b></p>'}));
+Object.keys(CROSS).forEach(k=>{const own=D.spots.filter(s=>s.kind===k);if(!own.length)return;
+  const park=own.reduce((a,s)=>a+s.park,0);
+  cards.push({km:own.reduce((a,s)=>a+s.m,0)/1000,html:'<h3>'+CROSS[k][0]+'</h3><div class="km"><a class="fig" href="'+fg("spots")+'">'+own.length+'</a> <small>spot'+(own.length===1?"":"s")+'</small></div>'+crossSvg(k)+'<p>'+CROSS[k][3]+' <b>'+(park?fmt(park)+" parking spaces"+(k==="signals"?" (assumed).":"."):"No parking lost.")+'</b></p>'});});
+cards.sort((x,y)=>y.km-x.km).forEach(c=>{const el=document.createElement("article");el.className="card fix";el.innerHTML=c.html;fixesEl.appendChild(el);});
+const nf=cards.length;
 document.getElementById("streets-h").textContent=(NUM[nf]||nf)+" kind"+(nf===1?"":"s")+" of street change"+(nf===1?"":"s")+" do the work";
 }
 
 if(document.getElementById("spots")){
 const sWorks=D.before_spots, ceil=st.works.score;
 document.getElementById("spot-h").innerHTML='<a class="fig" href="'+fg("spots")+'">'+spotsN+'</a> short spots hold the network back';
-document.getElementById("spot-p").innerHTML='Street changes alone make <a class="fig" href="'+fg("nospots")+'">'+Math.round(sWorks)+'%</a> of trips all-ages. The '+spotsN+' spots add up to <a class="fig" href="'+fg("spotkm")+'">'+(spotsM/1000).toFixed(1)+' km</a>. Fix them too, and <a class="fig" href="'+fg("fullplan")+'">'+Math.round(ceil)+'%</a> of trips are all-ages.';
+document.getElementById("spot-p").innerHTML='Fix '+(spotsN===1?'this':'these')+' <a class="fig" href="'+fg("spots")+'">'+spotsN+'</a> spot'+(spotsN===1?'':'s')+', <a class="fig" href="'+fg("spotkm")+'">'+fmt(spotsM)+' m</a> in all, and all-ages trips rise from <a class="fig" href="'+fg("nospots")+'">'+Math.round(sWorks)+'%</a> to <a class="fig" href="'+fg("fullplan")+'">'+Math.round(ceil)+'%</a>.';
 document.getElementById("spot-bars").innerHTML=[["Today",st.today.score,C.notyet],["Street changes",sWorks,"#8fb3f9"],["With the spots",ceil,C.plan]]
   .map(([l,v,c])=>'<div class="bar"><span>'+l+'</span><span class="track"><span class="fill" style="display:block;width:'+Math.max(v,1)+'%;background:'+c+'"></span></span><b>'+Math.round(v)+'%</b></div>').join("");
 const sl=document.getElementById("spotlist");
-const listSpots=[];const seenSt={};D.spots.forEach(s=>{const k=streetName(s.street);if(seenSt[k]){seenSt[k].more++;return;}const c=Object.assign({more:0},s);seenSt[k]=c;listSpots.push(c);});
-listSpots.slice(0,8).forEach(s=>{const li=document.createElement("li");
-  li.innerHTML='<button type="button"><span class="num">'+s.n+'</span><span><b>'+streetName(s.street)+'</b><span class="what">'+KIND[s.kind]+(s.more?" · "+(s.more+1)+" spots":"")+(s.owner?" · TfNSW road":"")+'</span></span><span class="tr">'+s.trips+'<small>'+(s.trips===1?"trip":"trips")+'</small></span></button>';
+const listSpots=D.spots.slice(0,10);
+listSpots.forEach(s=>{const li=document.createElement("li");
+  li.innerHTML='<button type="button"><span class="num">'+s.n+'</span><span><b>'+streetName(s.street)+'</b><span class="what">'+KIND[s.kind]+(s.owner?" · TfNSW road":"")+'</span></span><span class="tr">'+s.trips+'<small>'+(s.trips===1?"trip":"trips")+'</small></span></button>';
   li.firstChild.addEventListener("click",()=>{document.getElementById("top").scrollIntoView({behavior:reduce?"auto":"smooth"});map.flyTo(ll(s.at),17,{animate:!reduce});spotMarkers[s.n-1].openTooltip();});
   sl.appendChild(li);});
-document.getElementById("spotmore").textContent=listSpots.length>8?"And "+(listSpots.length-8)+" more streets with spots that hold back fewer trips.":"";
+document.getElementById("spotmore").textContent=spotsN>10?"And "+(spotsN-10)+" more spot"+(spotsN-10===1?"":"s")+" that hold back fewer trips.":"";
 
 }
 function wardCardHtml(w,pre){
@@ -618,7 +623,12 @@ function wardCardHtml(w,pre){
   const shape=w.poly.map(pg=>pg.map(r=>'<polygon points="'+r.map(P).join(" ")+'" fill="#f4f2ee" stroke="#16213a" stroke-width="1.2"/>').join("")).join("");
   const inW=D.lines.filter(l=>l.c.some(c=>c[0]>=x0&&c[0]<=x1&&c[1]>=y0&&c[1]<=y1));
   const lines=inW.map(l=>'<polyline points="'+l.c.map(P).join(" ")+'" fill="none" stroke="'+(l.s===0?C.today:C.plan)+'" stroke-width="1.6"/>').join("");
-  return '<svg viewBox="0 0 200 120" aria-hidden="true"><defs><clipPath id="'+pre+slug(w.name)+'">'+w.poly.map(pg=>pg.map(r=>'<polygon points="'+r.map(P).join(" ")+'"/>').join("")).join("")+'</clipPath></defs>'+shape+'<g clip-path="url(#'+pre+slug(w.name)+')">'+lines+'</g></svg><h3>'+w.name+'</h3><p style="margin:2px 0 0;font-size:.85rem;color:var(--ink-3)">'+(SUBS[w.name]||[]).slice(0,3).join(", ")+'</p><ul><li><b>'+wl(w,"plan_km",w.plan_km.toFixed(0)+' km')+'</b> of routes</li><li><b>'+wl(w,"schools",w.schools)+'</b> schools'+(w.stations?', <b>'+wl(w,"stations",w.stations)+'</b> station'+(w.stations>1?'s':''):'')+'</li><li><b>'+wl(w,"park",fmt(w.park))+'</b> parking spaces</li><li><b>'+wl(w,"spots",w.spots.length)+'</b> spots</li></ul>';
+  const lastSafe=w.safe?Object.values(w.safe).reduce((a,v)=>a+v[v.length-1],0):null;
+  const total=w.schools+w.stations+w.centres;
+  const build=(subs,safe)=>'<svg viewBox="0 0 200 120" aria-hidden="true"><defs><clipPath id="'+pre+slug(w.name)+'">'+w.poly.map(pg=>pg.map(r=>'<polygon points="'+r.map(P).join(" ")+'"/>').join("")).join("")+'</clipPath></defs>'+shape+'<g clip-path="url(#'+pre+slug(w.name)+')">'+lines+'</g></svg><h3>'+w.name+'</h3>'+(subs?'<p style="margin:2px 0 0;font-size:.85rem;color:var(--ink-3)">'+(SUBS[w.name]||[]).slice(0,3).join(", ")+'</p>':'')+'<ul><li><b>'+wl(w,"plan_km",w.plan_km.toFixed(0)+' km')+'</b> of routes</li><li><b>'+wl(w,"schools",w.schools)+'</b> schools'+(w.stations?', <b>'+wl(w,"stations",w.stations)+'</b> station'+(w.stations>1?'s':''):'')+'</li><li><b>'+wl(w,"park",fmt(w.park))+'</b> parking spaces</li><li><b>'+wl(w,"spots",w.spots.length)+'</b> spots</li>'+((w.top||[]).length?'<li>Most works: '+w.top.join(", ")+'</li>':'')+(safe&&lastSafe!==null?'<li>Safe trip to '+lastSafe+' of '+total+' places in the full plan</li>':'')+'</ul>';
+  const count=h=>(h.replace(/<[^>]*>/g," ").match(/[A-Za-z0-9]+/g)||[]).length;
+  for(const [subs,safe] of [[true,true],[false,true],[false,false]]){const h=build(subs,safe);if(count(h)<=40)return h;}
+  return build(false,false);
 }
 if(document.getElementById("wards")){
 const wc=document.getElementById("wardcards");
@@ -633,18 +643,22 @@ D.wards.forEach(w=>{
 if(document.getElementById("cp-text")){
 const cps=D.council_share;
 document.getElementById("cp-text").innerHTML='My routes follow <a class="fig" href="'+fg("council_share")+'">'+Math.round(cps*100)+'%</a> of council’s <a class="fig" href="'+fg("council_km")+'">'+Math.round(D.council_km)+' km</a> priority network. Mine take the shortest calm way between schools and stations. Council’s also follows the bay and the main roads.';
+document.getElementById("cp-credit").innerHTML=src(D.council_source.url,D.council_source.title,D.council_source.date);
 document.getElementById("cp-meter").innerHTML='<i style="width:'+(cps*100)+'%;background:var(--plan)"></i><i style="flex:1;background:#c9c4ba"></i>';
 }
 if(document.getElementById("tf-text")){
 const cc=D.corridor_counts, ctot=cc.covered+cc.partly+cc.missed;
 document.getElementById("tf-text").innerHTML='Of the TfNSW corridor pieces inside Bayside, my routes cover <a class="fig" href="'+fg("tf:covered")+'">'+cc.covered+'</a> in full and <a class="fig" href="'+fg("tf:partly")+'">'+cc.partly+'</a> in part. They miss <a class="fig" href="'+fg("tf:missed")+'">'+cc.missed+'</a>.';
+document.getElementById("tf-credit").innerHTML=src(D.corridor_source.url,D.corridor_source.title,D.corridor_source.date);
 document.getElementById("tf-meter").innerHTML='<i style="width:'+(cc.covered/ctot*100)+'%;background:var(--plan)"></i><i style="width:'+(cc.partly/ctot*100)+'%;background:#8fb3f9"></i><i style="flex:1;background:#c9c4ba"></i>';
 
 }
 if(document.getElementById("compare")){
 const f=stageVals[1],g=stageVals[2];
-const rows=[["Rough cost",money(f.cost),money(g.cost)],["Parking spaces that change",fmt(f.park),fmt(g.park)],["Traffic lanes removed",st.first.lane.toFixed(1)+" km",st.works.lane.toFixed(1)+" km"],["Streets set to 30 km/h",st.first.slow.toFixed(0)+" km",st.works.slow.toFixed(0)+" km"]];
-const gains=[["Trips that are all-ages",Math.round(f.score)+"%",Math.round(g.score)+"%"],["Schools with an all-ages ride",f.sch+" of "+joined.school.joined,g.sch+" of "+joined.school.joined]];
+const placesOf=v=>Object.values(v.places).reduce((a,n)=>a+n,0),placesAll=Object.values(joined).reduce((a,x)=>a+x.joined,0);
+document.getElementById("cost-note").textContent="Each cost is a "+D.cost_note+".";
+const rows=[["Rough cost",st.first.cost_text,st.works.cost_text],["Parking spaces that change",fmt(f.park),fmt(g.park)],["Traffic lanes removed",st.first.lane.toFixed(1)+" km",st.works.lane.toFixed(1)+" km"],["Streets set to 30 km/h",st.first.slow.toFixed(0)+" km",st.works.slow.toFixed(0)+" km"]];
+const gains=[["Trips that are all-ages",Math.round(f.score)+"%",Math.round(g.score)+"%"],["Places with an all-ages ride",placesOf(st.first)+" of "+placesAll,placesOf(st.works)+" of "+placesAll]];
 document.getElementById("compare").innerHTML='<caption class="sr" style="caption-side:bottom;text-align:left;padding:10px 16px;color:var(--ink-3);font-size:.85rem">Spot parking is an estimate: 30 m of kerb at each crossing.</caption><thead><tr><th scope="col"><span class="vh">Measure</span></th><th scope="col">First stage</th><th scope="col">Full plan</th></tr></thead><tbody>'+
   gains.map(r=>'<tr class="gainrow"><th scope="row">'+r[0]+'</th><td class="v">'+r[1]+'</td><td class="v">'+r[2]+'</td></tr>').join("")+
   rows.map(r=>'<tr><th scope="row">'+r[0]+'</th><td class="v">'+r[1]+'</td><td class="v">'+r[2]+'</td></tr>').join("")+'</tbody>';
@@ -653,11 +667,17 @@ document.getElementById("compare").innerHTML='<caption class="sr" style="caption
 {
 const km={};D.works.filter(w=>w.stage===1&&named(w.street)).forEach(w=>km[w.street]=(km[w.street]||0)+w.km);
 const top=Object.entries(km).sort((a,b)=>b[1]-a[1]).map(e=>e[0]);
-const spotStreets=[...new Set(D.spots.map(s=>s.street).filter(named))];const stateSpots=D.spots.filter(s=>s.kind==="signals"&&named(s.street)).map(s=>s.street).filter((v,i,a)=>a.indexOf(v)===i).slice(0,3);
-const owners=[...new Set(D.spots.map(s=>s.owner).filter(Boolean))];
-const asks=['<li><div><b>Adopt this network as '+AREA+'’s bike plan.</b>It joins every school, station and town centre I could reach.</div></li>'];
-if(top.length)asks.push('<li><div><b>Fund the design of the first stage.</b>Start with '+top.slice(0,4).join(", ")+(top.length>4?' and '+(top.length-4)+' more streets':'')+'.</div></li>');
-if(spotsN)asks.push('<li><div><b>Build crossings at the '+spotsN+' spots.</b>'+(spotStreets.length?'Start with '+spotStreets.slice(0,3).join(", ")+'. ':'')+(owners.length?owners.join(", ")+' owns the road at '+D.spots.filter(s=>s.owner).length+' of them.':'')+'</div></li>');
+const nWords=t=>(t.match(/[A-Za-z0-9]+/g)||[]).length;
+const stateSpots=D.spots.filter(s=>s.owner);
+const asks=['<li><div><b>Adopt this network as '+AREA+'’s bike network plan.</b></div></li>'];
+if(top.length){let k=Math.min(10,top.length);
+  const build=n=>"Fund the design of the first stage, starting with "+top.slice(0,n).join(", ")+(top.length>n?" and "+(top.length-n)+" more street"+(top.length-n===1?"":"s"):"")+".";
+  while(k>1&&nWords(build(k))>25)k--;
+  asks.push('<li><div><b>'+build(k)+'</b></div></li>');}
+if(stateSpots.length){const near=[...new Set(stateSpots.map(s=>s.street).filter(named))];let k=Math.min(3,near.length);
+  const build=n=>"Ask Transport for NSW to fix the "+stateSpots.length+" spot"+(stateSpots.length===1?"":"s")+" on state roads"+(n?", such as "+near.slice(0,n).join(", "):"")+".";
+  while(k>0&&nWords(build(k))>25)k--;
+  asks.push('<li><div><b>'+build(k)+'</b></div></li>');}
 document.getElementById("asks").innerHTML=asks.join("");
 document.getElementById("ask-h").textContent=(NUM[asks.length]||asks.length)+" step"+(asks.length===1?"":"s")+" for council";
 }
