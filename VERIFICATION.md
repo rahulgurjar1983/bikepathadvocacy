@@ -2327,3 +2327,8 @@ Artifact: `artifacts/W1.4/bayside-council.json`
 
 Part 2: each ward holds its schools, stations and town centres with a safe trip today, at the first stage and in the full plan, with a figure for each (45 on Bayside). The run took 38 minutes.
 Artifact: `artifacts/W1.4/bayside-ward-safe.json`
+
+Part 3: ward-card numbers link to their figure entries. Run the same report, then read the ward keys in the page data.
+Expect: 35 `ward:` keys (five wards, seven values each), each naming an `F` entry on the page. The run took 36 minutes.
+Artifact: `artifacts/W1.4/bayside-ward-links.json`
+
