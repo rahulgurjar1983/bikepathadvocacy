@@ -550,3 +550,13 @@ def test_fr20_6_the_sources_of_the_shipped_files_are_plain_text_that_json_can_ho
     for source in (load_plan(REGION_ID).source, load_wards(REGION_ID).source):
         assert json.loads(json.dumps(source)) == source
         assert source["read_on"] == "2026-10-17"
+
+
+def test_fr20_5_a_spot_a_few_metres_outside_every_ward_goes_to_the_nearest_ward():
+    from bikeplan.council import ward_fit
+
+    graph, _ = row_graph()
+    areas = [("West", box(-50, -400, 150, -5)), ("East", box(150, -400, 350, -5))]
+    rows = {item["name"]: item for item in ward_fit(graph, areas, OPTION, POINTS, SUBURBS)}
+    assert rows["East"]["spots"] == [1]
+    assert rows["West"]["spots"] == []
