@@ -1499,3 +1499,5 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 ### W1.5 backdrop
 
 `osm_backdrop` is a snapshot adapter, not a core file, so old tests that list the three core files stay intact. One Overpass query holds coastline, water, parks, airport and rails in `backdrop.json`. `backdrop_layers` in `backdrop.py` cuts the sea: it splits the analysis box by the coastline and keeps the pieces to the right of the way direction. A snapshot with no `backdrop.json` gives empty layers. Q1.12 must add `osm_backdrop` to the region adapters and refresh the snapshot.
+
+- Release check FR-17.12 counted exactly four options; Council plan first (FR-20.24) made five and failed releases pr243 to pr246. The check now counts four plus that option. Watch the next release run.

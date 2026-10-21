@@ -2351,3 +2351,12 @@ uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/a
 
 Expect: tests pass. With `backdrop.json` fetched by `osm_backdrop`, `base` in the data block of `report.html` holds 199 water, 902 park, 2 air, 1124 rail and 1 outside shape. Botany Bay and the open sea are water; Malabar and Rockdale are not; Sydney airport is air.
 Artifact: `artifacts/W1.5/bayside-backdrop.txt`
+
+### W1.4 release options check
+
+```sh
+uv run pytest tests/test_checks_opening.py -k fr20_24 -q | tee artifacts/W1.4/release-options.txt
+```
+
+Expect: FR-17.12 passes for four options plus Council plan first. Releases pr243 to pr246 failed on "5 options, not four". The next Bayside release run shows whether it is green.
+Artifact: `artifacts/W1.4/release-options.txt`

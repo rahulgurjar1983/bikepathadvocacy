@@ -113,6 +113,9 @@ def recipe_problems(figures: list[dict], folder: Path) -> list[str]:
     return problems
 
 
+COUNCIL_FIRST = "Council plan first"
+
+
 def opening_of(text: str) -> str:
     found = re.search(r'<section id="options">.*?</section>', text, re.S)
     return found[0] if found else ""
@@ -144,7 +147,7 @@ def opening_problems(release: Path) -> list[str]:
         digest = hashlib.sha256(files["options.json"]).hexdigest()
         figures = [item for item in json.loads(files["figures.json"]) if item["spec"] == "spec 17"]
         names = [option["name"] for option in data["options"]]
-        if len(names) != 4:
+        if len([item for item in names if item != COUNCIL_FIRST]) != 4:
             problems.append(f"{name}: {len(names)} options, not four")
         for option in names:
             if f"<td>{html.escape(option)}" not in opening_of(text):
