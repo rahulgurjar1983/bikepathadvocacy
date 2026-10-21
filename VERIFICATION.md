@@ -2409,3 +2409,14 @@ python3 -c "import re;s=open('/tmp/rel/au-nsw-bayside-report.html').read();print
 
 Expect: `67 514`: 67 place cards with trips and 514 works with a cross-section on the real Bayside page. The area card waits on the ward cards of W1.8, so the row stays open.
 Artifact: `artifacts/W1.7/bayside.txt`
+
+### W1.7 part 3 area card
+
+```sh
+uv run pytest tests/test_find_place.py -q -k area
+gh release download v2026.10.21-pr253 -p au-nsw-bayside-report.html -D /tmp/w17rel --clobber
+uv run --frozen python artifacts/W1.7/area_check.py /tmp/w17rel/au-nsw-bayside-report.html /tmp/w17rel/new.html
+```
+
+Expect: 3 tests pass. On the real Bayside data, typing "Ward 1" and pressing Enter opens a card with `same_values` true (16 km of routes, 10 schools, 368 parking spaces, 3 spots), 4 figure links, a "Copy link" button and the hash `find-ward-1`. The page code is this branch's template filled with the data of that release, because a full Bayside run takes over 50 minutes here.
+Artifact: `artifacts/W1.7/area.json`
