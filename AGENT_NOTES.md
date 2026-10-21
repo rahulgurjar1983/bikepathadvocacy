@@ -1511,6 +1511,8 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 
 - Part 2: a full Bayside run took 38 minutes. Stage tiles count up for 500 ms, so wait 1.2 s after a click before you read them.
 
+- Closing W1.6 as done failed the spec coverage gate: FR-20.8 and FR-20.19 have no test named for them. Their limits pass on base, so a test now would be a fake. They need a `[proof]` row.
+
 ### W1.7 part 1
 
 - Place cards show safe trips by stage and joined places from `partners` in `option_totals`. Each work carries a `section` from `fuse` and the fit strips, drawn to scale in the page.
