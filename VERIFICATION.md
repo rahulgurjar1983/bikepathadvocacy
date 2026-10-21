@@ -2344,6 +2344,10 @@ Artifact: `artifacts/W1.4/council-kml.txt`
 
 ### W1.5
 
-Command: `uv run pytest tests/test_backdrop.py tests/test_snapshot.py -q`, then fetch `backdrop.json` with `osm_backdrop` for the Bayside box, run `uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-19 --out /tmp/w15-run` and count `base` in the data block of `report.html`.
-Expect: tests pass; `base` holds 199 water, 902 park, 2 air, 1124 rail and 1 outside shape; Botany Bay and the open sea are water, Malabar and Rockdale are not, Sydney airport is air.
+```sh
+uv run pytest tests/test_backdrop.py tests/test_snapshot.py -q
+uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-19 --out /tmp/w15-run
+```
+
+Expect: tests pass. With `backdrop.json` fetched by `osm_backdrop`, `base` in the data block of `report.html` holds 199 water, 902 park, 2 air, 1124 rail and 1 outside shape. Botany Bay and the open sea are water; Malabar and Rockdale are not; Sydney airport is air.
 Artifact: `artifacts/W1.5/bayside-backdrop.txt`
