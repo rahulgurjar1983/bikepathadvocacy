@@ -1561,6 +1561,6 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 
 ### W1.9 part 4
 
-- The line measure counts characters per rendered line with one range per character. On the first run it found 72 to 77 characters in `.prose` and the ask steps, because `64ch` is the width of a zero and text is narrower. They are now `56ch`.
+- The line measure counts characters per rendered line with one range per character. On the first run it found 72 to 77 characters in `.prose` and the ask steps, because `64ch` is the width of a zero and text is narrower. They are now `50ch`: CI has a narrower fallback font and showed 72 characters at `56ch` where this host showed 69.
 - The grade joins heading and list text into sentences, adding a full stop when one is missing.
 - Left: check the grade and line length on the real Bayside release page, and the release script running `shots` (operator).
