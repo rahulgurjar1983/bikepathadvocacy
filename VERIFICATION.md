@@ -2420,3 +2420,15 @@ uv run --frozen python artifacts/W1.7/area_check.py /tmp/w17rel/au-nsw-bayside-r
 
 Expect: 3 tests pass. On the real Bayside data, typing "Ward 1" and pressing Enter opens a card with `same_values` true (16 km of routes, 10 schools, 368 parking spaces, 3 spots), 4 figure links, a "Copy link" button and the hash `find-ward-1`. The page code is this branch's template filled with the data of that release, because a full Bayside run takes over 50 minutes here.
 Artifact: `artifacts/W1.7/area.json`
+
+### W1.8 story parts, part 1
+
+```sh
+uv run pytest tests/test_story_parts.py -q
+gh release download v2026.10.21-pr253 -p au-nsw-bayside-report.html -p au-nsw-bayside.tar.gz -D /tmp/w18rel --clobber
+tar xzf /tmp/w18rel/au-nsw-bayside.tar.gz -C /tmp/w18rel ./options.json
+uv run --frozen python artifacts/W1.8/check.py /tmp/w18rel/au-nsw-bayside-report.html /tmp/w18rel/options.json /tmp/w18rel/new.html
+```
+
+Expect: 16 tests pass. On the real Bayside data the page shows the plain fix names, the spot sentence "Fix these 27 spots, 1,184 m in all, and all-ages trips rise from 30% to 92%.", 10 listed spots and "And 17 more spots", a credit under each plan card, ward cards of 35 to 39 words, and three asks of at most 25 words. The page code is this branch's template filled with the data of that release, plus the spot parking and the two plan sources taken from its `options.json`, because a full Bayside run takes over 50 minutes here.
+Artifact: `artifacts/W1.8/bayside.json`
