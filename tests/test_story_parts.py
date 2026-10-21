@@ -176,9 +176,11 @@ def test_fr20_16_the_two_stages_sit_side_by_side_with_the_stage_values(tmp_path)
             ]
             for row in driver.find_elements(By.CSS_SELECTOR, "#compare tbody tr")
         }
-        assert [item.text for item in driver.find_elements(By.CSS_SELECTOR, "#compare thead th")][
-            1:
-        ] == ["First stage", "Full plan"]
+        heads = driver.find_elements(By.CSS_SELECTOR, "#compare thead th")
+        assert [item.get_attribute("textContent") for item in heads][1:] == [
+            "First stage",
+            "Full plan",
+        ]
         assert rows["Rough cost"] == ["$1 to 2 million", "$2 to 4 million"]
         assert rows["Parking spaces that change"] == ["4", "10"]
         assert rows["Places with an all-ages ride"] == ["1 of 3", "3 of 3"]
