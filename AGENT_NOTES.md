@@ -1558,3 +1558,9 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - On the test grid the title has 12 words, only because the made-up area name is long. Bayside gives 8. Check the Bayside release page.
 - Left: the line length of 70 characters, the reading level (textstat), the token check on the release page, the release script running `shots` (operator), and the real Bayside `checks.html`.
 
+
+### W1.9 part 4
+
+- The line measure counts characters per rendered line with one range per character. On the first run it found 72 to 77 characters in `.prose` and the ask steps, because `64ch` is the width of a zero and text is narrower. They are now `56ch`.
+- The grade joins heading and list text into sentences, adding a full stop when one is missing.
+- Left: check the grade and line length on the real Bayside release page, and the release script running `shots` (operator).

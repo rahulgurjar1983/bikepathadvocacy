@@ -2467,3 +2467,8 @@ Artifact: `tests/test_plan_lines.py`
 Command: `uv run pytest tests/test_page_measures_more.py tests/test_page_measures.py -q`
 Expect: 27 passed; `bikeplan checks --release <folder>` lists, for each `*-report.html`, the FR-20.8, 20.19, 20.20, 20.21 (place card, street card, Tab reach, focus ring) and 20.25 measures with the value and limit, and a planted fault fails its line.
 Artifact: `artifacts/W1.9/measures-test-grid.txt`
+
+### W1.9 part 4
+Command: `uv run pytest tests/test_page_measures_more.py -q -k "reading_level or hard_prose or very_wide"`
+Expect: 3 passed; `checks.html` lines "Flesch-Kincaid grade of the prose" (limit 8.0) and "characters the longest line is over 70" are met on the test grid page, and planted hard prose or a wide paragraph fails its line
+Artifact: `tests/test_page_measures_more.py`
