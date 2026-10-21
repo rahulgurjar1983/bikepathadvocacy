@@ -609,10 +609,8 @@ listSpots.slice(0,8).forEach(s=>{const li=document.createElement("li");
 document.getElementById("spotmore").textContent=listSpots.length>8?"And "+(listSpots.length-8)+" more streets with spots that hold back fewer trips.":"";
 
 }
-if(document.getElementById("wards")){
-const wc=document.getElementById("wardcards");
-const wl=(w,k,t)=>'<a class="fig" href="'+fg("ward:"+w.name+":"+k)+'">'+t+'</a>';
-D.wards.forEach(w=>{
+function wardCardHtml(w,pre){
+  const wl=(w,k,t)=>'<a class="fig" href="'+fg("ward:"+w.name+":"+k)+'">'+t+'</a>';
   const all=w.poly.flat(2);const xs=all.map(p=>p[0]),ys=all.map(p=>p[1]);
   const x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);
   const k=Math.cos(-33.95*Math.PI/180);const sx=(x1-x0)*k,sy=(y1-y0);const s=Math.min(190/sx,110/sy);
@@ -620,8 +618,13 @@ D.wards.forEach(w=>{
   const shape=w.poly.map(pg=>pg.map(r=>'<polygon points="'+r.map(P).join(" ")+'" fill="#f4f2ee" stroke="#16213a" stroke-width="1.2"/>').join("")).join("");
   const inW=D.lines.filter(l=>l.c.some(c=>c[0]>=x0&&c[0]<=x1&&c[1]>=y0&&c[1]<=y1));
   const lines=inW.map(l=>'<polyline points="'+l.c.map(P).join(" ")+'" fill="none" stroke="'+(l.s===0?C.today:C.plan)+'" stroke-width="1.6"/>').join("");
+  return '<svg viewBox="0 0 200 120" aria-hidden="true"><defs><clipPath id="'+pre+slug(w.name)+'">'+w.poly.map(pg=>pg.map(r=>'<polygon points="'+r.map(P).join(" ")+'"/>').join("")).join("")+'</clipPath></defs>'+shape+'<g clip-path="url(#'+pre+slug(w.name)+')">'+lines+'</g></svg><h3>'+w.name+'</h3><p style="margin:2px 0 0;font-size:.85rem;color:var(--ink-3)">'+(SUBS[w.name]||[]).slice(0,3).join(", ")+'</p><ul><li><b>'+wl(w,"plan_km",w.plan_km.toFixed(0)+' km')+'</b> of routes</li><li><b>'+wl(w,"schools",w.schools)+'</b> schools'+(w.stations?', <b>'+wl(w,"stations",w.stations)+'</b> station'+(w.stations>1?'s':''):'')+'</li><li><b>'+wl(w,"park",fmt(w.park))+'</b> parking spaces</li><li><b>'+wl(w,"spots",w.spots.length)+'</b> spots</li></ul>';
+}
+if(document.getElementById("wards")){
+const wc=document.getElementById("wardcards");
+D.wards.forEach(w=>{
   const b=document.createElement("div");b.tabIndex=0;b.className="card ward";
-  b.innerHTML='<svg viewBox="0 0 200 120" aria-hidden="true"><defs><clipPath id="c'+slug(w.name)+'">'+w.poly.map(pg=>pg.map(r=>'<polygon points="'+r.map(P).join(" ")+'"/>').join("")).join("")+'</clipPath></defs>'+shape+'<g clip-path="url(#c'+slug(w.name)+')">'+lines+'</g></svg><h3>'+w.name+'</h3><p style="margin:2px 0 0;font-size:.85rem;color:var(--ink-3)">'+(SUBS[w.name]||[]).slice(0,3).join(", ")+'</p><ul><li><b>'+wl(w,"plan_km",w.plan_km.toFixed(0)+' km')+'</b> of routes</li><li><b>'+wl(w,"schools",w.schools)+'</b> schools'+(w.stations?', <b>'+wl(w,"stations",w.stations)+'</b> station'+(w.stations>1?'s':''):'')+'</li><li><b>'+wl(w,"park",fmt(w.park))+'</b> parking spaces</li><li><b>'+wl(w,"spots",w.spots.length)+'</b> spots</li></ul>';
+  b.innerHTML=wardCardHtml(w,"c");
   b.addEventListener("keydown",e=>{if(e.target===b&&(e.key==="Enter"||e.key===" ")){e.preventDefault();b.click();}});
   b.addEventListener("click",e=>{if(e.target.closest("a"))return;if(lw.getAttribute("aria-pressed")!=="true")lw.click();document.getElementById("top").scrollIntoView({behavior:reduce?"auto":"smooth"});map.flyToBounds(L.latLngBounds(w.poly.flat(1).map(ll)),{padding:[20,20],animate:!reduce});});
   wc.appendChild(b);});
@@ -709,7 +712,7 @@ function showStreet(s){
   if(pts.length)map.flyToBounds(L.latLngBounds(pts).pad(0.4),{maxZoom:17,animate:!reduce});
 }
 function showWard(w){
-  res.innerHTML='<p class="eyebrow">Ward</p><h3>'+w.name+'</h3><div class="facts"><div class="fact"><b>'+w.plan_km.toFixed(0)+' km</b><span>of routes</span></div><div class="fact"><b>'+w.schools+'</b><span>schools</span></div><div class="fact"><b>'+fmt(w.park)+'</b><span>parking spaces change</span></div></div><p>Main works: '+w.top.join(", ")+'.</p>'+copyBtn();
+  res.innerHTML='<p class="eyebrow">Ward</p><div class="card ward" style="cursor:auto">'+wardCardHtml(w,"r")+'</div><p style="margin-top:12px">'+copyBtn()+'</p>';
   res.classList.add("show");if(lw.getAttribute("aria-pressed")!=="true")lw.click();
   document.getElementById("top").scrollIntoView({behavior:reduce?"auto":"smooth"});
   map.flyToBounds(L.latLngBounds(w.poly.flat(1).map(ll)),{padding:[20,20],animate:!reduce});
