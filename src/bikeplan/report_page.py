@@ -143,6 +143,25 @@ def ward_cards(areas: list, pick: dict, spot_numbers: dict, rates) -> list:
     return cards
 
 
+def place_rows(marks: list, steps: list, rec: int) -> list:
+    rows = [
+        {"name": mark["name"], "type": mark["type"], "at": round_point([mark["lon"], mark["lat"]])}
+        for mark in marks
+    ]
+    if not all("partners" in step["totals"] for step in steps):
+        return rows
+    chosen = [steps[0]["totals"], steps[rec]["totals"], steps[-1]["totals"]]
+    position = {mark.get("id"): number for number, mark in enumerate(marks)}
+    for row, mark in zip(rows, marks, strict=True):
+        row["t"] = [len(found["partners"].get(mark.get("id"), [])) for found in chosen]
+        row["j"] = [
+            position[other]
+            for other in chosen[-1]["partners"].get(mark.get("id"), [])
+            if other in position
+        ]
+    return rows
+
+
 def report_data(
     options,
     choice,
@@ -196,6 +215,14 @@ def report_data(
         for index, item in enumerate(pick["works"])
         if not item.get("spot")
     ]
+    for found in works:
+        section = pick["works"][found["i"]].get("section")
+        if section:
+            found["sec"] = {
+                "w": section["width"],
+                "b": section["before"],
+                "a": section.get("after"),
+            }
     if rates:
         for found in works:
             cost = work_cost(pick["works"][found["i"]], rates)
@@ -222,14 +249,7 @@ def report_data(
         "lines": lines,
         "works": works,
         "spots": spot_list(pick, places),
-        "places": [
-            {
-                "name": mark["name"],
-                "type": mark["type"],
-                "at": round_point([mark["lon"], mark["lat"]]),
-            }
-            for mark in marks
-        ],
+        "places": place_rows(marks, steps, rec),
         "stages": {
             "today": stage_values(steps[0], stage_km(steps[0], steps, streets)),
             "first": stage_values(steps[rec], stage_km(steps[rec], steps, streets)),
