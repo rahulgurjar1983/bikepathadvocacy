@@ -49,6 +49,10 @@ PARTNERS = [
 ]
 
 
+def strips(pairs):
+    return [{"kind": kind, "width_m": width} for kind, width in pairs]
+
+
 def street_pick():
     found = pick()
     for step, partners in zip(found["steps"], PARTNERS, strict=True):
@@ -259,8 +263,8 @@ def test_fr20_11_link_fixes_carry_the_width_and_the_before_and_after_strips():
         "s01": {
             "status": "fix",
             "fix": "cycleway_parking_one_side",
-            "before": ASH_BEFORE,
-            "after": ASH_AFTER,
+            "before": strips(ASH_BEFORE),
+            "after": strips(ASH_AFTER),
         },
         "s12": {"status": "no_fit"},
     }
@@ -282,8 +286,8 @@ def test_fr20_11_a_fix_other_than_the_fit_pick_draws_its_own_after_strips():
         "s01": {
             "status": "fix",
             "fix": "road_diet",
-            "before": ASH_BEFORE,
-            "after": ASH_BEFORE,
+            "before": strips(ASH_BEFORE),
+            "after": strips(ASH_BEFORE),
             "candidates": [
                 {
                     "fix": "cycleway_parking_one_side",
@@ -306,7 +310,7 @@ def test_fr20_11_a_fix_other_than_the_fit_pick_draws_its_own_after_strips():
 def test_fr20_11_an_unknown_width_is_kept_as_none_in_the_section():
     graph = fix_graph()
     fits = {
-        "s01": {"status": "fix", "fix": "cycleway_parking_one_side", "before": TYPICAL},
+        "s01": {"status": "fix", "fix": "cycleway_parking_one_side", "before": strips(TYPICAL)},
         "s12": {"status": "no_fit"},
     }
     ratings = model_ratings(graph, score_edges(graph, PROFILE), fits)
