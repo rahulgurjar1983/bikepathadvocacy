@@ -571,7 +571,7 @@ def test_fr20_21_white_numbers_on_the_spot_colours_reach_4_5_to_1(full_page):
     try:
         colours = driver.execute_script(
             "const s=getComputedStyle(document.documentElement);"
-            "return [s.getPropertyValue('--spot').trim(), s.getPropertyValue('--spot-done').trim()];"
+            "return ['--spot', '--spot-done'].map(n => s.getPropertyValue(n).trim());"
         )
     finally:
         driver.quit()
