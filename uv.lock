@@ -48,6 +48,7 @@ dependencies = [
     { name = "scipy" },
     { name = "selenium" },
     { name = "shapely" },
+    { name = "textstat" },
 ]
 
 [package.dev-dependencies]
@@ -77,6 +78,7 @@ requires-dist = [
     { name = "scipy", specifier = ">=1.18.1" },
     { name = "selenium", specifier = ">=4.51.0" },
     { name = "shapely", specifier = ">=2.1.2" },
+    { name = "textstat", specifier = "==0.7.13" },
 ]
 
 [package.metadata.requires-dev]
