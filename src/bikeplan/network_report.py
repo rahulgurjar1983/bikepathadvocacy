@@ -30,7 +30,7 @@ KINDS = (
 def packed_line(line: list) -> list[int]:
     points = [(round(lat * 100000), round(lon * 100000)) for lat, lon in line]
     flat = list(points[0])
-    for (lat, lon), (before_lat, before_lon) in zip(points[1:], points):
+    for (lat, lon), (before_lat, before_lon) in zip(points[1:], points, strict=False):
         flat += [lat - before_lat, lon - before_lon]
     return flat
 
