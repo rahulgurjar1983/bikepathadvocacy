@@ -2462,3 +2462,8 @@ grep -o 'parking_total":[0-9]*' /tmp/w18p2/au-nsw-bayside-report.html
 
 Expect: `parking_total":85367`, and the page holds the plan card `line` paragraphs and the share code. All FR-20.12 to FR-20.17 parts are shipped.
 Artifact: `tests/test_plan_lines.py`
+
+### W1.9 part 3
+Command: `uv run pytest tests/test_page_measures_more.py tests/test_page_measures.py -q`
+Expect: 27 passed; `bikeplan checks --release <folder>` lists, for each `*-report.html`, the FR-20.8, 20.19, 20.20, 20.21 (place card, street card, Tab reach, focus ring) and 20.25 measures with the value and limit, and a planted fault fails its line.
+Artifact: `artifacts/W1.9/measures-test-grid.txt`

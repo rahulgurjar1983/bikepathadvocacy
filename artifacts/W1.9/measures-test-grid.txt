@@ -1,0 +1,21 @@
+grid-report.html: words at load: 213 of at most 1,000, met
+grid-report.html: words in the title: 12 of at most 10, fails
+grid-report.html: words in the opening sentence: 11 of at most 25, met
+grid-report.html: hero big numbers missing: 0 of at most 0, met
+grid-report.html: hero parts below the first screen at 1440 by 900: 0 of at most 0, met
+grid-report.html: hero parts below the first screen at 390 by 844: 0 of at most 0, met
+grid-report.html: map below the first screen at 1440 by 900: 0 of at most 0, met
+grid-report.html: plain words broken: 0 of at most 0, met
+grid-report.html: pixels of sideways scroll at 360 px: 0 of at most 0, met
+grid-report.html: pixels body text is short of 17: 0 of at most 0, met
+grid-report.html: pixels a big number is short of 40 at 390 px: 0 of at most 0, met
+grid-report.html: font downloads: 0 of at most 0, met
+grid-report.html: pages printed on A4: 3 of at most 4, met
+grid-report.html: serious or critical axe-core violations at load: 0 of at most 0, met
+grid-report.html: serious or critical axe violations with a place card open: 0 of at most 0, met
+grid-report.html: named controls the Tab key misses: 0 of at most 0, met
+grid-report.html: focus stops without a visible ring: 0 of at most 0, met
+grid-report.html: page size in bytes: 342,984 of at most 4,194,304, met
+grid-report.html: network requests at load: 0 of at most 0, met
+grid-report.html: sections out of the mock's order: 0 of at most 0, met
+grid-report.html: unfilled slots: 0 of at most 0, met
