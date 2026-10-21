@@ -1484,6 +1484,9 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 
 ## W1.3 notes
 
+- Stage cost figures read `price` (low, high in dollars) on each work in `options.json`; `price_works` sets it in `run.py`. Recipes may only read files in the output folder, so costs cannot read the rates file.
+- The spots-alone share needs `no_spots_safe` from the ladder; both figure sets are skipped when their key is absent, so old toy tests stand.
+
 - `report_data` takes `rates` from `bikeplan.cost.load_rates()`. Without it the stages hold no cost keys, so old tests stand.
 - A short path spot costs its km at the short path rate plus one crossing. Signals apply when the spot is `assumed`, else a raised zebra.
 - A stage cost rounds the low end down and the high end up to whole millions.

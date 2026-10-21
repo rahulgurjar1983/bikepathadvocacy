@@ -2302,3 +2302,15 @@ uv run pytest tests/test_stage_cost.py
 Expect: the stage costs are Today "$0", First stage "$38 to 64 million" and Full plan "$46 to 77 million", with the note "rough cost from 2025 Victorian rates". No fix lacks a rate, so no stage says "at least". The run took 35 minutes.
 
 Artifact: `artifacts/W1.3/bayside-stages.json`
+
+Figures for the share of trips made safe by spots alone and the stage costs:
+
+```sh
+uv run bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-19 --out out
+python3 -I -c "import json;print([(x['id'],x['label'],x['value']) for x in json.load(open('out/figures.json')) if x['label'].startswith(('Share of trips made safe by spots','Cost of the'))])"
+uv run pytest tests/test_stage_figures.py
+```
+
+Expect: five figures, F159 62.2 %, then first stage 38.78 to 63.01 and full plan 46.93 to 76.27 million dollars. Each recipe, run in `out`, prints the same value. The run took 36 minutes.
+
+Artifact: `artifacts/W1.3/bayside-figures.json`

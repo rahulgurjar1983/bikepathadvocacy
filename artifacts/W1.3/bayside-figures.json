@@ -1,0 +1,27 @@
+{
+ "Cost of the first stage of my pick, high end": [
+  "F161",
+  63.01,
+  "$ million"
+ ],
+ "Cost of the first stage of my pick, low end": [
+  "F160",
+  38.78,
+  "$ million"
+ ],
+ "Cost of the full plan of my pick, high end": [
+  "F163",
+  76.27,
+  "$ million"
+ ],
+ "Cost of the full plan of my pick, low end": [
+  "F162",
+  46.93,
+  "$ million"
+ ],
+ "Share of trips made safe by spots alone": [
+  "F159",
+  62.2,
+  "%"
+ ]
+}
