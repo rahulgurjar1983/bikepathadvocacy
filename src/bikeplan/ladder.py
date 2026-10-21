@@ -9,6 +9,7 @@ from bikeplan.options import is_unpaved, link_id
 from bikeplan.rating import option_totals, option_trips
 from bikeplan.spots import SPOT_FIELDS, crossing_spot, short_path_spot
 from bikeplan.stress import FOOT_PATHS, OFF_ROAD_FACILITIES, junction_points, path_min_width
+from bikeplan.width import fuse
 
 COUNTS = ("parking_spaces", "lane_km", "speed_km", "path_km")
 FIX_WORDS = {
@@ -170,15 +171,16 @@ def strip_pairs(strips: list) -> list:
 def work_section(data: dict, fit: dict, fix: str, profile) -> dict | None:
     if fit.get("before") is None:
         return None
+    fused = fuse(data, profile)
     after = fit.get("after") if fix == fit.get("fix") else None
     if after is None:
         found = next(
             (item for item in fit.get("candidates", []) if item["fix"] == fix and item["accepted"]),
             None,
         )
-        after = after_strips(data, found, profile) if found else None
+        after = after_strips({**data, **fused}, found, profile) if found else None
     return {
-        "width": data.get("width_m"),
+        "width": None if fused["width_source"] == "lanes" else fused["width_m"],
         "before": strip_pairs(fit["before"]),
         "after": strip_pairs(after) if after is not None else None,
     }
