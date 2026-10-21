@@ -654,3 +654,12 @@ def test_fr20_5_the_ward_cards_carry_the_safe_counts_when_the_areas_hold_them():
         "stations": [0, 0, 1],
         "centres": [0, 1, 1],
     }
+
+
+def test_fr20_5_an_option_with_one_step_repeats_it_for_every_stage():
+    from bikeplan.council import ward_fit
+
+    graph, _ = row_graph()
+    option = OPTION | {"steps": SAFE_STEPS[:1]}
+    rows = {item["name"]: item for item in ward_fit(graph, WARDS, option, SAFE_POINTS, SUBURBS)}
+    assert rows["West"]["safe"]["schools"] == [1, 1, 1]
