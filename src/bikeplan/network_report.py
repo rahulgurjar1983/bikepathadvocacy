@@ -27,6 +27,25 @@ KINDS = (
 )
 
 
+def packed_line(line: list) -> list[int]:
+    points = [(round(lat * 100000), round(lon * 100000)) for lat, lon in line]
+    flat = list(points[0])
+    for (lat, lon), (before_lat, before_lon) in zip(points[1:], points):
+        flat += [lat - before_lat, lon - before_lon]
+    return flat
+
+
+def packed_streets(streets: dict) -> dict:
+    if "model_pieces" not in streets:
+        return streets
+    packed = [
+        {key: value for key, value in item.items() if key != "lines"}
+        | {"d": [packed_line(line) for line in item["lines"]]}
+        for item in streets["model_pieces"]
+    ]
+    return streets | {"model_pieces": packed}
+
+
 def plain(key: tuple, text: str) -> str:
     return text
 
@@ -505,7 +524,7 @@ def map_data(
     corridors: list | None = None,
 ) -> str:
     saved = {
-        "streets": streets or {"pieces": [], "km": {}},
+        "streets": packed_streets(streets or {"pieces": [], "km": {}}),
         "pick": choice["pick"],
         "places": places,
         "options": [
