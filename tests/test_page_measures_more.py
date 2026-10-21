@@ -97,12 +97,12 @@ def test_fr20_23_a_very_long_page_fails_the_print_measure(good_page, tmp_path):
 def test_fr20_23_axe_core_is_run_with_a_place_card_and_a_street_card_open(good_page, tmp_path):
     release = measured(tmp_path / "ok", good_page)
     for card in ("place card", "street card"):
-        met(release, "FR-20.21", f"serious or critical axe-core violations with a {card} open")
+        met(release, "FR-20.21", f"serious or critical axe violations with a {card} open")
     faint = "<style>#result.show *{color:#ccc!important}</style></head>"
     other = measured(tmp_path / "faint", good_page.replace("</head>", faint, 1))
     met(other, "FR-20.21", "axe-core violations at load")
-    fails(other, "FR-20.21", "serious or critical axe-core violations with a place card open")
-    fails(other, "FR-20.21", "serious or critical axe-core violations with a street card open")
+    fails(other, "FR-20.21", "serious or critical axe violations with a place card open")
+    fails(other, "FR-20.21", "serious or critical axe violations with a street card open")
 
 
 def test_fr20_23_every_named_control_is_reached_by_the_tab_key(good_page, tmp_path):
