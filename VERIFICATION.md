@@ -2442,3 +2442,8 @@ gh release download <release after this PR> -p au-nsw-bayside-report.html -D /tm
 
 Expect: 3 tests pass. The released Bayside page shows each parking figure with its share of all street parking, and two short lines under each plan card. The share needs a full run, so only the release build can show it.
 Artifact: `tests/test_plan_lines.py`
+
+### W1.9 part 1
+Command: `uv run pytest tests/test_report_page.py -q -k "root_tokens or override_rule or white_numbers"`
+Expect: 3 passed; the page has `--spot:#c2410c`, `--spot-done:#1d4ed8` in light and dark, and white on each reaches 4.5 to 1.
+Artifact: `tests/test_report_page.py`

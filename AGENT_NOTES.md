@@ -1540,3 +1540,8 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - The street parking total comes only from a full run. The release build reads it, so check the share on the release page after CI, not with a local build.
 - Plan cards carry two short lines under the credit. The cost table shows each parking figure with its share of the total.
 - Left: check the share and the plan lines on the real Bayside release page.
+
+### W1.9 part 1
+
+- The token test now applies `specs/20-design/token-overrides.json` to the mock's `:root` blocks before it compares. The page template ends each block with `--spot-done`.
+- Left: axe-core at load, with a place card and with a street card; keyboard reach; the 4 MB limit; `bikeplan shots`; the FR-20.23 measures in `checks.html`. Reuse `bikeplan.axe`. Test the axe states only where a case fails on base.
