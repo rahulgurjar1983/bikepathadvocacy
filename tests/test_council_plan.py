@@ -232,7 +232,6 @@ def test_fr20_6_a_small_plan_and_ward_file_load_by_id(tmp_path):
 
 def test_fr20_6_routes_are_cut_to_the_boundary_in_metres():
     from bikeplan.council import Plan, PlanRoute, plan_routes
-
     from tests.route_helpers import ORIGIN, TO_LONLAT
 
     start = TO_LONLAT.transform(ORIGIN[0], ORIGIN[1])
