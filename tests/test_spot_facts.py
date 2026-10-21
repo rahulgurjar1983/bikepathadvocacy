@@ -60,7 +60,7 @@ def test_fr20_13_the_page_reads_the_score_before_the_spots_each_spots_fix_and_on
     driver = open_page(path)
     try:
         text = driver.find_element(By.ID, "spots").text
-        assert "Street changes alone make 40%" in text
+        assert "all-ages trips rise from 40% to" in text
         assert "Short path and crossing" in text
         assert "Raised zebra crossing" not in text
         assert "1\ntrip" in text

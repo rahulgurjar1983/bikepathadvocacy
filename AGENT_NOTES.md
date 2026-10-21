@@ -1525,3 +1525,11 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 
 - The ward card is one function, `wardCardHtml(w, pre)`, in the page script. The page cards and the search result both use it, so their values cannot drift. `pre` keeps the clip path ids apart.
 - A full Bayside run took over 50 minutes on this busy host and hit a 3,000 second limit. To check a template change on real data, fill the new template with the data from the latest Bayside release page: `artifacts/W1.7/area_check.py`.
+
+### W1.8 part 1
+
+- The cost section shows only when the full plan holds works or spots. The test grid holds none, so its page keeps no cost section.
+- The spot length in the sentence is in metres and links to the length figure, which is in km. A second figure would break the exact figure list of `test_fr20_18_page_figures_hold_the_spot_street_change_and_score_numbers`.
+- Ward cards drop the suburbs, then the safe-places line, to stay within 40 words. Count words after turning tags into spaces; `textContent` joins list items.
+- Template changes beyond the mock: `.credit` rule, `cost-note`, `cp-credit` and `tf-credit` elements, a card per spot kind. Reason: FR-20.12, FR-20.15 and FR-20.16.
+- Left: the share of street parking in FR-20.16 needs a parking total from the run; FR-20.15 asks for two short lines per plan card.

@@ -504,12 +504,16 @@ def test_fr20_18_the_spot_street_change_and_corridor_numbers_link_to_their_own_f
         assert target(heading) == ids["Spots of my pick"]
         links = driver.find_elements(By.CSS_SELECTOR, "#spot-p a.fig")
         assert [link.get_attribute("href").split("#")[1] for link in links] == [
-            ids["Safety score of my pick without its spots"],
+            ids["Spots of my pick"],
             ids["Length of the spots of my pick"],
+            ids["Safety score of my pick without its spots"],
             ids["Safety score of my pick with every work built"],
         ]
         assert (
-            target("//article[contains(@class,'fix')][.//h3[.='Quiet street']]//a")
+            target(
+                "//article[contains(@class,'fix')]"
+                "[.//h3[.='Quiet street: 30 km/h and fewer cars cutting through']]//a"
+            )
             == (ids["Km of quietway works of my pick"])
         )
         links = driver.find_elements(By.CSS_SELECTOR, "#tf-text a.fig")

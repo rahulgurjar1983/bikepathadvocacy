@@ -1,0 +1,37 @@
+{
+  "fix_cards": [
+    "Quiet street: 30 km/h and fewer cars cutting through",
+    "Protected bike lane in spare road space",
+    "Protected bike lane in place of parking on one side",
+    "Protected bike lanes in place of parking on both sides",
+    "Protected bike lane in place of a traffic lane",
+    "Short path and crossing",
+    "Bike and walk signals",
+    "New path"
+  ],
+  "spot_sentence": "Fix these 27 spots, 1,184 m in all, and all-ages trips rise from 30% to 92%.",
+  "spots_listed": 10,
+  "spots_more": "And 17 more spots that hold back fewer trips.",
+  "credits": [
+    "Source: Bayside's Priority Cycleway Network, 2026-10-17.",
+    "Source: Strategic cycleway corridors, Greater Sydney network map, February 2023."
+  ],
+  "ward_card_words": [
+    35,
+    38,
+    39,
+    37,
+    38
+  ],
+  "asks": [
+    "Adopt this network as Bayside\u2019s bike network plan.",
+    "Fund the design of the first stage, starting with Chuter Avenue, Banks Avenue, Coward Street, Shaw Street, Railway Street, Station Street and 168 more streets.",
+    "Ask Transport for NSW to fix the 9 spots on state roads, such as Croydon Road, Rocky Point Road."
+  ],
+  "ask_words": [
+    9,
+    25,
+    19
+  ],
+  "severe_log": []
+}

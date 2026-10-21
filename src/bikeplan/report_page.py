@@ -98,6 +98,7 @@ def spot_list(pick: dict, places: dict) -> list:
                 "street": item["street"],
                 "kind": SPOT_KINDS[item["fix"]],
                 "trips": item["trips"],
+                "park": item["parking_spaces"],
                 "owner": item.get("owner"),
             }
         )
@@ -288,6 +289,11 @@ def report_data(
         ]
         data["council_share"] = council["share"]
         data["council_km"] = council["km"]
+        data["council_source"] = {
+            "title": council["source"]["title"],
+            "url": council["source"]["url"],
+            "date": council["source"].get("read_on", ""),
+        }
     if areas:
         numbers = {item["w"]: item["n"] for item in data["spots"]}
         data["wards"] = ward_cards(areas, pick, numbers, rates)
@@ -297,7 +303,9 @@ def report_data(
             {"id": route["id"], "lines": route["lines"]} for route in corridor["routes"]
         ]
         data["corridor_counts"] = corridor["counts"]
-        data["corridor_source"] = {name: corridor["source"][name] for name in ("title", "date")}
+        data["corridor_source"] = {
+            name: corridor["source"][name] for name in ("title", "date", "url")
+        }
     return data
 
 
@@ -660,8 +668,10 @@ def five_minute_page(region, data: dict, head: str, inner: str, figures=()) -> s
     if not data.get("wards"):
         text = drop_section(text, "wards")
         text = drop_button(text, "wards")
-    text = drop_section(text, "cost")
-    if "cost" not in data["stages"]["works"]:
+    full = data["stages"]["works"]
+    if not full.get("n_works", 0) + full.get("n_spots", 0):
+        text = drop_section(text, "cost")
+    if "cost" not in full:
         text = re.sub(r'<div class="tile cost">.*?</div>', "", text, flags=re.S)
     if not data.get("council"):
         text = drop_button(text, "council")
