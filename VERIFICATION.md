@@ -2399,3 +2399,13 @@ uv run --frozen bikeplan run regions/test-grid.yaml --snapshot tests/fixtures/te
 
 Expect: 16 tests pass. In the test-grid page data, `Grid School` carries `t` and `j` (safe trips and joined places per stage); that grid holds no works, so no section shows there. Bayside cards need a fresh Bayside run.
 Artifact: `artifacts/W1.7/find.json`
+
+### W1.7 part 2 Bayside page check
+
+```sh
+gh release download v2026.10.21-pr251 -p au-nsw-bayside-report.html -D /tmp/rel
+python3 -c "import re;s=open('/tmp/rel/au-nsw-bayside-report.html').read();print(len(re.findall(r'\"t\":\s*\[',s)),len(re.findall(r'\"sec\":\{',s)))"
+```
+
+Expect: `67 514`: 67 place cards with trips and 514 works with a cross-section on the real Bayside page. The area card waits on the ward cards of W1.8, so the row stays open.
+Artifact: `artifacts/W1.7/bayside.txt`

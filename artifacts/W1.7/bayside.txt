@@ -1,0 +1,5 @@
+release v2026.10.21-pr251 au-nsw-bayside-report.html sha256 c784b0d3528004c5...
+place cards with trips ("t"): 67
+street works with a cross-section ("sec"): 514
+"typical width" labels: 2 (script and style text)
+combobox: 1, Copy link: 1, #find-: 1
