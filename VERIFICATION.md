@@ -2390,7 +2390,7 @@ uv run --frozen python artifacts/W1.6/measure.py /tmp/w16-bayside
 Expect: 959 words at load (limit 1,000), Flesch-Kincaid 6.4 (limit 8.0), no banned word, no sideways scroll at 360 px, and the hero, map and tiles end inside the first 844 px at 390 px. The three stage tiles show 106, 157 and 161 km, and Today equals `model_km` 106.069.
 Artifact: `artifacts/W1.6/bayside.json`
 
-### W1.7 part 1 place cards, street cards and find links
+### W1.7
 
 ```sh
 uv run pytest tests/test_find_place.py -q
