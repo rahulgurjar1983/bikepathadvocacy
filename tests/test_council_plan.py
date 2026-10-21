@@ -560,3 +560,97 @@ def test_fr20_5_a_spot_a_few_metres_outside_every_ward_goes_to_the_nearest_ward(
     rows = {item["name"]: item for item in ward_fit(graph, areas, OPTION, POINTS, SUBURBS)}
     assert rows["East"]["spots"] == [1]
     assert rows["West"]["spots"] == []
+
+
+SAFE_STEPS = [
+    {"works": [], "totals": {"served": ["a"]}},
+    {"works": [0], "totals": {"served": ["a", "c"]}},
+    {"works": [1], "totals": {"served": ["a", "b", "c", "d"]}},
+]
+SAFE_POINTS = [
+    ("school", Point(50, 0), "a"),
+    ("school", Point(60, 0), "b"),
+    ("station", Point(250, 0), "c"),
+    ("town_centre", Point(260, 5), "d"),
+]
+
+
+def test_fr20_5_option_totals_name_the_places_with_a_safe_trip():
+    from bikeplan.options import link_table
+    from bikeplan.rating import option_totals
+    from tests.test_option_rating import CALM, DETOUR, joined_path
+
+    graph, ratings, joined = joined_path()
+    totals = option_totals(link_table(graph, ratings), CALM + DETOUR, joined.joined)
+    assert totals["served"] == sorted(totals["served"])
+    assert len(totals["served"]) == 2
+    assert {item["id"] for item in joined.joined} >= set(totals["served"])
+
+
+def test_fr20_5_a_ward_counts_its_places_with_a_safe_trip_today_at_the_first_stage_and_in_full():
+    from bikeplan.council import ward_fit
+
+    graph, _ = row_graph()
+    option = OPTION | {"steps": SAFE_STEPS}
+    rows = {item["name"]: item for item in ward_fit(graph, WARDS, option, SAFE_POINTS, SUBURBS)}
+    assert rows["West"]["schools"] == 2
+    assert rows["West"]["safe"] == {
+        "schools": [1, 1, 2],
+        "stations": [0, 0, 0],
+        "centres": [0, 0, 0],
+    }
+    assert rows["East"]["safe"] == {
+        "schools": [0, 0, 0],
+        "stations": [0, 1, 1],
+        "centres": [0, 0, 1],
+    }
+
+
+def test_fr20_5_compact_wards_keeps_the_safe_counts():
+    from bikeplan.council import compact_wards
+
+    area = {key: 0 for key in ("plan_km", "works_km", "park", "schools", "stations", "centres")}
+    area |= {"name": "W", "top": [], "spots": [1], "safe": {"stations": [0, 1, 1]}}
+    assert compact_wards({"source": {}, "areas": [area]})["areas"][0]["safe"] == {
+        "stations": [0, 1, 1]
+    }
+
+
+def safe_wards():
+    block = wards_block()
+    block["areas"][0]["safe"] = {"schools": [1, 2, 4], "stations": [0, 1, 1], "centres": [1, 1, 2]}
+    block["areas"][1]["safe"] = {"schools": [0, 1, 2], "stations": [0, 0, 0], "centres": [0, 1, 1]}
+    return block
+
+
+def test_fr20_5_each_safe_place_count_has_its_own_figure_whose_recipe_rebuilds_it(tmp_path):
+    from bikeplan.edition import options_text
+    from bikeplan.report_page import page_figures
+
+    joined = SimpleNamespace(counts=JOINED, unjoined=[])
+    text = options_text([pick()], 0.9, joined, council=council_block(), wards=safe_wards())
+    figures = page_figures([pick()], CHOICE, text, 100, council_block(), safe_wards())
+    found = {item["label"]: item for item in figures}
+    want = {
+        "Ward 1: schools with a safe trip today": 1.0,
+        "Ward 1: schools with a safe trip at the first stage": 2.0,
+        "Ward 1: schools with a safe trip in the full plan": 4.0,
+        "Ward 1: town centres with a safe trip in the full plan": 2.0,
+        "Ward 2: stations with a safe trip in the full plan": 0.0,
+        "Ward 2: schools with a safe trip at the first stage": 1.0,
+    }
+    for label, value in want.items():
+        assert found[label]["value"] == value
+        assert run_recipe(found[label], text, tmp_path) == pytest.approx(value)
+
+
+def test_fr20_5_the_ward_cards_carry_the_safe_counts_when_the_areas_hold_them():
+    routes, areas = report_with_areas()
+    for area in areas:
+        area["safe"] = {"schools": [1, 2, 3], "stations": [0, 0, 1], "centres": [0, 1, 1]}
+    data = data_for(council=council_block() | {"routes": routes}, areas=areas)
+    assert data["wards"][0]["safe"] == {
+        "schools": [1, 2, 3],
+        "stations": [0, 0, 1],
+        "centres": [0, 1, 1],
+    }
