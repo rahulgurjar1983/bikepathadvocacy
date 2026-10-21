@@ -266,7 +266,11 @@ def ward_fit(graph, areas: list, option: dict, places: list, suburbs: list) -> l
     steps = option["steps"]
     stages = []
     if all("served" in step.get("totals", {}) for step in steps):
-        stages = [set(steps[index]["totals"]["served"]) for index in STAGE_STEPS if steps]
+        stages = [
+            set(steps[min(index, len(steps) - 1)]["totals"]["served"])
+            for index in STAGE_STEPS
+            if steps
+        ]
     rows = []
     for name, area in areas:
         parts = {}
