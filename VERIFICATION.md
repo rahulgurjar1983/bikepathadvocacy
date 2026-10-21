@@ -2324,3 +2324,6 @@ uv run pytest tests/test_council_plan.py
 
 Expect: the page data holds the Bayside ward values found by region ID, a plan verdict for each council plan route, and a "Council plan first" option; each council number has its own figure entry in `out/figures.json`. The run took 38 minutes. Part 1 only: per-ward safe-trip places, links on ward-card numbers and council layers in the map page are left.
 Artifact: `artifacts/W1.4/bayside-council.json`
+
+Part 2: each ward holds its schools, stations and town centres with a safe trip today, at the first stage and in the full plan, with a figure for each (45 on Bayside). The run took 38 minutes.
+Artifact: `artifacts/W1.4/bayside-ward-safe.json`
