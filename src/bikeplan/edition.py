@@ -11,6 +11,14 @@ from shapely.geometry import LineString
 
 from bikeplan.access import in_scope_places, places
 from bikeplan.corridors import OutsideBox, corridor_report, load_corridors
+from bikeplan.council import (
+    council_report,
+    load_plan,
+    load_wards,
+    plan_links,
+    plan_routes,
+    ward_report,
+)
 from bikeplan.fit import segment_fit
 from bikeplan.ladder import (
     build_ladder,
@@ -139,7 +147,14 @@ def option_data(item: dict) -> dict:
     }
 
 
-def options_text(options: list[dict], share: float, joined, corridor: dict | None = None) -> str:
+def options_text(
+    options: list[dict],
+    share: float,
+    joined,
+    corridor: dict | None = None,
+    council: dict | None = None,
+    wards: dict | None = None,
+) -> str:
     data = {
         "share": share,
         "options": [option_data(item) for item in options],
@@ -151,6 +166,8 @@ def options_text(options: list[dict], share: float, joined, corridor: dict | Non
             if corridor
             else {}
         ),
+        **({"council": council} if council else {}),
+        **({"wards": wards} if wards else {}),
     }
     return json.dumps(data, sort_keys=True, separators=(",", ":")) + "\n"
 
@@ -190,7 +207,12 @@ def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list
     joined = join_places(graph, found, [], profile.network)
     corridors = read_corridors(snapshot, graph.graph["crs"])
     candidates = None if corridors is None else corridor_candidates(graph, corridors)
-    options = build_options(graph, joined, ratings, profile.network, candidates)
+    plan = load_plan(region.id)
+    near = None
+    if plan is not None:
+        routes = plan_routes(plan, graph.graph["crs"], graph.graph["boundary"])
+        near = plan_links(graph, routes, profile.network)
+    options = build_options(graph, joined, ratings, profile.network, candidates, near)
     table = link_table(graph, ratings, profile.network, joined.outside or (), candidates or ())
     area = region.name.split(",")[0].removesuffix(" Council")
     label = f"outside {area}"
@@ -623,10 +645,40 @@ def corridor_data(graph, region, profile, snapshot, options) -> dict | None:
     return corridor_report(graph, corridors, graph.graph["ratings"], pick, choice, profile.network)
 
 
+def pick_of(options, profile) -> tuple[dict, dict]:
+    choice = choose(options, profile.network.recommend_share)
+    return next(item for item in options if item["id"] == choice["pick"]), choice
+
+
+def council_data(graph, region, profile, options) -> dict | None:
+    plan = load_plan(region.id)
+    if plan is None:
+        return None
+    pick, choice = pick_of(options, profile)
+    return council_report(graph, plan, graph.graph["ratings"], pick, choice, profile.network)
+
+
+def ward_data(graph, region, profile, options, marks, snapshot) -> dict | None:
+    wards = load_wards(region.id)
+    if wards is None:
+        return None
+    pick, _ = pick_of(options, profile)
+    return ward_report(graph, wards, pick, marks, snapshot)
+
+
 def edition(
-    region, options, marks, joined, share, old, streets=None, corridor=None
+    region,
+    options,
+    marks,
+    joined,
+    share,
+    old,
+    streets=None,
+    corridor=None,
+    council=None,
+    wards=None,
 ) -> tuple[str, str, list, str]:
-    text = options_text(options, share, joined, corridor)
+    text = options_text(options, share, joined, corridor, council, wards)
     first = max(int(item["id"][1:]) for item in old) + 1
     figures = Figures(options, share, joined, text, first, corridor)
     head, body = network_report(options, share, marks, figures.ref, streets, corridor)

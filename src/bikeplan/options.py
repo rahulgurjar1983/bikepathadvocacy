@@ -18,6 +18,7 @@ NAMES = {
     "separated": "Main roads with separation",
     "mesh": "Mesh",
     "corridors": "Corridors first",
+    "council": "Council plan first",
 }
 PATH_HIGHWAYS = {"cycleway", "path", "footway"}
 UNPAVED = {
@@ -257,11 +258,14 @@ def link_weight(option: str, link: dict, network: Network) -> float:
     length = link["length_m"]
     if option == "corridors" and (link.get("path") or link.get("new_path")):
         return length * PATH_FACTOR
-    if option == "corridors":
+    near_plan = option == "council" and link.get("council")
+    if option in ("corridors", "council"):
         option = "calm"
     if option == "shortest" or (option == "separated" and link["separated"]):
         return length
     factor = network.stress_factor[link["level"] - 1]
+    if near_plan:
+        factor *= network.council_plan_factor
     return length * factor * (network.no_fix_factor if link["no_fix"] else 1.0)
 
 
@@ -335,8 +339,12 @@ def build_options(
     ratings: dict,
     network: Network,
     corridors: list | None = None,
+    council: set | None = None,
 ) -> list[dict]:
     full = link_table(graph, ratings, network, joined.outside or (), corridors or ())
+    for key in council or ():
+        if key in full:
+            full[key]["council"] = True
     table = {key: link for key, link in full.items() if not link.get("new_path")}
     terminals = sorted({item["node"] for item in joined.joined})
     found = [
@@ -346,6 +354,8 @@ def build_options(
     found.append(("mesh", mesh_links(graph, table, joined.joined, network)))
     if corridors is not None:
         found.append(("corridors", tree_links(full, "corridors", terminals, network)))
+    if council is not None:
+        found.append(("council", tree_links(table, "council", terminals, network)))
     options = []
     for name, links in found:
         same = next((item["id"] for item in options if item["links"] == links), None)
