@@ -134,7 +134,7 @@ COUNCIL_NODES = {
     2: (200, 0),
     3: (300, 0),
     4: (0, 100),
-    5: (180, 100),
+    5: (60, 100),
     6: (300, 100),
 }
 COUNCIL_ROADS = [
@@ -142,7 +142,7 @@ COUNCIL_ROADS = [
     (1, 2, 100.0, 1, False, False),
     (2, 3, 100.0, 1, False, False),
     (0, 4, 100.0, 1, False, False),
-    (4, 5, 160.0, 1, False, False),
+    (4, 5, 60.0, 1, False, False),
     (5, 6, 100.0, 1, False, False),
     (6, 3, 100.0, 1, False, False),
 ]
@@ -280,7 +280,11 @@ def test_fr20_6_the_all_ages_km_run_today_at_the_first_stage_and_in_the_full_pla
     from bikeplan.council import council_fit
 
     graph, ratings = row_graph()
-    option = OPTION | {"steps": [{"works": []}, {"works": [0]}, {"works": [1]}]}
+    works = [
+        {"links": [(0, 1, 0)], "km": 0.1, "street": "Main", "parking_spaces": 0},
+        {"links": [(2, 3, 0)], "km": 0.1, "street": "Side", "parking_spaces": 0},
+    ]
+    option = OPTION | {"works": works}
     routes = routes_for(("R1", [(0, 0), (300, 0)]))
     row = council_fit(graph, routes, ratings, option, STEP_ONE, NETWORK)["routes"][0]
     assert row["all_ages_km"] == pytest.approx(0.0)
