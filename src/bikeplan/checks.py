@@ -14,6 +14,7 @@ import shapely
 from shapely.geometry import LineString, Point
 
 from bikeplan.map_checks import map_problems
+from bikeplan.page_measures import SPEC_IDS, measures
 from bikeplan.report import FIGURES, MAP_FIGURE
 
 SPEC_ID = re.compile(r"\b(?:FR-\d+\.\d+|NFR-\d+)\b")
@@ -317,6 +318,21 @@ def audit_problems(release: Path) -> list[str]:
     return problems
 
 
+def measure_lines(release: Path) -> dict[str, list[str]]:
+    found = measures(report_files(release))
+    return {spec_id: [item["line"] for item in items] for spec_id, items in found.items()}
+
+
+def measure_check(spec_id: str):
+    def check(release: Path) -> list[str]:
+        items = measures(report_files(release))[spec_id]
+        if not items:
+            return ["no report page in the release to measure"]
+        return [item["line"] for item in items if not item["met"]]
+
+    return check
+
+
 RELEASE_CHECKS = {
     "FR-17.12": (
         opening_problems,
@@ -334,6 +350,9 @@ RELEASE_CHECKS = {
         "has every place and link inside the boundary, an ask of at most 10 named streets "
         "that hold works, trips within the limit and no parking removed where a cheaper fix fits",
     ),
+} | {
+    spec_id: (measure_check(spec_id), "is measured on the release's own page, within its limit")
+    for spec_id in SPEC_IDS
 }
 
 
@@ -513,7 +532,9 @@ def checker(spec_id: str):
     return OUTPUT_CHECKS.get(spec_id) or REPORT_CHECKS.get(spec_id) or RELEASE_CHECKS.get(spec_id)
 
 
-def entry(spec_id, requirement, plan, found, figures, section, output, release_files) -> str:
+def entry(
+    spec_id, requirement, plan, found, figures, section, output, release_files, measured=()
+) -> str:
     check = checker(spec_id)
     status = status_of(found, output, check is not None)
     if found is None:
@@ -522,6 +543,8 @@ def entry(spec_id, requirement, plan, found, figures, section, output, release_f
         result = f"{found['passed']} passed, {found['failed']} failed."
         if check:
             result += " Output check: " + ("; ".join(output) if output else "passed.")
+        if measured:
+            result += " Measured: " + "; ".join(measured) + "."
     command = f'uv run pytest -k "{prefix_of(spec_id)}" -q'
     expected = plan or "Every test named for this requirement passes."
     return (
@@ -548,6 +571,7 @@ def build_page(root: Path, junit: Path, release: Path):
     ids = sorted(requirements, key=sort_key)
     outputs = run_output_checks(release, ids)
     release_files = [path.name for path in report_files(release)]
+    measured = measure_lines(release) if set(SPEC_IDS) & set(ids) else {}
     statuses = {
         spec_id: status_of(results.get(spec_id), outputs.get(spec_id), checker(spec_id) is not None)
         for spec_id in ids
@@ -564,6 +588,7 @@ def build_page(root: Path, junit: Path, release: Path):
             sections.get(rows.get(spec_id)),
             outputs.get(spec_id),
             release_files,
+            measured.get(spec_id, ()),
         )
         for spec_id in ids
     )

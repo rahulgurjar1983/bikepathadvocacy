@@ -1545,3 +1545,8 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 
 - The token test now applies `specs/20-design/token-overrides.json` to the mock's `:root` blocks before it compares. The page template ends each block with `--spot-done`.
 - Left: axe-core at load, with a place card and with a street card; keyboard reach; the 4 MB limit; `bikeplan shots`; the FR-20.23 measures in `checks.html`. Reuse `bikeplan.axe`. Test the axe states only where a case fails on base.
+
+### W1.9 part 2
+
+- `bikeplan shots` is in `shots.py`; it fails if the page asks the network for anything. `page_measures.py` opens each `*-report.html` once at 1440 by 900 and measures words, size, network requests and axe-core violations at load. The result is cached by path and size.
+- Left: axe with a place card and a street card open; keyboard reach; the FR-20.8, 20.19, 20.20, 20.25 measures and the reading level (textstat is a dev package, so it needs `uv add` first); the release script runs `shots` (operator).
