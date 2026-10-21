@@ -57,6 +57,7 @@ def street_pick():
     found = pick()
     for step, partners in zip(found["steps"], PARTNERS, strict=True):
         step["totals"]["partners"] = partners
+    found["works"][0]["fix"] = "cycleway_in_spare"
     found["works"][0]["section"] = {"width": 12.0, "before": ASH_BEFORE, "after": ASH_AFTER}
     found["works"].append(
         work("Ash Street", "cycleway_parking_one_side", 0.6, 9, lane_km=0.3)
@@ -188,7 +189,7 @@ def test_fr20_11_the_street_card_has_one_block_per_work_with_its_facts(card_page
         first, second = [block.text for block in blocks]
         assert "Protected bike lane in spare road space" in first
         assert "4.0 km" in first and "First stage" in first
-        assert "No parking lost" in first and "No traffic lane lost" in first
+        assert "4 parking spaces" in first and "No traffic lane lost" in first
         assert "600 m" in second and "Full plan" in second
         assert "9 parking spaces" in second and "0.3 km of traffic lane" in second
     finally:
