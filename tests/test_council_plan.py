@@ -542,3 +542,11 @@ def test_fr20_5_the_page_keeps_the_ward_cards_and_the_council_card_only_with_the
     for name in ("wards", "card-council", "ly-council", "ly-wards"):
         assert name not in bare
     assert "card-tfnsw" in bare
+
+
+def test_fr20_6_the_sources_of_the_shipped_files_are_plain_text_that_json_can_hold():
+    from bikeplan.council import load_plan, load_wards
+
+    for source in (load_plan(REGION_ID).source, load_wards(REGION_ID).source):
+        assert json.loads(json.dumps(source)) == source
+        assert source["read_on"] == "2026-10-17"
