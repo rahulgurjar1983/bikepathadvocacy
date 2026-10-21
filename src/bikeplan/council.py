@@ -89,7 +89,7 @@ def read_pair(region_id: str, kind: str, fields: tuple, folder: Path):
     for name in fields:
         if not raw.get(name):
             raise CouncilError(f"{side}: missing {name}")
-    return {name: raw[name] for name in fields}, raw, features
+    return {name: str(raw[name]) for name in fields}, raw, features
 
 
 def load_plan(region_id: str, folder: str | Path = REFERENCES) -> Plan | None:
