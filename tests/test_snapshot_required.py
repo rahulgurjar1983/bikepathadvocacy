@@ -1,5 +1,6 @@
 import hashlib
 import json
+import re
 from pathlib import Path
 
 from bikeplan import main
@@ -65,7 +66,9 @@ def test_fr15_9_verify_command_reads_the_required_adapters_from_the_region_file(
 
 
 def test_fr15_9_verify_command_accepts_the_published_bayside_manifest_files(tmp_path, capsys):
-    manifest = json.loads(Path("snapshots/au-nsw-bayside/2026-10-19/manifest.json").read_text())
+    date = re.search(r"osm_date: ['\"](\d{4}-\d{2}-\d{2})", BAYSIDE.read_text())[1]
+    manifest = json.loads(Path(f"snapshots/au-nsw-bayside/{date}/manifest.json").read_text())
+    assert {"backdrop.json", "corridors.json"} <= {entry["name"] for entry in manifest["files"]}
     directory = make_snapshot(tmp_path / "snap", [entry["name"] for entry in manifest["files"]])
 
     code = main(["snapshot", "verify", str(directory), "--region", str(BAYSIDE)])
