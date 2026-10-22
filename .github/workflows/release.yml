@@ -79,6 +79,11 @@ jobs:
         run: |
           echo "id=$(sed -n 's/^id: *//p' "${{ matrix.region }}" | head -n 1)" >>"$GITHUB_OUTPUT"
           scripts/release.sh --build "${{ matrix.region }}" built
+      - name: Take the phone and desktop shots
+        run: |
+          folder="built/report-${{ steps.council.outputs.id }}"
+          uv run --frozen bikeplan shots "$folder/report.html" --out "$folder/shots"
+          (cd "$folder" && sha256sum shots/desktop.png shots/phone.png >SHOTS-SHA256SUMS)
       - name: Keep the build and its record
         if: always() && steps.council.outputs.id != ''
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
