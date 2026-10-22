@@ -228,6 +228,26 @@ def backdrop_query(box: tuple[float, float, float, float]) -> str:
     return f"[out:json][timeout:{QUERY_TIMEOUT_SECONDS}];({filters});out geom;"
 
 
+def corridors_query(box: tuple[float, float, float, float]) -> str:
+    area = box_text(box)
+    filters = "".join(
+        f"{kind}{tag}({area});"
+        for kind, tag in (
+            ("way", '["railway"="rail"]'),
+            ("way", '["highway"="motorway"]'),
+            ("way", '["waterway"~"^(river|canal)$"]'),
+            ("nwr", '["leisure"="golf_course"]'),
+            (
+                "way",
+                '["landuse"~"^(grass|meadow|farmland|greenfield|recreation_ground|village_green)$"]',
+            ),
+            ("way", '["natural"~"^(grassland|scrub|heath)$"]'),
+            ("way", '["leisure"~"^(park|common)$"]'),
+        )
+    )
+    return f"[out:json][timeout:{QUERY_TIMEOUT_SECONDS}];({filters});out geom;"
+
+
 def boundary_query(relation: int) -> str:
     return f"[out:json][timeout:{QUERY_TIMEOUT_SECONDS}];relation({relation});out geom;"
 
@@ -581,12 +601,28 @@ def osm_backdrop(client: OverpassClient, osm_date: str, box: tuple, out: Path) -
     return replace(entry, path=entry.name)
 
 
+def osm_corridors(client: OverpassClient, osm_date: str, box: tuple, out: Path) -> ManifestEntry:
+    entry = client.fetch(
+        corridors_query(box),
+        osm_date,
+        out / "corridors.json",
+        licence="ODbL 1.0",
+        attribution="© OpenStreetMap contributors",
+    )
+    return replace(entry, path=entry.name)
+
+
+OVERPASS_ADAPTERS = {"osm_backdrop": osm_backdrop, "osm_corridors": osm_corridors}
+
+
 def fetch_snapshot(region: Region, out: str | Path, endpoint: str = OVERPASS_ENDPOINT) -> dict:
     for name in region.snapshot.adapters:
         if name not in ADAPTERS and importlib.util.find_spec(f"bikeplan.adapters.{name}"):
             importlib.import_module(f"bikeplan.adapters.{name}")
     unknown = [
-        name for name in region.snapshot.adapters if name not in ADAPTERS and name != "osm_backdrop"
+        name
+        for name in region.snapshot.adapters
+        if name not in ADAPTERS and name not in OVERPASS_ADAPTERS
     ]
     if unknown:
         raise OverpassError(f"no adapter named {', '.join(unknown)}")
@@ -627,8 +663,8 @@ def fetch_snapshot(region: Region, out: str | Path, endpoint: str = OVERPASS_END
         replace(places, path=places.name),
     ]
     for name in region.snapshot.adapters:
-        if name == "osm_backdrop":
-            entries.append(osm_backdrop(client, osm_date, box, out_path))
+        if name in OVERPASS_ADAPTERS:
+            entries.append(OVERPASS_ADAPTERS[name](client, osm_date, box, out_path))
         else:
             entries.extend(ADAPTERS[name](region, box, out_path))
     manifest = {
