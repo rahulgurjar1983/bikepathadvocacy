@@ -439,7 +439,14 @@ def prefix_of(spec_id: str) -> str:
     return "test_" + spec_id.lower().replace("-", "").replace(".", "_") + "_"
 
 
-def status_of(found: dict | None, output: list[str] | None = None, has_check: bool = False) -> str:
+def status_of(
+    found: dict | None,
+    output: list[str] | None = None,
+    has_check: bool = False,
+    measured: bool = False,
+) -> str:
+    if found is None and measured:
+        return "fails" if output else "met"
     if found is None:
         return "not built yet"
     if found["failed"] or output:
@@ -536,8 +543,10 @@ def entry(
     spec_id, requirement, plan, found, figures, section, output, release_files, measured=()
 ) -> str:
     check = checker(spec_id)
-    status = status_of(found, output, check is not None)
-    if found is None:
+    status = status_of(found, output, check is not None, bool(measured))
+    if found is None and measured:
+        result = "Measured: " + "; ".join(measured) + "."
+    elif found is None:
         result = "No test is named for this requirement in this release."
     else:
         result = f"{found['passed']} passed, {found['failed']} failed."
@@ -573,7 +582,12 @@ def build_page(root: Path, junit: Path, release: Path):
     release_files = [path.name for path in report_files(release)]
     measured = measure_lines(release) if set(SPEC_IDS) & set(ids) else {}
     statuses = {
-        spec_id: status_of(results.get(spec_id), outputs.get(spec_id), checker(spec_id) is not None)
+        spec_id: status_of(
+            results.get(spec_id),
+            outputs.get(spec_id),
+            checker(spec_id) is not None,
+            bool(measured.get(spec_id)),
+        )
         for spec_id in ids
     }
     names = ("met", "tested only", "fails", "not built yet")
