@@ -1,0 +1,24 @@
+{
+  "row": "W1.12",
+  "base_commit": "c35d288a67a714a841bd34f75ab2d0496defc071",
+  "requirement_ids": [
+    "FR-20.8",
+    "FR-20.19"
+  ],
+  "cases": [
+    "tests/test_w1_12_hero_proof.py::test_fr20_8_proof_title_sentence_and_four_numbers_lie_in_the_first_screen[390x844]",
+    "tests/test_w1_12_hero_proof.py::test_fr20_8_proof_title_sentence_and_four_numbers_lie_in_the_first_screen[1440x900]",
+    "tests/test_w1_12_hero_proof.py::test_fr20_8_proof_the_map_starts_in_the_first_screen_at_1440_by_900",
+    "tests/test_w1_12_hero_proof.py::test_fr20_8_proof_the_hero_measures_are_met_on_the_grid_page",
+    "tests/test_w1_12_hero_proof.py::test_fr20_8_proof_a_hero_pushed_below_the_first_screen_fails_the_check",
+    "tests/test_w1_12_hero_proof.py::test_fr20_19_proof_the_grid_page_text_has_no_banned_word",
+    "tests/test_w1_12_hero_proof.py::test_fr20_19_proof_a_planted_word_or_four_figure_decimal_fails_the_check[some_code_word]",
+    "tests/test_w1_12_hero_proof.py::test_fr20_19_proof_a_planted_word_or_four_figure_decimal_fails_the_check[step 4]",
+    "tests/test_w1_12_hero_proof.py::test_fr20_19_proof_a_planted_word_or_four_figure_decimal_fails_the_check[unnamed]",
+    "tests/test_w1_12_hero_proof.py::test_fr20_19_proof_a_planted_word_or_four_figure_decimal_fails_the_check[3.1416]"
+  ],
+  "results": {
+    "base": "10 passed in 235.58s",
+    "head": "10 passed in 144.41s"
+  }
+}

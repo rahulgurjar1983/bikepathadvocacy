@@ -2526,3 +2526,12 @@ cd /tmp/w111r && sha256sum -c SHA256SUMS
 Expect: `au-nsw-bayside-map.html`, `au-nsw-bayside-map.kml` and `au-nsw-bayside-map-layers.zip` all print OK. The map page holds Cook Park Trail at 18.285 km and M6 Shared Path at 5.889 km.
 
 Artifact: `au-nsw-bayside-map.html` in release `v2026.10.22-pr268`
+
+### W1.12
+
+```sh
+uv run --frozen pytest tests/test_w1_12_hero_proof.py -q
+```
+
+Expect: 10 passed on base and on head. On the test-grid page the title, sentence and four numbers end inside 844 px at 390 by 844 and inside 900 px at 1440 by 900, and the map starts inside 900 px. A hero pushed down fails both hero measures, and each planted "some_code_word", "step 4", "unnamed" or "3.1416" fails the plain-words measure.
+Artifact: `artifacts/W1.12/proof.json`

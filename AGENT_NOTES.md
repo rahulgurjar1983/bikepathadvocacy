@@ -1603,3 +1603,8 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - Left for C1.13 (new row text): no spot called "A path" and the council plan credit dated 2024, both from W1.13. Rebuild once W1.13 ships.
 
 - W1.11 part 5: `street_changes` in `bikeplan.map_data` sets `cost` as [low, likely, high] dollars from the works' likely cost and `load_rates()`. It leaves `cost` out if any work has no rate. The council plan, wards and corridors already reach the map through `report_data`. The Bayside report run takes about 32 minutes.
+
+### W1.12 notes
+
+- The `map below the first screen at 1440 by 900` measure in `page_measures.py` cannot fail. `WORDS` hides `#plan-map` with `display:none` first, so `HERO` reads a zero box and the map count is 0. With `.hero-grid{margin-top:2000px}` the real map top is 2050 px, yet the line says "0 of at most 0, met". The proof checks the map with a direct browser read instead. Fix needs a new feature row: read the map box before `WORDS` hides it.
+- The test-grid title has 12 words, over the 10 limit; Bayside gives 8. The proof row does not assert the title length.
