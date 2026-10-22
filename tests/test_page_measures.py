@@ -74,14 +74,14 @@ def test_fr20_23_a_page_over_1000_words_fails_the_words_measure(good_page, tmp_p
     assert problems["FR-20.21"] == [] and problems["FR-20.22"] == []
 
 
-def test_fr20_23_the_size_measure_states_bytes_against_16_mb(good_page, tmp_path):
+def test_fr20_23_the_size_measure_states_bytes_against_4_mb(good_page, tmp_path):
     release = release_with(tmp_path / "rel", good_page)
     size = (release / f"{NAME}-report.html").stat().st_size
     line = line_of(release, "FR-20.22", "page size")
     assert line == f"{NAME}-report.html: page size in bytes: {size:,} of at most 16,777,216, met"
 
 
-def test_fr20_23_a_page_over_16_mb_fails_the_size_measure(good_page, tmp_path):
+def test_fr20_23_a_page_over_4_mb_fails_the_size_measure(good_page, tmp_path):
     padded = good_page.replace("</body>", "<!--" + "x" * (16 * 1024 * 1024) + "--></body>")
     release = release_with(tmp_path / "rel", padded)
     assert line_of(release, "FR-20.22", "page size").endswith("of at most 16,777,216, fails")
