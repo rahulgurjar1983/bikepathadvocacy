@@ -179,3 +179,35 @@ def test_fr20_23_a_very_wide_paragraph_fails_the_line_length_measure(good_page, 
         1,
     )
     fails(measured(tmp_path / "wide", wide), "FR-20.20", "characters the longest line is over 70")
+
+
+def test_fr20_23_a_measured_requirement_with_no_named_test_is_met_from_its_page_measures(
+    good_page, tmp_path
+):
+    root = tmp_path / "tree"
+    (root / "specs").mkdir(parents=True)
+    rows = "".join(f"| {i} | Needs a measure. | MUST |\n" for i in SPEC_IDS)
+    cover = "".join(f"| {i} | Measured |\n" for i in SPEC_IDS)
+    (root / "specs/20-a.md").write_text(
+        f"# Spec 20\n\n| ID | Requirement | Priority |\n|----|---|---|\n{rows}\n"
+        f"| Spec ID | What the tests show |\n|---|---|\n{cover}"
+    )
+    (root / "SPECIFICATION.md").write_text("# Master\n")
+    (root / "PROGRESS.md").write_text("")
+    cases = "".join(
+        f'<testcase classname="t" name="test_fr20_{i[6:].replace(".", "_")}_a"/>'
+        for i in SPEC_IDS
+        if i not in ("FR-20.8", "FR-20.19")
+    )
+    junit = tmp_path / "junit.xml"
+    junit.write_text(f"<testsuites><testsuite>{cases}</testsuite></testsuites>")
+    release = measured(tmp_path / "rel", good_page)
+    out = tmp_path / "checks.html"
+    code = main(
+        ["checks", str(junit), "--root", str(root), "--out", str(out), "--release", str(release)]
+    )
+    text = out.read_text()
+    assert code == 0, re.findall(r"[^<>]*fails[^<>]*", text)[:5]
+    assert text.count('<p class="status">met</p>') == len(SPEC_IDS)
+    section = re.search(r'<section class="check" id="FR-20.8">.*?</section>', text, re.S)[0]
+    assert "words in the title" in section
