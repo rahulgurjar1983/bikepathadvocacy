@@ -10,7 +10,7 @@ from selenium.webdriver.common.print_page_options import PrintOptions
 from bikeplan.axe import tab_stops, violations
 from bikeplan.shots import offline_driver, remote_requests
 
-MAX_PAGE_BYTES = 4 * 1024 * 1024
+MAX_PAGE_BYTES = 16 * 1024 * 1024
 MAX_WORDS = 1000
 MAX_PRINT_PAGES = 4
 MAX_GRADE = 8.0
