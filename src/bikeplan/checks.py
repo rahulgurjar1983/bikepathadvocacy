@@ -8,6 +8,7 @@ import sys
 import tarfile
 import tempfile
 import xml.etree.ElementTree as ET
+from collections import Counter
 from pathlib import Path
 
 import shapely
@@ -318,6 +319,82 @@ def audit_problems(release: Path) -> list[str]:
     return problems
 
 
+def corridor_page_problems(text: str, data: dict) -> list[str]:
+    found = re.search(r'<section id="corridors">.*?</section>', text, re.S)
+    if not found:
+        return ["no TfNSW corridors section on the page"]
+    problems = []
+    if 'id="overlay-corridors"' not in text:
+        problems.append("no corridors overlay switch on the page")
+    corridors = data.get("corridors")
+    if not corridors:
+        return [*problems, "options.json holds no corridors"]
+    tally = Counter(item["verdict"] for item in corridors["segments"] if item["verdict"])
+    if {key: tally.get(key, 0) for key in ("covered", "partly", "missed")} != {
+        key: corridors["counts"].get(key, 0) for key in ("covered", "partly", "missed")
+    }:
+        problems.append("the corridor counts do not match the segment verdicts")
+    problems += [
+        f"segment {item['id']} is not in the corridors table"
+        for item in corridors["segments"]
+        if f"<td>{item['id']}</td>" not in found[0]
+    ]
+    return problems
+
+
+def blockers_page_problems(text: str, data: dict) -> list[str]:
+    found = re.search(r'<table id="blockers">.*?</table>', text, re.S)
+    if not found:
+        return ["no blockers table on the page"]
+    problems = []
+    if "<tbody><tr>" not in found[0]:
+        problems.append("the blockers table holds no blocker")
+    if "ceiling" not in text:
+        problems.append("the page does not call the fixed-blockers score a ceiling")
+    return problems
+
+
+def spec_figure_problems(release: Path, spec: str, page_problems) -> list[str]:
+    problems = []
+    found = 0
+    for archive in region_archives(release):
+        files = archive_files(archive, ("figures.json", "options.json"))
+        if "options.json" not in files:
+            continue
+        found += 1
+        name = archive.name.removesuffix(".tar.gz")
+        report = release / f"{name}-report.html"
+        if not report.is_file():
+            problems.append(f"{name}: no {report.name} in the release")
+            continue
+        text = report.read_text(encoding="utf-8")
+        data = json.loads(files["options.json"])
+        digest = hashlib.sha256(files["options.json"]).hexdigest()
+        figures = [item for item in json.loads(files["figures.json"]) if item["spec"] == spec]
+        problems += [f"{name}: {line}" for line in page_problems(text, data)]
+        if not figures:
+            problems.append(f"{name}: no {spec} figure")
+        for item in figures:
+            if item["inputs"][0]["sha256"] != digest:
+                problems.append(f"{name} {item['id']}: options.json does not match its hash")
+            if f'href="#{item["id"]}"' not in text.split('id="appendix"')[0]:
+                problems.append(f"{name} {item['id']}: not linked in the page")
+        with tempfile.TemporaryDirectory() as folder:
+            Path(folder, "options.json").write_bytes(files["options.json"])
+            problems += [f"{name} {line}" for line in recipe_problems(figures, Path(folder))]
+    if not found:
+        problems.append("no region report in the release holds options.json")
+    return problems
+
+
+def corridor_problems(release: Path) -> list[str]:
+    return spec_figure_problems(release, "spec 19", corridor_page_problems)
+
+
+def blocker_problems(release: Path) -> list[str]:
+    return spec_figure_problems(release, "spec 17 blockers", blockers_page_problems)
+
+
 def measure_lines(release: Path) -> dict[str, list[str]]:
     found = measures(report_files(release))
     return {spec_id: [item["line"] for item in items] for spec_id, items in found.items()}
@@ -338,6 +415,16 @@ RELEASE_CHECKS = {
         opening_problems,
         "lists the four options, my pick and my ask, with every number linked to a figure "
         "whose recipe prints the same value from options.json",
+    ),
+    "FR-17.14": (
+        blocker_problems,
+        "shows the blockers table, the ceiling words and every blocker figure linked, with a "
+        "recipe that prints the same value from options.json",
+    ),
+    "FR-19.6": (
+        corridor_problems,
+        "shows the TfNSW corridors section, its overlay switch and every corridor figure "
+        "linked, with a recipe that prints the same value from options.json",
     ),
     "FR-21.7": (
         map_problems,
