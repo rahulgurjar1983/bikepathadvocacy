@@ -1,0 +1,33 @@
+{
+ "snapshot": "data/cache/au-nsw-bayside/2026-10-19",
+ "report_bytes": 4019671,
+ "report_sha256": "f3af790bd3c7e2b9ee05d94036682beaca5c7818959c7cb3013542c8188f5695",
+ "T2": {
+  "from": "Wolli Creek station",
+  "to": "Rockdale station",
+  "inside_km": 3.694184687309287,
+  "verdict": "covered"
+ },
+ "T3": {
+  "from": "Rockdale station",
+  "to": "Kogarah station",
+  "inside_km": 0.8068982046182457,
+  "verdict": "covered"
+ },
+ "cook_park_trail_segments_all_ages_in_report_map": 10,
+ "cook_park_trail_segments_not_all_ages_in_report_map": 0,
+ "status": {
+  "FR-17.12": "met",
+  "FR-17.14": "met",
+  "FR-17.15": "met",
+  "FR-19.6": "met",
+  "FR-20.7": "met",
+  "FR-20.8": "met",
+  "FR-20.19": "met",
+  "FR-20.20": "met",
+  "FR-20.21": "met",
+  "FR-20.22": "met",
+  "FR-20.23": "tested only",
+  "FR-20.25": "met"
+ }
+}

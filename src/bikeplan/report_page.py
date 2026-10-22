@@ -4,6 +4,8 @@ import json
 import re
 from datetime import date
 
+from shapely.geometry import LineString
+
 from bikeplan.cost import stage_cost, work_cost
 from bikeplan.edition import PICK, fact
 from bikeplan.report import ASSETS, MONTHS, SOURCES
@@ -32,6 +34,22 @@ EVIDENCE_CSS = (
 
 def round_point(point) -> list[float]:
     return [round(point[0], 5), round(point[1], 5)]
+
+
+BASE_TOLERANCE = 1e-4
+STREET_TOLERANCE = 2e-5
+
+
+def thinned(points: list, tolerance: float) -> list:
+    if len(points) <= 4:
+        return points
+    return [list(point) for point in LineString(points).simplify(tolerance).coords]
+
+
+def thinned_layer(layer: list, tolerance: float) -> list:
+    if layer and isinstance(layer[0][0], int | float):
+        return thinned(layer, tolerance)
+    return [thinned_layer(part, tolerance) for part in layer]
 
 
 def centre(points: list) -> list[float] | None:
@@ -79,7 +97,7 @@ def stage_values(step: dict, km: float) -> dict:
 def street_lines(streets: dict | None) -> list:
     pieces = (streets or {}).get("model_pieces") or []
     return [
-        [[round(lon, 5), round(lat, 5)] for lat, lon in line]
+        thinned([[round(lon, 5), round(lat, 5)] for lat, lon in line], STREET_TOLERANCE)
         for piece in pieces
         for line in piece["lines"]
     ]
@@ -231,11 +249,10 @@ def report_data(
             found["cost"] = None if cost is None else cost / 1_000_000
     data = {
         "base": {
-            "water": (backdrop or {}).get("water", []),
-            "park": (backdrop or {}).get("park", []),
-            "air": (backdrop or {}).get("air", []),
-            "outside": (backdrop or {}).get("outside", []),
-            "rail": (backdrop or {}).get("rail", []),
+            **{
+                layer: thinned_layer((backdrop or {}).get(layer, []), BASE_TOLERANCE)
+                for layer in ("water", "park", "air", "outside", "rail")
+            },
             "boundary": boundary_polygons(boundary),
         },
         "streets": street_lines(streets),
