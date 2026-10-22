@@ -510,3 +510,38 @@ def test_fr21_5_a_council_placemark_holds_its_plan_verdict_and_share(data):
     text = "".join(mark.find(f"{KML}description").itertext())
     assert "Verdict: partly" in text
     assert "On my pick: 50%" in text
+
+
+def priced_data():
+    from bikeplan.cost import load_rates
+    from bikeplan.map_data import map_data
+    from bikeplan.report_page import report_data
+
+    options = [rich_pick()]
+    report = report_data(
+        options,
+        CHOICE,
+        MARKS,
+        JOINED,
+        STREETS,
+        corridor=CORRIDOR,
+        boundary=BOUNDARY,
+        paths=PATHS,
+        rates=load_rates(),
+    )
+    region = load_region("regions/au-nsw-bayside.yaml")
+    return map_data(report, options[0], PATHS, region, "snap-1")
+
+
+def test_fr21_3_a_priced_run_gives_each_street_change_its_low_likely_and_high_cost():
+    first, second = priced_data()["changes"]
+    assert first["cost"] == [1400000, 1750000, 2275000]
+    assert second["cost"] == [140000, 175000, 227500]
+    assert all("cost" not in change for change in map_data_for()["changes"])
+
+
+def test_fr21_5_a_street_change_placemark_holds_its_likely_cost_and_range():
+    layers = kml_files(priced_data())
+    mark = placemarks(layers["street-changes"])[0]
+    text = "".join(mark.find(f"{KML}description").itertext())
+    assert "Likely cost: $1,750,000 ($1,400,000 to $2,275,000)" in text
