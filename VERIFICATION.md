@@ -2291,6 +2291,18 @@ Expect: 8 passed. The Bayside `map.html` has 0 axe-core 4.14.0 violations of imp
 
 Artifact: `artifacts/W1.11/axe.json`
 
+### W1.11 cost
+
+```sh
+uv run pytest tests/test_map_page.py -k "priced or likely_cost" -v
+uv run bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-19 --out /tmp/w111c/out
+grep -c "Likely cost" /tmp/w111c/out/map-layers/street-changes.kml
+```
+
+Expect: 2 passed. The Bayside `map.html` holds 329 street changes, all priced, with a likely total of $36,978,214, plus 5 wards, 24 council plan routes and 13 corridors. The grep prints 329.
+
+Artifact: `artifacts/W1.11/cost.json`
+
 ### W1.3
 
 ```sh

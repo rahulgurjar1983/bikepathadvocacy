@@ -1601,3 +1601,5 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - `checks.html` showed FR-20.8 and FR-20.19 as "not built yet", since no test carries those IDs; the measures sit under `test_fr20_23_`. A requirement with page measures is now met or fails from them. FR-17.14 and FR-19.6 got release checks.
 - The release build still uses the 2026-10-19 snapshot with no `corridors.json`; Q1.12 part 2 is waiting for a spec ruling. The release workflow must build the page to give the owner's link. Nothing was published from this turn.
 - Left for C1.13 (new row text): no spot called "A path" and the council plan credit dated 2024, both from W1.13. Rebuild once W1.13 ships.
+
+- W1.11 part 5: `street_changes` in `bikeplan.map_data` sets `cost` as [low, likely, high] dollars from the works' likely cost and `load_rates()`. It leaves `cost` out if any work has no rate. The council plan, wards and corridors already reach the map through `report_data`. The Bayside report run takes about 32 minutes.
