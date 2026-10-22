@@ -2491,6 +2491,6 @@ artifacts/C1.13/prove.sh out artifacts/C1.13
 uv run --frozen pytest -q tests/test_checks_sections.py tests/test_page_measures_more.py
 ```
 
-Expect: The second Bayside edition builds in about 35 minutes. The page is 4,019,671 bytes, under the 4,194,304 limit. `checks.html` shows FR-17.12, FR-17.14, FR-17.15, FR-19.6, FR-20.7, FR-20.8, FR-20.19, FR-20.20, FR-20.21, FR-20.22 and FR-20.25 as met. FR-20.23 is tested only, because its seven measures are the lines under those requirements, all met. In the TfNSW table T2 (Wolli Creek to Rockdale) and T3 (Rockdale to Kogarah) are covered. All 10 Cook Park Trail pieces on the report map are all-ages.
+Expect: Parts shipped (page size, checks.html, T2 and T3, Cook Park Trail); the spot names and council plan credit date of the new row text wait for W1.13. The second Bayside edition builds in about 35 minutes. The page is 4,019,671 bytes, under the 4,194,304 limit. `checks.html` shows FR-17.12, FR-17.14, FR-17.15, FR-19.6, FR-20.7, FR-20.8, FR-20.19, FR-20.20, FR-20.21, FR-20.22 and FR-20.25 as met. FR-20.23 is tested only, because its seven measures are the lines under those requirements, all met. In the TfNSW table T2 (Wolli Creek to Rockdale) and T3 (Rockdale to Kogarah) are covered. All 10 Cook Park Trail pieces on the report map are all-ages.
 
 Artifact: `artifacts/C1.13/summary.json`

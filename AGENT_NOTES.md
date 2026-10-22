@@ -1600,3 +1600,4 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - Thinning base layers and street lines on straight runs took the page from 4,990,615 to 4,019,671 bytes. The build took 34 minutes and the proof script 6 minutes on this host.
 - `checks.html` showed FR-20.8 and FR-20.19 as "not built yet", since no test carries those IDs; the measures sit under `test_fr20_23_`. A requirement with page measures is now met or fails from them. FR-17.14 and FR-19.6 got release checks.
 - The release build still uses the 2026-10-19 snapshot with no `corridors.json`; Q1.12 part 2 is waiting for a spec ruling. The release workflow must build the page to give the owner's link. Nothing was published from this turn.
+- Left for C1.13 (new row text): no spot called "A path" and the council plan credit dated 2024, both from W1.13. Rebuild once W1.13 ships.
