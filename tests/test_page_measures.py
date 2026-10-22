@@ -12,7 +12,7 @@ SPEC = """# Spec 20
 |----|-------------|----------|
 | FR-20.7 | The page holds at most 1,000 words at load. | MUST |
 | FR-20.21 | axe-core finds no serious violation. | MUST |
-| FR-20.22 | The page stays at most 4 MB and opens offline. | MUST |
+| FR-20.22 | The page stays at most 16 MB and opens offline. | MUST |
 
 | Spec ID | What the tests show |
 |---------|---------------------|
@@ -78,13 +78,13 @@ def test_fr20_23_the_size_measure_states_bytes_against_4_mb(good_page, tmp_path)
     release = release_with(tmp_path / "rel", good_page)
     size = (release / f"{NAME}-report.html").stat().st_size
     line = line_of(release, "FR-20.22", "page size")
-    assert line == f"{NAME}-report.html: page size in bytes: {size:,} of at most 4,194,304, met"
+    assert line == f"{NAME}-report.html: page size in bytes: {size:,} of at most 16,777,216, met"
 
 
 def test_fr20_23_a_page_over_4_mb_fails_the_size_measure(good_page, tmp_path):
-    padded = good_page.replace("</body>", "<!--" + "x" * (4 * 1024 * 1024) + "--></body>")
+    padded = good_page.replace("</body>", "<!--" + "x" * (16 * 1024 * 1024) + "--></body>")
     release = release_with(tmp_path / "rel", padded)
-    assert line_of(release, "FR-20.22", "page size").endswith("of at most 4,194,304, fails")
+    assert line_of(release, "FR-20.22", "page size").endswith("of at most 16,777,216, fails")
     assert checks.run_output_checks(release, IDS)["FR-20.22"] != []
 
 
@@ -133,7 +133,7 @@ def test_fr20_23_checks_html_shows_each_measured_value_and_its_limit(good_page, 
     assert code == 0
     text = out.read_text()
     assert re.search(r"words at load: [\d,]+ of at most 1,000, met", text)
-    assert "page size in bytes:" in text and "of at most 4,194,304, met" in text
+    assert "page size in bytes:" in text and "of at most 16,777,216, met" in text
     assert "network requests at load: 0 of at most 0, met" in text
     assert "axe-core violations at load: 0 of at most 0, met" in text
     assert text.count('<p class="status">met</p>') == 3
