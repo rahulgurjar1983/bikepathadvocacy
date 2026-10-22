@@ -210,12 +210,32 @@ with zipfile.ZipFile(sys.argv[2], "w", zipfile.ZIP_DEFLATED) as layers:
         layers.writestr(info, path.read_bytes())' "$folder/map-layers" "$out/$id-map-layers.zip"
 }
 
+shot_files() {
+  printf '%s\n' "$1-phone.png" "$1-desktop.png"
+}
+
+shot_links() {
+  [ -f "$out/$1-phone.png" ] && printf ' <a href="%s">phone</a> <a href="%s">desktop</a>' "$1-phone.png" "$1-desktop.png"
+  return 0
+}
+
+publish_shots() {
+  local id="$1" folder="$2"
+  [ -f "$folder/SHOTS-SHA256SUMS" ] || return 0
+  (cd "$folder" && sha256sum --check --strict SHOTS-SHA256SUMS)
+  cp "$folder/shots/phone.png" "$out/$id-phone.png"
+  cp "$folder/shots/desktop.png" "$out/$id-desktop.png"
+}
+
 publish() {
   local kind="$1" id="$2" region="$3" snapshot="$4" folder="$5" html="$6" archive="$7" record="$8"
   cp "$folder/report.html" "$out/$html"
-  [ "$kind" != report ] || publish_map "$id" "$folder"
+  if [ "$kind" = report ]; then
+    publish_map "$id" "$folder"
+    publish_shots "$id" "$folder"
+  fi
   tar --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner -cf - -C "$folder" . | gzip -n >"$out/$archive"
-  rows+="<tr><td>$kind</td><td><a href=\"$html\">$id</a>$(map_link "$id")</td><td>$region</td><td>$snapshot</td><td>$commit</td><td>built</td><td>$(record_field "$record" seconds)</td><td>$(record_field "$record" peak_mb)</td></tr>"$'\n'
+  rows+="<tr><td>$kind</td><td><a href=\"$html\">$id</a>$(map_link "$id")$(shot_links "$id")</td><td>$region</td><td>$snapshot</td><td>$commit</td><td>built</td><td>$(record_field "$record" seconds)</td><td>$(record_field "$record" peak_mb)</td></tr>"$'\n'
   count=$((count + 1))
 }
 
@@ -231,7 +251,14 @@ copy_last() {
       cp "$work/last/$name" "$out/"
     done < <(map_files "$id")
   fi
-  rows+="<tr><td>$kind</td><td><a href=\"$html\">$id</a>$(map_link "$id")</td><td>$rid</td><td>$date</td><td>$commit</td><td>copied from release $last</td><td></td><td></td></tr>"$'\n'
+  if [ "$kind" = report ] && [ -f "$work/last/$id-phone.png" ]; then
+    local shot
+    while read -r shot; do
+      check_copied "$shot"
+      cp "$work/last/$shot" "$out/"
+    done < <(shot_files "$id")
+  fi
+  rows+="<tr><td>$kind</td><td><a href=\"$html\">$id</a>$(map_link "$id")$(shot_links "$id")</td><td>$rid</td><td>$date</td><td>$commit</td><td>copied from release $last</td><td></td><td></td></tr>"$'\n'
   count=$((count + 1))
 }
 
