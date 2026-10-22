@@ -1613,3 +1613,5 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 
 - The FR-20.22 size measure now allows 16 MB (16,777,216 bytes) per C1.13. The saved size tests pin the new limit. The token overrides were already in the template from part 1.
 - Left: the release script running `shots` (operator), and the real Bayside `checks.html` after the next release.
+
+- Q1.12: the snapshots run for a new osm_date took 2h19m on GitHub (run 39744953979); copy the manifest with `gh release download snapshot-<region>-<date> -p manifest.json`. Two CI tests fail until that manifest is committed.

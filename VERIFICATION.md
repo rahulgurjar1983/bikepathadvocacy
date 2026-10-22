@@ -2504,6 +2504,18 @@ Command: `uv run python -I artifacts/Q1.12/fetch_check.py regions/au-nsw-bayside
 Expect: `corridors.json` with 3,882 elements; the summary lists railway, motorway, river, canal and golf course lines and 25.6 km2 of open land that `read_corridors` loads. `uv run pytest tests/test_snapshot.py -k fr18_6` passes.
 Artifact: `artifacts/Q1.12/summary.json`
 
+### Q1.12
+
+```sh
+grep -c "osm_date: .2026-10-22" regions/*.yaml | grep -c ":1"
+uv run --frozen bikeplan snapshot pull snapshots/au-nsw-bayside/2026-10-22/manifest.json
+uv run --frozen bikeplan snapshot verify data/cache/au-nsw-bayside/2026-10-22 --region regions/au-nsw-bayside.yaml
+uv run --frozen pytest -q tests/test_snapshot_set.py tests/test_snapshot_required.py
+```
+
+Expect: the first command prints 33. Verify exits 0 and lists ten files, among them `backdrop.json` (4,398,528 bytes) and `corridors.json` (5,964,907 bytes). The tests pass. The snapshot comes from `snapshots` run 39744953979 and release `snapshot-au-nsw-bayside-2026-10-22`.
+Artifact: `artifacts/Q1.12/files.json`
+
 ### C1.13
 
 ```sh
