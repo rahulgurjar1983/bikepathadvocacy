@@ -2535,3 +2535,9 @@ uv run --frozen pytest tests/test_w1_12_hero_proof.py -q
 
 Expect: 10 passed on base and on head. On the test-grid page the title, sentence and four numbers end inside 844 px at 390 by 844 and inside 900 px at 1440 by 900, and the map starts inside 900 px. A hero pushed down fails both hero measures, and each planted "some_code_word", "step 4", "unnamed" or "3.1416" fails the plain-words measure.
 Artifact: `artifacts/W1.12/proof.json`
+
+### W1.9 part 5
+
+Run `uv run pytest tests/test_page_measures.py -k "size_measure or over_16" -q`.
+Expect: the size line reads "of at most 16,777,216, met" and a page padded past 16 MB fails.
+Artifact: `artifacts/W1.9/size-limit.txt`

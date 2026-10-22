@@ -1608,3 +1608,8 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 
 - The `map below the first screen at 1440 by 900` measure in `page_measures.py` cannot fail. `WORDS` hides `#plan-map` with `display:none` first, so `HERO` reads a zero box and the map count is 0. With `.hero-grid{margin-top:2000px}` the real map top is 2050 px, yet the line says "0 of at most 0, met". The proof checks the map with a direct browser read instead. Fix needs a new feature row: read the map box before `WORDS` hides it.
 - The test-grid title has 12 words, over the 10 limit; Bayside gives 8. The proof row does not assert the title length.
+
+### W1.9 part 5
+
+- The FR-20.22 size measure now allows 16 MB (16,777,216 bytes) per C1.13. The saved size tests pin the new limit. The token overrides were already in the template from part 1.
+- Left: the release script running `shots` (operator), and the real Bayside `checks.html` after the next release.
