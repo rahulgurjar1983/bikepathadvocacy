@@ -4,6 +4,7 @@ import re
 import shapely
 from shapely.geometry import LineString, MultiPoint
 
+from bikeplan.cost import load_rates
 from bikeplan.report_page import round_point
 
 PLAIN = {
@@ -69,7 +70,15 @@ def far_ends(lines: list) -> list:
     return [list(best[1]), list(best[2])]
 
 
+def change_cost(works: list, rates: dict) -> list[int] | None:
+    if any(work.get("cost") is None for work in works):
+        return None
+    likely = sum(work["cost"] for work in works) * 1_000_000
+    return [round(likely * rates["low"]), round(likely), round(likely * rates["high"])]
+
+
 def street_changes(report: dict) -> list[dict]:
+    rates = load_rates()
     groups: dict = {}
     for work in report["works"]:
         groups.setdefault((work["street"], work["fix"], work["stage"]), []).append(work)
@@ -83,6 +92,7 @@ def street_changes(report: dict) -> list[dict]:
         ]
         if not lines:
             continue
+        cost = change_cost(works, rates)
         changes.append(
             {
                 "street": street,
@@ -96,6 +106,7 @@ def street_changes(report: dict) -> list[dict]:
                 "ends": far_ends(lines),
                 "lines": lines,
             }
+            | ({"cost": cost} if cost else {})
         )
     changes.sort(key=lambda found: (found["stage"], -found["km"], found["street"], found["fix"]))
     taken: set = set()
