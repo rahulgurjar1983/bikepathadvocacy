@@ -192,3 +192,9 @@ def test_fr13_14_an_opening_that_does_not_match_shows_fails(spec_tree, capsys):
     assert run_checks(spec_tree) == 1
     assert status_of(entries(spec_tree[2])["FR-17.12"]) == "fails"
     assert "FR-17.12" in capsys.readouterr().err
+
+
+def test_fr20_24_a_fifth_council_plan_first_option_is_not_a_problem(tmp_path):
+    council = option("Council plan first", [0, 25, 50, 80], [0, 2, 5, 8], ["Ash St", "Fir St"])
+    make_release(tmp_path, options=[*options_four(), council])
+    assert opening_problems(tmp_path) == []

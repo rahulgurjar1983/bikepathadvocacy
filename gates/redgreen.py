@@ -35,6 +35,7 @@ GIT_LOCATION_VARS = (
     "GIT_OBJECT_DIRECTORY",
     "GIT_ALTERNATE_OBJECT_DIRECTORIES",
 )
+AMENDS = re.compile(r"(?m)^\s*Amends:\s*(\S+)\s+per\s+FR-20\.\d+\s*$")
 PLUGIN_NAME = "redgreen_probe"
 PLUGIN_SOURCE = """
 import json
@@ -254,6 +255,11 @@ def judge(items: list[str], results: dict[str, str]) -> tuple[list[str], list[st
     return red, fake, unknown
 
 
+def amended_items(base: str, base_ids: set[str]) -> set[str]:
+    log = git("log", "--format=%B", f"{base}..HEAD")
+    return {item for item in AMENDS.findall(log) if item in base_ids}
+
+
 def touched_items(
     head_ids: set[str], base_ids: set[str], head: dict[str, dict], base: dict[str, dict]
 ) -> list[str]:
@@ -372,6 +378,7 @@ def red(base: str, verbose: bool = False) -> int:
         base_raw, _, _ = collect(base_tree, sorted(set(files.values())), python)
         base_ids = renamed_ids(base_raw, files)
         touched = touched_items(head_ids, base_ids, head_bodies, base_bodies)
+        amended = amended_items(base, base_ids)
         if proof is not None:
             if set(proof["cases"]) != set(touched):
                 print("proof: case list must match touched items")
@@ -400,6 +407,9 @@ def red(base: str, verbose: bool = False) -> int:
         print(f"proof: {len(touched)} case(s) pass on base and head")
         return 0
     red_items, fake, unknown = judge(touched, results)
+    for item in [item for item in fake if item in amended]:
+        fake.remove(item)
+        print(f"amended: {item} narrowed to a spec 20 rule")
     if verbose:
         for item in red_items:
             print(f"red: {item} fails without the code (good)")

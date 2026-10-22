@@ -1,0 +1,20 @@
+{
+ "F155": " 27 spots ",
+ "F156": " 1.2 km ",
+ "F157": " 29.9 points ",
+ "F158": " 92.1 points ",
+ "F159": " 7.9 km ",
+ "F160": " 5.1 km ",
+ "F161": " 7.7 km ",
+ "F162": " 0.0 km ",
+ "F163": " 28.7 km ",
+ "F164": " 5.0 km ",
+ "keys": [
+  "council_km",
+  "council_share",
+  "fullplan",
+  "nospots",
+  "spotkm",
+  "spots"
+ ]
+}

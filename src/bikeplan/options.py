@@ -7,8 +7,9 @@ import shapely
 from networkx.algorithms.approximation import steiner_tree
 from shapely.geometry import LineString, Point
 
-from bikeplan.access import SNAP_M, bike_nodes, snap_points, sort_key
+from bikeplan.access import bike_nodes, main_part, snap_points, sort_key
 from bikeplan.config import Network
+from bikeplan.network import first as first_value
 from bikeplan.rating import option_totals
 
 NAMES = {
@@ -16,8 +17,26 @@ NAMES = {
     "shortest": "Shortest",
     "separated": "Main roads with separation",
     "mesh": "Mesh",
+    "corridors": "Corridors first",
+    "council": "Council plan first",
 }
-NO_BIKE_NODE = f"no bike-legal node within {SNAP_M:g} m"
+PATH_HIGHWAYS = {"cycleway", "path", "footway"}
+UNPAVED = {
+    "unpaved",
+    "dirt",
+    "grass",
+    "gravel",
+    "fine_gravel",
+    "ground",
+    "earth",
+    "mud",
+    "sand",
+    "compacted",
+    "pebblestone",
+    "grass_paver",
+}
+PATH_FACTOR = 0.5
+NEW_PATH_KEY = 100
 ISLAND = "no bike route to the main network"
 
 
@@ -97,6 +116,10 @@ def outside_route(full, group: dict, main: int, part: int) -> list | None:
     return [link_id(u, v, undirected[u][v]["key"]) for u, v in pairwise(path[1:-1])]
 
 
+def no_bike_node(network: Network) -> str:
+    return f"no bike-legal node within {network.snap_max_m:g} m"
+
+
 def join_places(graph, found: list[dict], entrances: list[dict], network: Network) -> Joined:
     wanted = sorted(
         (place for place in inside_boundary(graph, found) if place["type"] in network.place_types),
@@ -105,7 +128,10 @@ def join_places(graph, found: list[dict], entrances: list[dict], network: Networ
     full = graph
     graph = area_graph(graph, network)
     legal = set(bike_nodes(graph)[0])
-    nearest, _ = snap_points([(place["x"], place["y"]) for place in wanted], graph)
+    points = [(place["x"], place["y"]) for place in wanted]
+    main_nodes, _ = snap_points(points, graph, network.snap_max_m, main_part(full))
+    any_nodes, _ = snap_points(points, graph, network.snap_max_m)
+    nearest = [main or other for main, other in zip(main_nodes, any_nodes, strict=True)]
     joined, unjoined = [], []
     for place, near in zip(wanted, nearest, strict=True):
         node = entrance_node(place, entrances, legal)
@@ -114,7 +140,7 @@ def join_places(graph, found: list[dict], entrances: list[dict], network: Networ
             node, via = near, "nearest"
         base = {"id": place["osm_id"], "type": place["type"], "name": place["name"]}
         if node is None:
-            unjoined.append(base | {"reason": NO_BIKE_NODE})
+            unjoined.append(base | {"reason": no_bike_node(network)})
         else:
             joined.append(base | {"node": node, "via": via})
     group = components(graph)
@@ -155,7 +181,34 @@ def link_id(u, v, k) -> tuple:
     return a, b, k
 
 
-def link_table(graph, ratings: dict, network: Network | None = None, outside=()) -> dict:
+def is_unpaved(data: dict) -> bool:
+    return (
+        first_value(data.get("highway")) in PATH_HIGHWAYS
+        and first_value(data.get("surface")) in UNPAVED
+    )
+
+
+def candidate_row(candidate: dict) -> dict:
+    return {
+        "length_m": candidate["length_m"],
+        "level": 1,
+        "separated": True,
+        "no_fix": False,
+        "all_ages": False,
+        "assumed": False,
+        "unpaved": False,
+        "new_path": True,
+        "label": candidate["label"],
+    }
+
+
+def link_table(
+    graph,
+    ratings: dict,
+    network: Network | None = None,
+    outside=(),
+    candidates=(),
+) -> dict:
     table: dict = {}
     far = set(outside)
     full = graph
@@ -181,6 +234,8 @@ def link_table(graph, ratings: dict, network: Network | None = None, outside=())
                 "no_fix": rating["no_fix"],
                 "all_ages": rating.get("all_ages", rating["lts"] == 1),
                 "assumed": rating.get("assumed", False),
+                "unpaved": False,
+                "path": first_value(data.get("highway")) in PATH_HIGHWAYS,
                 **({"outside": True} if link_id(u, v, k) in far else {}),
             },
         )
@@ -190,14 +245,27 @@ def link_table(graph, ratings: dict, network: Network | None = None, outside=())
         found["no_fix"] = found["no_fix"] or rating["no_fix"]
         found["all_ages"] = found["all_ages"] and rating.get("all_ages", rating["lts"] == 1)
         found["assumed"] = found["assumed"] or rating.get("assumed", False)
+        if is_unpaved(data):
+            found["unpaved"] = True
+            found["all_ages"] = False
+    for index, candidate in enumerate(candidates):
+        a, b = sorted((candidate["a"], candidate["b"]))
+        table[a, b, NEW_PATH_KEY + index] = candidate_row(candidate)
     return dict(sorted(table.items()))
 
 
 def link_weight(option: str, link: dict, network: Network) -> float:
     length = link["length_m"]
+    if option == "corridors" and (link.get("path") or link.get("new_path")):
+        return length * PATH_FACTOR
+    near_plan = option == "council" and link.get("council")
+    if option in ("corridors", "council"):
+        option = "calm"
     if option == "shortest" or (option == "separated" and link["separated"]):
         return length
     factor = network.stress_factor[link["level"] - 1]
+    if near_plan:
+        factor *= network.council_plan_factor
     return length * factor * (network.no_fix_factor if link["no_fix"] else 1.0)
 
 
@@ -265,14 +333,29 @@ def mesh_links(graph, table: dict, joined: list, network: Network) -> list:
     return sorted(links)
 
 
-def build_options(graph, joined: Joined, ratings: dict, network: Network) -> list[dict]:
-    table = link_table(graph, ratings, network, joined.outside or ())
+def build_options(
+    graph,
+    joined: Joined,
+    ratings: dict,
+    network: Network,
+    corridors: list | None = None,
+    council: set | None = None,
+) -> list[dict]:
+    full = link_table(graph, ratings, network, joined.outside or (), corridors or ())
+    for key in council or ():
+        if key in full:
+            full[key]["council"] = True
+    table = {key: link for key, link in full.items() if not link.get("new_path")}
     terminals = sorted({item["node"] for item in joined.joined})
     found = [
         (name, tree_links(table, name, terminals, network))
         for name in ("calm", "shortest", "separated")
     ]
     found.append(("mesh", mesh_links(graph, table, joined.joined, network)))
+    if corridors is not None:
+        found.append(("corridors", tree_links(full, "corridors", terminals, network)))
+    if council is not None:
+        found.append(("council", tree_links(table, "council", terminals, network)))
     options = []
     for name, links in found:
         same = next((item["id"] for item in options if item["links"] == links), None)
@@ -281,11 +364,11 @@ def build_options(graph, joined: Joined, ratings: dict, network: Network) -> lis
                 "id": name,
                 "name": NAMES[name],
                 "links": links,
-                "km": sum(table[link]["length_m"] for link in links) / 1000,
+                "km": sum(full[link]["length_m"] for link in links) / 1000,
                 "same_as": same,
-                "outside": [link for link in links if table[link].get("outside")],
+                "outside": [link for link in links if full[link].get("outside")],
                 "totals": option_totals(
-                    table, links, joined.joined, max_trip_m=network.max_trip_km * 1000
+                    full, links, joined.joined, max_trip_m=network.max_trip_km * 1000
                 ),
             }
         )

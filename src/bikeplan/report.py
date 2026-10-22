@@ -13,6 +13,7 @@ from shapely.geometry import LineString
 from shapely.ops import linemerge, transform
 
 from bikeplan.config import ConfigError, Profile, Region
+from bikeplan.fit import parked_flags, parking_spaces
 from bikeplan.network import bike_segments
 from bikeplan.stress import score_edges
 from bikeplan.width import fuse
@@ -71,9 +72,9 @@ FIGURES = [
     ),
     (
         "F2",
-        "Street that meets the model's all-ages criteria (AAA)",
+        "Street confirmed all ages from recorded evidence",
         "spec 04",
-        "I score each edge for stress and keep the segments where every edge is AAA.",
+        "I score each edge for stress and keep the segments where every edge is confirmed AAA.",
         "r['aaa'] == '1'",
     ),
     (
@@ -113,6 +114,31 @@ def segment_rows(graph, profile: Profile, fixes: dict) -> list[list]:
             ]
         )
     return sorted(rows)
+
+
+def model_segment_rows(graph, profile: Profile) -> list[list]:
+    scores = score_edges(graph, profile)
+    rows = []
+    for segment_id, segment in bike_segments(graph).items():
+        keys = [key for key, _ in segment["edges"]]
+        rows.append(
+            [
+                str(segment_id),
+                f"{segment['inside_m']:.3f}",
+                max(scores[key]["lts"] for key in keys),
+                int(all(scores[key]["aaa"] for key in keys)),
+            ]
+        )
+    return sorted(rows)
+
+
+def street_parking(graph, profile: Profile) -> int:
+    return sum(
+        parking_spaces(
+            segment["inside_m"], sum(parked_flags(segment["edges"][0][1], profile)), profile
+        )
+        for segment in bike_segments(graph).values()
+    )
 
 
 def segments_text(rows: list[list]) -> str:
@@ -224,6 +250,40 @@ def map_data(graph, rows: list[list], snapshot: Path, projects: dict) -> dict:
         "projects": projects,
         "segments": merge_pieces(segments),
     }
+
+
+def model_data(graph, rows: list[list]) -> dict:
+    to_lonlat = Transformer.from_crs(graph.graph["crs"], 4326, always_xy=True)
+    scored = {row[0]: row for row in rows}
+    pieces = []
+    for segment_id, segment in bike_segments(graph).items():
+        lines = map_lines(segment, graph, to_lonlat)
+        if not lines:
+            continue
+        data = segment["edges"][0][1]
+        row = scored[str(segment_id)]
+        pieces.append(
+            {
+                "name": first(data.get("name")),
+                "highway": first(data.get("highway")),
+                "lts": row[2],
+                "aaa": bool(row[3]),
+                "fix": None,
+                "lines": lines,
+            }
+        )
+    merged = [
+        {
+            "name": item["name"],
+            "highway": item["highway"],
+            "lts": item["lts"],
+            "model_all_ages": item["aaa"],
+            "lines": item["lines"],
+        }
+        for item in merge_pieces(pieces)
+    ]
+    metres = sum(float(row[1]) for row in rows if row[3])
+    return {"pieces": merged, "km": {"aaa": round(metres / 1000, 3)}}
 
 
 def figure_list(text: str, map_text: str) -> list[dict]:

@@ -24,6 +24,10 @@ document.addEventListener("DOMContentLoaded", function () {
     secondary: 5, secondary_link: 5, primary: 6, primary_link: 6, trunk: 7, trunk_link: 7,
   };
 
+  function rated(piece) {
+    return "model_all_ages" in piece ? piece.model_all_ages : piece.aaa;
+  }
+
   function describe(text) {
     const box = document.createElement("div");
     box.textContent = text;
@@ -40,7 +44,20 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  const streetLayers = data.streets.pieces.map(function (piece) {
+  function unpacked(piece) {
+    return Object.assign({}, piece, {
+      lines: piece.d.map(function (flat) {
+        const line = [[flat[0] / 1e5, flat[1] / 1e5]];
+        for (let i = 2; i < flat.length; i += 2) {
+          const last = line[line.length - 1];
+          line.push([last[0] + flat[i] / 1e5, last[1] + flat[i + 1] / 1e5]);
+        }
+        return line;
+      }),
+    });
+  }
+  const streetPieces = data.streets.model_pieces ? data.streets.model_pieces.map(unpacked) : data.streets.pieces;
+  const streetLayers = streetPieces.map(function (piece) {
     const layer = L.polyline(piece.lines, {
       pane: "streets",
       className: "street-line",
@@ -52,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
       layer,
       { "data-level": String(piece.lts) },
       (piece.name || "Unnamed street") + ", " + piece.highway + ". Stress level " + piece.lts +
-        ", modelled. " + (piece.aaa ? "Rated all ages." : "Not rated all ages."),
+        ", modelled. " + (rated(piece) ? "Rated all ages." : "Not rated all ages."),
     );
     return { layer: layer, piece: piece };
   });
@@ -62,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function refreshStreets() {
     for (const street of streetLayers) {
       const shown =
-        overlay.streets && levels[street.piece.lts] && (!overlay.aaa || street.piece.aaa);
+        overlay.streets && levels[street.piece.lts] && (!overlay.aaa || rated(street.piece));
       if (shown) street.layer.addTo(map);
       else street.layer.remove();
     }

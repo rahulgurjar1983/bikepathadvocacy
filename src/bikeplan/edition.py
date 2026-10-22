@@ -11,6 +11,14 @@ from shapely.geometry import LineString
 
 from bikeplan.access import in_scope_places, places
 from bikeplan.corridors import OutsideBox, corridor_report, load_corridors
+from bikeplan.council import (
+    council_report,
+    load_plan,
+    load_wards,
+    plan_links,
+    plan_routes,
+    ward_report,
+)
 from bikeplan.fit import segment_fit
 from bikeplan.ladder import (
     build_ladder,
@@ -18,10 +26,12 @@ from bikeplan.ladder import (
     link_reasons,
     link_roads,
     link_streets,
+    open_spots,
 )
 from bikeplan.network import bike_segments
 from bikeplan.network_report import choose, network_report
-from bikeplan.options import build_options, join_places, link_table
+from bikeplan.options import NEW_PATH_KEY, build_options, join_places, link_table
+from bikeplan.propose import corridor_candidates, read_corridors
 from bikeplan.rating import longest_trip_m, model_ratings
 from bikeplan.report import GLOSSARY, SOURCES, STYLE, entry, glossary_section, snapshot_date
 from bikeplan.snapshot import buffered_box
@@ -68,16 +78,19 @@ def number(value, places_shown):
     return round(value) if places_shown == 0 else round(value, places_shown)
 
 
-def street_overlay(pieces: list[dict], rows: list[list]) -> dict:
+def street_overlay(pieces: list[dict], rows: list[list], model: dict | None = None) -> dict:
     metres = {str(level): 0.0 for level in (1, 2, 3, 4)} | {"aaa": 0.0}
     for row in rows:
         metres[str(row[2])] += float(row[1])
         if row[3]:
             metres["aaa"] += float(row[1])
-    return {
+    found = {
         "pieces": [{key: value for key, value in item.items() if key != "fix"} for item in pieces],
         "km": {key: round(value / 1000, 3) for key, value in metres.items()},
     }
+    if model is not None:
+        found |= {"model_pieces": model["pieces"], "model_km": model["km"]}
+    return found
 
 
 def option_data(item: dict) -> dict:
@@ -102,7 +115,17 @@ def option_data(item: dict) -> dict:
         "works": [
             {
                 key: work[key]
-                for key in ("street", "fix", "km", *SPENT, "least", "outside")
+                for key in (
+                    "street",
+                    "fix",
+                    "km",
+                    *SPENT,
+                    "least",
+                    "outside",
+                    "spot",
+                    "trips",
+                    "price",
+                )
                 if key in work
             }
             for work in item["works"]
@@ -117,12 +140,21 @@ def option_data(item: dict) -> dict:
             for found in item.get("blockers", [])
         ],
         **({"ceiling": item["ceiling"]} if "ceiling" in item else {}),
+        **({"no_spots": item["no_spots"]} if "no_spots" in item else {}),
+        **({"no_spots_safe": item["no_spots_safe"]} if "no_spots_safe" in item else {}),
         **({"links": item["links"]} if "links" in item else {}),
         **({"outside": item["outside"]} if item.get("outside") else {}),
     }
 
 
-def options_text(options: list[dict], share: float, joined, corridor: dict | None = None) -> str:
+def options_text(
+    options: list[dict],
+    share: float,
+    joined,
+    corridor: dict | None = None,
+    council: dict | None = None,
+    wards: dict | None = None,
+) -> str:
     data = {
         "share": share,
         "options": [option_data(item) for item in options],
@@ -134,6 +166,8 @@ def options_text(options: list[dict], share: float, joined, corridor: dict | Non
             if corridor
             else {}
         ),
+        **({"council": council} if council else {}),
+        **({"wards": wards} if wards else {}),
     }
     return json.dumps(data, sort_keys=True, separators=(",", ":")) + "\n"
 
@@ -171,16 +205,24 @@ def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list
         place["x"], place["y"] = to_metres.transform(place["lon"], place["lat"])
     found = in_scope_places(found, graph.graph["boundary"], region.analysis_buffer_m)
     joined = join_places(graph, found, [], profile.network)
-    options = build_options(graph, joined, ratings, profile.network)
-    table = link_table(graph, ratings, profile.network, joined.outside or ())
+    corridors = read_corridors(snapshot, graph.graph["crs"])
+    candidates = None if corridors is None else corridor_candidates(graph, corridors)
+    plan = load_plan(region.id)
+    near = None
+    if plan is not None:
+        routes = plan_routes(plan, graph.graph["crs"], graph.graph["boundary"])
+        near = plan_links(graph, routes, profile.network)
+    options = build_options(graph, joined, ratings, profile.network, candidates, near)
+    table = link_table(graph, ratings, profile.network, joined.outside or (), candidates or ())
     area = region.name.split(",")[0].removesuffix(" Council")
     label = f"outside {area}"
     fixes = link_fixes(graph, table, fits, profile, weights)
+    open_ends = open_spots(graph, table, fits, profile, weights, fixes)
     streets = link_streets(graph)
     roads = link_roads(
         graph, profile.network.state_functions, profile.fit.speed_approval_body.value
     )
-    reasons = link_reasons(graph, table, fits)
+    reasons = link_reasons(graph, table, fits, scores, profile)
 
     def point(node):
         data = graph.nodes[node]
@@ -188,6 +230,9 @@ def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list
         return [round(lon, 5), round(lat, 5)]
 
     def line(link):
+        if link[2] >= NEW_PATH_KEY:
+            shape = candidates[link[2] - NEW_PATH_KEY]["geometry"]
+            return [round(value, 1) for xy in shape.coords for value in xy[:2]]
         key = next(k for k in (link, (link[1], link[0], link[2])) if graph.has_edge(*k))
         data = graph.edges[key]
         shape = data.get("geometry") or LineString(
@@ -207,6 +252,8 @@ def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list
             profile.network.max_trip_km * 1000,
             roads,
             reasons,
+            open_ends,
+            profile.fit.spot_max_m.value,
         )
         for work in ladder["works"]:
             if work.get("outside"):
@@ -224,6 +271,8 @@ def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list
                 "no_fix": ladder["no_fix"],
                 "blockers": ladder["blockers"],
                 "ceiling": ladder["ceiling"],
+                "no_spots": ladder["no_spots"],
+                "no_spots_safe": ladder["no_spots_safe"],
                 "outside": [index for index, link in enumerate(item["links"]) if link in far],
                 "links": [line(link) for link in item["links"]],
                 "lines": [
@@ -243,6 +292,7 @@ def build_options_report(graph, region, profile, snapshot, scores) -> tuple[list
             "lat": point(place["node"])[1],
             "type": place["type"],
             "name": place["name"],
+            "id": place["id"],
         }
         for place in joined.joined
     ]
@@ -596,10 +646,40 @@ def corridor_data(graph, region, profile, snapshot, options) -> dict | None:
     return corridor_report(graph, corridors, graph.graph["ratings"], pick, choice, profile.network)
 
 
+def pick_of(options, profile) -> tuple[dict, dict]:
+    choice = choose(options, profile.network.recommend_share)
+    return next(item for item in options if item["id"] == choice["pick"]), choice
+
+
+def council_data(graph, region, profile, options) -> dict | None:
+    plan = load_plan(region.id)
+    if plan is None:
+        return None
+    pick, choice = pick_of(options, profile)
+    return council_report(graph, plan, graph.graph["ratings"], pick, choice, profile.network)
+
+
+def ward_data(graph, region, profile, options, marks, snapshot) -> dict | None:
+    wards = load_wards(region.id)
+    if wards is None:
+        return None
+    pick, _ = pick_of(options, profile)
+    return ward_report(graph, wards, pick, marks, snapshot)
+
+
 def edition(
-    region, options, marks, joined, share, old, streets=None, corridor=None
+    region,
+    options,
+    marks,
+    joined,
+    share,
+    old,
+    streets=None,
+    corridor=None,
+    council=None,
+    wards=None,
 ) -> tuple[str, str, list, str]:
-    text = options_text(options, share, joined, corridor)
+    text = options_text(options, share, joined, corridor, council, wards)
     first = max(int(item["id"][1:]) for item in old) + 1
     figures = Figures(options, share, joined, text, first, corridor)
     head, body = network_report(options, share, marks, figures.ref, streets, corridor)
@@ -611,19 +691,25 @@ def edition(
     return head, body, made, text
 
 
-def edition_page(region, head, body, figures, details) -> str:
+def edition_parts(region, body, figures, details) -> str:
     area = region.name.split(",")[0]
     terms = {area: "the council area this report covers.", **GLOSSARY, **TERMS}
-    author = f"<p>By {html.escape(region.report.author)}</p>" if region.report.author else ""
     appendix = "".join(entry(item) for item in figures)
+    return (
+        f"{body}{glossary_section(terms)}"
+        '<section id="appendix"><h2>How to check every number</h2>'
+        f"<p>This report uses the data snapshot of {snapshot_date(region)}.</p>"
+        f"{appendix}{details}</section>"
+    )
+
+
+def edition_page(region, head, body, figures, details) -> str:
+    author = f"<p>By {html.escape(region.report.author)}</p>" if region.report.author else ""
     return (
         '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width, initial-scale=1">'
         f"<title>Bike paths in {html.escape(region.name)}</title>"
         f"<style>{STYLE}</style>{head}</head><body>"
         f"<h1>Bike paths in {html.escape(region.name)}</h1>{author}"
-        f"{body}{glossary_section(terms)}"
-        '<section id="appendix"><h2>How to check every number</h2>'
-        f"<p>This report uses the data snapshot of {snapshot_date(region)}.</p>"
-        f"{appendix}{details}</section></body></html>\n"
+        f"{edition_parts(region, body, figures, details)}</body></html>\n"
     )

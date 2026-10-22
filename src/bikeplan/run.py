@@ -7,39 +7,61 @@ from importlib.metadata import version
 from pathlib import Path
 
 from bikeplan.access import write_access
+from bikeplan.backdrop import backdrop_layers
 from bikeplan.change import (
     change_figures,
     frontier_data,
 )
 from bikeplan.config import ConfigError, config_hash
+from bikeplan.cost import load_rates
+from bikeplan.council import compact_council, compact_wards
 from bikeplan.edition import (
     build_options_report,
     corridor_data,
+    council_data,
     edition,
-    edition_page,
+    edition_parts,
     street_overlay,
+    ward_data,
 )
 from bikeplan.fit import segment_fit
+from bikeplan.map_data import map_data as page_data
+from bikeplan.map_kml import kml_layers, kml_problems, map_kml
+from bikeplan.map_page import map_page
 from bikeplan.network import bike_segments, build
+from bikeplan.network_report import choose
 from bikeplan.page import (
+    ASSETS,
     assumptions_section,
     credits_for,
     credits_section,
     method_section,
     rebuild_section,
 )
+from bikeplan.paths_today import read_paths
 from bikeplan.proposal_inputs import (
     cost_figures,
     load_proposal_inputs,
 )
 from bikeplan.proposal_record import proposal_record
+from bikeplan.proposal_views import option_view
 from bikeplan.propose import KINDS, csv_fields, csv_row, write_propose
 from bikeplan.report import (
     check_leaks,
     figure_list,
     map_data,
+    model_data,
+    model_segment_rows,
     segment_rows,
     segments_text,
+    street_parking,
+)
+from bikeplan.report_page import (
+    five_minute_page,
+    page_figures,
+    path_figures,
+    price_works,
+    report_data,
 )
 from bikeplan.snapshot import verify_snapshot
 from bikeplan.stress import score_edges, stress_features, stress_summary
@@ -192,6 +214,11 @@ def csv_bytes(records: list[dict], kinds: list) -> bytes:
     return buffer.getvalue().encode()
 
 
+LAYER_FOLDER = "map-layers"
+MAP_FILES = ("map.html", "map.kml")
+MAP_SUMS = "MAP-SHA256SUMS"
+
+
 def build_all(
     region, profile, snapshot: str | Path, proposal_inputs=None
 ) -> tuple[dict, dict, dict, list[dict]]:
@@ -278,6 +305,14 @@ def build_all(
     figures = sorted(figures, key=lambda item: int(item["id"][1:]))
     options, marks, joined = build_options_report(graph, region, profile, snapshot, scores)
     corridor = corridor_data(graph, region, profile, snapshot, options)
+    council = council_data(graph, region, profile, options)
+    wards = ward_data(graph, region, profile, options, marks, snapshot)
+    council_json = None if council is None else compact_council(council)
+    wards_json = None if wards is None else compact_wards(wards)
+    streets = street_overlay(
+        map_payload["segments"], rows, model_data(graph, model_segment_rows(graph, profile))
+    )
+    price_works(options, load_rates())
     head, body, option_figures, options_json = edition(
         region,
         options,
@@ -285,19 +320,60 @@ def build_all(
         joined,
         profile.network.recommend_share,
         figures,
-        street_overlay(map_payload["segments"], rows),
+        streets,
         corridor,
+        council_json,
+        wards_json,
     )
+    choice = choose(options, profile.network.recommend_share)
     figures = sorted([*figures, *option_figures], key=lambda item: int(item["id"][1:]))
-    page_text = edition_page(
+    figures += page_figures(
+        options,
+        choice,
+        options_json,
+        int(figures[-1]["id"][1:]) + 1,
+        council_json,
+        wards_json,
+    )
+    pick = next(item for item in options if item["id"] == choice["pick"])
+    paths = read_paths(
+        snapshot,
+        [line["line"] for line in pick["lines"]],
+        region.name.split(",")[0].removesuffix(" Council"),
+    )
+    paths_text = json.dumps({"items": paths}, sort_keys=True) + "\n"
+    figures += path_figures(paths, paths_text, int(figures[-1]["id"][1:]) + 1)
+    data = report_data(
+        options,
+        choice,
+        marks,
+        joined.counts,
+        streets,
+        corridor,
+        map_payload["boundary"],
+        paths,
+        load_rates(),
+        council,
+        None if wards is None else wards["areas"],
+        backdrop_layers(Path(snapshot), map_payload["boundary"], region.analysis_buffer_m),
+        street_parking(graph, profile),
+    )
+    page_text = five_minute_page(
         region,
+        data,
         head,
-        body,
+        edition_parts(
+            region,
+            body,
+            figures,
+            option_view(proposal)
+            + f"<script>{(ASSETS / 'option_view.js').read_text()}</script>"
+            + method_section()
+            + assumptions_section(profile)
+            + credits_section(summary["credits"])
+            + rebuild_section(summary),
+        ),
         figures,
-        method_section()
-        + assumptions_section(profile)
-        + credits_section(summary["credits"])
-        + rebuild_section(summary),
     )
     outputs = {
         "access_homes.geojson": dump(
@@ -321,6 +397,16 @@ def build_all(
         "proposal.json": proposal_bytes,
         "segments.csv": text.encode(),
     }
+    if paths:
+        files["paths.json"] = paths_text.encode()
+    mapped = page_data(data, pick, paths, region, manifest["snapshot_id"])
+    layers = kml_layers(mapped)
+    problems = [text for name, blob in layers.items() for text in kml_problems(name, blob)]
+    if problems:
+        raise ConfigError("; ".join(problems))
+    files["map.html"] = map_page(region, mapped).encode()
+    files["map.kml"] = map_kml(layers)
+    files |= {f"{LAYER_FOLDER}/{name}.kml": blob for name, blob in layers.items()}
     return summary, outputs, files, figures
 
 
@@ -348,6 +434,15 @@ def write_report(
         raise ConfigError("report.author is missing: the report needs the name and suburb")
     _, outputs, files, figures = build_all(region, profile, snapshot, proposal_inputs)
     check_leaks(outputs["report.html"].decode(), out, snapshot)
-    lines = write_files(Path(out), {**files, "report.html": outputs["report.html"]})
+    check_leaks(files["map.html"].decode(), out, snapshot)
+    layers = {name: blob for name, blob in files.items() if name.startswith(f"{LAYER_FOLDER}/")}
+    mapped = {name: blob for name, blob in files.items() if name in MAP_FILES}
+    top = {name: blob for name, blob in files.items() if name not in layers and name not in mapped}
+    lines = write_files(Path(out), {**top, "report.html": outputs["report.html"]})
     (Path(out) / "SHA256SUMS").write_text("".join(lines))
+    (Path(out) / MAP_SUMS).write_text("".join(write_files(Path(out), mapped)))
+    folder = Path(out) / LAYER_FOLDER
+    if layers:
+        inner = write_files(folder, {name.split("/", 1)[1]: blob for name, blob in layers.items()})
+        (folder / "SHA256SUMS").write_text("".join(inner))
     return figures

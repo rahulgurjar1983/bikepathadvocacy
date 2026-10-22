@@ -1,0 +1,87 @@
+{
+ "Ward 1": {
+  "centres": [
+   0,
+   0,
+   1
+  ],
+  "schools": [
+   0,
+   0,
+   10
+  ],
+  "stations": [
+   0,
+   0,
+   0
+  ]
+ },
+ "Ward 2": {
+  "centres": [
+   0,
+   1,
+   6
+  ],
+  "schools": [
+   0,
+   1,
+   8
+  ],
+  "stations": [
+   0,
+   0,
+   6
+  ]
+ },
+ "Ward 3": {
+  "centres": [
+   0,
+   0,
+   1
+  ],
+  "schools": [
+   0,
+   0,
+   12
+  ],
+  "stations": [
+   0,
+   0,
+   3
+  ]
+ },
+ "Ward 4": {
+  "centres": [
+   0,
+   0,
+   1
+  ],
+  "schools": [
+   0,
+   0,
+   8
+  ],
+  "stations": [
+   0,
+   0,
+   1
+  ]
+ },
+ "Ward 5": {
+  "centres": [
+   0,
+   0,
+   0
+  ],
+  "schools": [
+   0,
+   0,
+   5
+  ],
+  "stations": [
+   0,
+   0,
+   0
+  ]
+ }
+}

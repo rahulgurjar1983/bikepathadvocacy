@@ -1,0 +1,6 @@
+{
+  "reason": "axe-core on release v2026.10.19-pr209: white numbers on the #e8590c spot markers reach 3.58:1, below 4.5:1. #c2410c reaches 5.18:1 and passes the colour-blind checks; finished spots use #1d4ed8 in both themes.",
+  "light": {"--spot": "#c2410c", "--spot-done": "#1d4ed8"},
+  "dark": {"--spot-done": "#1d4ed8"},
+  "rules": {".smark.done": "background:var(--spot-done)"}
+}

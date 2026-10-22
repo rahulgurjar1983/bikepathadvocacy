@@ -150,6 +150,7 @@ class Quietway:
 class Fit:
     prefer_separation: Num
     speed_approval_body: Num
+    spot_max_m: Num = Num(100.0, "assumption: a short piece the council can build in one job", True)
 
 
 @dataclass(frozen=True)
@@ -179,8 +180,10 @@ class Network:
     recommend_share: float = 0.9
     boundary_buffer_m: float = 200.0
     max_trip_km: float = 5.0
+    snap_max_m: float = 300.0
     corridor_match_m: float = 100.0
     corridor_cover_share: float = 0.8
+    council_plan_factor: float = 0.5
     state_functions: tuple[str, ...] = ()
 
 
@@ -407,8 +410,10 @@ class ProfileReader(Reader):
             "recommend_share",
             "boundary_buffer_m",
             "max_trip_km",
+            "snap_max_m",
             "corridor_match_m",
             "corridor_cover_share",
+            "council_plan_factor",
             "state_functions",
         }
         data = self.mapping(raw, "network", keys, set())
@@ -444,6 +449,11 @@ class ProfileReader(Reader):
             if trip <= 0:
                 raise self.fail("network.max_trip_km", "must be above 0")
             found["max_trip_km"] = trip
+        if "snap_max_m" in data:
+            snap = float(self.number(data["snap_max_m"], "network.snap_max_m"))
+            if snap <= 0:
+                raise self.fail("network.snap_max_m", "must be above 0")
+            found["snap_max_m"] = snap
         if "corridor_match_m" in data:
             match = float(self.number(data["corridor_match_m"], "network.corridor_match_m"))
             if match <= 0:
@@ -454,6 +464,11 @@ class ProfileReader(Reader):
             if not 0 < cover <= 1:
                 raise self.fail("network.corridor_cover_share", "must be above 0 and at most 1")
             found["corridor_cover_share"] = cover
+        if "council_plan_factor" in data:
+            factor = float(self.number(data["council_plan_factor"], "network.council_plan_factor"))
+            if not 0 < factor <= 1:
+                raise self.fail("network.council_plan_factor", "must be above 0 and at most 1")
+            found["council_plan_factor"] = factor
         if "state_functions" in data:
             names = data["state_functions"]
             if not isinstance(names, list):

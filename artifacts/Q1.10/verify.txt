@@ -1,0 +1,20 @@
+# real snapshot, all five adapters
+boundary.geojson ok ac3759ea1b3cfbefc117487220db2b242e7add55
+network.osm.gz ok bb6855851740aa49f56b6ed4c4a399ae45224be37f
+places.json ok f18eb0be3fb914837fb449a77dd030452b6e6253eca91
+population.gpkg ok 7228344d8fad1e6995db2c42c2dc7de2119d7175c
+parcels.gpkg ok d23f4d626ebe0362bfc311cbb5900f4994a82c8e1dc5
+elevation.tif ok 936fc73e4fb35bd5aed94775c669245456894b5775b
+road_segments.gpkg ok 09f7ec06bfdda52e8c9bf8c178549a59113fd2
+speed_zones.gpkg ok cd297432d46d2c3c048afd94ff3ff49f8b4e0681
+exit 0
+# old 2026-10-01 snapshot
+copernicus_glo30 missing: elevation.tif is not in the manifest
+nsw_road_segment missing: road_segments.gpkg is not in the manifest
+tfnsw_speed_zones missing: speed_zones.gpkg is not in the manifest
+boundary.geojson ok 469ca8728a68d662b3759a2a41579e2ac9e65af23d16d5d2cacead7673cbb8d7
+network.osm.gz ok 8510df86b2c420b95ec66023bf68d474f6da466980d9e266cc54d6deb365dd5f
+places.json ok a3c4204174eb00b4cc43ef27f8018ff62cce25dd8c9371eac1697752e7b3f7ff
+population.gpkg ok 7228344d8fad1e6995db2c42c2dc7de2119d7175c5c4a7022824021541697897
+parcels.gpkg ok b67ed12f0c0f73297541540b57e9f62f5bb7e2124d643b2cda739a6c240e5615
+exit 1

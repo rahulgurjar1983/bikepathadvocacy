@@ -72,3 +72,63 @@ def evidence_view(record):
         + html.escape(json.dumps(selected["evidence_limits"], sort_keys=True))
         + "</code></p></section>"
     )
+
+
+def option_view(record):
+    packages = record["option_packages"]
+    if not packages:
+        return (
+            '<section id="option-packages"><h2>Goal and stage packages</h2>'
+            '<p id="option-package-empty">No sourced goal or stage packages are saved. '
+            "The curve package above is the only selected choice.</p></section>"
+        )
+    selected = record.get("selected", {})
+    sheeted = {
+        sheet["id"] for block in record.get("project_sheets", []) for sheet in block["sheets"]
+    }
+    keys = [f"{p['identity']['type']}:{p['identity']['option']}" for p in packages]
+    choices = "".join(
+        f'<option value="{html.escape(key, quote=True)}">{html.escape(key)}: '
+        f"{html.escape(p['label'])}</option>"
+        for key, p in zip(keys, packages, strict=True)
+    )
+
+    def field(name, value):
+        text = html.escape(json.dumps(value, sort_keys=True))
+        return f'<p>{name}: <code data-option-field="{name.lower()}">{text}</code></p>'
+
+    articles = "".join(
+        f'<div data-option-id="{html.escape(p["identity"]["option"], quote=True)}" '
+        f'data-option-type="{html.escape(p["identity"]["type"], quote=True)}"'
+        ">"
+        f"<h3>{html.escape(p['label'])}</h3>"
+        f'<p>Kind: <code data-option-field="kind">{html.escape(p["kind"])}</code>; '
+        f'evidence: <code data-option-field="mode">{html.escape(p["evidence_mode"])}'
+        "</code></p>"
+        + field("Parents", p["parents"])
+        + field("Projects", p["project_ids"])
+        + field("Elements", p["element_ids"])
+        + field(
+            "Shared",
+            {
+                "elements": sorted(set(p["element_ids"]) & set(selected.get("element_ids", []))),
+                "projects": sorted(set(p["project_ids"]) & set(selected.get("project_ids", []))),
+            },
+        )
+        + field("Gaps", {"projects_without_sheet": sorted(set(p["project_ids"]) - sheeted)})
+        + '<p>Return trips: unknown. <code data-option-field="outcome">Not yet recomputed. '
+        + html.escape(p["outcomes"]["strict_return_trips"]["reason"])
+        + "</code></p></div>"
+        for p in packages
+    )
+    return (
+        '<section id="option-packages"><h2>Goal and stage packages</h2>'
+        "<p>These sourced concepts have their own identities. They never carry a "
+        "curve rank, and choosing one here does not change the curve package above. "
+        "Return trips stay unknown until they are recomputed. Shared lists show works "
+        "that also sit in the selected curve package; each counts once. "
+        "Gaps name projects with no saved plan sheet.</p>"
+        '<label>Package <select id="option-package-select">'
+        f"{choices}</select></label>"
+        f'<p id="option-package-label">{html.escape(keys[0])}</p>{articles}</section>'
+    )

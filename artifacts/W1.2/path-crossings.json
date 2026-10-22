@@ -1,0 +1,6316 @@
+{
+  "options": {
+    "calm": {
+      "blocker_details": [
+        {
+          "km": 0.14855940101200255,
+          "links": [
+            [
+              175655299,
+              11536156670,
+              0
+            ],
+            [
+              4010143678,
+              4010143679,
+              0
+            ],
+            [
+              4010143678,
+              7025531921,
+              0
+            ],
+            [
+              4010143679,
+              11536156670,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path",
+            "too narrow for a road diet"
+          ],
+          "road_type": "primary",
+          "street": "Croydon Road",
+          "trips": 59
+        },
+        {
+          "km": 0.13315752837842887,
+          "links": [
+            [
+              32846630,
+              5646637350,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "the wrong kind of road for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "primary_link",
+          "street": "unnamed primary_link road",
+          "trips": 44
+        },
+        {
+          "km": 0.050377401800693854,
+          "links": [
+            [
+              3700678807,
+              8946667527,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Turrella Street",
+          "trips": 32
+        },
+        {
+          "km": 0.07061112477076648,
+          "links": [
+            [
+              15186774,
+              1848414231,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Wollongong Road",
+          "trips": 29
+        },
+        {
+          "km": 0.12451742320832668,
+          "links": [
+            [
+              1836629225,
+              2620894766,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "The Avenue",
+          "trips": 26
+        },
+        {
+          "km": 0.013616669783853591,
+          "links": [
+            [
+              1105759489,
+              1105759490,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "primary",
+          "street": "Rocky Point Road",
+          "trips": 20
+        },
+        {
+          "km": 0.09643493307135848,
+          "links": [
+            [
+              1836931349,
+              9722228429,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too many lanes for a quiet street",
+            "too narrow for a cycleway",
+            "too narrow for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Joffre Crescent",
+          "trips": 14
+        },
+        {
+          "km": 0.05114948089840337,
+          "links": [
+            [
+              1099228030,
+              1099228060,
+              0
+            ],
+            [
+              1099228060,
+              1099228069,
+              0
+            ],
+            [
+              1099228069,
+              1146670662,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "would not make the street all ages as a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "service",
+          "street": "unnamed service road",
+          "trips": 14
+        }
+      ],
+      "blockers": 8,
+      "by_fix": {
+        "bike_walk_signals": 5,
+        "short_path_crossing": 10
+      },
+      "ceiling": 100.0,
+      "no_fix_streets": 8,
+      "parking_spaces": 80,
+      "score_all_built": 73.88535031847134,
+      "site_check": 10,
+      "spot_m": 745,
+      "spot_works": [
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.05502986336639997,
+          "lane_km": 0.0,
+          "least": 8.275149316832,
+          "links": [
+            [
+              891666745,
+              11299591759,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.05502986336639997,
+          "score": 8.275149316832,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Francis Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.029560613747107875,
+          "lane_km": 0.0,
+          "least": 0.1478030687355394,
+          "links": [
+            [
+              1099084045,
+              4114086016,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.029560613747107875,
+          "score": 0.1478030687355394,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed primary_link road"
+        },
+        {
+          "assumed": true,
+          "fix": "bike_walk_signals",
+          "km": 0.004111558843623072,
+          "lane_km": 0.0,
+          "least": 8.0,
+          "links": [
+            [
+              1827326778,
+              11076374984,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.0,
+          "score": 8.0,
+          "site_check": false,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed cycleway road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.058290829498573574,
+          "lane_km": 0.0,
+          "least": 8.291454147492868,
+          "links": [
+            [
+              1832925276,
+              11722919439,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.058290829498573574,
+          "score": 8.291454147492868,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Wilson Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.07670523093133427,
+          "lane_km": 0.0,
+          "least": 8.383526154656671,
+          "links": [
+            [
+              1832925372,
+              6586214014,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.07670523093133427,
+          "score": 8.383526154656671,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Wilson Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.08900195547360164,
+          "lane_km": 0.0,
+          "least": 8.445009777368009,
+          "links": [
+            [
+              1848414188,
+              1848414219,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.08900195547360164,
+          "score": 8.445009777368009,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Knoll Avenue"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.06265413682922573,
+          "lane_km": 0.0,
+          "least": 8.31327068414613,
+          "links": [
+            [
+              1873133644,
+              12028885184,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.06265413682922573,
+          "score": 8.31327068414613,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Francis Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.048709081021886216,
+          "lane_km": 0.0,
+          "least": 8.243545405109431,
+          "links": [
+            [
+              1937589190,
+              9622862074,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.048709081021886216,
+          "score": 8.243545405109431,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Hartill-Law Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "bike_walk_signals",
+          "km": 0.009898609694124011,
+          "lane_km": 0.0,
+          "least": 0.0,
+          "links": [
+            [
+              4114086016,
+              7477631854,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.0,
+          "score": 0.0,
+          "site_check": false,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed cycleway road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.004530759162241748,
+          "lane_km": 0.0,
+          "least": 0.022653795811208743,
+          "links": [
+            [
+              6060488511,
+              9369685111,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.004530759162241748,
+          "score": 0.022653795811208743,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed service road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.01174149882652031,
+          "lane_km": 0.0,
+          "least": 8.058707494132602,
+          "links": [
+            [
+              6567463699,
+              6567463701,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.01174149882652031,
+          "score": 8.058707494132602,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed secondary road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.01075853277122183,
+          "lane_km": 0.0,
+          "least": 8.05379266385611,
+          "links": [
+            [
+              6567463701,
+              6567463735,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.01075853277122183,
+          "score": 8.05379266385611,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed secondary road"
+        },
+        {
+          "assumed": true,
+          "fix": "bike_walk_signals",
+          "km": 0.26856976388423753,
+          "lane_km": 0.0,
+          "least": 8.0,
+          "links": [
+            [
+              11076374978,
+              13375365152,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.0,
+          "score": 8.0,
+          "site_check": false,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed cycleway road"
+        },
+        {
+          "assumed": true,
+          "fix": "bike_walk_signals",
+          "km": 0.007728539674850052,
+          "lane_km": 0.0,
+          "least": 0.0,
+          "links": [
+            [
+              13613451203,
+              13613451208,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.0,
+          "score": 0.0,
+          "site_check": false,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed service road"
+        },
+        {
+          "assumed": true,
+          "fix": "bike_walk_signals",
+          "km": 0.00777285334613533,
+          "lane_km": 0.0,
+          "least": 0.0,
+          "links": [
+            [
+              13613451206,
+              13613451207,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.0,
+          "score": 0.0,
+          "site_check": false,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed service road"
+        }
+      ],
+      "spots": 15,
+      "state_owned": 3
+    },
+    "mesh": {
+      "blocker_details": [
+        {
+          "km": 0.10523765367687549,
+          "links": [
+            [
+              26638251,
+              2348827872,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too narrow for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "primary",
+          "street": "Bexley Road",
+          "trips": 51
+        },
+        {
+          "km": 0.14855940101200255,
+          "links": [
+            [
+              175655299,
+              11536156670,
+              0
+            ],
+            [
+              4010143678,
+              4010143679,
+              0
+            ],
+            [
+              4010143678,
+              7025531921,
+              0
+            ],
+            [
+              4010143679,
+              11536156670,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path",
+            "too narrow for a road diet"
+          ],
+          "road_type": "primary",
+          "street": "Croydon Road",
+          "trips": 39
+        },
+        {
+          "km": 0.35476437320798027,
+          "links": [
+            [
+              1848399555,
+              1848399585,
+              0
+            ],
+            [
+              1848399565,
+              1848399583,
+              0
+            ],
+            [
+              1848399583,
+              11270708050,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Stotts Avenue",
+          "trips": 18
+        },
+        {
+          "km": 0.07061112477076648,
+          "links": [
+            [
+              15186774,
+              1848414231,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Wollongong Road",
+          "trips": 18
+        },
+        {
+          "km": 0.18932729164776838,
+          "links": [
+            [
+              1836629225,
+              2620894766,
+              0
+            ],
+            [
+              1836629225,
+              12350281616,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "The Avenue",
+          "trips": 16
+        },
+        {
+          "km": 0.14567859762496357,
+          "links": [
+            [
+              1685276599,
+              1833823418,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Moorefield Avenue",
+          "trips": 11
+        },
+        {
+          "km": 0.11147494280864391,
+          "links": [
+            [
+              1867764810,
+              12547950991,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Eton Street",
+          "trips": 10
+        },
+        {
+          "km": 0.30974872633786327,
+          "links": [
+            [
+              356628209,
+              1837000930,
+              0
+            ],
+            [
+              1837000930,
+              3722814129,
+              0
+            ],
+            [
+              2130510875,
+              5199959324,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too narrow for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "tertiary",
+          "street": "Banks Avenue",
+          "trips": 9
+        },
+        {
+          "km": 0.1993133360344541,
+          "links": [
+            [
+              1836931349,
+              9722228429,
+              0
+            ],
+            [
+              1836931349,
+              12009404839,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too many lanes for a quiet street",
+            "too narrow for a cycleway",
+            "too narrow for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Joffre Crescent",
+          "trips": 9
+        },
+        {
+          "km": 0.14108085282118188,
+          "links": [
+            [
+              1379408428,
+              5077999578,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too narrow for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "unclassified",
+          "street": "Rockdale Plaza Drive",
+          "trips": 9
+        },
+        {
+          "km": 0.1181016871161583,
+          "links": [
+            [
+              1826924922,
+              1873142647,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Hirst Street",
+          "trips": 8
+        },
+        {
+          "km": 0.05114948089840337,
+          "links": [
+            [
+              1099228030,
+              1099228060,
+              0
+            ],
+            [
+              1099228060,
+              1099228069,
+              0
+            ],
+            [
+              1099228069,
+              1146670662,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "would not make the street all ages as a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "service",
+          "street": "unnamed service road",
+          "trips": 8
+        },
+        {
+          "km": 0.06917911220675853,
+          "links": [
+            [
+              1099214742,
+              4839259276,
+              0
+            ],
+            [
+              1099214742,
+              5317787202,
+              0
+            ],
+            [
+              1146634866,
+              5317787202,
+              0
+            ],
+            [
+              4839259276,
+              4839259285,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "would not make the street all ages as a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "service",
+          "street": "Seventh Street",
+          "trips": 7
+        },
+        {
+          "km": 0.013616669783853591,
+          "links": [
+            [
+              1105759489,
+              1105759490,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "primary",
+          "street": "Rocky Point Road",
+          "trips": 6
+        },
+        {
+          "km": 1.4102006188935838,
+          "links": [
+            [
+              17853386,
+              26361310,
+              0
+            ],
+            [
+              26637172,
+              1827327477,
+              0
+            ],
+            [
+              26637172,
+              1847494367,
+              0
+            ],
+            [
+              26637609,
+              1827326872,
+              0
+            ],
+            [
+              31443910,
+              571102948,
+              0
+            ],
+            [
+              571102948,
+              11076374973,
+              0
+            ],
+            [
+              1827326872,
+              1827327141,
+              0
+            ],
+            [
+              1827327477,
+              2070939397,
+              0
+            ],
+            [
+              11245093931,
+              13461500218,
+              0
+            ],
+            [
+              11285299067,
+              11285347056,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too narrow for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "secondary",
+          "street": "West Botany Street",
+          "trips": 5
+        },
+        {
+          "km": 0.24032386614049372,
+          "links": [
+            [
+              242102568,
+              242102757,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Bennett Street",
+          "trips": 4
+        },
+        {
+          "km": 0.12464030669758518,
+          "links": [
+            [
+              1836629293,
+              2461489520,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Edward Street",
+          "trips": 4
+        },
+        {
+          "km": 0.2527496448538468,
+          "links": [
+            [
+              1848399609,
+              1848399611,
+              0
+            ],
+            [
+              1848399611,
+              1848399614,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Hutchinson Street",
+          "trips": 3
+        },
+        {
+          "km": 0.3596208895596073,
+          "links": [
+            [
+              1837681931,
+              12087069460,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Miles Street",
+          "trips": 3
+        },
+        {
+          "km": 0.49939577559787995,
+          "links": [
+            [
+              1826925122,
+              1826925368,
+              0
+            ],
+            [
+              1826925122,
+              12289572972,
+              0
+            ],
+            [
+              1848414137,
+              3700678788,
+              0
+            ],
+            [
+              1848414137,
+              12289572972,
+              0
+            ],
+            [
+              3700678788,
+              8946667527,
+              0
+            ],
+            [
+              3700678807,
+              8946667527,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Turrella Street",
+          "trips": 3
+        },
+        {
+          "km": 0.2849347224059997,
+          "links": [
+            [
+              1832925336,
+              1832925343,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Trevelyan Street",
+          "trips": 2
+        },
+        {
+          "km": 0.35752079066631354,
+          "links": [
+            [
+              1832925283,
+              1832925342,
+              0
+            ],
+            [
+              1832925298,
+              1832925342,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Wilson Street",
+          "trips": 2
+        },
+        {
+          "km": 0.3472097107743494,
+          "links": [
+            [
+              17606084,
+              32846630,
+              0
+            ],
+            [
+              32846630,
+              5646637350,
+              0
+            ],
+            [
+              3910635474,
+              9380417250,
+              0
+            ],
+            [
+              7305878760,
+              9380417250,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "the wrong kind of road for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "primary_link",
+          "street": "unnamed primary_link road",
+          "trips": 2
+        },
+        {
+          "km": 0.1926043284418092,
+          "links": [
+            [
+              12016323444,
+              12016323462,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Haig Avenue",
+          "trips": 1
+        },
+        {
+          "km": 0.29053113486973764,
+          "links": [
+            [
+              1827327505,
+              1836674181,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Henson Street",
+          "trips": 1
+        },
+        {
+          "km": 0.488361415839799,
+          "links": [
+            [
+              58100447,
+              1822990201,
+              0
+            ],
+            [
+              58100447,
+              1822990232,
+              0
+            ],
+            [
+              1822990161,
+              1822990232,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Mascot Drive",
+          "trips": 1
+        },
+        {
+          "km": 0.1843535410983878,
+          "links": [
+            [
+              1834861654,
+              11411800559,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Scott Street",
+          "trips": 1
+        },
+        {
+          "km": 0.19745593434602018,
+          "links": [
+            [
+              2330631741,
+              11613219433,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Skinners Avenue",
+          "trips": 1
+        },
+        {
+          "km": 0.11123869889161965,
+          "links": [
+            [
+              1832955566,
+              11010152294,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Aylesbury Street",
+          "trips": 0
+        },
+        {
+          "km": 0.1609244197642263,
+          "links": [
+            [
+              1832955541,
+              1832955558,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Chatham Street",
+          "trips": 0
+        },
+        {
+          "km": 0.36221701954806906,
+          "links": [
+            [
+              1832925272,
+              1832925318,
+              0
+            ],
+            [
+              1832925305,
+              1832925318,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Clevedon Street",
+          "trips": 0
+        },
+        {
+          "km": 0.14486680393149629,
+          "links": [
+            [
+              1832955544,
+              1832955558,
+              0
+            ],
+            [
+              1832955558,
+              5443347124,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Cranbrook Street",
+          "trips": 0
+        },
+        {
+          "km": 0.15996870625151952,
+          "links": [
+            [
+              1848414256,
+              7496409779,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Dowling Street",
+          "trips": 0
+        },
+        {
+          "km": 0.08142322234731551,
+          "links": [
+            [
+              26637217,
+              1691270995,
+              0
+            ],
+            [
+              26637217,
+              9780901121,
+              0
+            ],
+            [
+              1686467360,
+              1691270987,
+              0
+            ],
+            [
+              1686467361,
+              1691270987,
+              0
+            ],
+            [
+              1686467361,
+              9780901121,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "primary",
+          "street": "Forest Road",
+          "trips": 0
+        },
+        {
+          "km": 0.12754400756946424,
+          "links": [
+            [
+              1832955563,
+              5443347122,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Hastings Street",
+          "trips": 0
+        },
+        {
+          "km": 0.23848539574009095,
+          "links": [
+            [
+              1847494418,
+              2008051446,
+              0
+            ],
+            [
+              1847494418,
+              11076375034,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Highclere Avenue",
+          "trips": 0
+        },
+        {
+          "km": 0.30072579263377947,
+          "links": [
+            [
+              1826925100,
+              1826925252,
+              0
+            ],
+            [
+              1826925122,
+              1826925240,
+              0
+            ],
+            [
+              1826925240,
+              1826925311,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Loftus Street",
+          "trips": 0
+        },
+        {
+          "km": 0.02562636681258036,
+          "links": [
+            [
+              3910635474,
+              3910635495,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "would not make the street all ages as a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "service",
+          "street": "Ross Smith Avenue",
+          "trips": 0
+        },
+        {
+          "km": 0.21625583693641204,
+          "links": [
+            [
+              9567475775,
+              10052784321,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Segenhoe Street",
+          "trips": 0
+        },
+        {
+          "km": 0.19751038298243623,
+          "links": [
+            [
+              1832925283,
+              1832925323,
+              0
+            ],
+            [
+              1832925305,
+              1832925323,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Warrana Street",
+          "trips": 0
+        },
+        {
+          "km": 0.03379348425972686,
+          "links": [
+            [
+              1691270995,
+              11230408787,
+              0
+            ],
+            [
+              1691270996,
+              11230408787,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "primary",
+          "street": "Wickham Street",
+          "trips": 0
+        },
+        {
+          "km": 0.12067195081054824,
+          "links": [
+            [
+              131697179,
+              1828027784,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "secondary",
+          "street": "Willison Road",
+          "trips": 0
+        },
+        {
+          "km": 0.13655775374277182,
+          "links": [
+            [
+              11290640498,
+              11290640505,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Wycombe Avenue",
+          "trips": 0
+        }
+      ],
+      "blockers": 43,
+      "by_fix": {
+        "bike_walk_signals": 9,
+        "raised_zebra_crossing": 2,
+        "short_path_crossing": 111
+      },
+      "ceiling": 100.0,
+      "no_fix_streets": 43,
+      "parking_spaces": 524,
+      "score_all_built": 41.50743099787686,
+      "site_check": 111,
+      "spot_m": 6482,
+      "spot_works": [
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.02895726853541897,
+          "lane_km": 0.0,
+          "least": 0.14478634267709486,
+          "links": [
+            [
+              14758006,
+              913200441,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.02895726853541897,
+          "score": 0.14478634267709486,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed primary_link road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.042356808384196594,
+          "lane_km": 0.0,
+          "least": 8.211784041920984,
+          "links": [
+            [
+              18465423,
+              6338834369,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.042356808384196594,
+          "score": 8.211784041920984,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Bronti Street"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.058710122633522654,
+          "lane_km": 0.0,
+          "least": 8.293550613167612,
+          "links": [
+            [
+              26637612,
+              11294678845,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.058710122633522654,
+          "score": 8.293550613167612,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "West Botany Street"
+        },
+        {
+          "assumed": false,
+          "fix": "raised_zebra_crossing",
+          "km": 0.025728822070601468,
+          "lane_km": 0.0,
+          "least": 8.0,
+          "links": [
+            [
+              28782042,
+              1996137674,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.0,
+          "score": 8.0,
+          "site_check": false,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Alexandra Parade"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.07627400989556603,
+          "lane_km": 0.0,
+          "least": 8.38137004947783,
+          "links": [
+            [
+              31435393,
+              1847494367,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.07627400989556603,
+          "score": 8.38137004947783,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "West Botany Street"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.04465300747647674,
+          "lane_km": 0.0,
+          "least": 8.223265037382383,
+          "links": [
+            [
+              31443910,
+              1847494398,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.04465300747647674,
+          "score": 8.223265037382383,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "West Botany Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.06898351665651785,
+          "lane_km": 0.0,
+          "least": 8.344917583282589,
+          "links": [
+            [
+              33029837,
+              3702128469,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.06898351665651785,
+          "score": 8.344917583282589,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Hannam Street"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.004027542883861287,
+          "lane_km": 0.0,
+          "least": 0.020137714419306438,
+          "links": [
+            [
+              134313317,
+              3871458754,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.004027542883861287,
+          "score": 0.020137714419306438,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Banks Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.047289967415209744,
+          "lane_km": 0.0,
+          "least": 0.23644983707604872,
+          "links": [
+            [
+              175655454,
+              7880489268,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.047289967415209744,
+          "score": 0.23644983707604872,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Croydon Road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.06835995457600842,
+          "lane_km": 0.0,
+          "least": 8.341799772880043,
+          "links": [
+            [
+              212561749,
+              6339065965,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.06835995457600842,
+          "score": 8.341799772880043,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "West Botany Street"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.018683634315685003,
+          "lane_km": 0.0,
+          "least": 0.09341817157842502,
+          "links": [
+            [
+              250781532,
+              1105759504,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.018683634315685003,
+          "score": 0.09341817157842502,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Rocky Point Road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.024054405165962453,
+          "lane_km": 0.0,
+          "least": 0.12027202582981227,
+          "links": [
+            [
+              253328954,
+              1146889189,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.024054405165962453,
+          "score": 0.12027202582981227,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed primary_link road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.04371708671827593,
+          "lane_km": 0.0,
+          "least": 8.218585433591379,
+          "links": [
+            [
+              432446824,
+              8828900099,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.04371708671827593,
+          "score": 8.218585433591379,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Coward Street"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.012350938096868784,
+          "lane_km": 0.0,
+          "least": 0.06175469048434392,
+          "links": [
+            [
+              579683852,
+              11425144659,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.012350938096868784,
+          "score": 0.06175469048434392,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed primary_link road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.0234765947720064,
+          "lane_km": 0.0,
+          "least": 0.11738297386003199,
+          "links": [
+            [
+              598024097,
+              11425144659,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.0234765947720064,
+          "score": 0.11738297386003199,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed primary_link road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.05502986336639997,
+          "lane_km": 0.0,
+          "least": 8.275149316832,
+          "links": [
+            [
+              891666745,
+              11299591759,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.05502986336639997,
+          "score": 8.275149316832,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Francis Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.04649761807306999,
+          "lane_km": 0.0,
+          "least": 0.23248809036534995,
+          "links": [
+            [
+              913200441,
+              913200447,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.04649761807306999,
+          "score": 0.23248809036534995,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed primary_link road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.02624894204897499,
+          "lane_km": 0.0,
+          "least": 0.13124471024487497,
+          "links": [
+            [
+              944809958,
+              9315235801,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.02624894204897499,
+          "score": 0.13124471024487497,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Robey Street"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.0734261451803246,
+          "lane_km": 0.0,
+          "least": 0.367130725901623,
+          "links": [
+            [
+              1074578578,
+              4041167366,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.0734261451803246,
+          "score": 0.367130725901623,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Botany Road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.029560613747107875,
+          "lane_km": 0.0,
+          "least": 0.1478030687355394,
+          "links": [
+            [
+              1099084045,
+              4114086016,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.029560613747107875,
+          "score": 0.1478030687355394,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed primary_link road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.025787264219365114,
+          "lane_km": 0.0,
+          "least": 0.12893632109682557,
+          "links": [
+            [
+              1099214759,
+              5105359436,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.025787264219365114,
+          "score": 0.12893632109682557,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed service road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.023600875208619334,
+          "lane_km": 0.0,
+          "least": 0.11800437604309667,
+          "links": [
+            [
+              1105759502,
+              1105759504,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.023600875208619334,
+          "score": 0.11800437604309667,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Rocky Point Road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.035001579086581074,
+          "lane_km": 0.0,
+          "least": 0.17500789543290537,
+          "links": [
+            [
+              1146889189,
+              9314357450,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.035001579086581074,
+          "score": 0.17500789543290537,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed primary_link road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.009040864990846189,
+          "lane_km": 0.0,
+          "least": 0.04520432495423095,
+          "links": [
+            [
+              1146889198,
+              1146889199,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.009040864990846189,
+          "score": 0.04520432495423095,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed primary_link road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.008789972016096857,
+          "lane_km": 0.0,
+          "least": 0.04394986008048428,
+          "links": [
+            [
+              1146889198,
+              9314357450,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.008789972016096857,
+          "score": 0.04394986008048428,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed primary_link road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.027198260400761582,
+          "lane_km": 0.0,
+          "least": 0.1359913020038079,
+          "links": [
+            [
+              1146889207,
+              1146889216,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.027198260400761582,
+          "score": 0.1359913020038079,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed primary_link road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.04216829316478418,
+          "lane_km": 0.0,
+          "least": 0.2108414658239209,
+          "links": [
+            [
+              1150167689,
+              13095295368,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.04216829316478418,
+          "score": 0.2108414658239209,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed service road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.02071393038978413,
+          "lane_km": 0.0,
+          "least": 0.10356965194892065,
+          "links": [
+            [
+              1150167689,
+              13227167740,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.02071393038978413,
+          "score": 0.10356965194892065,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed service road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.019602585978805764,
+          "lane_km": 0.0,
+          "least": 0.09801292989402882,
+          "links": [
+            [
+              1150286001,
+              1150286004,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.019602585978805764,
+          "score": 0.09801292989402882,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed primary_link road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.018685898134413126,
+          "lane_km": 0.0,
+          "least": 0.09342949067206563,
+          "links": [
+            [
+              1150286004,
+              1150286005,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.018685898134413126,
+          "score": 0.09342949067206563,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed primary_link road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.08001709082445345,
+          "lane_km": 0.0,
+          "least": 8.400085454122268,
+          "links": [
+            [
+              1633539084,
+              10064333157,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.08001709082445345,
+          "score": 8.400085454122268,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Kingsgrove Road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.043261991290265984,
+          "lane_km": 0.0,
+          "least": 8.21630995645133,
+          "links": [
+            [
+              1822990137,
+              9974772097,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.043261991290265984,
+          "score": 8.21630995645133,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "King Street"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.050200480478859714,
+          "lane_km": 0.0,
+          "least": 8.251002402394299,
+          "links": [
+            [
+              1822990257,
+              9987372064,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.050200480478859714,
+          "score": 8.251002402394299,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Sutherland Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.06147569081374782,
+          "lane_km": 0.0,
+          "least": 8.30737845406874,
+          "links": [
+            [
+              1826924891,
+              1826925499,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.06147569081374782,
+          "score": 8.30737845406874,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Bonar Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.07574354508414283,
+          "lane_km": 0.0,
+          "least": 8.378717725420714,
+          "links": [
+            [
+              1826924922,
+              11196664234,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.07574354508414283,
+          "score": 8.378717725420714,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Hirst Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.05334754380184394,
+          "lane_km": 0.0,
+          "least": 8.26673771900922,
+          "links": [
+            [
+              1826925014,
+              1826925409,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.05334754380184394,
+          "score": 8.26673771900922,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Dowling Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.09020025014977612,
+          "lane_km": 0.0,
+          "least": 8.451001250748881,
+          "links": [
+            [
+              1826925014,
+              1826925419,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.09020025014977612,
+          "score": 8.451001250748881,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Hirst Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.08375107047067301,
+          "lane_km": 0.0,
+          "least": 8.418755352353365,
+          "links": [
+            [
+              1826925032,
+              1848414297,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.08375107047067301,
+          "score": 8.418755352353365,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Bardwell Road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.016438230927642357,
+          "lane_km": 0.0,
+          "least": 4.0821911546382115,
+          "links": [
+            [
+              1826925100,
+              1826925311,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 4,
+          "path_km": 0.016438230927642357,
+          "score": 4.0821911546382115,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Loftus Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.09092035434132609,
+          "lane_km": 0.0,
+          "least": 8.454601771706631,
+          "links": [
+            [
+              1826925203,
+              1848414281,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.09092035434132609,
+          "score": 8.454601771706631,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Dowling Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.09130528080613562,
+          "lane_km": 0.0,
+          "least": 8.456526404030678,
+          "links": [
+            [
+              1826925220,
+              1826925456,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.09130528080613562,
+          "score": 8.456526404030678,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Hirst Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.08366413558138565,
+          "lane_km": 0.0,
+          "least": 8.418320677906928,
+          "links": [
+            [
+              1826925389,
+              12289487904,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.08366413558138565,
+          "score": 8.418320677906928,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Broe Avenue"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.07423996486019471,
+          "lane_km": 0.0,
+          "least": 8.371199824300973,
+          "links": [
+            [
+              1826925446,
+              1826925572,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.07423996486019471,
+          "score": 8.371199824300973,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Hirst Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.08187214002428676,
+          "lane_km": 0.0,
+          "least": 8.409360700121434,
+          "links": [
+            [
+              1826925657,
+              12289487922,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.08187214002428676,
+          "score": 8.409360700121434,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Bonar Street"
+        },
+        {
+          "assumed": true,
+          "fix": "bike_walk_signals",
+          "km": 0.004111558843623072,
+          "lane_km": 0.0,
+          "least": 8.0,
+          "links": [
+            [
+              1827326778,
+              11076374984,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.0,
+          "score": 8.0,
+          "site_check": false,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed cycleway road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.09594102410090194,
+          "lane_km": 0.0,
+          "least": 8.47970512050451,
+          "links": [
+            [
+              1827326912,
+              11285299068,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.09594102410090194,
+          "score": 8.47970512050451,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Bestic Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.09048924741292011,
+          "lane_km": 0.0,
+          "least": 8.452446237064601,
+          "links": [
+            [
+              1827326949,
+              11299591737,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.09048924741292011,
+          "score": 8.452446237064601,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Francis Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.09459053471396922,
+          "lane_km": 0.0,
+          "least": 8.472952673569846,
+          "links": [
+            [
+              1827327057,
+              1827327476,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.09459053471396922,
+          "score": 8.472952673569846,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Bestic Street"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.08835388250012537,
+          "lane_km": 0.0,
+          "least": 8.441769412500626,
+          "links": [
+            [
+              1827327301,
+              11285299065,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.08835388250012537,
+          "score": 8.441769412500626,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Bestic Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.06864554234256388,
+          "lane_km": 0.0,
+          "least": 8.343227711712819,
+          "links": [
+            [
+              1827905494,
+              1827905535,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.06864554234256388,
+          "score": 8.343227711712819,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Wycombe Avenue"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.021173872302931742,
+          "lane_km": 0.0,
+          "least": 0.10586936151465871,
+          "links": [
+            [
+              1827905599,
+              1982394756,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.021173872302931742,
+          "score": 0.10586936151465871,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Rockdale Plaza Drive"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.04650149322715504,
+          "lane_km": 0.0,
+          "least": 0.23250746613577522,
+          "links": [
+            [
+              1832918619,
+              1832925339,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.04650149322715504,
+          "score": 0.23250746613577522,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Botany Road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.03909603835605857,
+          "lane_km": 0.0,
+          "least": 0.19548019178029286,
+          "links": [
+            [
+              1832918646,
+              1833040815,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.03909603835605857,
+          "score": 0.19548019178029286,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Botany Road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.058290829498573574,
+          "lane_km": 0.0,
+          "least": 8.291454147492868,
+          "links": [
+            [
+              1832925276,
+              11722919439,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.058290829498573574,
+          "score": 8.291454147492868,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Wilson Street"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.01385834087233348,
+          "lane_km": 0.0,
+          "least": 0.0692917043616674,
+          "links": [
+            [
+              1832925287,
+              2327786954,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.01385834087233348,
+          "score": 0.0692917043616674,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Botany Road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.07670523093133427,
+          "lane_km": 0.0,
+          "least": 8.383526154656671,
+          "links": [
+            [
+              1832925372,
+              6586214014,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.07670523093133427,
+          "score": 8.383526154656671,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Wilson Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.08903463854327272,
+          "lane_km": 0.0,
+          "least": 8.445173192716364,
+          "links": [
+            [
+              1832955556,
+              1832955557,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.08903463854327272,
+          "score": 8.445173192716364,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Morgan Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.07612778211653073,
+          "lane_km": 0.0,
+          "least": 8.380638910582654,
+          "links": [
+            [
+              1832955556,
+              1832955565,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.07612778211653073,
+          "score": 8.380638910582654,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Morgan Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.08189835446067925,
+          "lane_km": 0.0,
+          "least": 8.409491772303396,
+          "links": [
+            [
+              1832955557,
+              11702685502,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.08189835446067925,
+          "score": 8.409491772303396,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Morgan Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.00983710376846099,
+          "lane_km": 0.0,
+          "least": 8.049185518842306,
+          "links": [
+            [
+              1832955567,
+              11702685502,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.00983710376846099,
+          "score": 8.049185518842306,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Morgan Street"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.0545593514617541,
+          "lane_km": 0.0,
+          "least": 0.2727967573087705,
+          "links": [
+            [
+              1833040708,
+              1833040815,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.0545593514617541,
+          "score": 0.2727967573087705,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Botany Road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.07800052714869511,
+          "lane_km": 0.0,
+          "least": 8.390002635743475,
+          "links": [
+            [
+              1833823328,
+              1833823418,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.07800052714869511,
+          "score": 8.390002635743475,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Annette Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.016981112104950256,
+          "lane_km": 0.0,
+          "least": 0.08490556052475129,
+          "links": [
+            [
+              1833823334,
+              1833823420,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.016981112104950256,
+          "score": 0.08490556052475129,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "The Seven Ways"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.0605791501015162,
+          "lane_km": 0.0,
+          "least": 8.30289575050758,
+          "links": [
+            [
+              1834861592,
+              5705654698,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.0605791501015162,
+          "score": 8.30289575050758,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "West Botany Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.05490551517002379,
+          "lane_km": 0.0,
+          "least": 8.274527575850119,
+          "links": [
+            [
+              1836629293,
+              12350281614,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.05490551517002379,
+          "score": 8.274527575850119,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Edward Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.0865788806573533,
+          "lane_km": 0.0,
+          "least": 8.432894403286767,
+          "links": [
+            [
+              1836674212,
+              9567500759,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.0865788806573533,
+          "score": 8.432894403286767,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Francis Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.03361864021362392,
+          "lane_km": 0.0,
+          "least": 0.16809320106811962,
+          "links": [
+            [
+              1836925492,
+              1837848578,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.03361864021362392,
+          "score": 0.16809320106811962,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Bunnerong Road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.012121718314355713,
+          "lane_km": 0.0,
+          "least": 0.060608591571778565,
+          "links": [
+            [
+              1837848705,
+              11425316625,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.012121718314355713,
+          "score": 0.060608591571778565,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Bunnerong Road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.05543235988016934,
+          "lane_km": 0.0,
+          "least": 8.277161799400847,
+          "links": [
+            [
+              1840631653,
+              5177832551,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.05543235988016934,
+          "score": 8.277161799400847,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Coward Street"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.09704073767621982,
+          "lane_km": 0.0,
+          "least": 0.48520368838109906,
+          "links": [
+            [
+              1847443263,
+              11536156507,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.09704073767621982,
+          "score": 0.48520368838109906,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Croydon Road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.08378830824122631,
+          "lane_km": 0.0,
+          "least": 8.41894154120613,
+          "links": [
+            [
+              1847494401,
+              11285426201,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.08378830824122631,
+          "score": 8.41894154120613,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Highclere Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.07342053823351902,
+          "lane_km": 0.0,
+          "least": 8.367102691167595,
+          "links": [
+            [
+              1847494534,
+              11076374988,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.07342053823351902,
+          "score": 8.367102691167595,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "West Botany Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.04496981263822944,
+          "lane_km": 0.0,
+          "least": 8.224849063191147,
+          "links": [
+            [
+              1848399489,
+              12289573061,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.04496981263822944,
+          "score": 8.224849063191147,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Bardwell Road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.08900195547360164,
+          "lane_km": 0.0,
+          "least": 8.445009777368009,
+          "links": [
+            [
+              1848414188,
+              1848414219,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.08900195547360164,
+          "score": 8.445009777368009,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Knoll Avenue"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.04031919388270824,
+          "lane_km": 0.0,
+          "least": 8.20159596941354,
+          "links": [
+            [
+              1848414225,
+              12360534184,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.04031919388270824,
+          "score": 8.20159596941354,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Hannam Street"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.0661907396423988,
+          "lane_km": 0.0,
+          "least": 8.330953698211994,
+          "links": [
+            [
+              1848414334,
+              11799181512,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.0661907396423988,
+          "score": 8.330953698211994,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "West Botany Street"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.01729223553438455,
+          "lane_km": 0.0,
+          "least": 0.08646117767192275,
+          "links": [
+            [
+              1869655651,
+              9969377119,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.01729223553438455,
+          "score": 0.08646117767192275,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Ross Smith Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.02866970941548934,
+          "lane_km": 0.0,
+          "least": 0.1433485470774467,
+          "links": [
+            [
+              1869655654,
+              6330012310,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.02866970941548934,
+          "score": 0.1433485470774467,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Ross Smith Avenue"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.06265413682922573,
+          "lane_km": 0.0,
+          "least": 8.31327068414613,
+          "links": [
+            [
+              1873133644,
+              12028885184,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.06265413682922573,
+          "score": 8.31327068414613,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Francis Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.048709081021886216,
+          "lane_km": 0.0,
+          "least": 8.243545405109431,
+          "links": [
+            [
+              1937589190,
+              9622862074,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.048709081021886216,
+          "score": 8.243545405109431,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Hartill-Law Avenue"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.011449818773145432,
+          "lane_km": 0.0,
+          "least": 0.05724909386572716,
+          "links": [
+            [
+              1982394756,
+              3473128310,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.011449818773145432,
+          "score": 0.05724909386572716,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Rockdale Plaza Drive"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.04501968045725775,
+          "lane_km": 0.0,
+          "least": 0.22509840228628875,
+          "links": [
+            [
+              1982394768,
+              3473128310,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.04501968045725775,
+          "score": 0.22509840228628875,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Rockdale Plaza Drive"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.060375061571010046,
+          "lane_km": 0.0,
+          "least": 8.30187530785505,
+          "links": [
+            [
+              1989365255,
+              6339065974,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.060375061571010046,
+          "score": 8.30187530785505,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "West Botany Street"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.054742075428623964,
+          "lane_km": 0.0,
+          "least": 0.2737103771431198,
+          "links": [
+            [
+              1996137674,
+              1996137680,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.054742075428623964,
+          "score": 0.2737103771431198,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Alexandra Parade"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.03200100846490174,
+          "lane_km": 0.0,
+          "least": 0.16000504232450868,
+          "links": [
+            [
+              2316663942,
+              11929975802,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.03200100846490174,
+          "score": 0.16000504232450868,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Botany Road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.009041629612028026,
+          "lane_km": 0.0,
+          "least": 0.04520814806014013,
+          "links": [
+            [
+              3657243912,
+              3657243918,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.009041629612028026,
+          "score": 0.04520814806014013,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed primary_link road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.037503951590119794,
+          "lane_km": 0.0,
+          "least": 0.18751975795059897,
+          "links": [
+            [
+              3657243918,
+              11929810731,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.037503951590119794,
+          "score": 0.18751975795059897,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed primary_link road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.07773333234075926,
+          "lane_km": 0.0,
+          "least": 0.38866666170379627,
+          "links": [
+            [
+              3890020428,
+              11649025336,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.07773333234075926,
+          "score": 0.38866666170379627,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Botany Road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.046546526265742995,
+          "lane_km": 0.0,
+          "least": 0.23273263132871497,
+          "links": [
+            [
+              3910635495,
+              3910635662,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.046546526265742995,
+          "score": 0.23273263132871497,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Ross Smith Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "bike_walk_signals",
+          "km": 0.009898609694124011,
+          "lane_km": 0.0,
+          "least": 0.0,
+          "links": [
+            [
+              4114086016,
+              7477631854,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.0,
+          "score": 0.0,
+          "site_check": false,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed cycleway road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.014484745151784086,
+          "lane_km": 0.0,
+          "least": 0.07242372575892042,
+          "links": [
+            [
+              5105428995,
+              13227167740,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.014484745151784086,
+          "score": 0.07242372575892042,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed service road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.004530759162241748,
+          "lane_km": 0.0,
+          "least": 0.022653795811208743,
+          "links": [
+            [
+              6060488511,
+              9369685111,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.004530759162241748,
+          "score": 0.022653795811208743,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed service road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.014460243794970655,
+          "lane_km": 0.0,
+          "least": 0.07230121897485327,
+          "links": [
+            [
+              6086765102,
+              6086765116,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.014460243794970655,
+          "score": 0.07230121897485327,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Ross Smith Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.09087084260902616,
+          "lane_km": 0.0,
+          "least": 8.45435421304513,
+          "links": [
+            [
+              6225176124,
+              7178950539,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.09087084260902616,
+          "score": 8.45435421304513,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Banks Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.07786172779677014,
+          "lane_km": 0.0,
+          "least": 8.38930863898385,
+          "links": [
+            [
+              6225176124,
+              13124447965,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.07786172779677014,
+          "score": 8.38930863898385,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Banks Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.014712033086055468,
+          "lane_km": 0.0,
+          "least": 0.07356016543027734,
+          "links": [
+            [
+              6329947604,
+              6329947606,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.014712033086055468,
+          "score": 0.07356016543027734,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Ross Smith Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.0550444215794577,
+          "lane_km": 0.0,
+          "least": 8.275222107897289,
+          "links": [
+            [
+              6337227474,
+              9567500751,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.0550444215794577,
+          "score": 8.275222107897289,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "West Botany Street"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.04189594087374926,
+          "lane_km": 0.0,
+          "least": 8.209479704368746,
+          "links": [
+            [
+              6339065974,
+              6339082147,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.04189594087374926,
+          "score": 8.209479704368746,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "West Botany Street"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.08817657546546855,
+          "lane_km": 0.0,
+          "least": 8.440882877327343,
+          "links": [
+            [
+              6339082147,
+              13333291007,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.08817657546546855,
+          "score": 8.440882877327343,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "West Botany Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.012145957734259142,
+          "lane_km": 0.0,
+          "least": 8.060729788671296,
+          "links": [
+            [
+              6567463699,
+              6567463700,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.012145957734259142,
+          "score": 8.060729788671296,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed secondary road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.01174149882652031,
+          "lane_km": 0.0,
+          "least": 8.058707494132602,
+          "links": [
+            [
+              6567463699,
+              6567463701,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.01174149882652031,
+          "score": 8.058707494132602,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed secondary road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.01075853277122183,
+          "lane_km": 0.0,
+          "least": 8.05379266385611,
+          "links": [
+            [
+              6567463701,
+              6567463735,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.01075853277122183,
+          "score": 8.05379266385611,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed secondary road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.07984257290487831,
+          "lane_km": 0.0,
+          "least": 8.399212864524392,
+          "links": [
+            [
+              6575557718,
+              13124447965,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.07984257290487831,
+          "score": 8.399212864524392,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Banks Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.06396798412055187,
+          "lane_km": 0.0,
+          "least": 8.31983992060276,
+          "links": [
+            [
+              7081085024,
+              9567500666,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.06396798412055187,
+          "score": 8.31983992060276,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "West Botany Street"
+        },
+        {
+          "assumed": true,
+          "fix": "bike_walk_signals",
+          "km": 0.0064225808015787944,
+          "lane_km": 0.0,
+          "least": 8.0,
+          "links": [
+            [
+              7326952812,
+              12117951752,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.0,
+          "score": 8.0,
+          "site_check": false,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Sydney Airport Domestic Terminal Cycleway"
+        },
+        {
+          "assumed": true,
+          "fix": "bike_walk_signals",
+          "km": 0.0033691342356496155,
+          "lane_km": 0.0,
+          "least": 8.0,
+          "links": [
+            [
+              7326952812,
+              12117951755,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.0,
+          "score": 8.0,
+          "site_check": false,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Sydney Airport Domestic Terminal Cycleway"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.015879652896441478,
+          "lane_km": 0.0,
+          "least": 0.07939826448220738,
+          "links": [
+            [
+              7520596612,
+              7520596649,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.015879652896441478,
+          "score": 0.07939826448220738,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Robey Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.01863997159157893,
+          "lane_km": 0.0,
+          "least": 0.09319985795789465,
+          "links": [
+            [
+              7520596648,
+              7520596649,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.01863997159157893,
+          "score": 0.09319985795789465,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Robey Street"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.040316848979228465,
+          "lane_km": 0.0,
+          "least": 0.20158424489614232,
+          "links": [
+            [
+              9173466505,
+              9950344470,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.040316848979228465,
+          "score": 0.20158424489614232,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Bexley Road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.04129943029787275,
+          "lane_km": 0.0,
+          "least": 8.206497151489364,
+          "links": [
+            [
+              9314357571,
+              11330311284,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.04129943029787275,
+          "score": 8.206497151489364,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Coward Street"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.06447880066209526,
+          "lane_km": 0.0,
+          "least": 8.322394003310476,
+          "links": [
+            [
+              9569854284,
+              11601706555,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.06447880066209526,
+          "score": 8.322394003310476,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Coward Street"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.00524313382191461,
+          "lane_km": 0.0,
+          "least": 0.02621566910957305,
+          "links": [
+            [
+              9950344470,
+              9950344481,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.00524313382191461,
+          "score": 0.02621566910957305,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Bexley Road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.03455153671570452,
+          "lane_km": 0.0,
+          "least": 0.1727576835785226,
+          "links": [
+            [
+              9969377119,
+              9969377123,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.03455153671570452,
+          "score": 0.1727576835785226,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Ross Smith Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "bike_walk_signals",
+          "km": 0.26856976388423753,
+          "lane_km": 0.0,
+          "least": 8.0,
+          "links": [
+            [
+              11076374978,
+              13375365152,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.0,
+          "score": 8.0,
+          "site_check": false,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed cycleway road"
+        },
+        {
+          "assumed": false,
+          "fix": "raised_zebra_crossing",
+          "km": 0.24575822868527034,
+          "lane_km": 0.0,
+          "least": 0.0,
+          "links": [
+            [
+              11076375034,
+              11076375035,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.0,
+          "score": 0.0,
+          "site_check": false,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed cycleway road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.051974468597776,
+          "lane_km": 0.0,
+          "least": 8.25987234298888,
+          "links": [
+            [
+              11601706555,
+              11823046323,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.051974468597776,
+          "score": 8.25987234298888,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Coward Street"
+        },
+        {
+          "assumed": true,
+          "fix": "bike_walk_signals",
+          "km": 0.03413643357973785,
+          "lane_km": 0.0,
+          "least": 0.0,
+          "links": [
+            [
+              11823255833,
+              12117951825,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.0,
+          "score": 0.0,
+          "site_check": false,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Sydney Airport Domestic Terminal Cycleway"
+        },
+        {
+          "assumed": true,
+          "fix": "bike_walk_signals",
+          "km": 0.21657423031106288,
+          "lane_km": 0.0,
+          "least": 0.0,
+          "links": [
+            [
+              11823255833,
+              12117951940,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.0,
+          "score": 0.0,
+          "site_check": false,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Sydney Airport Domestic Terminal Cycleway"
+        },
+        {
+          "assumed": true,
+          "fix": "bike_walk_signals",
+          "km": 0.31127104007363754,
+          "lane_km": 0.0,
+          "least": 0.0,
+          "links": [
+            [
+              12117951825,
+              12117951901,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.0,
+          "score": 0.0,
+          "site_check": false,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Sydney Airport Domestic Terminal Cycleway"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.01995287979139247,
+          "lane_km": 0.0,
+          "least": 0.09976439895696235,
+          "links": [
+            [
+              13135418942,
+              13135418944,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.01995287979139247,
+          "score": 0.09976439895696235,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "President Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "bike_walk_signals",
+          "km": 0.008789653049927786,
+          "lane_km": 0.0,
+          "least": 0.0,
+          "links": [
+            [
+              13135418944,
+              13375327447,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.0,
+          "score": 0.0,
+          "site_check": false,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed cycleway road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.04507306148887035,
+          "lane_km": 0.0,
+          "least": 8.225365307444351,
+          "links": [
+            [
+              13136099969,
+              13333277958,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.04507306148887035,
+          "score": 8.225365307444351,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "West Botany Street"
+        }
+      ],
+      "spots": 122,
+      "state_owned": 48
+    },
+    "separated": {
+      "blocker_details": [
+        {
+          "km": 0.14855940101200255,
+          "links": [
+            [
+              175655299,
+              11536156670,
+              0
+            ],
+            [
+              4010143678,
+              4010143679,
+              0
+            ],
+            [
+              4010143678,
+              7025531921,
+              0
+            ],
+            [
+              4010143679,
+              11536156670,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path",
+            "too narrow for a road diet"
+          ],
+          "road_type": "primary",
+          "street": "Croydon Road",
+          "trips": 59
+        },
+        {
+          "km": 0.13315752837842887,
+          "links": [
+            [
+              32846630,
+              5646637350,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "the wrong kind of road for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "primary_link",
+          "street": "unnamed primary_link road",
+          "trips": 44
+        },
+        {
+          "km": 0.050377401800693854,
+          "links": [
+            [
+              3700678807,
+              8946667527,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Turrella Street",
+          "trips": 32
+        },
+        {
+          "km": 0.07061112477076648,
+          "links": [
+            [
+              15186774,
+              1848414231,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Wollongong Road",
+          "trips": 29
+        },
+        {
+          "km": 0.12451742320832668,
+          "links": [
+            [
+              1836629225,
+              2620894766,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "The Avenue",
+          "trips": 26
+        },
+        {
+          "km": 0.013616669783853591,
+          "links": [
+            [
+              1105759489,
+              1105759490,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "primary",
+          "street": "Rocky Point Road",
+          "trips": 20
+        },
+        {
+          "km": 0.09643493307135848,
+          "links": [
+            [
+              1836931349,
+              9722228429,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too many lanes for a quiet street",
+            "too narrow for a cycleway",
+            "too narrow for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Joffre Crescent",
+          "trips": 14
+        },
+        {
+          "km": 0.05114948089840337,
+          "links": [
+            [
+              1099228030,
+              1099228060,
+              0
+            ],
+            [
+              1099228060,
+              1099228069,
+              0
+            ],
+            [
+              1099228069,
+              1146670662,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "would not make the street all ages as a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "service",
+          "street": "unnamed service road",
+          "trips": 14
+        }
+      ],
+      "blockers": 8,
+      "by_fix": {
+        "bike_walk_signals": 3,
+        "short_path_crossing": 6
+      },
+      "ceiling": 100.0,
+      "no_fix_streets": 8,
+      "parking_spaces": 48,
+      "score_all_built": 73.88535031847134,
+      "site_check": 6,
+      "spot_m": 589,
+      "spot_works": [
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.029560613747107875,
+          "lane_km": 0.0,
+          "least": 0.1478030687355394,
+          "links": [
+            [
+              1099084045,
+              4114086016,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.029560613747107875,
+          "score": 0.1478030687355394,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed primary_link road"
+        },
+        {
+          "assumed": true,
+          "fix": "bike_walk_signals",
+          "km": 0.004111558843623072,
+          "lane_km": 0.0,
+          "least": 8.0,
+          "links": [
+            [
+              1827326778,
+              11076374984,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.0,
+          "score": 8.0,
+          "site_check": false,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed cycleway road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.058290829498573574,
+          "lane_km": 0.0,
+          "least": 8.291454147492868,
+          "links": [
+            [
+              1832925276,
+              11722919439,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.058290829498573574,
+          "score": 8.291454147492868,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Wilson Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.07670523093133427,
+          "lane_km": 0.0,
+          "least": 8.383526154656671,
+          "links": [
+            [
+              1832925372,
+              6586214014,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.07670523093133427,
+          "score": 8.383526154656671,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Wilson Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.08900195547360164,
+          "lane_km": 0.0,
+          "least": 8.445009777368009,
+          "links": [
+            [
+              1848414188,
+              1848414219,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.08900195547360164,
+          "score": 8.445009777368009,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Knoll Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.048709081021886216,
+          "lane_km": 0.0,
+          "least": 8.243545405109431,
+          "links": [
+            [
+              1937589190,
+              9622862074,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.048709081021886216,
+          "score": 8.243545405109431,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Hartill-Law Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "bike_walk_signals",
+          "km": 0.009898609694124011,
+          "lane_km": 0.0,
+          "least": 0.0,
+          "links": [
+            [
+              4114086016,
+              7477631854,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.0,
+          "score": 0.0,
+          "site_check": false,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed cycleway road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.004530759162241748,
+          "lane_km": 0.0,
+          "least": 0.022653795811208743,
+          "links": [
+            [
+              6060488511,
+              9369685111,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.004530759162241748,
+          "score": 0.022653795811208743,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed service road"
+        },
+        {
+          "assumed": true,
+          "fix": "bike_walk_signals",
+          "km": 0.26856976388423753,
+          "lane_km": 0.0,
+          "least": 8.0,
+          "links": [
+            [
+              11076374978,
+              13375365152,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.0,
+          "score": 8.0,
+          "site_check": false,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed cycleway road"
+        }
+      ],
+      "spots": 9,
+      "state_owned": 1
+    },
+    "shortest": {
+      "blocker_details": [
+        {
+          "km": 0.10523765367687549,
+          "links": [
+            [
+              26638251,
+              2348827872,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too narrow for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "primary",
+          "street": "Bexley Road",
+          "trips": 117
+        },
+        {
+          "km": 0.1181016871161583,
+          "links": [
+            [
+              1826924922,
+              1873142647,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Hirst Street",
+          "trips": 48
+        },
+        {
+          "km": 0.14855940101200255,
+          "links": [
+            [
+              175655299,
+              11536156670,
+              0
+            ],
+            [
+              4010143678,
+              4010143679,
+              0
+            ],
+            [
+              4010143678,
+              7025531921,
+              0
+            ],
+            [
+              4010143679,
+              11536156670,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path",
+            "too narrow for a road diet"
+          ],
+          "road_type": "primary",
+          "street": "Croydon Road",
+          "trips": 37
+        },
+        {
+          "km": 0.07061112477076648,
+          "links": [
+            [
+              15186774,
+              1848414231,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Wollongong Road",
+          "trips": 22
+        },
+        {
+          "km": 0.013616669783853591,
+          "links": [
+            [
+              1105759489,
+              1105759490,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "primary",
+          "street": "Rocky Point Road",
+          "trips": 18
+        },
+        {
+          "km": 0.18932729164776838,
+          "links": [
+            [
+              1836629225,
+              2620894766,
+              0
+            ],
+            [
+              1836629225,
+              12350281616,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "The Avenue",
+          "trips": 15
+        },
+        {
+          "km": 0.05114948089840337,
+          "links": [
+            [
+              1099228030,
+              1099228060,
+              0
+            ],
+            [
+              1099228060,
+              1099228069,
+              0
+            ],
+            [
+              1099228069,
+              1146670662,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "would not make the street all ages as a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "service",
+          "street": "unnamed service road",
+          "trips": 11
+        },
+        {
+          "km": 0.30974872633786327,
+          "links": [
+            [
+              356628209,
+              1837000930,
+              0
+            ],
+            [
+              1837000930,
+              3722814129,
+              0
+            ],
+            [
+              2130510875,
+              5199959324,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too narrow for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "tertiary",
+          "street": "Banks Avenue",
+          "trips": 8
+        },
+        {
+          "km": 0.19745593434602018,
+          "links": [
+            [
+              2330631741,
+              11613219433,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Skinners Avenue",
+          "trips": 4
+        },
+        {
+          "km": 0.09643493307135848,
+          "links": [
+            [
+              1836931349,
+              9722228429,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too many lanes for a quiet street",
+            "too narrow for a cycleway",
+            "too narrow for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Joffre Crescent",
+          "trips": 2
+        },
+        {
+          "km": 0.2849347224059997,
+          "links": [
+            [
+              1832925336,
+              1832925343,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Trevelyan Street",
+          "trips": 2
+        },
+        {
+          "km": 0.36221701954806906,
+          "links": [
+            [
+              1832925272,
+              1832925318,
+              0
+            ],
+            [
+              1832925305,
+              1832925318,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Clevedon Street",
+          "trips": 0
+        },
+        {
+          "km": 0.14486680393149629,
+          "links": [
+            [
+              1832955544,
+              1832955558,
+              0
+            ],
+            [
+              1832955558,
+              5443347124,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Cranbrook Street",
+          "trips": 0
+        },
+        {
+          "km": 0.08142322234731551,
+          "links": [
+            [
+              26637217,
+              1691270995,
+              0
+            ],
+            [
+              26637217,
+              9780901121,
+              0
+            ],
+            [
+              1686467360,
+              1691270987,
+              0
+            ],
+            [
+              1686467361,
+              1691270987,
+              0
+            ],
+            [
+              1686467361,
+              9780901121,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "primary",
+          "street": "Forest Road",
+          "trips": 0
+        },
+        {
+          "km": 0.12754400756946424,
+          "links": [
+            [
+              1832955563,
+              5443347122,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Hastings Street",
+          "trips": 0
+        },
+        {
+          "km": 0.30072579263377947,
+          "links": [
+            [
+              1826925100,
+              1826925252,
+              0
+            ],
+            [
+              1826925122,
+              1826925240,
+              0
+            ],
+            [
+              1826925240,
+              1826925311,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Loftus Street",
+          "trips": 0
+        },
+        {
+          "km": 0.21625583693641204,
+          "links": [
+            [
+              9567475775,
+              10052784321,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Segenhoe Street",
+          "trips": 0
+        },
+        {
+          "km": 0.16520850623215017,
+          "links": [
+            [
+              1826925122,
+              12289572972,
+              0
+            ],
+            [
+              1848414137,
+              3700678788,
+              0
+            ],
+            [
+              1848414137,
+              12289572972,
+              0
+            ],
+            [
+              3700678788,
+              8946667527,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Turrella Street",
+          "trips": 0
+        },
+        {
+          "km": 0.19751038298243623,
+          "links": [
+            [
+              1832925283,
+              1832925323,
+              0
+            ],
+            [
+              1832925305,
+              1832925323,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Warrana Street",
+          "trips": 0
+        },
+        {
+          "km": 0.03379348425972686,
+          "links": [
+            [
+              1691270995,
+              11230408787,
+              0
+            ],
+            [
+              1691270996,
+              11230408787,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "primary",
+          "street": "Wickham Street",
+          "trips": 0
+        },
+        {
+          "km": 0.05846605890045511,
+          "links": [
+            [
+              1832925283,
+              1832925342,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "too busy for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "residential",
+          "street": "Wilson Street",
+          "trips": 0
+        },
+        {
+          "km": 0.13315752837842887,
+          "links": [
+            [
+              32846630,
+              5646637350,
+              0
+            ]
+          ],
+          "owner": null,
+          "reasons": [
+            "the wrong kind of road for a quiet street",
+            "too narrow for a cycleway",
+            "too few lanes for a road diet",
+            "width unknown for a verge path"
+          ],
+          "road_type": "primary_link",
+          "street": "unnamed primary_link road",
+          "trips": 0
+        }
+      ],
+      "blockers": 22,
+      "by_fix": {
+        "bike_walk_signals": 4,
+        "raised_zebra_crossing": 1,
+        "short_path_crossing": 41
+      },
+      "ceiling": 100.0,
+      "no_fix_streets": 22,
+      "parking_spaces": 236,
+      "score_all_built": 40.23354564755839,
+      "site_check": 41,
+      "spot_m": 2383,
+      "spot_works": [
+        {
+          "assumed": false,
+          "fix": "raised_zebra_crossing",
+          "km": 0.025728822070601468,
+          "lane_km": 0.0,
+          "least": 8.0,
+          "links": [
+            [
+              28782042,
+              1996137674,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.0,
+          "score": 8.0,
+          "site_check": false,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Alexandra Parade"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.004027542883861287,
+          "lane_km": 0.0,
+          "least": 0.020137714419306438,
+          "links": [
+            [
+              134313317,
+              3871458754,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.004027542883861287,
+          "score": 0.020137714419306438,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Banks Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.018683634315685003,
+          "lane_km": 0.0,
+          "least": 0.09341817157842502,
+          "links": [
+            [
+              250781532,
+              1105759504,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.018683634315685003,
+          "score": 0.09341817157842502,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Rocky Point Road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.012350938096868784,
+          "lane_km": 0.0,
+          "least": 0.06175469048434392,
+          "links": [
+            [
+              579683852,
+              11425144659,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.012350938096868784,
+          "score": 0.06175469048434392,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed primary_link road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.0234765947720064,
+          "lane_km": 0.0,
+          "least": 0.11738297386003199,
+          "links": [
+            [
+              598024097,
+              11425144659,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.0234765947720064,
+          "score": 0.11738297386003199,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed primary_link road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.05502986336639997,
+          "lane_km": 0.0,
+          "least": 8.275149316832,
+          "links": [
+            [
+              891666745,
+              11299591759,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.05502986336639997,
+          "score": 8.275149316832,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Francis Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.029560613747107875,
+          "lane_km": 0.0,
+          "least": 0.1478030687355394,
+          "links": [
+            [
+              1099084045,
+              4114086016,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.029560613747107875,
+          "score": 0.1478030687355394,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed primary_link road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.025787264219365114,
+          "lane_km": 0.0,
+          "least": 0.12893632109682557,
+          "links": [
+            [
+              1099214759,
+              5105359436,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.025787264219365114,
+          "score": 0.12893632109682557,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed service road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.023600875208619334,
+          "lane_km": 0.0,
+          "least": 0.11800437604309667,
+          "links": [
+            [
+              1105759502,
+              1105759504,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.023600875208619334,
+          "score": 0.11800437604309667,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Rocky Point Road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.04216829316478418,
+          "lane_km": 0.0,
+          "least": 0.2108414658239209,
+          "links": [
+            [
+              1150167689,
+              13095295368,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.04216829316478418,
+          "score": 0.2108414658239209,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed service road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.02071393038978413,
+          "lane_km": 0.0,
+          "least": 0.10356965194892065,
+          "links": [
+            [
+              1150167689,
+              13227167740,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.02071393038978413,
+          "score": 0.10356965194892065,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed service road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.08001709082445345,
+          "lane_km": 0.0,
+          "least": 8.400085454122268,
+          "links": [
+            [
+              1633539084,
+              10064333157,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.08001709082445345,
+          "score": 8.400085454122268,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Kingsgrove Road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.043261991290265984,
+          "lane_km": 0.0,
+          "least": 8.21630995645133,
+          "links": [
+            [
+              1822990137,
+              9974772097,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.043261991290265984,
+          "score": 8.21630995645133,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "King Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.07574354508414283,
+          "lane_km": 0.0,
+          "least": 8.378717725420714,
+          "links": [
+            [
+              1826924922,
+              11196664234,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.07574354508414283,
+          "score": 8.378717725420714,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Hirst Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.09020025014977612,
+          "lane_km": 0.0,
+          "least": 8.451001250748881,
+          "links": [
+            [
+              1826925014,
+              1826925419,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.09020025014977612,
+          "score": 8.451001250748881,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Hirst Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.016438230927642357,
+          "lane_km": 0.0,
+          "least": 4.0821911546382115,
+          "links": [
+            [
+              1826925100,
+              1826925311,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 4,
+          "path_km": 0.016438230927642357,
+          "score": 4.0821911546382115,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Loftus Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.09130528080613562,
+          "lane_km": 0.0,
+          "least": 8.456526404030678,
+          "links": [
+            [
+              1826925220,
+              1826925456,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.09130528080613562,
+          "score": 8.456526404030678,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Hirst Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.07423996486019471,
+          "lane_km": 0.0,
+          "least": 8.371199824300973,
+          "links": [
+            [
+              1826925446,
+              1826925572,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.07423996486019471,
+          "score": 8.371199824300973,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Hirst Street"
+        },
+        {
+          "assumed": true,
+          "fix": "bike_walk_signals",
+          "km": 0.004111558843623072,
+          "lane_km": 0.0,
+          "least": 8.0,
+          "links": [
+            [
+              1827326778,
+              11076374984,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.0,
+          "score": 8.0,
+          "site_check": false,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed cycleway road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.09594102410090194,
+          "lane_km": 0.0,
+          "least": 8.47970512050451,
+          "links": [
+            [
+              1827326912,
+              11285299068,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.09594102410090194,
+          "score": 8.47970512050451,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Bestic Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.09048924741292011,
+          "lane_km": 0.0,
+          "least": 8.452446237064601,
+          "links": [
+            [
+              1827326949,
+              11299591737,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.09048924741292011,
+          "score": 8.452446237064601,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Francis Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.09459053471396922,
+          "lane_km": 0.0,
+          "least": 8.472952673569846,
+          "links": [
+            [
+              1827327057,
+              1827327476,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.09459053471396922,
+          "score": 8.472952673569846,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Bestic Street"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.08835388250012537,
+          "lane_km": 0.0,
+          "least": 8.441769412500626,
+          "links": [
+            [
+              1827327301,
+              11285299065,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.08835388250012537,
+          "score": 8.441769412500626,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Bestic Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.07670523093133427,
+          "lane_km": 0.0,
+          "least": 8.383526154656671,
+          "links": [
+            [
+              1832925372,
+              6586214014,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.07670523093133427,
+          "score": 8.383526154656671,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Wilson Street"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.016981112104950256,
+          "lane_km": 0.0,
+          "least": 0.08490556052475129,
+          "links": [
+            [
+              1833823334,
+              1833823420,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 0,
+          "path_km": 0.016981112104950256,
+          "score": 0.08490556052475129,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "The Seven Ways"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.05490551517002379,
+          "lane_km": 0.0,
+          "least": 8.274527575850119,
+          "links": [
+            [
+              1836629293,
+              12350281614,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.05490551517002379,
+          "score": 8.274527575850119,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Edward Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.0865788806573533,
+          "lane_km": 0.0,
+          "least": 8.432894403286767,
+          "links": [
+            [
+              1836674212,
+              9567500759,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.0865788806573533,
+          "score": 8.432894403286767,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Francis Avenue"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.08900195547360164,
+          "lane_km": 0.0,
+          "least": 8.445009777368009,
+          "links": [
+            [
+              1848414188,
+              1848414219,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.08900195547360164,
+          "score": 8.445009777368009,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Knoll Avenue"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.06265413682922573,
+          "lane_km": 0.0,
+          "least": 8.31327068414613,
+          "links": [
+            [
+              1873133644,
+              12028885184,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.06265413682922573,
+          "score": 8.31327068414613,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Francis Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.048709081021886216,
+          "lane_km": 0.0,
+          "least": 8.243545405109431,
+          "links": [
+            [
+              1937589190,
+              9622862074,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.048709081021886216,
+          "score": 8.243545405109431,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Hartill-Law Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.054742075428623964,
+          "lane_km": 0.0,
+          "least": 0.2737103771431198,
+          "links": [
+            [
+              1996137674,
+              1996137680,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.054742075428623964,
+          "score": 0.2737103771431198,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Alexandra Parade"
+        },
+        {
+          "assumed": true,
+          "fix": "bike_walk_signals",
+          "km": 0.009898609694124011,
+          "lane_km": 0.0,
+          "least": 0.0,
+          "links": [
+            [
+              4114086016,
+              7477631854,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.0,
+          "score": 0.0,
+          "site_check": false,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed cycleway road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.014484745151784086,
+          "lane_km": 0.0,
+          "least": 0.07242372575892042,
+          "links": [
+            [
+              5105428995,
+              13227167740,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.014484745151784086,
+          "score": 0.07242372575892042,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed service road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.004530759162241748,
+          "lane_km": 0.0,
+          "least": 0.022653795811208743,
+          "links": [
+            [
+              6060488511,
+              9369685111,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.004530759162241748,
+          "score": 0.022653795811208743,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed service road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.09087084260902616,
+          "lane_km": 0.0,
+          "least": 8.45435421304513,
+          "links": [
+            [
+              6225176124,
+              7178950539,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.09087084260902616,
+          "score": 8.45435421304513,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Banks Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.07786172779677014,
+          "lane_km": 0.0,
+          "least": 8.38930863898385,
+          "links": [
+            [
+              6225176124,
+              13124447965,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.07786172779677014,
+          "score": 8.38930863898385,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Banks Avenue"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.012145957734259142,
+          "lane_km": 0.0,
+          "least": 8.060729788671296,
+          "links": [
+            [
+              6567463699,
+              6567463700,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.012145957734259142,
+          "score": 8.060729788671296,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed secondary road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.01174149882652031,
+          "lane_km": 0.0,
+          "least": 8.058707494132602,
+          "links": [
+            [
+              6567463699,
+              6567463701,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.01174149882652031,
+          "score": 8.058707494132602,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed secondary road"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.01075853277122183,
+          "lane_km": 0.0,
+          "least": 8.05379266385611,
+          "links": [
+            [
+              6567463701,
+              6567463735,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.01075853277122183,
+          "score": 8.05379266385611,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed secondary road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.07984257290487831,
+          "lane_km": 0.0,
+          "least": 8.399212864524392,
+          "links": [
+            [
+              6575557718,
+              13124447965,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.07984257290487831,
+          "score": 8.399212864524392,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Banks Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.04129943029787275,
+          "lane_km": 0.0,
+          "least": 8.206497151489364,
+          "links": [
+            [
+              9314357571,
+              11330311284,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.04129943029787275,
+          "score": 8.206497151489364,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Coward Street"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.06447880066209526,
+          "lane_km": 0.0,
+          "least": 8.322394003310476,
+          "links": [
+            [
+              9569854284,
+              11601706555,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.06447880066209526,
+          "score": 8.322394003310476,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Coward Street"
+        },
+        {
+          "assumed": true,
+          "fix": "bike_walk_signals",
+          "km": 0.26856976388423753,
+          "lane_km": 0.0,
+          "least": 8.0,
+          "links": [
+            [
+              11076374978,
+              13375365152,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 8,
+          "path_km": 0.0,
+          "score": 8.0,
+          "site_check": false,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed cycleway road"
+        },
+        {
+          "assumed": true,
+          "fix": "short_path_crossing",
+          "km": 0.051974468597776,
+          "lane_km": 0.0,
+          "least": 8.25987234298888,
+          "links": [
+            [
+              11601706555,
+              11823046323,
+              0
+            ]
+          ],
+          "owner": "Transport for NSW",
+          "parking_spaces": 8,
+          "path_km": 0.051974468597776,
+          "score": 8.25987234298888,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "Coward Street"
+        },
+        {
+          "assumed": false,
+          "fix": "short_path_crossing",
+          "km": 0.01995287979139247,
+          "lane_km": 0.0,
+          "least": 0.09976439895696235,
+          "links": [
+            [
+              13135418942,
+              13135418944,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.01995287979139247,
+          "score": 0.09976439895696235,
+          "site_check": true,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "President Avenue"
+        },
+        {
+          "assumed": true,
+          "fix": "bike_walk_signals",
+          "km": 0.008789653049927786,
+          "lane_km": 0.0,
+          "least": 0.0,
+          "links": [
+            [
+              13135418944,
+              13375327447,
+              0
+            ]
+          ],
+          "owner": null,
+          "parking_spaces": 0,
+          "path_km": 0.0,
+          "score": 0.0,
+          "site_check": false,
+          "speed_km": 0.0,
+          "spot": true,
+          "street": "unnamed cycleway road"
+        }
+      ],
+      "spots": 46,
+      "state_owned": 10
+    }
+  },
+  "row": "W1.2"
+}

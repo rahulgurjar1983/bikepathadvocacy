@@ -1,0 +1,479 @@
+{
+ "paths_km": 53.6,
+ "lanes_km": 7.3,
+ "on_pick_km": 11.7,
+ "items": [
+  {
+   "id": "path-cook-park-trail",
+   "name": "Cook Park Trail",
+   "kind": "path",
+   "km": 18.285,
+   "on_pick": 1.138,
+   "share": 0.062
+  },
+  {
+   "id": "path-path-by-foreshore-road",
+   "name": "Path by Foreshore Road",
+   "kind": "path",
+   "km": 7.79,
+   "on_pick": 1.863,
+   "share": 0.239
+  },
+  {
+   "id": "path-m6-shared-path",
+   "name": "M6 Shared Path",
+   "kind": "path",
+   "km": 5.889,
+   "on_pick": 1.461,
+   "share": 0.248
+  },
+  {
+   "id": "path-cooks-river-cycleway",
+   "name": "Cooks River Cycleway",
+   "kind": "path",
+   "km": 3.141,
+   "on_pick": 1.532,
+   "share": 0.488
+  },
+  {
+   "id": "path-wentworth-avenue",
+   "name": "Wentworth Avenue",
+   "kind": "path",
+   "km": 2.692,
+   "on_pick": 1.217,
+   "share": 0.452
+  },
+  {
+   "id": "path-sydney-airport-domestic-terminal-cycleway",
+   "name": "Sydney Airport Domestic Terminal Cycleway",
+   "kind": "path",
+   "km": 2.621,
+   "on_pick": 0.81,
+   "share": 0.309
+  },
+  {
+   "id": "path-alexandra-canal-shared-path",
+   "name": "Alexandra Canal Shared Path",
+   "kind": "path",
+   "km": 2.184,
+   "on_pick": 1.89,
+   "share": 0.865
+  },
+  {
+   "id": "path-bourke-street-cycleway",
+   "name": "Bourke Street Cycleway",
+   "kind": "path",
+   "km": 1.432,
+   "on_pick": 0.122,
+   "share": 0.086
+  },
+  {
+   "id": "path-path-by-park-parade",
+   "name": "Path by Park Parade",
+   "kind": "path",
+   "km": 0.871,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-path-by-botany-road",
+   "name": "Path by Botany Road",
+   "kind": "path",
+   "km": 0.821,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-prime-ministers-walk",
+   "name": "Prime Ministers Walk",
+   "kind": "path",
+   "km": 0.82,
+   "on_pick": 0.558,
+   "share": 0.68
+  },
+  {
+   "id": "path-path-by-ross-smith-avenue",
+   "name": "Path by Ross Smith Avenue",
+   "kind": "path",
+   "km": 0.593,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-sydney-airport-international-terminal-t1-footbridge-cycleway",
+   "name": "Sydney Airport International Terminal T1 footbridge / cycleway",
+   "kind": "path",
+   "km": 0.551,
+   "on_pick": 0.249,
+   "share": 0.453
+  },
+  {
+   "id": "path-path-by-wentworth-avenue",
+   "name": "Path by Wentworth Avenue",
+   "kind": "path",
+   "km": 0.541,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-botany-bay-waterfront-cycleway",
+   "name": "Botany Bay waterfront cycleway",
+   "kind": "path",
+   "km": 0.523,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-path-by-soult-street",
+   "name": "Path by Soult Street",
+   "kind": "path",
+   "km": 0.409,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-guess-avenue",
+   "name": "Guess Avenue",
+   "kind": "path",
+   "km": 0.36,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-path-by-princess-street",
+   "name": "Path by Princess Street",
+   "kind": "path",
+   "km": 0.347,
+   "on_pick": 0.021,
+   "share": 0.061
+  },
+  {
+   "id": "path-path-by-st-helena-parade",
+   "name": "Path by St Helena Parade",
+   "kind": "path",
+   "km": 0.3,
+   "on_pick": 0.051,
+   "share": 0.172
+  },
+  {
+   "id": "path-path-by-west-botany-street",
+   "name": "Path by West Botany Street",
+   "kind": "path",
+   "km": 0.3,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-path-by-1st-street",
+   "name": "Path by 1st Street",
+   "kind": "path",
+   "km": 0.293,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-alexandra-canal-cycleway",
+   "name": "Alexandra Canal cycleway",
+   "kind": "path",
+   "km": 0.27,
+   "on_pick": 0.27,
+   "share": 1.0
+  },
+  {
+   "id": "path-path-by-beauchamp-road",
+   "name": "Path by Beauchamp Road",
+   "kind": "path",
+   "km": 0.205,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-path-by-gardeners-road",
+   "name": "Path by Gardeners Road",
+   "kind": "path",
+   "km": 0.189,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-path-by-grace-campbell-crescent",
+   "name": "Path by Grace Campbell Crescent",
+   "kind": "path",
+   "km": 0.177,
+   "on_pick": 0.017,
+   "share": 0.098
+  },
+  {
+   "id": "path-path-by-devitt-place",
+   "name": "Path by Devitt Place",
+   "kind": "path",
+   "km": 0.171,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-path-by-bexley-road",
+   "name": "Path by Bexley Road",
+   "kind": "path",
+   "km": 0.165,
+   "on_pick": 0.089,
+   "share": 0.54
+  },
+  {
+   "id": "path-path-by-robertson-street",
+   "name": "Path by Robertson Street",
+   "kind": "path",
+   "km": 0.141,
+   "on_pick": 0.141,
+   "share": 1.0
+  },
+  {
+   "id": "path-path-by-preddys-road",
+   "name": "Path by Preddys Road",
+   "kind": "path",
+   "km": 0.14,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-path-by-bay-street",
+   "name": "Path by Bay Street",
+   "kind": "path",
+   "km": 0.108,
+   "on_pick": 0.102,
+   "share": 0.941
+  },
+  {
+   "id": "path-path-by-mascot-drive",
+   "name": "Path by Mascot Drive",
+   "kind": "path",
+   "km": 0.106,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-path-by-bidjigal-road",
+   "name": "Path by Bidjigal Road",
+   "kind": "path",
+   "km": 0.102,
+   "on_pick": 0.013,
+   "share": 0.131
+  },
+  {
+   "id": "path-path-by-chelmsford-avenue",
+   "name": "Path by Chelmsford Avenue",
+   "kind": "path",
+   "km": 0.095,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-path-by-gibbes-street",
+   "name": "Path by Gibbes Street",
+   "kind": "path",
+   "km": 0.092,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-path-by-sandringham-street",
+   "name": "Path by Sandringham Street",
+   "kind": "path",
+   "km": 0.09,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-path-by-flack-avenue",
+   "name": "Path by Flack Avenue",
+   "kind": "path",
+   "km": 0.086,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-flack-avenue",
+   "name": "Flack Avenue",
+   "kind": "path",
+   "km": 0.074,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-path-by-the-esplanade",
+   "name": "Path by The Esplanade",
+   "kind": "path",
+   "km": 0.071,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-path-by-john-street",
+   "name": "Path by John Street",
+   "kind": "path",
+   "km": 0.062,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-path-by-the-seven-ways",
+   "name": "Path by The Seven Ways",
+   "kind": "path",
+   "km": 0.055,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-path-by-alice-street",
+   "name": "Path by Alice Street",
+   "kind": "path",
+   "km": 0.054,
+   "on_pick": 0.054,
+   "share": 1.0
+  },
+  {
+   "id": "path-path-by-sparks-street",
+   "name": "Path by Sparks Street",
+   "kind": "path",
+   "km": 0.054,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-path-by-baxter-road",
+   "name": "Path by Baxter Road",
+   "kind": "path",
+   "km": 0.044,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-path-by-eddystone-road",
+   "name": "Path by Eddystone Road",
+   "kind": "path",
+   "km": 0.044,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-path-by-bonalbo-street",
+   "name": "Path by Bonalbo Street",
+   "kind": "path",
+   "km": 0.032,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-path-by-gordon-street",
+   "name": "Path by Gordon Street",
+   "kind": "path",
+   "km": 0.024,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-colson-cut-through",
+   "name": "Colson cut-through",
+   "kind": "path",
+   "km": 0.022,
+   "on_pick": 0.022,
+   "share": 1.0
+  },
+  {
+   "id": "path-path-by-daphne-street",
+   "name": "Path by Daphne Street",
+   "kind": "path",
+   "km": 0.022,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-path-by-fripp-street",
+   "name": "Path by Fripp Street",
+   "kind": "path",
+   "km": 0.021,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-wolli-creek-pedestrian-bridge",
+   "name": "Wolli Creek Pedestrian Bridge",
+   "kind": "path",
+   "km": 0.02,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-path-by-anniversary-street",
+   "name": "Path by Anniversary Street",
+   "kind": "path",
+   "km": 0.017,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-path-by-chuter-avenue",
+   "name": "Path by Chuter Avenue",
+   "kind": "path",
+   "km": 0.017,
+   "on_pick": 0.017,
+   "share": 1.0
+  },
+  {
+   "id": "path-path-by-brantwood-street",
+   "name": "Path by Brantwood Street",
+   "kind": "path",
+   "km": 0.016,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-path-by-gwea-avenue",
+   "name": "Path by Gwea Avenue",
+   "kind": "path",
+   "km": 0.016,
+   "on_pick": 0.004,
+   "share": 0.257
+  },
+  {
+   "id": "path-path-by-magdalene-terrace",
+   "name": "Path by Magdalene Terrace",
+   "kind": "path",
+   "km": 0.015,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-path-by-oakdale-avenue",
+   "name": "Path by Oakdale Avenue",
+   "kind": "path",
+   "km": 0.014,
+   "on_pick": 0.01,
+   "share": 0.7
+  },
+  {
+   "id": "path-m5-cycleway",
+   "name": "M5 Cycleway",
+   "kind": "path",
+   "km": 0.009,
+   "on_pick": 0.0,
+   "share": 0.0
+  },
+  {
+   "id": "path-path-by-maxwell-road",
+   "name": "Path by Maxwell Road",
+   "kind": "path",
+   "km": 0.007,
+   "on_pick": 0.002,
+   "share": 0.321
+  },
+  {
+   "id": "path-carruthers-drive",
+   "name": "Carruthers Drive",
+   "kind": "path",
+   "km": 0.006,
+   "on_pick": 0.0,
+   "share": 0.0
+  }
+ ]
+}

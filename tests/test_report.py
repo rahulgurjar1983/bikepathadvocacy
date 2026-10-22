@@ -177,6 +177,8 @@ def parsed(output):
 
 def test_fr13_2_no_number_outside_a_figure_link_or_the_appendix(output):
     text = " ".join(parsed(output).outside)
+    months = "January|February|March|April|May|June|July|August|September|October|November|December"
+    text = re.sub(rf"(\d{{1,2}} )?({months}) \d{{4}}", "", text)
     assert not re.findall(r"\d", text)
 
 

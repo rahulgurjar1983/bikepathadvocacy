@@ -4,6 +4,7 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Notes
 
+- The ladder gives `no_spots` (score with every work but the spots, over all trips) and a `trips` count on each spot work. The page reads them as `before_spots` and each spot's trips. The test grid holds no spots, so only a Bayside release can show them.
 - Run every gate through `scripts/gate.sh`; CI runs the same script.
 - Tests run with `--import-mode=importlib` and `pythonpath = ["src", "."]`, so `tests/` and `gates/tests/` may hold files with the same name.
 - The red-green gate runs each new or changed test against the base code. Put a new case in a new test function, never as a new row of a test that already passes.
@@ -15,8 +16,102 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 - Profiles live in `profiles/<id>.yaml`; `load_profile(id, directory)` reads them. `Num` keeps `value`, `source` and an `assumption` flag. Tests build bad files from a copy of the real `au-nsw` file.
 - Region files live in `regions/<id>.yaml`. `test-grid` points at `tests/fixtures/test-grid/snapshot/boundary.geojson`, which the P11 fixture row must create. `bikeplan config show` prints one `key value (source)` line per profile value.
 - `uv add <package>` works on this host and may use the network. Python's built-in request tools work with the local replay server used by snapshot tests.
+- `bikeplan.paths_today.read_paths` reads `network.osm.gz` for the bike paths and painted lanes of spec 21. A run writes `paths.json` and figures F-last three only when it finds paths, so the test grid keeps F1 to F85. A report test file may not add `:root` rules; the page's `:root` blocks must equal the mock.
+- The shipped spec counts 16.8 km of painted lanes. The spec 21 definition gives 7.3 km on `data/cache/au-nsw-bayside/2026-10-19`; adding `cycleway=shared_lane` ways would give 17.0 km. The row follows the written definition.
 
 ## Spec issues
+
+### W1.0 the mock conflicts with the old number check (resolved)
+
+The 19 October ruling in spec 20 allows the narrow date change to the old
+test. The key spot is now an unnumbered dot.
+
+### Q1.12 the new osm_date needs two saved tests to change
+
+Part 1 shipped (the `osm_corridors` adapter). The refresh itself is held: a new `osm_date` fails saved tests that pin the old one, and no spec permits amending them. Spec 20 permits one amendment only, `test_fr2_1_snapshot_fetch_writes_every_file_and_the_manifest`.
+
+Proof on a worktree of fresh `origin/main` with all 33 region files at 2026-10-22 and `osm_backdrop, osm_corridors` added to the Bayside adapters:
+`pytest tests/test_snapshot.py::test_fr18_2_every_region_file_holds_the_refreshed_snapshot_date tests/test_snapshot_required.py`
+gave 3 failed, 2 passed. The failing cases are:
+- `test_fr18_2_every_region_file_holds_the_refreshed_snapshot_date` pins `{"2026-10-19T00:00:00Z"}`.
+- `test_fr15_9_verify_command_reads_the_required_adapters_from_the_region_file` and `test_fr15_9_verify_command_accepts_the_published_bayside_manifest_files` check the region adapters against the 2026-10-19 manifest, which lacks `backdrop.json` and `corridors.json`.
+
+Ask, as a spec 20 ruling for Q1.12: the first test may pin the new date, and the second may read the manifest of the region file's date, like the Q1.10 ruling. The fetch needs 72 s and 6 MB, so the workflow run is short.
+
+### W1.0 template changes
+
+The copy of the mock uses run values for its title, author, date, place
+counts, stage totals, street names, spots and TfNSW fit. It drops the mock
+banner and its example search words. It keeps the colour tokens, type,
+drawings and scripts. Parts with no data, and the empty cost tile, are
+left out. Costs, wards, council plan fit and the map backdrop wait on
+later W rows. The full-plan score comes from the last stage, not the
+ceiling. Spot parking comes from the works, not a fixed count per spot.
+
+The main map uses `plan-map` so the old map can keep its `map` section ID
+in the closed part. Extra styles keep old tables and drawings within that
+part. Opening it sends a resize event so the old map can draw. Missing
+parts have script guards. The read time comes from the page's words at
+load. These changes let the mock read real run data and keep the old
+report whole; they do not change its design.
+
+### W1.0 page figures
+
+`page_figures` in `report_page.py` makes the spot, street-change and score
+figures after the option figures, so the older IDs do not move. A run with
+no spots and no works makes none, so the test grid still has F1 to F85.
+`place_figures` maps figure labels to the keys the page script reads with
+`fg(key)`. A key with no figure falls back to the closed part. The council
+keys `council_share` and `council_km` wait for FR-20.24. The test grid has
+no works, so figure link tests build their data from the `pick()` helper.
+The local Bayside report takes about 33 minutes.
+
+### M1.7 the release has no road segments to read (open)
+
+The release build pulls the Bayside snapshot from `snapshots/au-nsw-bayside/2026-10-01/manifest.json`. That manifest lists five files and no `road_segments.gpkg`, `speed_zones.gpkg` or `elevation.tif`. The build reads the road function only when `road_segments.gpkg` exists, so no release link has a road function and every blocker says "Not a state road". The code of parts 1 and 2 cannot show in a release until a snapshot with the file is published.
+
+- Prove it: `python3 -c "import json; print([f['path'] for f in json.load(open('snapshots/au-nsw-bayside/2026-10-01/manifest.json'))['files']])"` prints five paths without `road_segments.gpkg`.
+- Prove it: `gh release view snapshot-au-nsw-bayside-2026-10-01 --json assets --jq '.assets[].name'` lists the same five files.
+- Prove it: release v2026.10.17-pr204 (after part 2) still has "Not a state road" for Forest Road, Wentworth Avenue, Bay Street and Croydon Road in options.json.
+- On the local snapshot with the file, the Bay Street link of 11.7 m and the Wentworth Avenue link of 9.3 m in those blockers are ArterialRoad. Wentworth Avenue also has 11 primary links whose ways match no segment, and Forest Road and Croydon Road have secondary links the data calls DistributorRoad, which is not in `network.state_functions`. Check these on a release built from the new snapshot.
+- Needed input: row Q1.10 (fresh Bayside snapshot with all five adapters) must publish `road_segments.gpkg`. Then run M1.7 again and read the release blockers.
+
+### W1.1 the rest waits on the page (open)
+
+The map overlay, its km, the F2 label and the page's `model_pieces` read are shipped. The page stage km come from the option steps, which use the modelled rating. Left: W1.6 shows that the page tiles and stage km agree with `model_km`.
+
+- Prove it: `uv run --frozen python artifacts/W1.1/km_match.py` writes 3.0 for the map and 3.0 for the options on the test grid, so the two already agree and a new test for it would pass on base.
+- Prove it: `grep -c "FR-20.1[,)]" PROGRESS.md` prints 1, the W1.1 row, so W1.6 does not cite FR-20.1.
+- Needed input: add FR-20.1 to the W1.6 row, so its page tests show that every all-ages figure on it is modelled. Then close W1.1 as shipped, or leave it open until W1.6 merges.
+
+### W1.1 one rating on the map conflicts with saved FR-15.5 tests (resolved)
+
+Resolved by the spec 20 ruling: modelled fields sit beside the confirmed ones. `street_overlay` takes `model` and adds `model_pieces` and `model_km`; `network.js` reads them.
+
+- FR-20.1 asks the map, place counts and all-ages figures to use the modelled rating.
+- Main tests say the opposite. `test_fr15_5_stress_export_does_not_count_unknown_paths_as_confirmed` needs the map `aaa` false and `km_aaa` 0 for an unknown-width path. `test_fr15_5_literal_model_scores_never_claim_confirmed_distance` and the confirmed place scenario also hold.
+- Prove it: `uv run pytest tests/test_safety_evidence.py -k "unknown_paths or literal_model"` passes on `origin/main`, so a change to the map rating breaks them.
+- Needed input: a spec 00 or spec 20 ruling that retires or amends those FR-15.5 cases. Shipped in W1.1: the path reason part only. Left: the map, the place counts, the all-ages figures and the F2 label.
+
+### Q1.6 curve chooser and option-following views (resolved)
+
+Resolved by the spec 20 ruling (row Q1.6 in its rulings table): one record,
+my pick at its stage, drives the page. The curve chooser and the
+option-following views are retired, so the needed input is given.
+The text below is the earlier ask.
+
+- FR-15.2 and FR-16.1 ask every view to follow one selected package, and the
+  spec 15 table asks for an offline browser check of baseline, a middle rank
+  and two scenarios. Spec 17 now sets the report page and has no curve chooser.
+  Only `option_view` is wired into `run.py`; `project_views`, `evidence_view`
+  and the curve exports are built but no page uses them.
+- Option packages have no recomputed trips, so no other view has totals to
+  follow. Browser proof of curve switching has nothing to switch.
+- Proof: on a fresh `origin/main` worktree, `rg -n "project_views|evidence_view" src`
+  finds only the definitions, and `rg -n "option_view" src/bikeplan/run.py`
+  finds the one wired view.
+- Needed input: spec 17 or 15 states whether the page keeps a curve chooser,
+  and whether option packages get recomputed trips.
 
 ### C1.11 old figures stay
 
@@ -414,7 +509,17 @@ in `artifacts/Q1.3/base-commit.txt`; the fresh log is
 
 - Speed zones come from `https://portal.data.nsw.gov.au/arcgis/rest/services/Hosted/TFNSW_Speed_Zones_Public/FeatureServer/0` with no key. The service lowercases its fields (`objectid`, `type`, `speed` such as `50 km/h`). Only permanent types are kept; school, variable, road work and wet weather zones are dropped. A tile fetch is fast (28 s for 266 tiles) but the Bayside build takes 21 minutes.
 
+### W1.2 pieces with an open end
+
+- W1.2 (resolved) release check (pr221, `gh release download v2026.10.20-pr221 -p au-nsw-bayside.tar.gz`, `options.json`): the unnamed cycleway with 135 trips is no longer a blocker, and calm all-built score is 73.8%. Short blockers of at most 100 m fell from calm 5, shortest 9, separated 7, mesh 7 (pr215) to 4, 7, 6, 5. Each left piece has an open end, so spec 20's Spot term ("between two links of the option that are all-ages today or have a fix") rules it out. Wollongong Road (71 m, 30 trips in calm): node 15186774 has one edge, so it is a dead end. Rocky Point Road (14 m, 20 trips): one end meets Princes Highway, a trunk road, the other an 82 m primary link. Joffre Crescent (96 m, 12 trips): both ends meet footways. Rebuild the neighbours with a `build` and `score_edges` run on the 2026-10-01 snapshot (32 minutes) and list the edges at each node.
+
+Ask: may a short piece with one calm end and one open end (a dead end or a trunk junction) be a spot? Spec 20's Spot term says two calm ends. Until a ruling, the row stays open and the remaining 4 to 7 short blockers per option stay blockers.
+
+- W1.2 (resolved) part 5 (open ends, ruling of 20 October): `open_spots` in `ladder.py` lists every short no-fix link as a spot candidate, and `build_ladder` takes them with `candidates`. `trip_spots` keeps a run of candidates (at most `fit.spot_max_m` in all) for any trip whose path has a calm end at each side, where the trip's own start or end is calm. `link_fixes` is unchanged, so the global rule stays. Bayside 2026-10-01 (`artifacts/W1.2/open-ends.json`): spots calm 26, mesh 141, separated 20, shortest 57; the three named roads are spots. Short blockers left: mesh 2, shortest 3.
+
 ## BLOCKED
+
+- Q1.6 PR 141: the fix for the CI failure is committed on `loop/Q1.6-option-view` but not pushed. `git push` fails with "could not read Username" and `gh api user` returns HTTP 401: the token in `~/.config/gh/hosts.yml` is invalid. Run `gh auth login -h github.com`, then push that branch and run `scripts/wait-ci.sh 141`.
 
 - P10.1: resolved by the input proof-only gate path. Prior operator ask: add a rule and gate path for proof rows whose real tests pass on base code. The loop cannot edit `PROMPT.md` or `gates/redgreen.py`. Fresh base proof is in `artifacts/P10.1/main-audit.txt`; the gate marks a passing result as fake. Once that input fix ships, clear the hold and run the saved Bayside tests. Do not change code just to make a test fail.
 - V1.7 resolved on 2026-10-12: the operator found the track at `https://ridewithgps.com/trips/351728076` (linked from `https://www.cyclesydney.com/p/ride22`). Earlier note: I could not find the public RideWithGPS track for CycleSydney Ride 22. The wiki page for the ride (`cyclesydney.wiki/sutherland/`) sends the reader on to other domains: `syd.lat`, then `nisdy.online`, then `sdy005.cyou`. I did not follow the third one, since it looks like a hijacked redirect. The ask: send the `ridewithgps.com/routes/<number>` link for Ride 22, or its GPX file, and the exact quotes you want judged. Put the GPX in `data/private/ride22/` and the claims in `data/private/ride22/claims.yaml`. Also check that `data/private/` is in `.gitignore`; it is not now.
@@ -1248,13 +1353,243 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - T1.2: `edition()` and `network_report()` take an optional `corridor` dict from `corridors.corridor_report`. `edition.corridor_data` loads `references/tfnsw-strategic-corridors.yaml` and returns None when an end is outside the snapshot box (`OutsideBox`), so other regions get no section. `build_options_report` keeps the ratings in `graph.graph["ratings"]`. Corridor figures read `options.json` key `corridors` and use spec 19. The overlay draws only routes with a bike route, so Bayside shows 11 of 13. A Leaflet tooltip fades out, so a test must wait for the label to leave the page. The Bayside report takes about 32 minutes.
 - T1.2 note for C1.13: T2 and T3 (Wolli Creek to Rockdale to Kogarah) get "no route" in the Bayside run, as in T1.1. Check this before calling the edition ready.
 
-### Q1.10 spec issue (2026-10-17)
+### G1.4 notes
 
-- Q1.10 cannot ship a new Bayside snapshot ID without breaking an old test that the rules keep intact. `test_fr2_1_snapshot_fetch_writes_every_file_and_the_manifest` (tests/test_snapshot.py:389) reads the real `regions/au-nsw-bayside.yaml` and asserts `snapshot_id == "2026-10-01"` and `osm_date == "2026-10-01T00:00:00Z"`.
-- Proof on fresh `origin/main` in a worktree: change the Bayside `osm_date` to `2026-10-17T00:00:00Z`, then run `uv run --frozen pytest tests/test_snapshot.py -q -k fr2_1_snapshot_fetch_writes_every_file -x`. Result: 1 failed. A `revision` key giving `2026-10-01-r2` fails the same line.
-- The published Bayside manifest (`snapshots/au-nsw-bayside/2026-10-01/manifest.json`) lists 5 files and lacks `elevation.tif`, `road_segments.gpkg` and `speed_zones.gpkg`. `bikeplan snapshot set` and FR-15.9 verify would name them.
-- Needed input change: let that test take its expected ID and date from the Bayside region file (or run on a copy with fixed values), and say in spec 15 or 18 how a revision shows in the ID (for example `<osm date>-r<n>` set by `snapshot.revision`). `scripts/release.sh` `snapshot_date` also reads only `osm_date`, so it needs the same revision rule. After that, the row needs `snapshot.revision` in config, the ID in fetch, `snapshot_set` and `release.sh`, then one real fetch of about 15 minutes and a publish.
+- `build_options(..., corridors=None)` keeps four options. A list (even empty) adds "corridors". Each candidate is `{"a","b","length_m","label"}`; its link key is `(a, b, 100 + index)`.
+- `link_table` now marks `unpaved` (surface tag on a path, cycleway or footway) and `path`; an unpaved link is never all-ages. `surface` is now a kept way tag in `network.py`, so older graph caches lack it.
+- Wiring left: turn `propose.add_corridor_paths` candidates into the dicts above in `edition.build_options_report`, then the switch, chart and figure counts in `test_edition.py` need a fifth option.
+- G1.4: nothing writes `corridors.json` yet; only `propose` and the options report read it. `from bikeplan import propose` gives the CLI function, so tests use `importlib.import_module`.
 
-### C1.13 input blocked (2026-10-17)
+### V1.8 source capture
 
-- C1.13 needs the fresh Bayside snapshot from Q1.10, which is open (`rg -n "Q1.10" PROGRESS.md`) and blocked by the spec issue above. `snapshots/au-nsw-bayside/2026-10-01/manifest.json` still lists 5 files, so no report from a fresh snapshot can be built. Needed input change: the one in the Q1.10 spec issue.
+- `bikeplan snapshot review-source <url> --out data/private/<new folder>
+  --licence <licence> --credit <credit>` saves exact source bytes in `source`,
+  plus a source manifest and `review.yaml` with `public: false`. It refuses
+  an old folder and any path outside the private root, even through a link.
+- The live page is in `data/private/V1.8/capture-2026-10-17/source`. Its
+  `const DATA=` object has a `lines` GeoJSON field. Read it offline; no route
+  or claim from it may enter git. The
+  next part needs clipping, new measures, all claim verdicts and the report.
+  A local capture has not been sent to the author. No reply clock has begun.
+- The public proof holds hashes only, with an empty verdict count. This is
+  source capture proof, not a completed review. Use a new folder to refetch.
+
+### V1.8 clip
+
+- `bikeplan route clip <capture> --boundary <boundary.geojson> --out
+  data/private/<new folder>` reads the `const DATA=` lines, clips them to the
+  boundary and writes `lines.geojson`, `layers.json` and `review.yaml`.
+- The page now totals 4,143.7 km over 932 lines, not the 4,133.9 km of spec
+  18. Its data changed since 14 October. Check each claim against the
+  new capture and say so in the report.
+- Still left: the new measures, the claim verdicts, the private report and
+  the reply window. No reply clock has begun.
+
+
+### V1.8 measures
+
+- `bikeplan route measures <lines.geojson> --region --snapshot --out` writes
+  `measures.json` (new module `review_measures.py`). The real Bayside run took
+  25 minutes 43 seconds and 1.5 GB; most of it is `build` plus `route_figures`
+  matching 932 lines. Do not run it twice in one turn.
+- The measures are not yet in `route_figures` totals or `MEASURES` in
+  `review.py`, so no claim can use them. Left: wire them into the claim
+  verdicts, check each section 2 claim against the new capture, build the
+  private report and record the reply window. No reply clock has begun.
+- A gate test file must collect on base: import a new module inside the test
+  functions, not at the top.
+
+## V1.8 verdicts
+
+- `bikeplan route verdicts` judges claims from saved measures, the clip's `layers.json` and the source file. It refuses output outside `data/private` and an existing folder.
+- Claims and `reply.yaml` for the real run live in `data/private/V1.8/` and are not in git. Quotes come from the page text of 2026-10-17.
+- The reply window starts only when a `sent` entry has a date. A person sends the review; no turn may contact the author.
+- Left: the private report page. `review_report.py` ties its figures to route data, so it needs a variant for these measures.
+
+### V1.8 page
+
+- `bikeplan route page <verdicts folder> --source-manifest --reply --out data/private/<new folder>` writes `index.html` from saved verdicts. It is new code in `review_page.py` and does not rebuild route figures.
+- The page has no map yet: the verdicts hold no route geometry. Adding the map from the clip's `lines.geojson` is left.
+- A person sends the page to the author, then adds a `sent` entry to `data/private/V1.8/reply.yaml`. Rerun `route verdicts` and `route page` into new folders to start the 14 days. No turn may contact the author.
+
+- Map: add `--lines <clip lines.geojson>` to `route page` to draw the route as an SVG with a key by plan layer. It must sit under `data/private`. The map is coloured by plan layer, not stress, since the clip holds no stress. Rerun the page into a new folder.
+
+### Q1.6 goal and stage package view
+
+- `option_view` renders the record's option packages as a script-free section.
+  A small handler in `proposal_views.js` shows the chosen package using the
+  native [change event](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/change_event).
+  Choosing one here does not change the curve package; the text says so.
+- The real test grid has no sourced options, so the archive shows the empty
+  state. Packages with sets come from the unit and browser cases. Making the
+  other shared views follow an option package, and full browser proof, remain.
+
+- Q1.6 shared works: `option_view` lists each package's elements and projects
+  that also sit in the record's selected package. The current spec 17 page has
+  no curve chooser or `package-export-data`, so no script updates this list.
+  Curve exports and sheets are not on that page; restoring them needs a
+  decision on the page, not a model turn.
+
+- Q1.6 gaps: `option_view` lists, per package, projects with no sheet in
+  `project_sheets`. Other shared views following an option package, and full
+  browser proof, remain.
+
+- M1.7: `set_segment_traffic` fills links with no segment from their OSM way (`take_way_function` in `traffic.py`); the way function is the one with the most matched length, ties by name.
+
+- W1.2: `spots.py` holds the spot rules; `link_fixes` in `ladder.py` calls it for a link with no other fix. A crossing spot is a link whose own fit is AAA but is not all ages, beside a main street with no signal. A short path spot is a no-fix link of at most `fit.spot_max_m` (default 100 m, optional profile key) between two all-ages links. A spot is its own work.
+- W1.2 real run (Bayside, 2026-10-01): 12 spots over four options (`artifacts/W1.2/after.json`). The pr191 blockers mostly stay blockers, since most are longer than 100 m or do not sit between two calm links. Widening that is a spec choice. The footpath width has no data field, so short paths read "needs a site check" unless `footpath_width_m` is set.
+- The crossing stress table gives LTS 1 for 2 lanes at 50 km/h, so a zebra spot arises only where a link is not all ages for another reason.
+
+- M1.7 part 2: `take_way_function` now sets every link of a way, not only links with no match. Proof run on the 2026-10-01 snapshot takes about 20 minutes; run it in the background with a 3600000 ms timeout. Never `pkill -f` a pattern that your own shell command contains. The row stays open until a release report shows Transport for NSW on the Forest Road, Wentworth Avenue and Bay Street blockers.
+- W1.2 part 2: `link_fixes` now decides a no-fix link last and loops until no new spot appears, so the nodes of fixed links and earlier spots count as calm. Real run (Bayside 2026-10-01): spots calm 3 to 11, mesh 5 to 90, separated 1 to 5, shortest 3 to 36 (`artifacts/W1.2/after.json`). Row stays open until a release shows Bardwell Road and Forest Road as spots.
+
+- W1.2 part 3: `short_runs` in `ladder.py` turns a run of short no-fix links (at most `fit.spot_max_m` in all, two calm ends) into spots. On release pr213 the Forest Road blocker is 0.5 to 1.7 km, so it is not short, and Bardwell Road is no longer a blocker. Many short blockers keep one open end (dead end or long blocker). Row stays open until a release built after this PR shows the short blockers as spots.
+
+- W1.2 release check (pr215, `gh release download v2026.10.19-pr215 -p au-nsw-bayside.tar.gz`, `options.json`): Bardwell Road and Forest Road are no longer short blockers (Bardwell is gone; Forest is 0.5 km in shortest and 1.38 km in mesh, so not short). 5 to 9 blockers of at most 100 m remain per option. In calm they are an unnamed cycleway (20 m, 135 trips, "crosses a busy road"), Wollongong Road (71 m, 25 trips), Botany Road, Joffre Crescent and Rocky Point Road. `link_spot` in `ladder.py` skips every path link (`is_path`), so a cycleway that crosses a busy road never gets a crossing spot; the others have an open end. Row stays open. Next part: give a path link whose only reason is "crosses a busy road" a crossing spot; prove it with the 135-trip cycleway.
+
+- W1.2 path crossings: the network emits `bike_facility="off_road"` for a cycleway. Use that value in fixtures, not `track`. `link_spot` now checks path width and surface, then uses the same crossing rule as a road link. A crossing does not fix a narrow or unpaved path. The spot tests rebuild these cases: `uv run --frozen pytest -q tests/test_spots.py`.
+- W1.2 method check: I checked the [TfNSW guide to priority path crossings](https://www.transport.nsw.gov.au/system/files/media/documents/2025/Active-Transport-Community-of-Practice-Supplement-to-AS1742-Priority-path-crosssings-September-2025.pdf). This change reuses the spec's crossing rule and the tool's spot records; it needs no new library or design rule.
+- If `gh pr edit` fails on the retired Projects API, use `gh api --method PATCH repos/{owner}/{repo}/pulls/<pr> -f body='<body>'`. Then read the PR to check the edit.
+- W1.2 path proof: `artifacts/W1.2/path-crossings.json` lists each spot work and blocker. Rebuild with the path crossing command in `VERIFICATION.md`. Calm and separated now reach 73.9% with all works built. Short road blockers remain; the row stays open for the release check.
+
+- W1.2 closed (2026-10-20): release v2026.10.20-pr227 lists Wollongong Road, Rocky Point Road and Joffre Crescent as short path crossing spots in every option. Proof: `artifacts/W1.2/release-pr227.json`, built by `artifacts/W1.2/check-release.py`.
+
+## Q1.10 wait (2026-10-19)
+- Region files now say osm_date 2026-10-19. Run 39283885929 of `snapshots` (councils=au-nsw-bayside) is fetching. When it ends, copy its `manifest.json` to `snapshots/au-nsw-bayside/2026-10-19/` with `gh release download`, drop the old 2026-10-01 Bayside manifest, then run `uv run pytest tests/test_snapshot_set.py tests/test_snapshot.py`.
+- The 12 other council manifests (2026-10-01) were removed: the owner cancelled those councils and `test_fr18_2_every_published_council_has_a_manifest_like_bayside` fails on any manifest with another date. Until the Bayside manifest lands, that test and CI stay red.
+
+### Q1.10 notes
+
+- Q1.10 (2026-10-20): the 2026-10-19 snapshot run 39283885929 fetched Bayside for 2 h 20 min, then failed at publish: `ls snapshots/au-nsw-bayside/*/manifest.json` matched the 2026-10-01 and 2026-10-19 folders. PR 220 fixed that on main (the step reads `osm_date` from the region file). Main is merged into this branch. Run 39373869552 started 2026-10-20T05:14Z with ref `loop/Q1.10-bayside-snapshot`; the tile cache from the failed run is restored, so it should end sooner. Check: `gh run view 39373869552 --json status,conclusion`. When it succeeds, copy `snapshots/au-nsw-bayside/2026-10-19/manifest.json` from the release (`snapshot pull`), then run M1.7.
+- The test `test_fr18_2_every_published_council_has_a_manifest_like_bayside` stays red on PR 219 until that manifest lands: Bayside shows 3 problems today, and the other 32 councils have none.
+
+- Q1.10 (2026-10-20): run 39373869552 succeeded. `snapshots/au-nsw-bayside/2026-10-19/manifest.json` lists eight files including `road_segments.gpkg`, `speed_zones.gpkg` and `elevation.tif`; the old 2026-10-01 manifest is removed. Next for M1.7: after this merges, a release builds from the new snapshot; read its `options.json` blockers for Forest Road, Wentworth Avenue and Bay Street.
+
+- Q1.10 (2026-10-20): release v2026.10.20-pr219 was built from the 2026-10-19 snapshot. Its Forest Road blockers name Transport for NSW with road type primary. The row stays open (no test is named for FR-15.9); M1.7 reads the remaining blockers and the report text.
+
+- Q1.10 (2026-10-20): `snapshot verify --region <region file>` now fails and names each required adapter whose file the manifest lacks (FR-15.9). `snapshot set` uses it before publish. Without `--region` verify still checks only listed files. The data-quality report and effective dates of FR-15.9 belong to P12.1.
+
+- M1.7 closed (2026-10-20): release v2026.10.20-pr224 has no "Not a state road" in options.json. Forest Road blockers name Transport for NSW (primary). Wentworth Avenue and Bay Street are no longer blockers in any option. The 6 "Not a state road" cells left in report.html are local residential roads and a primary_link.
+
+### W1.11 notes
+
+- W1.11 part 1: `map_data.py` builds the page data from `report_data` output, `map_page.py` fills `assets/map_template.html` (a copy of `specs/21-design/map.html` with word slots), and `map_kml.py` writes the layer files with `pykml` and checks them against its bundled OGC KML 2.2 schema.
+- The layer files go in `map-layers/` with their own `SHA256SUMS`, not the top one. The old `clean_run` helper in `tests/test_report.py` copies the `FILES` list flat, so a nested name there would break it.
+- A page section whose data is missing is cut from the template (`drop_section`); the script uses a dummy node for missing ids, so no guard is needed in each handler.
+- Cost, council plan and wards are not in the run data yet, so the map leaves out their layers. The page already reads `cost`, `council` and `wards` when W1.4 and later rows add them.
+- `checks.report_files` lists every `*.html` in a release except `checks.html` and `index.html`. When the operator adds `<region>-map.html` to the release, that function must skip it; do this in the FR-21.7 part.
+- On a busy host (load above 30) the real Bayside map page took minutes to open in headless Chromium; `artifacts/W1.11/shot.py` polls for the popup instead of waiting for the load event.
+
+### W1.11 tips
+- Gate `contracts` lets the `FILES` fixtures grow only with `.json` or `.csv` names. `map.html` and `map.kml` are hashed in `MAP-SHA256SUMS`, not `SHA256SUMS`.
+- Gate `generic` bans region names in `src/bikeplan`, so popup words there must avoid them.
+- Gate `deps` wants every imported package declared with `uv add`.
+- W1.11 part 2: `map_checks.py` holds the FR-21.7 release check. It reads `map.html`, `report.html`, `figures.json`, `map.kml` and `map-layers/*.kml` from each region archive and opens the page in headless Chromium.
+- Tests must import `bikeplan.checks` as a module, so they still collect on base.
+- `map-layers/SHA256SUMS` is not a layer file. The check counts only `*.kml`.
+
+- W1.11 part 3: `map_checks.release_problems` compares the release's `<id>-map.html`, `<id>-map.kml` and `<id>-map-layers.zip` byte for byte with the archive. `pack` in `tests/test_checks_map.py` now writes all three, so old FR-21.7 cases still see a true release.
+
+- W1.11 part 4: `bikeplan.axe` holds the pinned axe-core (`assets/axe.min.js`, sha256 checked on every read), `violations(driver)` and `tab_stops(driver, limit)`. W1.9 should reuse it, not add a second pin. The name `bikeplan.access` is taken by the `access` command.
+- Leaflet's `.leaflet-container a` colour (#0078a8) beats `.btn`; popup buttons need `.leaflet-container a.btn`. A popup state needs `#<id>` in the URL plus `driver.refresh()`; the hash is read only at load.
+- axe reads blended colours while a CSS transition runs, so the popup fade made CI report contrast failures the host did not. `axe.violations` now waits for `document.getAnimations()` to be empty.
+
+## W1.3 notes
+
+- Stage cost figures read `price` (low, high in dollars) on each work in `options.json`; `price_works` sets it in `run.py`. Recipes may only read files in the output folder, so costs cannot read the rates file.
+- The spots-alone share needs `no_spots_safe` from the ladder; both figure sets are skipped when their key is absent, so old toy tests stand.
+
+- `report_data` takes `rates` from `bikeplan.cost.load_rates()`. Without it the stages hold no cost keys, so old tests stand.
+- A short path spot costs its km at the short path rate plus one crossing. Signals apply when the spot is `assumed`, else a raised zebra.
+- A stage cost rounds the low end down and the high end up to whole millions.
+
+- W1.4: a full `bikeplan report` on Bayside took over 55 minutes on this host and was killed at 3300 s. Start it with the whole turn left, or leave the row open and let CI and a release prove it.
+
+- W1.4 part 2: `option_totals` now lists `served` place ids and marks carry `id`; `ward_fit` reads them from each step's totals (steps 0, 1 and last). A full Bayside report took 38 minutes in one foreground call.
+- W1.4 part 3: ward cards are `div` elements, not buttons, so figure links inside them are valid. A full Bayside report took 36 minutes in one foreground call.
+
+### W1.5 backdrop
+
+`osm_backdrop` is a snapshot adapter, not a core file, so old tests that list the three core files stay intact. One Overpass query holds coastline, water, parks, airport and rails in `backdrop.json`. `backdrop_layers` in `backdrop.py` cuts the sea: it splits the analysis box by the coastline and keeps the pieces to the right of the way direction. A snapshot with no `backdrop.json` gives empty layers. Q1.12 must add `osm_backdrop` to the region adapters and refresh the snapshot.
+
+- Release check FR-17.12 counted exactly four options; Council plan first (FR-20.24) made five and failed releases pr243 to pr246. The check now counts four plus that option. Watch the next release run.
+
+### W1.6 part 1
+
+- On the test grid page, words at load are 221 (limit 1,000), Flesch-Kincaid is 4.6, no code word shows and the page does not scroll sideways at 360 px. Tests for these pass on base, so they were not added (they would be fakes).
+- Page stage km are `model_km` plus the ladder gain since step 0. The ladder alone started at 0 km, so Today showed 0 on a map with 3.0 km all-ages.
+- Big numbers and the print rule sit in `EVIDENCE_CSS`, because the `:root` tokens must equal the mock.
+- Pytest cannot import fixtures from `test_report_page` without a `noqa` comment; make local fixtures.
+
+- Part 2: a full Bayside run took 38 minutes. Stage tiles count up for 500 ms, so wait 1.2 s after a click before you read them.
+
+- Closing W1.6 as done failed the spec coverage gate: FR-20.8 and FR-20.19 have no test named for them. Their limits pass on base, so a test now would be a fake. They need a `[proof]` row.
+
+### W1.7 part 1
+
+- Place cards show safe trips by stage and joined places from `partners` in `option_totals`. Each work carries a `section` from `fuse` and the fit strips, drawn to scale in the page.
+- Unknown width: `fuse` gives `width_source == "lanes"`; the section keeps `None` and the page says "typical width".
+- The test grid has no works, so real cross-sections need a Bayside build.
+- Part 2: release v2026.10.21-pr251 (real Bayside) holds 67 place cards and 514 works with sections. Local runs cannot build Bayside because the snapshot files sit in releases.
+- Left: the area card, which waits on the FR-20.14 ward cards of W1.8.
+
+### W1.7 part 3
+
+- The ward card is one function, `wardCardHtml(w, pre)`, in the page script. The page cards and the search result both use it, so their values cannot drift. `pre` keeps the clip path ids apart.
+- A full Bayside run took over 50 minutes on this busy host and hit a 3,000 second limit. To check a template change on real data, fill the new template with the data from the latest Bayside release page: `artifacts/W1.7/area_check.py`.
+
+### W1.8 part 1
+
+- The cost section shows only when the full plan holds works or spots. The test grid holds none, so its page keeps no cost section.
+- The spot length in the sentence is in metres and links to the length figure, which is in km. A second figure would break the exact figure list of `test_fr20_18_page_figures_hold_the_spot_street_change_and_score_numbers`.
+- Ward cards drop the suburbs, then the safe-places line, to stay within 40 words. Count words after turning tags into spaces; `textContent` joins list items.
+- Template changes beyond the mock: `.credit` rule, `cost-note`, `cp-credit` and `tf-credit` elements, a card per spot kind. Reason: FR-20.12, FR-20.15 and FR-20.16.
+- Left: the share of street parking in FR-20.16 needs a parking total from the run; FR-20.15 asks for two short lines per plan card.
+
+### W1.8 part 2
+
+- A turn went silent for 21 minutes and the watchdog restarted it. The cause was a helper that built the whole Bayside network in one foreground command. That build takes over 50 minutes here and prints nothing. Never run it in a turn.
+- The street parking total comes only from a full run. The release build reads it, so check the share on the release page after CI, not with a local build.
+- Plan cards carry two short lines under the credit. The cost table shows each parking figure with its share of the total.
+- Left: check the share and the plan lines on the real Bayside release page.
+
+### W1.9 part 1
+
+- The token test now applies `specs/20-design/token-overrides.json` to the mock's `:root` blocks before it compares. The page template ends each block with `--spot-done`.
+- Left: axe-core at load, with a place card and with a street card; keyboard reach; the 4 MB limit; `bikeplan shots`; the FR-20.23 measures in `checks.html`. Reuse `bikeplan.axe`. Test the axe states only where a case fails on base.
+
+### W1.9 part 2
+
+- `bikeplan shots` is in `shots.py`; it fails if the page asks the network for anything. `page_measures.py` opens each `*-report.html` once at 1440 by 900 and measures words, size, network requests and axe-core violations at load. The result is cached by path and size.
+- Left: axe with a place card and a street card open; keyboard reach; the FR-20.8, 20.19, 20.20, 20.25 measures and the reading level (textstat is a dev package, so it needs `uv add` first); the release script runs `shots` (operator).
+
+### W1.9 part 3
+
+- `page_measures.py` now also measures the hero words and first screen, plain words, sideways scroll, text sizes, fonts, A4 pages, axe with a place card and a street card open, Tab reach, focus rings, section order and unfilled slots. Each is a line in `checks.html`.
+- Traps: the 360 px test needs `mobile=False`, since mobile emulation widens the viewport to fit wide content and hides the scroll. Hero words count by spaces, so "All-ages" is one word. New axe lines must not contain "axe-core", because the older test finds its line by that text.
+- On the test grid the title has 12 words, only because the made-up area name is long. Bayside gives 8. Check the Bayside release page.
+- Left: the line length of 70 characters, the reading level (textstat), the token check on the release page, the release script running `shots` (operator), and the real Bayside `checks.html`.
+
+
+### W1.9 part 4
+
+- The line measure counts characters per rendered line with one range per character. On the first run it found 72 to 77 characters in `.prose` and the ask steps, because `64ch` is the width of a zero and text is narrower. They are now `50ch`: CI has a narrower fallback font and showed 72 characters at `56ch` where this host showed 69.
+- The grade joins heading and list text into sentences, adding a full stop when one is missing.
+- Left: check the grade and line length on the real Bayside release page, and the release script running `shots` (operator).
+
+
+### W1.9 repair of red main
+
+- The watchdog restarted the loop after turn 8 ran 49 minutes with an empty log. Its transcript is lost, so the cause of the silence is not proven. What is proven: main CI and the release run both failed at 21:43Z on the merge of PR 261, and the loop must fix a red main before any other work.
+- CI failed `test_fr20_1_every_stage_tile_on_the_grid_page_shows_the_modelled_km`. The stage numbers counted up over 500 ms, so a click read a middle value (2 instead of 3). Stage buttons now set the numbers at once.
+- The release failed FR-20.7, FR-20.20 and FR-20.22 on the real Bayside page: 1,160 words, a 74-character credit line, 6 print pages and 4,540,848 bytes. Artifact: `artifacts/W1.9/bayside-repair.txt`.
+- Size: the page data held `model_pieces` lines as full coordinates. They are now whole number steps (`d`), which saves 457 KB. `pieces` stays for the old tests.
+- Words and print differ from the mock, for FR-20.7 and FR-20.20: no street intro line, short find hint and spot note, three shorter card sentences, ward cards end at "places", cards after the fourth sit in a closed "more kinds of change" details. Print drops find, streets, plans, cost and how, and lists five spots.
+- The host had 48 GB free against a 60 GB floor for the other loop, and its disk reaper ran for most of this turn, so every browser run took minutes. That slows turns but does not stop this loop.
+- Left: a fresh Bayside release from this branch must show all four measures met. The operator adds `shots` to the release script.
+
+### Q1.12 notes
+
+- The `osm_corridors` adapter runs through `OVERPASS_ADAPTERS` in `bikeplan.snapshot` beside `osm_backdrop`, writes `corridors.json` and is named in the region file `adapters` list. `propose.read_corridors` reads that file.
+- Real Bayside fetch (2026-10-22): `overpass-api.de` gave `corridors.json` in 72 s, 5,966,962 bytes, 3,882 elements. `overpass.private.coffee` timed out at 180 s on the same query. Artifact: `artifacts/Q1.12/summary.json`.
+- Left: the new `osm_date`, the two adapters in the 33 region files, the `snapshots` run and the copied manifest wait for the spec 20 ruling above.

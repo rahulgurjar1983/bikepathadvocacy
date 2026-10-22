@@ -118,6 +118,7 @@ def option_totals(
     types = sorted({item["type"] for item in people})
     places_safe = dict.fromkeys(types, 0)
     served: set = set()
+    partners: dict = {item["id"]: [] for item in people}
     safe = 0
     found = option_trips(table, links, joined, max_trip_m) if trips is None else trips
     trip_count = len(found)
@@ -125,6 +126,8 @@ def option_totals(
         if path is not None and all(link in fixed or table[link]["all_ages"] for link in path):
             safe += 1
             served |= {first["id"], second["id"]}
+            partners[first["id"]].append(second["id"])
+            partners[second["id"]].append(first["id"])
     for item in people:
         places_safe[item["type"]] += item["id"] in served
     km_by_level = dict.fromkeys(LEVELS, 0.0)
@@ -144,5 +147,7 @@ def option_totals(
         "km_by_level": km_by_level,
         "km_all_ages": km_all_ages,
         "places_safe": places_safe,
+        "served": sorted(served),
+        "partners": {key: sorted(value) for key, value in partners.items()},
         "assumed_share": assumed_km / total_km if total_km else 0.0,
     }

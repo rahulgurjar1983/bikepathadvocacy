@@ -3,10 +3,13 @@ from fractions import Fraction
 import networkx as nx
 
 from bikeplan.access import sort_key
-from bikeplan.fit import disruption_counts, disruption_score
+from bikeplan.fit import after_strips, disruption_counts, disruption_score
 from bikeplan.network import first
-from bikeplan.options import link_id
+from bikeplan.options import is_unpaved, link_id
 from bikeplan.rating import option_totals, option_trips
+from bikeplan.spots import SPOT_FIELDS, crossing_spot, short_path_spot
+from bikeplan.stress import FOOT_PATHS, OFF_ROAD_FACILITIES, junction_points, path_min_width
+from bikeplan.width import fuse
 
 COUNTS = ("parking_spaces", "lane_km", "speed_km", "path_km")
 FIX_WORDS = {
@@ -87,7 +90,25 @@ def fit_reasons(fit: dict | None) -> list[str]:
     return []
 
 
-def link_reasons(graph, table: dict, fits: dict) -> dict:
+def is_path(data: dict) -> bool:
+    return (
+        data.get("bike_facility") in OFF_ROAD_FACILITIES or first(data.get("highway")) in FOOT_PATHS
+    )
+
+
+def path_reasons(data: dict, score: dict | None, profile) -> list[str]:
+    found: list[str] = []
+    width = data.get("width_tag_m")
+    if width is not None and width < path_min_width(profile):
+        found.append(f"narrower than {path_min_width(profile):g} m")
+    if is_unpaved(data):
+        found.append("unpaved surface")
+    if score is not None and score["lts"] > 1:
+        found.append("crosses a busy road")
+    return found
+
+
+def link_reasons(graph, table: dict, fits: dict, scores: dict | None = None, profile=None) -> dict:
     found: dict = {}
     for key, link in table.items():
         if link["all_ages"]:
@@ -95,17 +116,95 @@ def link_reasons(graph, table: dict, fits: dict) -> dict:
         a, b, k = key
         texts: list[str] = []
         for edge in ((a, b, k), (b, a, k)):
-            if graph.has_edge(*edge):
-                texts += fit_reasons(fits.get(graph.edges[edge]["segment_id"]))
+            if not graph.has_edge(*edge):
+                continue
+            data = graph.edges[edge]
+            if scores is not None and is_path(data):
+                texts += path_reasons(data, scores.get(edge), profile)
+            else:
+                texts += fit_reasons(fits.get(data["segment_id"]))
         if texts:
             found[key] = list(dict.fromkeys(texts))
     return found
 
 
+def new_path_fix(link: dict, street: str, weights) -> dict:
+    counts = {"parking_spaces": 0, "lane_km": 0.0, "speed_km": 0.0}
+    counts["path_km"] = link["length_m"] / 1000
+    return (
+        {"street": street, "fix": "new_path"}
+        | counts
+        | {"least": disruption_score(counts, weights)}
+    )
+
+
+def link_spot(graph, key: tuple, link: dict, fits: dict, profile, calm: set, flags) -> dict | None:
+    a, b, k = key
+    for edge in ((a, b, k), (b, a, k)):
+        if not graph.has_edge(*edge):
+            continue
+        data = graph.edges[edge]
+        if not data["bike_ok"]:
+            continue
+        if is_path(data):
+            if path_reasons(data, None, profile):
+                continue
+            record = crossing_spot(graph, edge, street_name(data), profile, flags())
+            if record:
+                return record
+            continue
+        if link["no_fix"]:
+            short = link["length_m"] <= profile.fit.spot_max_m.value
+            if short and a in calm and b in calm:
+                return short_path_spot(data, street_name(data), link["length_m"], profile)
+        elif (fits.get(data["segment_id"]) or {}).get("status") == "aaa":
+            record = crossing_spot(graph, edge, street_name(data), profile, flags())
+            if record:
+                return record
+    return None
+
+
+def strip_pairs(strips: list) -> list:
+    return [[strip["kind"], round(strip["width_m"], 2)] for strip in strips]
+
+
+def work_section(data: dict, fit: dict, fix: str, profile) -> dict | None:
+    if fit.get("before") is None:
+        return None
+    fused = fuse(data, profile)
+    after = fit.get("after") if fix == fit.get("fix") else None
+    if after is None:
+        found = next(
+            (item for item in fit.get("candidates", []) if item["fix"] == fix and item["accepted"]),
+            None,
+        )
+        after = after_strips({**data, **fused}, found, profile) if found else None
+    return {
+        "width": None if fused["width_source"] == "lanes" else fused["width_m"],
+        "before": strip_pairs(fit["before"]),
+        "after": strip_pairs(after) if after is not None else None,
+    }
+
+
 def link_fixes(graph, table: dict, fits: dict, profile, weights) -> dict:
     found: dict = {}
+    calm = {node for key, link in table.items() if link["all_ages"] for node in key[:2]}
+    points: dict = {}
+
+    def flags() -> dict:
+        if not points:
+            points.update(junction_points(graph))
+        return points
+
+    waiting: list = []
     for key, link in table.items():
-        if link["all_ages"] or link["no_fix"]:
+        if link["all_ages"]:
+            continue
+        if link["no_fix"]:
+            waiting.append(key)
+            continue
+        if link.get("new_path"):
+            found[key] = new_path_fix(link, f"new path beside {link['label']}", weights)
             continue
         a, b, k = key
         best = None
@@ -113,6 +212,9 @@ def link_fixes(graph, table: dict, fits: dict, profile, weights) -> dict:
             if not graph.has_edge(*edge):
                 continue
             data = graph.edges[edge]
+            if link.get("unpaved") and data["bike_ok"]:
+                best = new_path_fix(link, street_name(data), weights)
+                break
             fit = fits.get(data["segment_id"])
             if not data["bike_ok"] or not fit or fit["status"] != "fix":
                 continue
@@ -141,10 +243,101 @@ def link_fixes(graph, table: dict, fits: dict, profile, weights) -> dict:
                 name: counts[name] for name in COUNTS
             }
             record["least"] = min(disruption_score(option[1], weights) for option in options)
+            section = work_section(data, fit, fix, profile)
+            if section:
+                record["section"] = section
             if best is None or disruption_score(record, weights) > disruption_score(best, weights):
                 best = record
+        if best is None:
+            best = link_spot(graph, key, link, fits, profile, calm, flags)
+            if best:
+                best = best | {"least": disruption_score(best, weights)}
         if best is not None:
             found[key] = best
+            calm.update(key[:2])
+    grown = True
+    while grown:
+        grown = False
+        for key in list(waiting):
+            spot = link_spot(graph, key, table[key], fits, profile, calm, flags)
+            if spot:
+                found[key] = spot | {"least": disruption_score(spot, weights)}
+                calm.update(key[:2])
+                waiting.remove(key)
+                grown = True
+        if not grown:
+            for run in short_runs(graph, table, waiting, fits, profile, calm, flags):
+                for key, spot in run.items():
+                    found[key] = spot | {"least": disruption_score(spot, weights)}
+                    calm.update(key[:2])
+                    waiting.remove(key)
+                    grown = True
+    return found
+
+
+def short_runs(graph, table: dict, waiting: list, fits: dict, profile, calm: set, flags) -> list:
+    limit = profile.fit.spot_max_m.value
+    joined = nx.Graph()
+    for key in waiting:
+        if table[key]["length_m"] <= limit:
+            joined.add_edge(key[0], key[1], keys=[key])
+    runs = []
+    for nodes in nx.connected_components(joined):
+        part = joined.subgraph(nodes)
+        keys = [key for _, _, data in part.edges(data=True) for key in data["keys"]]
+        if len(keys) < 2 or len(nodes & calm) < 2:
+            continue
+        if sum(table[key]["length_m"] for key in keys) > limit:
+            continue
+        spots = {
+            key: link_spot(graph, key, table[key], fits, profile, calm | nodes, flags)
+            for key in keys
+        }
+        if all(spots.values()):
+            runs.append(spots)
+    return runs
+
+
+def open_spots(graph, table: dict, fits: dict, profile, weights, fixes: dict) -> dict:
+    limit = profile.fit.spot_max_m.value
+    nodes = {node for key in table for node in key[:2]}
+    points: dict = {}
+
+    def flags() -> dict:
+        if not points:
+            points.update(junction_points(graph))
+        return points
+
+    found: dict = {}
+    for key, link in table.items():
+        if link["all_ages"] or key in fixes or not link["no_fix"] or link["length_m"] > limit:
+            continue
+        spot = link_spot(graph, key, link, fits, profile, nodes, flags)
+        if spot:
+            found[key] = spot | {"least": disruption_score(spot, weights)}
+    return found
+
+
+def trip_spots(table: dict, trips: list, fixes: dict, candidates: dict, limit: float) -> dict:
+    found: dict = {}
+    for _, _, path in trips:
+        if not path:
+            continue
+        calm = [table[link]["all_ages"] or link in fixes for link in path]
+        index = 0
+        while index < len(path):
+            if path[index] not in candidates:
+                index += 1
+                continue
+            end = index
+            while end + 1 < len(path) and path[end + 1] in candidates:
+                end += 1
+            run = path[index : end + 1]
+            start_calm = index == 0 or calm[index - 1]
+            end_calm = end == len(path) - 1 or calm[end + 1]
+            if start_calm and end_calm and sum(table[link]["length_m"] for link in run) <= limit:
+                found.update({link: candidates[link] for link in run})
+            index = end + 1
     return found
 
 
@@ -152,9 +345,10 @@ def group_works(table: dict, fixes: dict, fixable: list, weights) -> list:
     groups: dict = {}
     for key in fixable:
         far = bool(table[key].get("outside"))
-        groups.setdefault((fixes[key]["street"], fixes[key]["fix"], far), []).append(key)
+        alone = key if fixes[key].get("spot") else None
+        groups.setdefault((fixes[key]["street"], fixes[key]["fix"], far, alone), []).append(key)
     works = []
-    for (street, fix, far), keys in groups.items():
+    for (street, fix, far, _), keys in groups.items():
         joined = nx.Graph()
         for a, b, _ in keys:
             joined.add_edge(a, b)
@@ -171,6 +365,10 @@ def group_works(table: dict, fixes: dict, fixable: list, weights) -> list:
             work = {"street": street, "fix": fix, "links": links}
             if far:
                 work["outside"] = True
+            if fixes[links[0]].get("spot"):
+                work |= {name: fixes[links[0]][name] for name in SPOT_FIELDS}
+            if "section" in fixes[links[0]]:
+                work["section"] = fixes[links[0]]["section"]
             work["km"] = sum(table[link]["length_m"] for link in links) / 1000
             for name in COUNTS:
                 work[name] = sum(fixes[link][name] for link in links)
@@ -279,12 +477,15 @@ def build_ladder(
     max_trip_m: float | None = None,
     roads: dict | None = None,
     reasons: dict | None = None,
+    candidates: dict | None = None,
+    spot_max_m: float = 100.0,
 ) -> dict:
+    trips = option_trips(table, links, joined, max_trip_m)
+    fixes = fixes | trip_spots(table, trips, fixes, candidates or {}, spot_max_m)
     missing = [key for key in links if not table[key]["all_ages"] and key not in fixes]
     fixable = [key for key in links if not table[key]["all_ages"] and key in fixes]
     works = group_works(table, fixes, fixable, weights)
     owner = {link: index for index, work in enumerate(works) for link in work["links"]}
-    trips = option_trips(table, links, joined, max_trip_m)
     needs = trip_needs(table, trips, fixes, owner)
     fixed: set = set()
     steps = []
@@ -306,10 +507,17 @@ def build_ladder(
             break
         fixed |= added
     ceiling = option_totals(table, links, joined, frozenset(links), trips)
+    for index, work in enumerate(works):
+        if work.get("spot"):
+            work["trips"] = sum(index in need for need, _ in needs)
+    built = frozenset(link for work in works if not work.get("spot") for link in work["links"])
+    without_spots = option_totals(table, links, joined, built, trips)
     return {
         "works": works,
         "no_fix": list_no_fix(table, missing, streets or {}),
         "blockers": list_blockers(table, missing, streets or {}, trips, roads or {}, reasons or {}),
         "ceiling": ceiling["score"],
+        "no_spots": without_spots["score"],
+        "no_spots_safe": without_spots["safe_trips"],
         "steps": steps,
     }

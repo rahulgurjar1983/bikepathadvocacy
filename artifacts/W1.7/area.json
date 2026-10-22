@@ -1,0 +1,29 @@
+{
+ "wards": [
+  "Ward 1",
+  "Ward 2",
+  "Ward 3",
+  "Ward 4",
+  "Ward 5"
+ ],
+ "searched": "Ward 1",
+ "card_title": "Ward 1",
+ "card_values": [
+  "16 km of routes",
+  "10 schools",
+  "368 parking spaces",
+  "3 spots"
+ ],
+ "page_card_values": [
+  "16 km of routes",
+  "10 schools",
+  "368 parking spaces",
+  "3 spots"
+ ],
+ "same_values": true,
+ "map_polygons": 2,
+ "figure_links": 4,
+ "copy_link": "Copy link",
+ "hash": "find-ward-1",
+ "words": 11
+}

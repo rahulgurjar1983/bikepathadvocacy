@@ -1,0 +1,72 @@
+{
+  "joined": 66,
+  "named": {
+    "Arncliffe Public School": [
+      "joined"
+    ],
+    "Bayside": [
+      "joined"
+    ],
+    "Matraville Public School": [
+      "joined"
+    ]
+  },
+  "no_route": [],
+  "routes": {
+    "T1": {
+      "km": 6.46,
+      "nodes": 124
+    },
+    "T10": {
+      "km": 2.57,
+      "nodes": 63
+    },
+    "T11": {
+      "km": 2.8,
+      "nodes": 66
+    },
+    "T12": {
+      "km": 5.48,
+      "nodes": 96
+    },
+    "T13": {
+      "km": 1.74,
+      "nodes": 38
+    },
+    "T2": {
+      "km": 3.69,
+      "nodes": 74
+    },
+    "T3": {
+      "km": 1.53,
+      "nodes": 47
+    },
+    "T4": {
+      "km": 3.4,
+      "nodes": 76
+    },
+    "T5": {
+      "km": 2.62,
+      "nodes": 69
+    },
+    "T6": {
+      "km": 4.14,
+      "nodes": 90
+    },
+    "T7": {
+      "km": 5.06,
+      "nodes": 102
+    },
+    "T8": {
+      "km": 1.54,
+      "nodes": 30
+    },
+    "T9": {
+      "km": 2.73,
+      "nodes": 66
+    }
+  },
+  "row": "M1.6",
+  "snap_max_m": 300.0,
+  "unjoined": []
+}

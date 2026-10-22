@@ -1,0 +1,14 @@
+seconds 5.4
+water 199
+park 902
+air 2
+rail 1124
+outside 1
+botany bay mid (151.2000,-33.9900) in water: True
+Tasman off Sydney airport east (151.23,-33.97) in water: False
+Rockdale centre (151.1380,-33.9520) in water: False
+Sydney airport (151.1753,-33.9461) in air: True
+Mascot rail near (151.1900,-33.9290) any rail: True
+open sea (151.255,-33.98) in water: True
+Malabar land (151.24,-33.96) in water: False
+report.html base: {'air': 2, 'boundary': 1, 'outside': 1, 'park': 902, 'rail': 1124, 'water': 199}

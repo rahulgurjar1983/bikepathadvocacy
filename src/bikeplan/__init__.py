@@ -12,9 +12,15 @@ from bikeplan.proposal_inputs import load_proposal_inputs
 from bikeplan.propose import write_propose
 from bikeplan.region_new import NOMINATIM_ENDPOINT, RegionNewError, describe, search, write_region
 from bikeplan.review import ClaimError, write_route_figures
+from bikeplan.review_claims import write_verdicts
+from bikeplan.review_clip import clip_source
+from bikeplan.review_measures import write_route_measures
+from bikeplan.review_page import write_page
 from bikeplan.review_report import write_review
+from bikeplan.review_source import capture_source
 from bikeplan.route import RouteError, write_corridor
 from bikeplan.run import run_all, write_report
+from bikeplan.shots import write_shots
 from bikeplan.snapshot import (
     OVERPASS_ENDPOINT,
     OverpassError,
@@ -39,6 +45,7 @@ STRESS_HELP = "Score the stress level of each road edge"
 REPORT_HELP = "Build the public report and its data files"
 REVIEW_HELP = "Review a route and build its report"
 CHECKS_HELP = "Build checks.html from a test run and the specs"
+SHOTS_HELP = "Take phone and desktop pictures of a report page"
 
 GROUPS = {
     "config": {"show": "Show the resolved config"},
@@ -49,8 +56,15 @@ GROUPS = {
         "corridor": "Make a region from a route file",
         "new": "Make a region file for a council or city",
     },
-    "route": {"figures": "Measure a route: facilities, stress levels, breaks, crossings, flags"},
+    "route": {
+        "figures": "Measure a route: facilities, stress levels, breaks, crossings, flags",
+        "clip": "Clip the lines of a saved plan source to a boundary",
+        "measures": "Measure a plan's paths, streets, people reached and schools near",
+        "verdicts": "Judge the claims of a plan from its saved measures",
+        "page": "Write the private review page from saved verdicts",
+    },
     "snapshot": {
+        "review-source": "Save a plan source and its credit in private storage",
         "fetch": "Fetch the input data of a region",
         "verify": "Check a snapshot folder against its manifest",
         "publish": "Upload a snapshot to its release and copy its manifest",
@@ -116,6 +130,9 @@ def build_parser() -> argparse.ArgumentParser:
     checks.add_argument("--root", default=".", help="Repository folder")
     checks.add_argument("--out", required=True, help="Output file")
     checks.add_argument("--release", required=True, help="Folder holding the release reports")
+    shots = commands.add_parser("shots", help=SHOTS_HELP, description=SHOTS_HELP)
+    shots.add_argument("page", help="Report page")
+    shots.add_argument("--out", required=True, help="Output folder")
     for name, subs in GROUPS.items():
         group = commands.add_parser(name, help=GROUP_HELP[name], description=GROUP_HELP[name])
         group_commands = group.add_subparsers(
@@ -148,12 +165,41 @@ def build_parser() -> argparse.ArgumentParser:
                 leaf.add_argument("--snapshot", required=True, help="Snapshot folder")
                 leaf.add_argument("--out", required=True, help="Output directory")
                 leaf.add_argument("--claims", help="Claims file, for verdicts")
+            if (name, sub) == ("route", "measures"):
+                leaf.add_argument("route", help="Route file")
+                leaf.add_argument("--region", required=True, help="Region file")
+                leaf.add_argument("--snapshot", required=True, help="Snapshot folder")
+                leaf.add_argument("--out", required=True, help="Output directory")
+            if (name, sub) == ("route", "verdicts"):
+                leaf.add_argument("measures", help="measures.json of the plan")
+                leaf.add_argument("--layers", required=True, help="layers.json of the clip")
+                leaf.add_argument("--source", required=True, help="Saved plan source file")
+                leaf.add_argument("--claims", required=True, help="Claims file")
+                leaf.add_argument("--reply", required=True, help="Right of reply file")
+                leaf.add_argument("--out", required=True, help="New folder under data/private")
+            if (name, sub) == ("route", "page"):
+                leaf.add_argument("folder", help="Verdicts folder of the plan")
+                leaf.add_argument("--source-manifest", required=True, help="source-manifest.json")
+                leaf.add_argument("--reply", required=True, help="Right of reply file")
+                leaf.add_argument("--lines", help="lines.geojson of the clip, for the map")
+                leaf.add_argument("--out", required=True, help="New folder under data/private")
+            if (name, sub) == ("route", "clip"):
+                leaf.add_argument("folder", help="Saved plan source folder")
+                leaf.add_argument("--boundary", required=True, help="Boundary GeoJSON file")
+                leaf.add_argument("--out", required=True, help="New folder under data/private")
+            if (name, sub) == ("snapshot", "review-source"):
+                leaf.add_argument("url", help="Public source URL")
+                leaf.add_argument("--out", required=True, help="New folder under data/private")
+                leaf.add_argument("--licence", required=True, help="Source licence")
+                leaf.add_argument("--credit", required=True, help="Credit asked for by the source")
             if (name, sub) == ("snapshot", "fetch"):
                 leaf.add_argument("region", help="Region file")
                 leaf.add_argument("--out", required=True, help="Output directory")
                 leaf.add_argument("--endpoint", default=OVERPASS_ENDPOINT, help="Overpass endpoint")
             if (name, sub) in {("snapshot", "verify"), ("snapshot", "publish")}:
                 leaf.add_argument("directory", help="Snapshot folder")
+            if (name, sub) == ("snapshot", "verify"):
+                leaf.add_argument("--region", help="Region file that names the required adapters")
             if (name, sub) == ("snapshot", "set"):
                 leaf.add_argument("set_file", help="Set file")
                 leaf.add_argument("--root", default=".", help="Repository folder")
@@ -388,10 +434,11 @@ def snapshot_fetch(path: str, out: str, endpoint: str) -> int:
     return 0
 
 
-def snapshot_verify(directory: str) -> int:
+def snapshot_verify(directory: str, region: str | None = None) -> int:
     try:
-        passed, failed = verify_snapshot(directory)
-    except (OSError, ValueError) as error:
+        adapters = load_region(region).snapshot.adapters if region else None
+        passed, failed = verify_snapshot(directory, adapters)
+    except (ConfigError, OSError, ValueError) as error:
         print(error, file=sys.stderr)
         return 1
     for line in passed:
@@ -449,6 +496,8 @@ def main(argv: list[str] | None = None) -> int:
         return report(args.region, args.snapshot, args.out, args.proposal_inputs)
     if args.command == "review":
         return review(args.route, args.claims, args.region, args.snapshot, args.out, args.reply)
+    if args.command == "shots":
+        return write_shots(args.page, args.out)
     if args.command == "checks":
         return write_checks(args.root, args.junit, args.out, args.release)
     if (args.command, getattr(args, "subcommand", None)) == ("config", "show"):
@@ -467,10 +516,51 @@ def main(argv: list[str] | None = None) -> int:
         )
     if (args.command, getattr(args, "subcommand", None)) == ("route", "figures"):
         return route_figures_command(args.route, args.region, args.snapshot, args.out, args.claims)
+    if (args.command, getattr(args, "subcommand", None)) == ("route", "measures"):
+        try:
+            print(
+                write_route_measures(args.route, load_region(args.region), args.snapshot, args.out)
+            )
+        except (RouteError, ConfigError, OSError) as error:
+            print(error, file=sys.stderr)
+            return 1
+        return 0
+    if (args.command, getattr(args, "subcommand", None)) == ("route", "verdicts"):
+        try:
+            print(
+                write_verdicts(
+                    args.measures, args.layers, args.source, args.claims, args.reply, args.out
+                )
+            )
+        except (ConfigError, ClaimError, OSError, ValueError, KeyError) as error:
+            print(error, file=sys.stderr)
+            return 1
+        return 0
+    if (args.command, getattr(args, "subcommand", None)) == ("route", "page"):
+        try:
+            print(write_page(args.folder, args.source_manifest, args.reply, args.out, args.lines))
+        except (ConfigError, OSError, ValueError, KeyError) as error:
+            print(error, file=sys.stderr)
+            return 1
+        return 0
+    if (args.command, getattr(args, "subcommand", None)) == ("route", "clip"):
+        try:
+            print(clip_source(args.folder, args.boundary, args.out))
+        except (ConfigError, OSError, ValueError) as error:
+            print(error, file=sys.stderr)
+            return 1
+        return 0
+    if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "review-source"):
+        try:
+            print(capture_source(args.url, args.out, args.licence, args.credit))
+        except (ConfigError, OSError, OverpassError, ValueError) as error:
+            print(error, file=sys.stderr)
+            return 1
+        return 0
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "fetch"):
         return snapshot_fetch(args.region, args.out, args.endpoint)
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "verify"):
-        return snapshot_verify(args.directory)
+        return snapshot_verify(args.directory, args.region)
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "publish"):
         return snapshot_publish(args.directory)
     if (args.command, getattr(args, "subcommand", None)) == ("snapshot", "set"):
