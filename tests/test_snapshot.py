@@ -6,6 +6,7 @@ from threading import Thread
 from urllib.parse import parse_qs
 
 import pytest
+import yaml
 
 from bikeplan.snapshot import OverpassClient, OverpassError
 
@@ -479,7 +480,7 @@ def test_fr18_6_every_region_file_lists_the_backdrop_and_corridor_adapters():
 
     assert len(paths) == 33
     for path in paths:
-        listed = re.search(r"adapters: \[([^\]]+)\]", path.read_text())[1].split(", ")
+        listed = yaml.safe_load(path.read_text())["snapshot"]["adapters"]
         assert listed[-2:] == ["osm_backdrop", "osm_corridors"], path.stem
 
 
