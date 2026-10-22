@@ -26,6 +26,18 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 The 19 October ruling in spec 20 allows the narrow date change to the old
 test. The key spot is now an unnumbered dot.
 
+### Q1.12 the new osm_date needs two saved tests to change
+
+Part 1 shipped (the `osm_corridors` adapter). The refresh itself is held: a new `osm_date` fails saved tests that pin the old one, and no spec permits amending them. Spec 20 permits one amendment only, `test_fr2_1_snapshot_fetch_writes_every_file_and_the_manifest`.
+
+Proof on a worktree of fresh `origin/main` with all 33 region files at 2026-10-22 and `osm_backdrop, osm_corridors` added to the Bayside adapters:
+`pytest tests/test_snapshot.py::test_fr18_2_every_region_file_holds_the_refreshed_snapshot_date tests/test_snapshot_required.py`
+gave 3 failed, 2 passed. The failing cases are:
+- `test_fr18_2_every_region_file_holds_the_refreshed_snapshot_date` pins `{"2026-10-19T00:00:00Z"}`.
+- `test_fr15_9_verify_command_reads_the_required_adapters_from_the_region_file` and `test_fr15_9_verify_command_accepts_the_published_bayside_manifest_files` check the region adapters against the 2026-10-19 manifest, which lacks `backdrop.json` and `corridors.json`.
+
+Ask, as a spec 20 ruling for Q1.12: the first test may pin the new date, and the second may read the manifest of the region file's date, like the Q1.10 ruling. The fetch needs 72 s and 6 MB, so the workflow run is short.
+
 ### W1.0 template changes
 
 The copy of the mock uses run values for its title, author, date, place
@@ -1575,3 +1587,9 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - Words and print differ from the mock, for FR-20.7 and FR-20.20: no street intro line, short find hint and spot note, three shorter card sentences, ward cards end at "places", cards after the fourth sit in a closed "more kinds of change" details. Print drops find, streets, plans, cost and how, and lists five spots.
 - The host had 48 GB free against a 60 GB floor for the other loop, and its disk reaper ran for most of this turn, so every browser run took minutes. That slows turns but does not stop this loop.
 - Left: a fresh Bayside release from this branch must show all four measures met. The operator adds `shots` to the release script.
+
+### Q1.12 notes
+
+- The `osm_corridors` adapter runs through `OVERPASS_ADAPTERS` in `bikeplan.snapshot` beside `osm_backdrop`, writes `corridors.json` and is named in the region file `adapters` list. `propose.read_corridors` reads that file.
+- Real Bayside fetch (2026-10-22): `overpass-api.de` gave `corridors.json` in 72 s, 5,966,962 bytes, 3,882 elements. `overpass.private.coffee` timed out at 180 s on the same query. Artifact: `artifacts/Q1.12/summary.json`.
+- Left: the new `osm_date`, the two adapters in the 33 region files, the `snapshots` run and the copied manifest wait for the spec 20 ruling above.

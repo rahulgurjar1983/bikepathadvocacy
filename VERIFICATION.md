@@ -2477,3 +2477,8 @@ Artifact: `tests/test_page_measures_more.py`
 Command: `uv run pytest tests/test_story_parts.py tests/test_one_rating.py tests/test_page_five_minutes.py -q --no-cov`
 Expect: all pass; on a Bayside release `checks.html` shows words at load at most 1,000, the longest line at most 70 characters, 4 A4 pages and a page at most 4,194,304 bytes
 Artifact: `artifacts/W1.9/bayside-repair.txt`
+
+### Q1.12 part 1
+Command: `uv run python -I artifacts/Q1.12/fetch_check.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-19/boundary.geojson /tmp/q112 https://overpass-api.de/api/interpreter`
+Expect: `corridors.json` with 3,882 elements; the summary lists railway, motorway, river, canal and golf course lines and 25.6 km2 of open land that `read_corridors` loads. `uv run pytest tests/test_snapshot.py -k fr18_6` passes.
+Artifact: `artifacts/Q1.12/summary.json`

@@ -1,0 +1,15 @@
+{
+  "file": "corridors.json",
+  "bytes": 5966962,
+  "sha256": "ccc944b540bd7e40a121a1cbb03b24053d31867509f2e0bebb81ba2d4ae45dc9",
+  "seconds": 72,
+  "elements": 3882,
+  "lines_by_kind": {
+    "canal": 17,
+    "golf course": 10,
+    "motorway": 169,
+    "railway": 976,
+    "river": 24
+  },
+  "open_land_area_m2": 25650045
+}
