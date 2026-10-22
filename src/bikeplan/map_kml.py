@@ -109,6 +109,9 @@ def change_rows(change: dict) -> list:
         rows.append(("Traffic lane", f"{change['lane']:.2f} km becomes a bike lane"))
     if change["slow"] > 0.005:
         rows.append(("30 km/h", f"{change['slow']:.2f} km"))
+    if "cost" in change:
+        low, likely, high = change["cost"]
+        rows.append(("Likely cost", f"${likely:,} (${low:,} to ${high:,})"))
     return rows
 
 
