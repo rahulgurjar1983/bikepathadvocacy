@@ -2482,3 +2482,15 @@ Artifact: `artifacts/W1.9/bayside-repair.txt`
 Command: `uv run python -I artifacts/Q1.12/fetch_check.py regions/au-nsw-bayside.yaml data/cache/au-nsw-bayside/2026-10-19/boundary.geojson /tmp/q112 https://overpass-api.de/api/interpreter`
 Expect: `corridors.json` with 3,882 elements; the summary lists railway, motorway, river, canal and golf course lines and 25.6 km2 of open land that `read_corridors` loads. `uv run pytest tests/test_snapshot.py -k fr18_6` passes.
 Artifact: `artifacts/Q1.12/summary.json`
+
+### C1.13
+
+```sh
+uv run --frozen bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-19 --out out
+artifacts/C1.13/prove.sh out artifacts/C1.13
+uv run --frozen pytest -q tests/test_checks_sections.py tests/test_page_measures_more.py
+```
+
+Expect: The second Bayside edition builds in about 35 minutes. The page is 4,019,671 bytes, under the 4,194,304 limit. `checks.html` shows FR-17.12, FR-17.14, FR-17.15, FR-19.6, FR-20.7, FR-20.8, FR-20.19, FR-20.20, FR-20.21, FR-20.22 and FR-20.25 as met. FR-20.23 is tested only, because its seven measures are the lines under those requirements, all met. In the TfNSW table T2 (Wolli Creek to Rockdale) and T3 (Rockdale to Kogarah) are covered. All 10 Cook Park Trail pieces on the report map are all-ages.
+
+Artifact: `artifacts/C1.13/summary.json`
