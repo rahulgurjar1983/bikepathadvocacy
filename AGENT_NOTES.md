@@ -1634,3 +1634,14 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 
 - Q1.12 shipped `corridors.json` in the 22 October snapshot; `gh release download snapshot-au-nsw-bayside-2026-10-22` fills `data/cache/au-nsw-bayside/2026-10-22/`.
 - The fresh Bayside run took 59 minutes. It made 132 corridor candidates and picked none. The report shows the fifth option. Artifact: `artifacts/G1.4/real-run.json`.
+
+### C1.2 notes
+
+- The old branch was rebuilt on main with `schools.py`, new figure F86 and a school section in the page details. The old copy is local branch `backup/C1.2-old`.
+- Bayside 22 October run took 56 minutes and 6.9 GB. It lists 47 school sites, none with a proved entrance link, so none counts as served. Artifact: `artifacts/C1.2/summary.json`.
+- Left: entrance links from the snapshot for these sites, so that served counts can rise above 0.
+
+### Operator note: V1.8
+
+- All V1.8 parts are built and private. Left is a person's step. Send the `data/private/V1.8` page to the author. Then add a `sent` entry to `data/private/V1.8/reply.yaml`. The 14 days start on that date. No turn may contact the author.
+

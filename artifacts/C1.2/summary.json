@@ -1,0 +1,19 @@
+{
+  "coverage_label": "Coverage of mapped sites",
+  "frontier_sha256": "38d2070875ed028f721cda62382c2cbf6a24a12697518b57791be811c5734d8b",
+  "known_sites": 47,
+  "rank": 0,
+  "report_has_section": true,
+  "scenario": "shipped",
+  "served": {
+    "after": 0,
+    "before": 0,
+    "new": 0
+  },
+  "sites_listed": 47,
+  "sites_named": 44,
+  "sites_with_entrances": 0,
+  "source": "Snapshot OpenStreetMap education records",
+  "unknown_entrance_sites": 47,
+  "unsnapped_sites": 0
+}
