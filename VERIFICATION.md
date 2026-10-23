@@ -2593,3 +2593,12 @@ uv run --frozen python artifacts/C1.2/collect.py /tmp/bikeplan-C1.2-proof
 
 Expect: The tests pass. The report holds a school section with a new figure, named sites, sources, entrances and resident reach per site. The Bayside run lists 47 known sites, 44 with names. None has a proved entrance link yet, so served sites before, after and new are 0. No pupil count appears.
 Artifact: `artifacts/C1.2/summary.json`
+
+Entrance probe:
+
+```bash
+uv run --frozen python -I artifacts/C1.2/entrance_probe.py data/cache/au-nsw-bayside/2026-10-22
+```
+
+Expect: 1524 entrance or gate nodes, 18 with explicit bike access, 228 school points, 1 within 150 m of such a node, and no trip evidence block.
+Artifact: `artifacts/C1.2/entrance_probe.json`
