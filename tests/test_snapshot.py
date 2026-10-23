@@ -6,6 +6,7 @@ from threading import Thread
 from urllib.parse import parse_qs
 
 import pytest
+import yaml
 
 from bikeplan.snapshot import OverpassClient, OverpassError
 
@@ -471,7 +472,16 @@ def test_fr18_2_every_region_file_holds_the_refreshed_snapshot_date():
         dates[path.stem] = re.search(r"osm_date: ['\"]([^'\"]+)['\"]", path.read_text())[1]
 
     assert len(dates) == 33
-    assert set(dates.values()) == {"2026-10-19T00:00:00Z"}
+    assert set(dates.values()) == {"2026-10-22T00:00:00Z"}
+
+
+def test_fr18_6_every_region_file_lists_the_backdrop_and_corridor_adapters():
+    paths = sorted(Path("regions").glob("au-nsw-*.yaml"))
+
+    assert len(paths) == 33
+    for path in paths:
+        listed = yaml.safe_load(path.read_text())["snapshot"]["adapters"]
+        assert listed[-2:] == ["osm_backdrop", "osm_corridors"], path.stem
 
 
 def test_fr20_9_snapshot_fetch_asks_for_the_coastline_and_the_backdrop_shapes(

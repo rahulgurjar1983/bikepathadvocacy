@@ -1,0 +1,130 @@
+{
+  "region": "au-nsw-bayside",
+  "snapshot_id": "2026-10-22",
+  "osm_date": "2026-10-22T00:00:00Z",
+  "created_at": "2026-10-22T10:22:54Z",
+  "tool_version": "0.1.0",
+  "config_hash": "f658650b05e665fbcea722d3dbe7f829372d8c7aea27b14ae95868ca93215d49",
+  "files": [
+    {
+      "name": "boundary.geojson",
+      "path": "boundary.geojson",
+      "sha256": "ac3759ea1b3cfbefc117487220db2b242e7add55c0a7a2afe448697410037ce2",
+      "bytes": 23148,
+      "source": "OpenStreetMap via Overpass",
+      "request": "[out:json][timeout:900][date:\"2026-10-22T00:00:00Z\"];relation(7038238);out geom;",
+      "url": "https://overpass-api.de/api/interpreter",
+      "licence": "ODbL 1.0",
+      "attribution": "\u00a9 OpenStreetMap contributors",
+      "retrieved_at": "2026-10-22T08:04:51Z"
+    },
+    {
+      "name": "network.osm.gz",
+      "path": "network.osm.gz",
+      "sha256": "1e093db312baffa51c11cf5c3656fbfdebdc1d0cb983412a8db33436138655ba",
+      "bytes": 5809650,
+      "source": "OpenStreetMap via Overpass",
+      "request": "[out:xml][timeout:900][date:\"2026-10-22T00:00:00Z\"];(way[\"highway\"~\"^(primary|primary_link|secondary|secondary_link|tertiary|tertiary_link|unclassified|residential|living_street|service|cycleway|path|footway|pedestrian|track|bridleway|steps|trunk|trunk_link)$\"](-34.034191,151.071754,-33.895188,151.26065);>;node[\"highway\"=\"traffic_signals\"](-34.034191,151.071754,-33.895188,151.26065);node[\"highway\"=\"crossing\"](-34.034191,151.071754,-33.895188,151.26065);node[\"crossing\"](-34.034191,151.071754,-33.895188,151.26065););out meta;",
+      "url": "https://overpass-api.de/api/interpreter",
+      "licence": "ODbL 1.0",
+      "attribution": "\u00a9 OpenStreetMap contributors",
+      "retrieved_at": "2026-10-22T08:05:47Z"
+    },
+    {
+      "name": "places.json",
+      "path": "places.json",
+      "sha256": "48fee80e9cfdc1f717273b9f5c74a1a7150be4e5dd35c7f93929b176ac586985",
+      "bytes": 924341,
+      "source": "OpenStreetMap via Overpass",
+      "request": "[out:json][timeout:900][date:\"2026-10-22T00:00:00Z\"];(nwr[\"amenity\"=\"school\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"amenity\"=\"college\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"amenity\"=\"university\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"amenity\"=\"nursing_home\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"amenity\"=\"social_facility\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"amenity\"=\"library\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"railway\"=\"station\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"railway\"=\"halt\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"public_transport\"=\"station\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"amenity\"=\"ferry_terminal\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"railway\"=\"tram_stop\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"shop\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"place\"~\"^(suburb|locality)$\"](-34.034191,151.071754,-33.895188,151.26065););out center tags;",
+      "url": "https://overpass-api.de/api/interpreter",
+      "licence": "ODbL 1.0",
+      "attribution": "\u00a9 OpenStreetMap contributors",
+      "retrieved_at": "2026-10-22T08:07:04Z"
+    },
+    {
+      "name": "population.gpkg",
+      "path": "population.gpkg",
+      "sha256": "7228344d8fad1e6995db2c42c2dc7de2119d7175c5c4a7022824021541697897",
+      "bytes": 98304,
+      "source": "Kontur Population via the Humanitarian Data Exchange",
+      "request": "{\"search\": \"https://data.humdata.org/api/3/action/package_search?fq=organization%3Akontur+AND+res_url%3A%2Akontur_population_AU_%2A&rows=10\", \"dataset\": \"kontur-population-australia\"}",
+      "url": "https://geodata-eu-central-1-kontur-public.s3.amazonaws.com/kontur_datasets/kontur_population_AU_20231101.gpkg.gz",
+      "licence": "CC BY 4.0",
+      "attribution": "Kontur Population dataset, Kontur Inc.",
+      "retrieved_at": "2026-10-22T08:07:10Z"
+    },
+    {
+      "name": "parcels.gpkg",
+      "path": "parcels.gpkg",
+      "sha256": "dcf35ca0ea4395cff48fab86e060a452457d34a1749bf3c4b1ca0cb594c5335b",
+      "bytes": 48861184,
+      "source": "NSW Cadastre, Lot layer, NSW Spatial Services",
+      "request": "{\"box\": [-34.034191, 151.071754, -33.895188, 151.26065], \"requests\": 642, \"parcels\": 170099}",
+      "url": "https://maps.six.nsw.gov.au/arcgis/rest/services/public/NSW_Cadastre/MapServer/9",
+      "licence": "CC BY 4.0",
+      "attribution": "\u00a9 State of New South Wales (NSW Spatial Services), NSW Cadastre",
+      "retrieved_at": "2026-10-22T08:24:22Z"
+    },
+    {
+      "name": "elevation.tif",
+      "path": "elevation.tif",
+      "sha256": "936fc73e4fb35bd5aed94775c669245456894b5775b09bae22bd0c885b204a17",
+      "bytes": 952293,
+      "source": "Copernicus DEM GLO-30, European Space Agency",
+      "request": "{\"box\": [-34.034191, 151.071754, -33.895188, 151.26065], \"tiles\": 2}",
+      "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S35_00_E151_00_DEM/Copernicus_DSM_COG_10_S35_00_E151_00_DEM.tif https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S34_00_E151_00_DEM/Copernicus_DSM_COG_10_S34_00_E151_00_DEM.tif",
+      "licence": "Copernicus DEM licence (free, with attribution)",
+      "attribution": "Contains modified Copernicus DEM GLO-30 data, \u00a9 DLR e.V. 2010-2014 and \u00a9 Airbus Defence and Space GmbH 2014-2018, provided under COPERNICUS by the European Union and ESA",
+      "retrieved_at": "2026-10-22T08:24:26Z"
+    },
+    {
+      "name": "road_segments.gpkg",
+      "path": "road_segments.gpkg",
+      "sha256": "f2d240dc40365a64c9611b8875842a8e6233a265422b645f231c7119761d96aa",
+      "bytes": 6131712,
+      "source": "NSW Road Segment, NSW Spatial Services",
+      "request": "{\"box\": [-34.034191, 151.071754, -33.895188, 151.26065], \"requests\": 266, \"segments\": 26702}",
+      "url": "https://portal.data.nsw.gov.au/arcgis/rest/services/RoadSegment/MapServer/0",
+      "licence": "CC BY 4.0",
+      "attribution": "\u00a9 State of New South Wales (NSW Spatial Services), NSW Road Segment",
+      "retrieved_at": "2026-10-22T10:19:36Z"
+    },
+    {
+      "name": "speed_zones.gpkg",
+      "path": "speed_zones.gpkg",
+      "sha256": "0c591377ec41e81ae7d406701a6ff453f207d01c661af98b2f508b8b2be05bdd",
+      "bytes": 3952640,
+      "source": "Transport for NSW Speed Zones, NSW Spatial Services",
+      "request": "{\"box\": [-34.034191, 151.071754, -33.895188, 151.26065], \"requests\": 266, \"zones\": 14846}",
+      "url": "https://portal.data.nsw.gov.au/arcgis/rest/services/Hosted/TFNSW_Speed_Zones_Public/FeatureServer/0",
+      "licence": "CC BY 4.0",
+      "attribution": "\u00a9 State of New South Wales (Transport for NSW), Speed Zones",
+      "retrieved_at": "2026-10-22T10:20:46Z"
+    },
+    {
+      "name": "backdrop.json",
+      "path": "backdrop.json",
+      "sha256": "1f7f73b53223642330c2ce0baeecbfe240b948c9af0efa3f827f100ff3ef9c66",
+      "bytes": 4398528,
+      "source": "OpenStreetMap via Overpass",
+      "request": "[out:json][timeout:900][date:\"2026-10-22T00:00:00Z\"];(way[\"natural\"=\"coastline\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"natural\"=\"water\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"waterway\"=\"riverbank\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"leisure\"=\"park\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"leisure\"=\"nature_reserve\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"landuse\"=\"recreation_ground\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"aeroway\"=\"aerodrome\"](-34.034191,151.071754,-33.895188,151.26065);way[\"railway\"~\"^(rail|light_rail)$\"](-34.034191,151.071754,-33.895188,151.26065););out geom;",
+      "url": "https://overpass-api.de/api/interpreter",
+      "licence": "ODbL 1.0",
+      "attribution": "\u00a9 OpenStreetMap contributors",
+      "retrieved_at": "2026-10-22T10:22:04Z"
+    },
+    {
+      "name": "corridors.json",
+      "path": "corridors.json",
+      "sha256": "947daa11b2de21449325051f93cf65a8c0aecca48e7441b0f8273b5ec425a8fc",
+      "bytes": 5964907,
+      "source": "OpenStreetMap via Overpass",
+      "request": "[out:json][timeout:900][date:\"2026-10-22T00:00:00Z\"];(way[\"railway\"=\"rail\"](-34.034191,151.071754,-33.895188,151.26065);way[\"highway\"=\"motorway\"](-34.034191,151.071754,-33.895188,151.26065);way[\"waterway\"~\"^(river|canal)$\"](-34.034191,151.071754,-33.895188,151.26065);nwr[\"leisure\"=\"golf_course\"](-34.034191,151.071754,-33.895188,151.26065);way[\"landuse\"~\"^(grass|meadow|farmland|greenfield|recreation_ground|village_green)$\"](-34.034191,151.071754,-33.895188,151.26065);way[\"natural\"~\"^(grassland|scrub|heath)$\"](-34.034191,151.071754,-33.895188,151.26065);way[\"leisure\"~\"^(park|common)$\"](-34.034191,151.071754,-33.895188,151.26065););out geom;",
+      "url": "https://overpass-api.de/api/interpreter",
+      "licence": "ODbL 1.0",
+      "attribution": "\u00a9 OpenStreetMap contributors",
+      "retrieved_at": "2026-10-22T10:22:54Z"
+    }
+  ]
+}
