@@ -7,7 +7,7 @@ from bikeplan.fit import after_strips, disruption_counts, disruption_score
 from bikeplan.network import first
 from bikeplan.options import is_unpaved, link_id
 from bikeplan.rating import option_totals, option_trips
-from bikeplan.spots import SPOT_FIELDS, crossing_spot, short_path_spot
+from bikeplan.spots import SPOT_FIELDS, crossing_spot, short_path_spot, spot_street
 from bikeplan.stress import FOOT_PATHS, OFF_ROAD_FACILITIES, junction_points, path_min_width
 from bikeplan.width import fuse
 
@@ -149,16 +149,18 @@ def link_spot(graph, key: tuple, link: dict, fits: dict, profile, calm: set, fla
         if is_path(data):
             if path_reasons(data, None, profile):
                 continue
-            record = crossing_spot(graph, edge, street_name(data), profile, flags())
+            record = crossing_spot(graph, edge, spot_street(graph, edge, data), profile, flags())
             if record:
                 return record
             continue
         if link["no_fix"]:
             short = link["length_m"] <= profile.fit.spot_max_m.value
             if short and a in calm and b in calm:
-                return short_path_spot(data, street_name(data), link["length_m"], profile)
+                return short_path_spot(
+                    data, spot_street(graph, edge, data), link["length_m"], profile
+                )
         elif (fits.get(data["segment_id"]) or {}).get("status") == "aaa":
-            record = crossing_spot(graph, edge, street_name(data), profile, flags())
+            record = crossing_spot(graph, edge, spot_street(graph, edge, data), profile, flags())
             if record:
                 return record
     return None
