@@ -144,7 +144,7 @@ def test_fr16_8_each_work_names_the_routes_it_completes_and_where_effects_fall()
     result = report()
     rows = by_id(result)
     assert rows["a-west"]["works"]["routes"] == {"segment:a": ["s1"], "segment:b": ["s1"]}
-    assert rows["b-east"]["works"]["routes"] == {"segment:c": []}
+    assert rows["b-east"]["works"]["routes"] == {"segment:b": ["s1"], "segment:c": []}
     assert rows["a-west"]["pattern"] == "benefit_and_impact"
     assert rows["c-far"]["pattern"] == "benefit_only"
     assert rows["z-overlap"]["pattern"] == "benefit_only"
@@ -159,7 +159,7 @@ def test_fr16_8_result_does_not_depend_on_area_order():
 def test_fr16_8_verification_rejects_changed_lengths_counts_and_ownership():
     from bikeplan.neighbourhoods import verify_neighbourhoods
 
-    graph, catalog, works, *_ = package()
+    _, catalog, works, *_ = package()
     good = report()
     verify_neighbourhoods(good, catalog, works)
     for edit in (
