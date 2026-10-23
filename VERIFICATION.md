@@ -2638,3 +2638,14 @@ uv run --frozen python artifacts/C1.6/page.py
 
 Expect: 5 passed; the second command runs `bikeplan run` on the test grid with two areas and prints the east and west areas, the junction work link and figure links F87 and F88.
 Artifact: `artifacts/C1.6/page.json`
+
+### W1.14
+
+The FR-17.12 check counts the four FR-17 options plus each of Corridors first and Council plan first that the run built. Any other count, or a repeated option, fails.
+
+```bash
+uv run --frozen pytest tests/test_checks_opening.py -q -k "extra or other_option"
+```
+
+Expect: 6 passed. The row closes when a Bayside release from main uploads with FR-17.12 met.
+Artifact: `artifacts/W1.14/result.txt`
