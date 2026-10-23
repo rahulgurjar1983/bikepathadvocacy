@@ -2639,6 +2639,17 @@ uv run --frozen python artifacts/C1.6/page.py
 Expect: 5 passed; the second command runs `bikeplan run` on the test grid with two areas and prints the east and west areas, the junction work link and figure links F87 and F88.
 Artifact: `artifacts/C1.6/page.json`
 
+### C1.6 part 4
+
+Each area reads as plain sentences with comma-grouped counts and numbered work links; the JSON dump, the word survey and raw work IDs are gone from the visible text.
+
+```bash
+uv run --frozen pytest tests/test_neighbourhood_page.py -q -k "plain_words or own_counts"
+```
+
+Expect: 2 passed. The row stays open for a fresh Bayside run and full-check recipes under C1.9.
+Artifact: `artifacts/C1.6/page.json`
+
 ### W1.14
 
 The FR-17.12 check counts the four FR-17 options plus each of Corridors first and Council plan first that the run built. Any other count, or a repeated option, fails.
