@@ -1620,3 +1620,7 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 
 - Spot names come from `spots.spot_street`, called in `ladder.link_spot`. It indexes named roads per graph with an STRtree, cached in a `WeakKeyDictionary`, and builds it only when an unnamed spot appears.
 - `load_plan` adds the sidecar `published` to `source` without making it a required field, so `PLAN_FIELDS` and old fixtures stay as they were. The Bayside report run took 43 minutes on a busy host; do not wrap it in `timeout 3000`.
+
+### C1.13 second edition
+
+- Rebuilt after W1.13 on the 2026-10-19 snapshot: 38 minutes to build, 10 to prove. Spots: 27, none unnamed. The page script still shows "A path" for a street named "unnamed ...", but no spot has one. Credit date 2024. Artifact: `artifacts/C1.13/summary.json`.
