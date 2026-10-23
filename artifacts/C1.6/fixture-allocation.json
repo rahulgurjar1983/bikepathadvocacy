@@ -1,0 +1,47 @@
+{
+ "areas": {
+  "a-west": {
+   "pattern": "benefit_and_impact",
+   "residents_new": 60.0,
+   "works_m": 150.0
+  },
+  "b-east": {
+   "pattern": "benefit_only",
+   "residents_new": 40.0,
+   "works_m": 100.0
+  },
+  "c-far": {
+   "pattern": "benefit_only",
+   "residents_new": 0,
+   "works_m": 50.0
+  },
+  "z-overlap": {
+   "pattern": "benefit_only",
+   "residents_new": 60.0,
+   "works_m": 0
+  }
+ },
+ "region": {
+  "residents": {
+   "after": 125.0,
+   "located_after": 100.0,
+   "located_newly_gained": 100.0,
+   "newly_gained": 125.0,
+   "overlap_note": "Areas may overlap, so a resident can appear in more than one area. The region figure is a union, not the sum of the areas."
+  },
+  "schools": {
+   "newly_served": 3,
+   "served_after": 3
+  },
+  "works_length_m": 400.0
+ },
+ "unallocated": {
+  "residents": 25.0,
+  "schools": [
+   "s3"
+  ],
+  "works": [
+   "segment:d"
+  ]
+ }
+}
