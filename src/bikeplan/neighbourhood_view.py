@@ -20,6 +20,12 @@ def code(value):
     return f"<code>{html.escape(json.dumps(value, sort_keys=True))}</code>"
 
 
+def source_text(item):
+    if "source" in item:
+        return str(item["source"])
+    return f"{item['title']}, {item['publisher']}, read {item['read_on']}"
+
+
 def work_links(area):
     roles = area["works"]["routes"]
 
@@ -78,7 +84,7 @@ def neighbourhood_section(proposal, residents_ref, works_ref):
             "unknown.</p></section>"
         )
     sources = "".join(
-        f"<li>{html.escape(item['name'])}: <code>{html.escape(str(item['source']))}</code></li>"
+        f"<li>{html.escape(item['name'])}: <code>{html.escape(source_text(item))}</code></li>"
         for item in local["area_sources"]
     )
     region = local["region"]
