@@ -8,7 +8,8 @@ from pathlib import Path
 snapshot = Path(sys.argv[1])
 BIKE = ("yes", "designated", "permissive")
 GATES = ("gate", "kissing_gate", "turnstile", "lift_gate")
-root = ET.parse(gzip.open(snapshot / "network.osm.gz")).getroot()
+with gzip.open(snapshot / "network.osm.gz") as handle:
+    root = ET.parse(handle).getroot()
 bike_gates = []
 tagged = 0
 for node in root.iter("node"):
