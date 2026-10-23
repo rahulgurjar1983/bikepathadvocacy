@@ -11,6 +11,7 @@ concurrency:
 
 env:
   RELEASE_REGIONS: regions/au-nsw-bayside.yaml regions/au-nsw-inner-west.yaml
+  RELEASE_MAX_SECS: "5400"
 
 permissions:
   contents: write
@@ -58,7 +59,7 @@ jobs:
     needs: plan
     if: needs.plan.outputs.councils != '[]'
     runs-on: ubuntu-24.04
-    timeout-minutes: 75
+    timeout-minutes: 110
     env:
       GH_TOKEN: ${{ github.token }}
     strategy:
