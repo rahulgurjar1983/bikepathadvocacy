@@ -114,3 +114,34 @@ def test_fr16_8_page_section_names_council_ward_sources(tmp_path):
     ]
     text = neighbourhood_section(proposal, "F90", "F91")
     assert source["areas"][0]["title"] in text
+
+
+def section_text(out):
+    page = (out / "report.html").read_text()
+    start = page.index('id="neighbourhoods"')
+    return page[start : page.index("</section>", start)]
+
+
+def test_fr16_8_section_reads_in_plain_words_without_a_json_dump(tmp_path):
+    from bikeplan.page_measures import plain_words_broken
+
+    text = section_text(built(tmp_path))
+    assert "<code>" not in text
+    assert "{" not in text
+    assert "survey" not in text.lower()
+    assert plain_words_broken(re.sub(r"<[^>]+>", " ", text)) == 0
+
+
+def test_fr16_8_each_area_states_its_own_counts_in_words(tmp_path):
+    out = built(tmp_path)
+    proposal = json.loads((out / "proposal.json").read_text())
+    text = section_text(out)
+    for area in proposal["selected"]["local_areas"]["areas"]:
+        block = text[text.index(f'data-area-id="{area["id"]}"') :]
+        block = re.sub(r"<[^>]+>", " ", block[: block.index("</div>")])
+        gained = area["residents"]["newly_gained"]
+        assert f"{gained:,} residents newly gain a destination" in block
+        assert f"{area['residents']['after']:,} residents reach a destination after" in block
+        assert f"{area['works']['length_m']:,.0f} m of works" in block
+        removed = area["parking_spaces"]["removed"]["known_subtotal"]
+        assert f"{removed:,} parking spaces removed" in block
