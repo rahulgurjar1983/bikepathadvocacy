@@ -17,6 +17,7 @@ from shapely.geometry import LineString, Point
 from bikeplan.map_checks import map_problems
 from bikeplan.page_measures import SPEC_IDS, measures
 from bikeplan.report import FIGURES, MAP_FIGURE
+from bikeplan.shot_checks import shot_problems
 
 SPEC_ID = re.compile(r"\b(?:FR-\d+\.\d+|NFR-\d+)\b")
 ID_CELL = re.compile(r"(?:N?FR-\d+(?:\.\d+)?)(?:,\s*N?FR-\d+(?:\.\d+)?)*")
@@ -441,6 +442,16 @@ RELEASE_CHECKS = {
     spec_id: (measure_check(spec_id), "is measured on the release's own page, within its limit")
     for spec_id in SPEC_IDS
 }
+
+
+def size_and_shot_check(release: Path) -> list[str]:
+    return measure_check("FR-20.22")(release) + shot_problems(release)
+
+
+RELEASE_CHECKS["FR-20.22"] = (
+    size_and_shot_check,
+    "is measured on the release's own page, within its limit, with its phone and desktop pictures",
+)
 
 
 def run_output_checks(release: Path, wanted) -> dict[str, list[str]]:
