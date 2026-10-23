@@ -150,14 +150,16 @@ def test_fr20_13_the_list_shows_at_most_ten_ranked_by_trips_and_counts_the_rest(
 def test_fr20_15_each_plan_card_credits_its_source_by_title_date_and_link(tmp_path):
     routes, _ = report_with_areas()
     block = council_block() | {"routes": routes}
-    block["source"] = block["source"] | {"read_on": "2026-10-17"}
+    block["source"] = block["source"] | {"read_on": "2026-10-17", "published": "2024"}
     driver = open_page(shown(tmp_path, data_for(council=block)))
     try:
         council = driver.find_element(By.ID, "card-council")
         link = council.find_element(By.CSS_SELECTOR, "a.src")
         assert link.get_attribute("href") == "https://x.test/"
         assert "Plan" in link.text
-        assert "2026-10-17" in council.find_element(By.CSS_SELECTOR, ".credit").text
+        credit = council.find_element(By.CSS_SELECTOR, ".credit").text
+        assert "2024" in credit
+        assert "2026-10-17" not in credit
         corridors = driver.find_element(By.ID, "card-tfnsw")
         link = corridors.find_element(By.CSS_SELECTOR, "a.src")
         assert link.get_attribute("href") == CORRIDOR["source"]["url"] + "/"
