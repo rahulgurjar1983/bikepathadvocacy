@@ -364,6 +364,16 @@ def test_fr16_4_school_report_leaves_room_for_sites_without_dropping_map_evidenc
     saved = re.search(r'id="map-data">(.*?)</script>', script, re.S)[1]
     assert json.loads(saved) == data
     assert len(saved) == len(json.dumps(data, separators=(",", ":")))
+    _, outputs, _, _ = build_all(
+        load_region("tests/fixtures/test-grid/region.yaml"),
+        load_profile("au-nsw"),
+        Path("tests/fixtures/test-grid/snapshot"),
+    )
+    page = outputs["report.html"].decode()
+    assert 'id="school-sites"' in page
+    assert "Grid School" in page
+    built = re.search(r'id="map-data">(.*?)</script>', page, re.S)
+    assert built is None or json.loads(built[1])["boundary"]
 
 
 def test_fr16_4_scalar_recipe_counts_the_selected_sites(tmp_path):
