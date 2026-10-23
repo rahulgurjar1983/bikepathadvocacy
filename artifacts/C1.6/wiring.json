@@ -1,0 +1,36 @@
+{
+ "areas": {
+  "east": {
+   "pattern": "none",
+   "residents": {
+    "after": 0,
+    "newly_gained": 0
+   },
+   "works": [
+    "junction:1010"
+   ],
+   "works_m": 0.0
+  },
+  "west": {
+   "pattern": "none",
+   "residents": {
+    "after": 0,
+    "newly_gained": 0
+   },
+   "works": [],
+   "works_m": 0
+  }
+ },
+ "package": {
+  "rank": 1,
+  "scenario": "light"
+ },
+ "region_residents": {
+  "after": 0,
+  "located_after": 0,
+  "located_newly_gained": 0,
+  "newly_gained": 0,
+  "overlap_note": "Areas may overlap, so a resident can appear in more than one area. The region figure is a union, not the sum of the areas."
+ },
+ "unallocated_works": []
+}
