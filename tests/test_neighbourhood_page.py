@@ -98,3 +98,19 @@ def test_fr16_8_the_full_run_page_carries_the_section_and_its_figures(tmp_path):
     assert len(set(linked)) >= 2
     for figure in set(linked):
         assert f'id="{figure}"' in page
+
+
+def test_fr16_8_page_section_names_council_ward_sources(tmp_path):
+    from bikeplan.neighbourhood_view import neighbourhood_section
+    from bikeplan.neighbourhoods import area_inputs
+
+    out = built(tmp_path)
+    proposal = json.loads((out / "proposal.json").read_text())
+    _, source = area_inputs("au-nsw-bayside", "EPSG:32756", {"contents": None})
+    local = proposal["selected"]["local_areas"]
+    local["area_sources"] = [
+        {"id": item["id"], "name": item["id"], "boundary_kind": source["kind"], **item}
+        for item in source["areas"]
+    ]
+    text = neighbourhood_section(proposal, "F90", "F91")
+    assert source["areas"][0]["title"] in text
