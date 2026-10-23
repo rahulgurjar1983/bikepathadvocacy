@@ -56,5 +56,6 @@ def test_fr20_22_the_size_check_of_the_release_includes_the_shots_check(built, p
         f"{NAME}: {NAME}-phone.png is not in the release"
         in checks.run_output_checks(bare, ["FR-20.22"])["FR-20.22"]
     )
+    (tmp_path / "full").mkdir()
     full = with_shots(built, pictures, tmp_path / "full")
     assert not [p for p in checks.run_output_checks(full, ["FR-20.22"])["FR-20.22"] if "png" in p]
