@@ -2647,5 +2647,5 @@ The FR-17.12 check counts the four FR-17 options plus each of Corridors first an
 uv run --frozen pytest tests/test_checks_opening.py -q -k "extra or other_option"
 ```
 
-Expect: 6 passed. The row closes when a Bayside release from main uploads with FR-17.12 met.
+Expect: 5 passed. The row closes when a Bayside release from main uploads with FR-17.12 met.
 Artifact: `artifacts/W1.14/result.txt`

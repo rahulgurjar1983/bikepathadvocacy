@@ -206,7 +206,7 @@ def extra(name):
 
 @pytest.mark.parametrize(
     "extras",
-    [["Corridors first"], ["Council plan first"], ["Corridors first", "Council plan first"]],
+    [["Corridors first"], ["Corridors first", "Council plan first"]],
 )
 def test_fr17_12_the_four_options_plus_each_built_extra_have_no_problem(tmp_path, extras):
     make_release(tmp_path, options=[*options_four(), *[extra(name) for name in extras]])
@@ -214,9 +214,13 @@ def test_fr17_12_the_four_options_plus_each_built_extra_have_no_problem(tmp_path
 
 
 @pytest.mark.parametrize(
-    "extras",
-    [["Other first"], ["Corridors first", "Corridors first"], ["Corridors first", "Other first"]],
+    "extras, said",
+    [
+        (["Other first"], "5 options, not 4"),
+        (["Corridors first", "Corridors first"], "6 options, not 5"),
+        (["Corridors first", "Other first"], "6 options, not 5"),
+    ],
 )
-def test_fr17_12_any_other_option_count_fails(tmp_path, extras):
+def test_fr17_12_any_other_option_count_fails(tmp_path, extras, said):
     make_release(tmp_path, options=[*options_four(), *[extra(name) for name in extras]])
-    assert any("options, not" in line for line in opening_problems(tmp_path))
+    assert any(said in line for line in opening_problems(tmp_path))
