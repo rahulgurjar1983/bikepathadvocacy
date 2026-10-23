@@ -1654,6 +1654,7 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - Left: read `areas` from proposal inputs (lon/lat to the graph CRS) or the council wards, call it in `propose` for each package, add `local_areas` to `proposal.json`, a page section with area-to-work links, figure IDs, full-check recipes under C1.9 and a fresh Bayside run (about an hour). The module has no real run yet.
 - Part 2 wired `area_inputs` and `package_areas` into `scenario_curve`. Each package gets `local_areas`, and `proposal.json` carries it. Boundaries come from proposal-input areas, else the council wards file with ids `ward:<name>`. Left: a page section with area-to-work links, figure IDs, full-check recipes under C1.9 and a fresh Bayside run.
 - Part 3 added `bikeplan.neighbourhood_view` and wired it in `run.py` after the school section. Figures exist only when the package has areas, so the legacy figure ranges stay at 86 on the test grid. Left: a fresh Bayside run (about an hour) and full-check recipes under C1.9.
+- Part 4 replaced the JSON dump with plain sentences (no `<code>`, no survey word, work links shown as `junction work 1`; IDs stay in `data-work-id`). This removes the FR-17.11 and FR-20.19 causes named in W1.14 notes. Left: a fresh Bayside run and full-check recipes under C1.9.
 
 ### W1.14 notes
 
