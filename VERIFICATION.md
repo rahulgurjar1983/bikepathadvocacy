@@ -2553,3 +2553,15 @@ Artifact: `artifacts/W1.12/proof.json`
 Run `uv run pytest tests/test_page_measures.py -k "size_measure or over_16" -q`.
 Expect: the size line reads "of at most 16,777,216, met" and a page padded past 16 MB fails.
 Artifact: `artifacts/W1.9/size-limit.txt`
+
+### W1.13
+
+```sh
+uv run pytest tests/test_spot_names.py
+uv run bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-19 --out /tmp/w113/out
+python3 -c "import re,json;t=open('/tmp/w113/out/report.html').read();i=t.find('\"spots\":[{');print([s['street'] for s in json.JSONDecoder().raw_decode(t[i+8:])[0][:10]])"
+```
+
+Expect: 8 passed. None of the top 10 spots reads "A path" or "unnamed"; they include "Bexley Road at Veron Road", "Bestic Street", "Queen Victoria Street at Wolseley Street" and "Botany Road". The council plan credit date is "2024".
+
+Artifact: `artifacts/W1.13/names.json`
