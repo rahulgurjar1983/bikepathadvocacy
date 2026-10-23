@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  RELEASE_REGIONS: regions/au-nsw-bayside.yaml
+  RELEASE_REGIONS: regions/au-nsw-bayside.yaml regions/au-nsw-inner-west.yaml
 
 permissions:
   contents: write
