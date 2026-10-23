@@ -1629,3 +1629,8 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 ### C1.13 second edition
 
 - Rebuilt after W1.13 on the 2026-10-19 snapshot: 38 minutes to build, 10 to prove. Spots: 27, none unnamed. The page script still shows "A path" for a street named "unnamed ...", but no spot has one. Credit date 2024. Artifact: `artifacts/C1.13/summary.json`.
+
+### G1.4 part 3 notes
+
+- Q1.12 shipped `corridors.json` in the 22 October snapshot; `gh release download snapshot-au-nsw-bayside-2026-10-22` fills `data/cache/au-nsw-bayside/2026-10-22/`.
+- The fresh Bayside run took 59 minutes. It made 132 corridor candidates and picked none. The report shows the fifth option. Artifact: `artifacts/G1.4/real-run.json`.

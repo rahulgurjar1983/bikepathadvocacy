@@ -1,0 +1,13 @@
+{
+ "snapshot": "2026-10-22",
+ "region": "au-nsw-bayside",
+ "corridor_candidates": {
+  "made": 132,
+  "not_picked": 132,
+  "picked": 0
+ },
+ "corridors_first_in_report": 69,
+ "switch_input": "option-corridors",
+ "wall_seconds": 3582,
+ "output_files": 10
+}

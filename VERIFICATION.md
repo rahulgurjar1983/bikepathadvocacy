@@ -2571,3 +2571,14 @@ Artifact: `artifacts/W1.13/names.json`
 Run `uv run pytest tests/test_checks_shots.py -q`.
 Expect: 5 passed. A release with a region archive but no `<name>-phone.png` or `<name>-desktop.png`, or a picture of the wrong size, fails FR-20.22 in `checks.html`.
 Artifact: `artifacts/W1.9/shots-check.txt`
+
+Part 3 is the fresh Bayside run on the 22 October snapshot, which holds `corridors.json`:
+
+```sh
+gh release download snapshot-au-nsw-bayside-2026-10-22 --dir data/cache/au-nsw-bayside/2026-10-22
+uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-22 --out /tmp/g14-run
+```
+
+Expect: The run takes about 60 minutes. `summary.json` says 132 corridor candidates were made. `report.html` has the Corridors first switch `option-corridors`, its overlay and its chart, and its steps read "Corridors first, step N". No candidate is picked in this run, so no corridor path work is built.
+
+Artifact: `artifacts/G1.4/real-run.json`
