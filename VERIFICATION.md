@@ -2614,3 +2614,15 @@ uv run --frozen python artifacts/C1.6/collect.py
 
 Expect: 7 passed; the second command prints the allocation of the fixture (400 m of works, 100 m unallocated, 125 residents in the region against 160 summed over overlapping areas).
 Artifact: `artifacts/C1.6/fixture-allocation.json`
+
+### C1.6 part 2
+
+Neighbourhood allocation is built into every package and the saved proposal. It reads area boundaries from proposal inputs, else the council wards file. It has no Bayside run, no page section and no full-check recipes yet.
+
+```bash
+uv run --frozen pytest tests/test_neighbourhood_wiring.py -q
+uv run --frozen python artifacts/C1.6/wiring.py
+```
+
+Expect: 7 passed; the second command runs `bikeplan propose` on the test grid with two areas and prints the east and west allocation, with the junction work in the east area and nothing unallocated.
+Artifact: `artifacts/C1.6/wiring.json`

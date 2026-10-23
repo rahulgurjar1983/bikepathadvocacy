@@ -5,6 +5,11 @@ from pathlib import Path
 
 from bikeplan.config import config_hash
 
+AREA_LIMITS = {
+    True: "Modelled allocation by sourced boundaries; unlocated records stay unallocated",
+    False: "No sourced area boundaries: supply areas in proposal inputs or a council wards file",
+}
+
 
 def metric(value, unit, scope, source, method, status="modelled", reason=None):
     result = {
@@ -133,6 +138,7 @@ def package_record(curve, package, region_id):
         },
         "works": package["works"],
         "impacts": {"parking_spaces": package["works"]["parking_spaces"]},
+        "local_areas": package.get("local_areas"),
         "stages": delivery["stages"],
         "stage_status": delivery["stage_status"],
         "costs": delivery["costs"],
@@ -145,7 +151,7 @@ def package_record(curve, package, region_id):
         "evidence_limits": {
             "route_gaps": package["gaps"],
             "school_sites": "Not yet built",
-            "local_areas": "Not yet built",
+            "local_areas": AREA_LIMITS[bool(package.get("local_areas"))],
             "selection": "Shared view selection and goal/stage packages are not yet built",
             "field_safety": "Model criteria do not prove field safety",
         },

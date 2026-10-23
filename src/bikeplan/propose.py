@@ -28,6 +28,7 @@ from bikeplan.access import (
 from bikeplan.config import Scenario
 from bikeplan.fit import FIXES, fixed_edge, junction_fixes, segment_fit
 from bikeplan.fit import cross_section as fit_cross_section
+from bikeplan.neighbourhoods import area_inputs, package_areas
 from bikeplan.network import bike_segments
 from bikeplan.proposal_inputs import attach_metadata, enrich_projects, load_proposal_inputs
 from bikeplan.schools import site_coverage, snapshot_school_inputs
@@ -1116,6 +1117,7 @@ def scenario_curve(
     school_inputs=None,
     population=None,
     confirmed: bool = False,
+    areas=None,
 ) -> dict:
     scaled = scaled_region(region, scenario)
     scaled = dataclasses.replace(
@@ -1192,6 +1194,8 @@ def scenario_curve(
             for key in witness[direction]["edges"]
         ]
         package["works"] = works_package(catalog, package["element_ids"], retained, package["gaps"])
+        if areas and areas[0] and "resident_outcomes" in package and "school_coverage" in package:
+            package["local_areas"] = package_areas(areas[0], areas[1], solved, catalog, package)
 
     return {
         "works_catalog": catalog,
@@ -1385,6 +1389,7 @@ def write_propose(
             school_inputs,
             resident.population,
             confirmed=True,
+            areas=area_inputs(region.id, shipped_graph.graph["crs"], metadata),
         )
         for scenario in scenarios_for(region.proposals)
     ]
