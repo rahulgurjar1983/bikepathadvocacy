@@ -2,7 +2,7 @@
 
 ## Status
 
-On 16 October 2026 the owner cancelled the ask for every council: each release builds Bayside only. The release workflow names its councils in `RELEASE_REGIONS`, set to `regions/au-nsw-bayside.yaml`. The tool stays generic: `bikeplan region new`, the set file, the 33 region files and the published snapshots stay, so one line can bring the councils back. FR-18.4, FR-18.5 and FR-18.8 are retired. FR-18.6 and FR-18.7 apply to Bayside.
+On 16 October 2026 the owner cancelled the ask for every council: each release builds Bayside only. The release workflow names its councils in `RELEASE_REGIONS`, set to `regions/au-nsw-bayside.yaml`. The tool stays generic: `bikeplan region new`, the set file, the 33 region files and the published snapshots stay, so one line can bring the councils back. FR-18.4, FR-18.5 and FR-18.8 are retired. FR-18.6 and FR-18.7 apply to Bayside. On 23 October 2026 the owner asked for a report for Canterbury-Bankstown or Inner West. Releases now build Bayside and Inner West: `RELEASE_REGIONS` names both region files. Inner West uses the same settings and the same `bikeplan report` command; a part whose data it lacks, such as a council plan or wards, is left out as FR-20.25 says.
 
 ## 1. Problem
 
