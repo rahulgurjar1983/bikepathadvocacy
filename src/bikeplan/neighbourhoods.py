@@ -1,7 +1,10 @@
 from collections import defaultdict
 
-from shapely.geometry import LineString, Point
+from pyproj import Transformer
+from shapely.geometry import LineString, Point, shape
+from shapely.ops import transform
 
+from bikeplan.council import load_wards
 from bikeplan.parking import parking_totals
 
 TOLERANCE_M = 0.01
@@ -266,3 +269,51 @@ def verify_neighbourhoods(result, catalog, works):
             raise ValueError("Region residents differ from located and unallocated residents")
         if not max(areas, default=0) <= region["located_newly_gained"] <= sum(areas):
             raise ValueError("Located residents differ from the area unions")
+
+
+def slug(name):
+    return "".join(c if c.isalnum() else "-" for c in name.lower()).strip("-")
+
+
+def area_inputs(region_id, crs, metadata):
+    project = Transformer.from_crs(4326, crs, always_xy=True).transform
+    rows = ((metadata or {}).get("contents") or {}).get("areas") or []
+    if rows:
+        found = [
+            {"id": r["id"], "name": r["name"], "shape": transform(project, shape(r["geometry"]))}
+            for r in rows
+        ]
+        sources = [{"id": r["id"], "source": r["source"], "date": r["date"]} for r in rows]
+        kind = "proposal_inputs"
+    else:
+        wards = load_wards(region_id)
+        if wards is None:
+            return [], None
+        found = [
+            {"id": f"ward:{slug(a.name)}", "name": a.name, "shape": transform(project, a.shape)}
+            for a in wards.areas
+        ]
+        sources = [{"id": f"ward:{slug(a.name)}", **wards.source} for a in wards.areas]
+        kind = "council_wards"
+    return sorted(found, key=lambda a: a["id"]), {
+        "kind": kind,
+        "areas": sorted(sources, key=lambda a: a["id"]),
+    }
+
+
+def package_areas(areas, source, graph, catalog, package):
+    report = neighbourhood_report(
+        areas,
+        graph,
+        catalog,
+        package["works"],
+        package["resident_outcomes"],
+        package["school_coverage"],
+        package["strict"],
+    )
+    by_id = {item["id"]: item for item in source["areas"]}
+    report["area_sources"] = [
+        {**item, **by_id[item["id"]], "boundary_kind": source["kind"]}
+        for item in report["area_sources"]
+    ]
+    return report
