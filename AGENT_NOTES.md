@@ -1654,3 +1654,10 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - Left: read `areas` from proposal inputs (lon/lat to the graph CRS) or the council wards, call it in `propose` for each package, add `local_areas` to `proposal.json`, a page section with area-to-work links, figure IDs, full-check recipes under C1.9 and a fresh Bayside run (about an hour). The module has no real run yet.
 - Part 2 wired `area_inputs` and `package_areas` into `scenario_curve`. Each package gets `local_areas`, and `proposal.json` carries it. Boundaries come from proposal-input areas, else the council wards file with ids `ward:<name>`. Left: a page section with area-to-work links, figure IDs, full-check recipes under C1.9 and a fresh Bayside run.
 - Part 3 added `bikeplan.neighbourhood_view` and wired it in `run.py` after the school section. Figures exist only when the package has areas, so the legacy figure ranges stay at 86 on the test grid. Left: a fresh Bayside run (about an hour) and full-check recipes under C1.9.
+
+### W1.14 notes
+
+- FR-17.12 is met. Release run 40016043603 built Bayside and Inner West with the fixed count, but the upload still failed. `checks: fails: FR-17.11, FR-19.6, FR-20.19`.
+- Cause found in the Bayside build artifact: the neighbourhood section in `neighbourhood_view.py` prints each area as raw JSON in `<code>`. That puts the word survey in the page (`survey_needs`, FR-17.11) and thousands of code words with underscores, "step N" and "unnamed" (FR-20.19). Count them with `BANNED` in `page_measures.py` on `report.html`.
+- FR-19.6 gave no problem when `corridor_page_problems` ran on the same page, so its failure comes from the figure recipe check in `spec_figure_problems`. Run it on a full release folder to see the message.
+- W1.14 stays open until a release uploads. Next row: show areas as plain words and remove the JSON dump, then read the FR-19.6 message.
