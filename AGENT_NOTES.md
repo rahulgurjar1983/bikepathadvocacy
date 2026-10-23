@@ -1615,3 +1615,8 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - Left: the release script running `shots` (operator), and the real Bayside `checks.html` after the next release.
 
 - Q1.12: the snapshots run for a new osm_date took 2h19m on GitHub (run 39744953979); copy the manifest with `gh release download snapshot-<region>-<date> -p manifest.json`. Two CI tests fail until that manifest is committed.
+
+### W1.13 notes
+
+- Spot names come from `spots.spot_street`, called in `ladder.link_spot`. It indexes named roads per graph with an STRtree, cached in a `WeakKeyDictionary`, and builds it only when an unnamed spot appears.
+- `load_plan` adds the sidecar `published` to `source` without making it a required field, so `PLAN_FIELDS` and old fixtures stay as they were. The Bayside report run took 43 minutes on a busy host; do not wrap it in `timeout 3000`.

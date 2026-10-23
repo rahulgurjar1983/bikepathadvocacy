@@ -312,7 +312,7 @@ def report_data(
         data["council_source"] = {
             "title": council["source"]["title"],
             "url": council["source"]["url"],
-            "date": council["source"].get("read_on", ""),
+            "date": council["source"].get("published", ""),
         }
     if areas:
         numbers = {item["w"]: item["n"] for item in data["spots"]}

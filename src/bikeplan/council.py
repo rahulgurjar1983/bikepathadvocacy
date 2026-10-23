@@ -106,6 +106,8 @@ def load_plan(region_id: str, folder: str | Path = REFERENCES) -> Plan | None:
         )
         for item in features
     ]
+    if raw.get("published"):
+        source["published"] = str(raw["published"])
     return Plan(source, routes)
 
 
