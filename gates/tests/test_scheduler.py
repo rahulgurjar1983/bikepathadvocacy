@@ -154,3 +154,42 @@ def test_fr0_34_a_run_wait_holds_its_row_only_while_the_run_goes(repo, tmp_path,
     status.write_text("completed")
     assert not is_blocked("Q1.2")
     assert choose([])["row"] == "Q1.2"
+
+
+def test_fr0_34_a_green_pr_that_conflicts_with_main_gets_a_turn(repo):
+    from gates.scheduler import choose
+
+    pr = prepared(repo)
+    pr["statusCheckRollup"] = [{"name": "test", "status": "COMPLETED", "conclusion": "SUCCESS"}]
+    pr["autoMergeRequest"] = {"enabledAt": "now"}
+    pr["mergeable"] = "MERGEABLE"
+    assert choose([pr])["state"] == "waiting_ci"
+    pr["mergeable"] = "CONFLICTING"
+    picked = choose([pr])
+    assert picked["state"] == "task"
+    assert picked["row"] == "C1.4"
+    assert picked["pr"] == 118
+
+
+def test_fr0_34_the_pr_list_asks_github_whether_each_pr_conflicts(repo, tmp_path, monkeypatch):
+    from gates.scheduler import choose, fetch_prs
+
+    pr = prepared(repo)
+    pr["statusCheckRollup"] = [{"name": "test", "status": "COMPLETED", "conclusion": "SUCCESS"}]
+    pr["autoMergeRequest"] = {"enabledAt": "now"}
+    pr["mergeable"] = "CONFLICTING"
+    (tmp_path / "pr.json").write_text(json.dumps(pr))
+    fake = tmp_path / "bin/gh"
+    fake.parent.mkdir()
+    fake.write_text(
+        "#!/usr/bin/env python3\n"
+        "import json, sys\n"
+        f"pr = json.load(open({str(tmp_path / 'pr.json')!r}))\n"
+        "fields = sys.argv[sys.argv.index('--json') + 1].split(',')\n"
+        "print(json.dumps([{key: pr[key] for key in fields if key in pr}]))\n"
+    )
+    fake.chmod(0o755)
+    monkeypatch.setenv("PATH", f"{fake.parent}{os.pathsep}{os.environ['PATH']}")
+    prs = fetch_prs()
+    assert prs[0]["mergeable"] == "CONFLICTING"
+    assert choose(prs)["state"] == "task"

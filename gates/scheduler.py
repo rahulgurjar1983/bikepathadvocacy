@@ -63,7 +63,8 @@ def choose(prs):
             or item.get("state") == "PENDING"
             for item in values
         )
-        if not failed and (pending or (values and pr.get("autoMergeRequest"))):
+        conflicting = pr.get("mergeable") == "CONFLICTING"
+        if not failed and not conflicting and (pending or (values and pr.get("autoMergeRequest"))):
             return result | {"state": "waiting_ci", "reason": "owner PR awaits CI or merge"}
         return result | {"state": "task"}
     row = ledger.pick(rows)
@@ -120,7 +121,7 @@ def fetch_prs():
             "--limit",
             "100",
             "--json",
-            "number,headRefName,createdAt,isDraft,statusCheckRollup,autoMergeRequest",
+            "number,headRefName,createdAt,isDraft,statusCheckRollup,autoMergeRequest,mergeable",
         ],
         check=True,
         capture_output=True,
