@@ -198,3 +198,25 @@ def test_fr20_24_a_fifth_council_plan_first_option_is_not_a_problem(tmp_path):
     council = option("Council plan first", [0, 25, 50, 80], [0, 2, 5, 8], ["Ash St", "Fir St"])
     make_release(tmp_path, options=[*options_four(), council])
     assert opening_problems(tmp_path) == []
+
+
+def extra(name):
+    return option(name, [0, 25, 50, 70], [0, 2, 5, 7], ["Ash St", "Bay St"])
+
+
+@pytest.mark.parametrize(
+    "extras",
+    [["Corridors first"], ["Council plan first"], ["Corridors first", "Council plan first"]],
+)
+def test_fr17_12_the_four_options_plus_each_built_extra_have_no_problem(tmp_path, extras):
+    make_release(tmp_path, options=[*options_four(), *[extra(name) for name in extras]])
+    assert opening_problems(tmp_path) == []
+
+
+@pytest.mark.parametrize(
+    "extras",
+    [["Other first"], ["Corridors first", "Corridors first"], ["Corridors first", "Other first"]],
+)
+def test_fr17_12_any_other_option_count_fails(tmp_path, extras):
+    make_release(tmp_path, options=[*options_four(), *[extra(name) for name in extras]])
+    assert any("options, not" in line for line in opening_problems(tmp_path))
