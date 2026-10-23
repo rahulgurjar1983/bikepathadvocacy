@@ -2582,3 +2582,14 @@ uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/a
 Expect: The run takes about 60 minutes. `summary.json` says 132 corridor candidates were made. `report.html` has the Corridors first switch `option-corridors`, its overlay and its chart, and its steps read "Corridors first, step N". No candidate is picked in this run, so no corridor path work is built.
 
 Artifact: `artifacts/G1.4/real-run.json`
+
+### C1.2
+
+```bash
+uv run --frozen pytest tests/test_school_sites.py -q
+/usr/bin/time -v -o /tmp/c12-real-time.txt uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-22 --out /tmp/bikeplan-C1.2-proof
+uv run --frozen python artifacts/C1.2/collect.py /tmp/bikeplan-C1.2-proof
+```
+
+Expect: The tests pass. The report holds a school section with a new figure, named sites, sources, entrances and resident reach per site. The Bayside run lists 47 known sites, 44 with names. None has a proved entrance link yet, so served sites before, after and new are 0. No pupil count appears.
+Artifact: `artifacts/C1.2/summary.json`

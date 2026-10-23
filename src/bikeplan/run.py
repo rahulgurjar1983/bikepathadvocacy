@@ -63,6 +63,7 @@ from bikeplan.report_page import (
     price_works,
     report_data,
 )
+from bikeplan.schools import school_figures, school_section
 from bikeplan.snapshot import verify_snapshot
 from bikeplan.stress import score_edges, stress_features, stress_summary
 from bikeplan.trips import (
@@ -343,6 +344,8 @@ def build_all(
     )
     paths_text = json.dumps({"items": paths}, sort_keys=True) + "\n"
     figures += path_figures(paths, paths_text, int(figures[-1]["id"][1:]) + 1)
+    school_number = int(figures[-1]["id"][1:]) + 1
+    figures += school_figures(frontier, frontier_bytes.decode(), school_number)
     data = report_data(
         options,
         choice,
@@ -367,6 +370,7 @@ def build_all(
             body,
             figures,
             option_view(proposal)
+            + school_section(frontier, f"F{school_number}")
             + f"<script>{(ASSETS / 'option_view.js').read_text()}</script>"
             + method_section()
             + assumptions_section(profile)
