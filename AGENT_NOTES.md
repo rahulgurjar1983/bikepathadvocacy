@@ -519,6 +519,8 @@ Ask: may a short piece with one calm end and one open end (a dead end or a trunk
 
 ## BLOCKED
 
+- C1.2: the code and tests are shipped (PR 280). Served counts stay 0 because no Bayside school has a sourced, bike-accessible entrance link. The snapshot has no `trip_evidence` block and no school boundary polygons. Of 1524 entrance and gate nodes, 18 carry an explicit bike tag, and 1 of 228 school points has one within 150 m. A distance match is not a sourced site join under FR-16.3 and FR-16.4. Proof: `uv run --frozen python -I artifacts/C1.2/entrance_probe.py data/cache/au-nsw-bayside/2026-10-22`. The ask: supply a sourced list of school entrances (stable ID, school site ID, OSM node, source, bike access) as a `trip_evidence` block for a new snapshot, or accept 0 served and close the row. No turn may invent the records.
+
 - Q1.6 PR 141: the fix for the CI failure is committed on `loop/Q1.6-option-view` but not pushed. `git push` fails with "could not read Username" and `gh api user` returns HTTP 401: the token in `~/.config/gh/hosts.yml` is invalid. Run `gh auth login -h github.com`, then push that branch and run `scripts/wait-ci.sh 141`.
 
 - P10.1: resolved by the input proof-only gate path. Prior operator ask: add a rule and gate path for proof rows whose real tests pass on base code. The loop cannot edit `PROMPT.md` or `gates/redgreen.py`. Fresh base proof is in `artifacts/P10.1/main-audit.txt`; the gate marks a passing result as fake. Once that input fix ships, clear the hold and run the saved Bayside tests. Do not change code just to make a test fail.
@@ -1639,7 +1641,7 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 
 - The old branch was rebuilt on main with `schools.py`, new figure F86 and a school section in the page details. The old copy is local branch `backup/C1.2-old`.
 - Bayside 22 October run took 56 minutes and 6.9 GB. It lists 47 school sites, none with a proved entrance link, so none counts as served. Artifact: `artifacts/C1.2/summary.json`.
-- Left: entrance links from the snapshot for these sites, so that served counts can rise above 0.
+- Left: sourced entrance links for these sites. The snapshot cannot give them; see the C1.2 entry under BLOCKED.
 
 ### Operator note: V1.8
 
