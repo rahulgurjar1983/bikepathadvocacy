@@ -2602,3 +2602,15 @@ uv run --frozen python -I artifacts/C1.2/entrance_probe.py data/cache/au-nsw-bay
 
 Expect: 1524 entrance or gate nodes, 18 with explicit bike access, 228 school points, 1 within 150 m of such a node, and no trip evidence block.
 Artifact: `artifacts/C1.2/entrance_probe.json`
+
+### C1.6
+
+Part 1 only: the per-area allocation module on a hand-counted fixture. It is not wired into a report and has no real Bayside run.
+
+```bash
+uv run --frozen pytest tests/test_neighbourhoods.py -q
+uv run --frozen python artifacts/C1.6/collect.py
+```
+
+Expect: 7 passed; the second command prints the allocation of the fixture (400 m of works, 100 m unallocated, 125 residents in the region against 160 summed over overlapping areas).
+Artifact: `artifacts/C1.6/fixture-allocation.json`

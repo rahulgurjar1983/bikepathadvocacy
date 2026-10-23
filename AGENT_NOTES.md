@@ -1647,3 +1647,8 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 
 - All V1.8 parts are built and private. Left is a person's step. Send the `data/private/V1.8` page to the author. Then add a `sent` entry to `data/private/V1.8/reply.yaml`. The 14 days start on that date. No turn may contact the author.
 
+
+### C1.6 notes
+
+- Part 1 shipped `bikeplan.neighbourhoods` with `neighbourhood_report` and `verify_neighbourhoods`. Link lengths are clipped to the boundary and split by area, with the first area by ID taking any overlap. Whole-number parking follows the area with the most of that link. Residents are located by home node and school sites by entrance node.
+- Left: read `areas` from proposal inputs (lon/lat to the graph CRS) or the council wards, call it in `propose` for each package, add `local_areas` to `proposal.json`, a page section with area-to-work links, figure IDs, full-check recipes under C1.9 and a fresh Bayside run (about an hour). The module has no real run yet.
