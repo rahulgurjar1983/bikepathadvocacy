@@ -2626,3 +2626,15 @@ uv run --frozen python artifacts/C1.6/wiring.py
 
 Expect: 7 passed; the second command runs `bikeplan propose` on the test grid with two areas and prints the east and west allocation, with the junction work in the east area and nothing unallocated.
 Artifact: `artifacts/C1.6/wiring.json`
+
+### C1.6 part 3
+
+The report page carries a neighbourhood section built from the saved proposal. It lists each area with its works links, the works with no area, and two figures with recipes. It has no Bayside run and no full-check recipes yet.
+
+```bash
+uv run --frozen pytest tests/test_neighbourhood_page.py -q
+uv run --frozen python artifacts/C1.6/page.py
+```
+
+Expect: 5 passed; the second command runs `bikeplan run` on the test grid with two areas and prints the east and west areas, the junction work link and figure links F87 and F88.
+Artifact: `artifacts/C1.6/page.json`

@@ -28,6 +28,7 @@ from bikeplan.fit import segment_fit
 from bikeplan.map_data import map_data as page_data
 from bikeplan.map_kml import kml_layers, kml_problems, map_kml
 from bikeplan.map_page import map_page
+from bikeplan.neighbourhood_view import neighbourhood_figures, neighbourhood_section
 from bikeplan.network import bike_segments, build
 from bikeplan.network_report import choose
 from bikeplan.page import (
@@ -346,6 +347,7 @@ def build_all(
     figures += path_figures(paths, paths_text, int(figures[-1]["id"][1:]) + 1)
     school_number = int(figures[-1]["id"][1:]) + 1
     figures += school_figures(frontier, frontier_bytes.decode(), school_number)
+    figures += neighbourhood_figures(proposal, proposal_bytes, school_number + 1)
     data = report_data(
         options,
         choice,
@@ -371,6 +373,7 @@ def build_all(
             figures,
             option_view(proposal)
             + school_section(frontier, f"F{school_number}")
+            + neighbourhood_section(proposal, f"F{school_number + 1}", f"F{school_number + 2}")
             + f"<script>{(ASSETS / 'option_view.js').read_text()}</script>"
             + method_section()
             + assumptions_section(profile)
