@@ -1,6 +1,5 @@
 import hashlib
 import html
-import json
 
 from bikeplan.proposal_record import AREA_LIMITS
 
@@ -16,8 +15,20 @@ def selected_areas(proposal):
     return proposal["selected"].get("local_areas")
 
 
-def code(value):
-    return f"<code>{html.escape(json.dumps(value, sort_keys=True))}</code>"
+def words(value):
+    return html.escape(str(value).replace("_", " "))
+
+
+def work_label(key, position):
+    return f"{words(key.split(':')[0])} work {position}"
+
+
+def count(number, noun):
+    if number is None:
+        return f"unknown {noun}"
+    if isinstance(number, list | tuple | set):
+        number = len(number)
+    return f"{number:,} {noun}"
 
 
 def source_text(item):
@@ -30,48 +41,54 @@ def work_links(area):
     roles = area["works"]["routes"]
 
     def connects(key):
-        return html.escape(", ".join(roles.get(key) or ["no proved destination"]))
+        return words(", ".join(roles.get(key) or ["no proved destination"]))
 
     return ", ".join(
         f'<a href="#physical-works" data-work-id="{html.escape(key, quote=True)}">'
-        f"{html.escape(key)}</a> (connects {connects(key)})"
-        for key in area["works"]["parking_element_ids"]
+        f"{work_label(key, position)}</a> (connects {connects(key)})"
+        for position, key in enumerate(area["works"]["parking_element_ids"], 1)
+    )
+
+
+def area_facts(area):
+    removed = area["parking_spaces"]["removed"]["known_subtotal"]
+    schools = area["schools"]
+    effects = len(area["access_effects"])
+    return (
+        f"{count(round(area['works']['length_m']), 'm of works')}; "
+        f"{count(removed, 'parking spaces removed')} (known so far); "
+        f"{count(area['residents']['newly_gained'], 'residents newly gain a destination')}; "
+        f"{count(area['residents']['after'], 'residents reach a destination after')}; "
+        f"{count(schools['newly_served'], 'school sites newly served')}, "
+        f"{count(schools['served_after'], 'served after')}, "
+        f"{count(schools['not_served'], 'not served')}; "
+        f"{count(effects, 'works with turn or access changes to resolve')}"
     )
 
 
 def area_block(area):
-    parking = area["parking_spaces"]["removed"]["known_subtotal"]
-    facts = {
-        "works_m": round(area["works"]["length_m"], 1),
-        "parking_spaces_removed_known": parking,
-        "residents_after": area["residents"]["after"],
-        "residents_newly_gained": area["residents"]["newly_gained"],
-        "schools_newly_served": area["schools"]["newly_served"],
-        "schools_served_after": area["schools"]["served_after"],
-        "schools_not_served": area["schools"]["not_served"],
-        "access_effects": area["access_effects"],
-        "survey_needs": area["survey_needs"],
-    }
     return (
         f'<div data-area-id="{html.escape(area["id"], quote=True)}" '
         f'data-pattern="{area["pattern"]}"><h3>{html.escape(area["name"])}</h3>'
-        f"<p>{PATTERNS[area['pattern']]}: {code(facts)}</p>"
+        f"<p>{PATTERNS[area['pattern']]}: {area_facts(area)}.</p>"
         f"<p>Works placed here: {work_links(area) or 'none'}.</p></div>"
     )
 
 
 def unallocated_block(local):
     loose = local["unallocated"]
-    unplaced = {key: loose[key] for key in ("parking_spaces", "residents", "schools")}
     items = "".join(
         f'<li data-unallocated-id="{html.escape(item["id"], quote=True)}">'
-        f"<code>{html.escape(item['id'])}</code></li>"
-        for item in loose["works"]
+        f"{work_label(item['id'], position)}</li>"
+        for position, item in enumerate(loose["works"], 1)
     )
     return (
         "<p>Records with no usable location stay out of every area and are never counted "
-        f"twice. Unplaced parking, residents and schools: {code(unplaced)}"
-        f".</p><p>Works with no area:</p><ul>{items or '<li>None</li>'}</ul>"
+        f"twice. Unplaced: "
+        f"{count(loose['parking_spaces']['removed']['known_subtotal'], 'parking spaces removed')}, "
+        f"{count(loose['residents']['newly_gained'], 'residents newly gaining a destination')} and "
+        f"{count(loose['schools'], 'school sites')}."
+        f"</p><p>Works with no area:</p><ul>{items or '<li>None</li>'}</ul>"
     )
 
 
@@ -84,7 +101,7 @@ def neighbourhood_section(proposal, residents_ref, works_ref):
             "unknown.</p></section>"
         )
     sources = "".join(
-        f"<li>{html.escape(item['name'])}: <code>{html.escape(source_text(item))}</code></li>"
+        f"<li>{html.escape(item['name'])}: {html.escape(source_text(item))}</li>"
         for item in local["area_sources"]
     )
     region = local["region"]
@@ -99,7 +116,7 @@ def neighbourhood_section(proposal, residents_ref, works_ref):
         + "".join(area_block(area) for area in local["areas"])
         + unallocated_block(local)
         + f"<p>Area boundaries and their sources:</p><ul>{sources}</ul>"
-        f"<p>{html.escape(AREA_LIMITS[True])}. Field safety and parking use need a survey.</p>"
+        f"<p>{html.escape(AREA_LIMITS[True])}. Field safety and parking use are not proved.</p>"
         "</section>"
     )
 
