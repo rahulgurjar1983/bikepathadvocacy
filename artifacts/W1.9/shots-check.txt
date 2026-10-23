@@ -1,0 +1,2 @@
+uv run pytest tests/test_checks_shots.py -q
+5 passed (2026-10-24)

@@ -2565,3 +2565,9 @@ python3 -c "import re,json;t=open('/tmp/w113/out/report.html').read();i=t.find('
 Expect: 8 passed. None of the top 10 spots reads "A path" or "unnamed"; they include "Bexley Road at Veron Road", "Bestic Street", "Queen Victoria Street at Wolseley Street" and "Botany Road". The council plan credit date is "2024".
 
 Artifact: `artifacts/W1.13/names.json`
+
+### W1.9 part 6
+
+Run `uv run pytest tests/test_checks_shots.py -q`.
+Expect: 5 passed. A release with a region archive but no `<name>-phone.png` or `<name>-desktop.png`, or a picture of the wrong size, fails FR-20.22 in `checks.html`.
+Artifact: `artifacts/W1.9/shots-check.txt`
