@@ -1,0 +1,8 @@
+{
+  "entrance_or_gate_nodes": 1524,
+  "school_boundary_polygons_in_snapshot": 0,
+  "school_points": 228,
+  "school_points_with_such_a_node_within_150m": 1,
+  "trip_evidence_block_in_places_json": false,
+  "with_explicit_bike_access": 18
+}
