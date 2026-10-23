@@ -114,6 +114,7 @@ def frontier_data(raw: dict, before: float, kinds: list, shapes: dict) -> dict:
         "scenarios": scenarios,
         "shapes": shapes,
         "trip_sources": raw.get("trip_sources", {}),
+        "school_sources": raw.get("school_sources", {}),
         "proposal_metadata": raw.get("proposal_metadata"),
     }
 

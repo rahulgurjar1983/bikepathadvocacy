@@ -30,6 +30,7 @@ from bikeplan.fit import FIXES, fixed_edge, junction_fixes, segment_fit
 from bikeplan.fit import cross_section as fit_cross_section
 from bikeplan.network import bike_segments
 from bikeplan.proposal_inputs import attach_metadata, enrich_projects, load_proposal_inputs
+from bikeplan.schools import site_coverage, snapshot_school_inputs
 from bikeplan.stress import edge_aaa, own_lts, raise_for_crossings, score_edges
 from bikeplan.trips import complete_trips, resident_outcomes, snapshot_trip_inputs
 from bikeplan.width import check_links, fuse
@@ -1112,6 +1113,7 @@ def scenario_curve(
     legs=None,
     corridors: Corridors | None = None,
     trip_inputs=None,
+    school_inputs=None,
     population=None,
     confirmed: bool = False,
 ) -> dict:
@@ -1160,6 +1162,12 @@ def scenario_curve(
                     ),
                 }
             )
+    if school_inputs is not None:
+        sites, source_coverage = school_inputs
+        for package in packages:
+            package["school_coverage"] = site_coverage(
+                sites, packages[0], package, people, source_coverage
+            )
     if population is not None and packages:
         for package in packages:
             package["resident_outcomes"] = resident_outcomes(
@@ -1184,6 +1192,7 @@ def scenario_curve(
             for key in witness[direction]["edges"]
         ]
         package["works"] = works_package(catalog, package["element_ids"], retained, package["gaps"])
+
     return {
         "works_catalog": catalog,
         "project_sheets": project_sheet_records(project_records(picked, planning), planning),
@@ -1279,6 +1288,9 @@ def write_propose(
     records = project_records(picked, planning)
     trip_inputs = snapshot_trip_inputs(snapshot, kept, nodes, graph, scores, planning)
     destinations, links, movements = trip_inputs
+    school_inputs = snapshot_school_inputs(
+        snapshot, graph, {item["id"]: item["model_node"] for item in destinations}
+    )
     shortlist_trips = complete_trips(
         graph,
         resident.people,
@@ -1326,6 +1338,9 @@ def write_propose(
         ],
         shortlist_trips["gaps"],
     )
+    shortlist_trips["school_coverage"] = site_coverage(
+        school_inputs[0], baseline_trips, shortlist_trips, resident.people, school_inputs[1]
+    )
     surveys = survey_layer(planning)
     if stats is not None:
         stats["survey_options"] = surveys
@@ -1367,6 +1382,7 @@ def write_propose(
             legs,
             corridors,
             trip_inputs,
+            school_inputs,
             resident.population,
             confirmed=True,
         )
@@ -1381,6 +1397,11 @@ def write_propose(
             )
     frontier = {
         "scenarios": curves,
+        "school_sources": {
+            "sites": school_inputs[0],
+            "coverage": school_inputs[1],
+            "origins": [{"id": k, "residents": v} for k, v in sorted(resident.people.items())],
+        },
         "trip_sources": {
             "destinations": destinations,
             "population": resident.population,

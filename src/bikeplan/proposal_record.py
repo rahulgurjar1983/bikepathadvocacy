@@ -60,7 +60,9 @@ def package_record(curve, package, region_id):
             cost["reason"],
         )
     metrics["school_sites_served"] = metric(
-        None,
+        len(package["school_coverage"]["served"]["after"])
+        if "school_coverage" in package
+        else None,
         "school sites",
         scope,
         source,
