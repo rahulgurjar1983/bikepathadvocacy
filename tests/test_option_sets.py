@@ -1,6 +1,12 @@
 import networkx as nx
 
-from bikeplan.option_sets import compare_options, goal_results, label_packages, stage_plan
+from bikeplan.option_sets import (
+    build_option_sets,
+    compare_options,
+    goal_results,
+    label_packages,
+    stage_plan,
+)
 from bikeplan.trips import complete_trips
 
 PEOPLE = {0: 100.0, 10: 50.0}
@@ -236,3 +242,61 @@ def test_fr16_9_without_a_goal_input_packages_are_labelled_candidates():
     assert [r["label"] for r in label_packages(rows, [])] == ["candidate", "candidate"]
     labelled = label_packages(rows, goals())
     assert [r["label"] for r in labelled] == ["goal_tested", "goal_tested"]
+
+
+PICKS = [
+    {"id": "p1", "elements": ["a"]},
+    {"id": "p2", "elements": ["b"]},
+    {"id": "p3", "elements": ["c"]},
+]
+
+
+def test_fr16_9_options_and_stages_are_built_from_picks_with_non_prefix_closures():
+    built = build_option_sets(PICKS, ["a", "b", "c"], evaluator(), PEOPLE, parking_by_element, [])
+    stages = {item["id"]: item for item in built["stage_plan"]["stages"]}
+    assert stages["p1"]["purpose"] == "enabling"
+    assert stages["p1"]["standalone_access_claim"] is False
+    assert stages["p2"]["depends_on"] == ["p1"]
+    assert stages["p2"]["elements"] == ["a", "b"]
+    assert stages["p3"]["depends_on"] == []
+    assert stages["p3"]["elements"] == ["c"]
+    rows = {row["id"]: row for row in built["comparison"]["options"]}
+    assert rows["first_stage"]["element_ids"] == ["a", "b"]
+    assert rows["parking_retention"]["element_ids"] == ["c"]
+    assert rows["parking_retention"]["retention"] == {
+        "reference": "first_stage",
+        "result": "lower",
+        "difference": -13,
+    }
+    assert rows["broader_network"]["trip_count"] == 2
+    assert built["comparison"]["unbuilt"] == {}
+    assert {row["label"] for row in built["options"]} == {"candidate"}
+
+
+def test_fr16_9_without_a_useful_route_each_kind_says_why_it_is_not_built():
+    built = build_option_sets(
+        [{"id": "p1", "elements": ["a"]}], ["a"], evaluator(), PEOPLE, parking_by_element, []
+    )
+    assert set(built["comparison"]["unbuilt"]) == {
+        "first_stage",
+        "parking_retention",
+        "broader_network",
+    }
+    assert built["stage_plan"]["stages"][0]["purpose"] == "enabling"
+
+
+def test_fr16_9_goals_from_the_proposal_are_tested_against_each_option():
+    goals = [
+        {"id": "g12", "source": "plan", "destination_ids": ["site-12"]},
+        {"id": "g3", "source": "plan", "destination_ids": ["site-3"]},
+    ]
+    built = build_option_sets(
+        PICKS, ["a", "b", "c"], evaluator(), PEOPLE, parking_by_element, goals
+    )
+    by_option = {
+        row["id"]: {g["id"]: g["status"] for g in row["goals"]} for row in built["options"]
+    }
+    assert by_option["first_stage"] == {"g12": "unmet", "g3": "met"}
+    assert by_option["parking_retention"] == {"g12": "met", "g3": "unmet"}
+    assert by_option["broader_network"] == {"g12": "met", "g3": "met"}
+    assert {row["label"] for row in built["options"]} == {"goal_tested"}

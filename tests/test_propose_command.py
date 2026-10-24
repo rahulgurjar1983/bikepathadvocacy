@@ -69,3 +69,20 @@ def test_fr8_10_two_runs_give_byte_identical_files(tmp_path):
     for name in ("projects.json", "projects.csv", "projects.geojson"):
         assert (outs[0] / name).read_bytes() == (outs[1] / name).read_bytes()
     assert Path(outs[0] / "projects.json").stat().st_size > 2
+
+
+def test_fr16_9_the_frontier_holds_option_sets_built_from_the_run(tmp_path):
+    folder = snapshot(tmp_path / "snap")
+    out = tmp_path / "out"
+    assert run(folder, out) == 0
+    sets = json.loads((out / "frontier.json").read_text())["option_sets"]
+    assert sets["comparison"]["options"][0]["id"] == "baseline"
+    assert sets["stage_plan"]["valid"] in (True, False)
+    kinds = {row["kind"] for row in sets["comparison"]["options"]}
+    assert "baseline" in kinds
+    built = {row["kind"] for row in sets["options"]}
+    assert built | set(sets["comparison"]["unbuilt"]) == {
+        "first_stage",
+        "parking_retention",
+        "broader_network",
+    }
