@@ -94,6 +94,9 @@ def build_parser() -> argparse.ArgumentParser:
         leaf = commands.add_parser(name, help=text, description=text)
         if name == "verify":
             leaf.add_argument("directory", help="Output folder of a run")
+            leaf.add_argument(
+                "--full", action="store_true", help="Also recompute the community results"
+            )
     stress = commands.add_parser("stress", help=STRESS_HELP, description=STRESS_HELP)
     stress.add_argument("region", help="Region file")
     stress.add_argument("--snapshot", required=True, help="Snapshot folder")
@@ -347,9 +350,9 @@ def run(path: str, snapshot: str, out: str, proposal_inputs=None) -> int:
     return 0
 
 
-def verify(directory: str) -> int:
+def verify(directory: str, full: bool = False) -> int:
     try:
-        results = verify_outputs(directory)
+        results = verify_outputs(directory, full)
     except (OSError, ValueError, KeyError) as error:
         print(f"fail inputs: {error!r}", file=sys.stderr)
         return 1
@@ -491,7 +494,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "run":
         return run(args.region, args.snapshot, args.out, args.proposal_inputs)
     if args.command == "verify":
-        return verify(args.directory)
+        return verify(args.directory, args.full)
     if args.command == "report":
         return report(args.region, args.snapshot, args.out, args.proposal_inputs)
     if args.command == "review":
