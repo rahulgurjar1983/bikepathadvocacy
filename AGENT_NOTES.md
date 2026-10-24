@@ -21,6 +21,18 @@ Tips and traps that carry across loop turns. Add what you learn. Keep each note 
 
 ## Spec issues
 
+### C1.10 the spec 16 order and package clash with specs 17 and 20
+
+A fresh Bayside build from `6ff1a83` is byte-equal to release `v2026.10.24-pr313`: `report.html` has sha256 `7d02088462a288f9` at the start in both. Build: `uv run --frozen bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-22 --out /tmp/c110/report` (39 min). `bikeplan verify --full --region regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-22 /tmp/c110/report` printed `ok hashes` and `ok recompute` (29 min).
+
+The row cannot pass as written:
+- FR-16.13 asks for the spec 16 order: proposal, map, options, neighbourhood impacts, street plans, delivery, evidence. Spec 20 wins for the page and sets the mock order: find, spots, streets, wards, plans, cost, ask, how, then options.
+- Spec 17 section 5 moves the community package views to the data archive. The page keeps them after the appendix. Run `grep -o 'section[^>]*id="[a-z-]*"' /tmp/c110/report/report.html` to list the order.
+- The page pick is "Corridors first, step 35" (`#step-totals`: 1365 parking spaces, 2.84 traffic-lane km). The community parts use the older curve package `shipped:0` (`#school-sites` `data-package`). They show 0 works, 0 parking spaces and 0 school sites, so "same package across sections" cannot hold.
+- Spec 20 line 89 pauses C1.2 and the other spec 16 rows. C1.2 and C1.6 are not complete.
+
+Ask, as an input ruling: replace C1.10 with a proof of the spec 20 page (C1.13) and say whether the community package views stay as archive parts tied to the page pick or are dropped. No source or test changed.
+
 ### W1.0 the mock conflicts with the old number check (resolved)
 
 The 19 October ruling in spec 20 allows the narrow date change to the old
