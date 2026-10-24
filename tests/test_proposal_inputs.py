@@ -554,3 +554,21 @@ def test_fr16_10_cost_range_recipes_replay_archived_sources_beside_the_options(t
     months = "January|February|March|April|May|June|July|August|September|October|November|December"
     dated = re.sub(rf"(\d{{1,2}} )?({months}) \d{{4}}", "", " ".join(parsed.outside))
     assert not any(char.isdigit() for char in dated)
+
+
+def test_fr16_9_budget_and_impact_goals_validate_and_unknown_fields_fail(tmp_path):
+    from bikeplan.proposal_inputs import validate_contents
+
+    base = metadata()
+    good = [
+        {**SOURCE, "id": "b", "kind": "budget", "capital_limit": 5.0, "currency": "AUD"},
+        {**SOURCE, "id": "i", "kind": "impact", "max_parking_spaces": 3, "min_people": 10.0},
+    ]
+    assert validate_contents({**base, "goals": good})["goals"] == good
+    for bad in (
+        {**SOURCE, "id": "x", "kind": "wish"},
+        {**SOURCE, "id": "x", "capital_limit": -1.0},
+        {**SOURCE, "id": "x", "max_parking_spaces": 1.5},
+    ):
+        with pytest.raises(ConfigError):
+            validate_contents({**base, "goals": [bad]})

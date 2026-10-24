@@ -300,3 +300,81 @@ def test_fr16_9_goals_from_the_proposal_are_tested_against_each_option():
     assert by_option["parking_retention"] == {"g12": "met", "g3": "unmet"}
     assert by_option["broader_network"] == {"g12": "met", "g3": "met"}
     assert {row["label"] for row in built["options"]} == {"goal_tested"}
+
+
+def test_fr16_9_impact_bounds_on_parking_and_people_are_checked_against_the_option():
+    elements = ["a", "b"]
+    result = evaluator()(elements)
+    impact = {"people": 50.0, "parking_spaces": 15}
+    bounds = [
+        {"id": "park-ok", "source": "plan", "kind": "impact", "max_parking_spaces": 15},
+        {"id": "park-over", "source": "plan", "kind": "impact", "max_parking_spaces": 14},
+        {"id": "reach-ok", "source": "plan", "kind": "impact", "min_people": 50.0},
+        {"id": "reach-short", "source": "plan", "kind": "impact", "min_people": 51.0},
+        {
+            "id": "both",
+            "source": "plan",
+            "kind": "impact",
+            "min_people": 50.0,
+            "max_parking_spaces": 3,
+        },
+        {"id": "bare", "kind": "impact", "min_people": 1.0},
+    ]
+    found = goal_results(bounds, elements, result, impact=impact)
+    status = {row["id"]: row["status"] for row in found}
+    assert status == {
+        "park-ok": "met",
+        "park-over": "unmet",
+        "reach-ok": "met",
+        "reach-short": "unmet",
+        "both": "unmet",
+        "bare": "unproved",
+    }
+    assert {row["id"]: row["reason"] for row in found}["park-over"] == "parking_above_limit"
+    assert {row["id"]: row["reason"] for row in found}["reach-short"] == "people_below_minimum"
+
+
+def test_fr16_9_a_budget_in_another_currency_is_unproved_not_compared():
+    bound = [
+        {
+            "id": "m",
+            "source": "council",
+            "kind": "budget",
+            "capital_limit": 100.0,
+            "currency": "AUD",
+        }
+    ]
+    other = {"low": 1.0, "high": 2.0, "currency": "USD"}
+    found = goal_results(bound, [], evaluator()([]), capital=other)
+    assert found[0]["status"] == "unproved"
+    assert found[0]["reason"] == "cost_currency_differs"
+    same = goal_results(bound, [], evaluator()([]), capital={**other, "currency": "AUD"})
+    assert same[0]["status"] == "met"
+
+
+def test_fr16_9_budget_and_impact_goals_are_tested_for_every_built_option():
+    costs = {"a": 40.0, "b": 50.0, "c": 70.0}
+
+    def capital(elements):
+        if "x" in elements:
+            return None
+        return {"low": 0.0, "high": sum(costs[e] for e in elements), "currency": "AUD"}
+
+    goals = [
+        {"id": "money", "source": "council", "kind": "budget", "capital_limit": 90.0},
+        {"id": "park", "source": "council", "kind": "impact", "max_parking_spaces": 5},
+    ]
+    built = build_option_sets(
+        PICKS, ["a", "b", "c"], evaluator(), PEOPLE, parking_by_element, goals, capital
+    )
+    by_option = {
+        row["id"]: {g["id"]: g["status"] for g in row["goals"]} for row in built["options"]
+    }
+    assert by_option["first_stage"] == {"money": "met", "park": "unmet"}
+    assert by_option["parking_retention"] == {"money": "met", "park": "met"}
+    assert by_option["broader_network"] == {"money": "unmet", "park": "unmet"}
+    unknown = build_option_sets(
+        PICKS, ["a", "b", "c"], evaluator(), PEOPLE, parking_by_element, goals, lambda e: None
+    )
+    reasons = {row["id"]: row["goals"][0]["reason"] for row in unknown["options"]}
+    assert set(reasons.values()) == {"cost_unknown"}
