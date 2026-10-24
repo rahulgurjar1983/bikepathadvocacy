@@ -1,0 +1,58 @@
+{
+  "comparison": {
+    "options": [
+      {
+        "element_ids": [],
+        "id": "baseline",
+        "identical_to": null,
+        "kind": "baseline",
+        "parking_spaces": 0,
+        "people": 0.0,
+        "trip_count": 0
+      },
+      {
+        "element_ids": [
+          "segment:2109a8d012067932",
+          "segment:3ab16f8b7e28fc79",
+          "segment:3ff9c0ffe1216727",
+          "segment:58076fe9c86fdcc2",
+          "segment:c63d01b9bba15a9c"
+        ],
+        "id": "broader_network",
+        "identical_to": null,
+        "kind": "broader_network",
+        "parking_spaces": 110,
+        "people": 0.0,
+        "trip_count": 0
+      }
+    ],
+    "unbuilt": {
+      "broader_network": "No complete trip forms from the picks",
+      "first_stage": "No complete trip forms from the picks",
+      "parking_retention": "No complete trip forms from the picks"
+    }
+  },
+  "options": [],
+  "stage_plan": {
+    "problems": [],
+    "stages": [
+      {
+        "depends_on": [],
+        "elements": [
+          "segment:2109a8d012067932",
+          "segment:3ab16f8b7e28fc79",
+          "segment:3ff9c0ffe1216727",
+          "segment:58076fe9c86fdcc2",
+          "segment:c63d01b9bba15a9c"
+        ],
+        "gained_trips": [],
+        "id": "0e9a385575eb90fe",
+        "later_work": [],
+        "people_gained": 0.0,
+        "purpose": "enabling",
+        "standalone_access_claim": false
+      }
+    ],
+    "valid": true
+  }
+}

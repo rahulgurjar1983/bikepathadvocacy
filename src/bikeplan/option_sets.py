@@ -212,13 +212,11 @@ def build_option_sets(picks, broader, evaluate, people, parking, goals):
     kept = []
     for item in options:
         row = rows[item["id"]]
-        if not row["trip_count"]:
-            comparison["unbuilt"][item["kind"]] = "No complete trip forms from these works"
-            continue
-        kept.append(row)
+        if row["trip_count"]:
+            kept.append(row)
     for kind in KINDS:
         if not any(row["kind"] == kind for row in kept):
-            comparison["unbuilt"].setdefault(kind, "No complete trip forms from the picks")
+            comparison["unbuilt"][kind] = "No complete trip forms from the picks"
     labelled = label_packages(kept, goals)
     for row in labelled:
         row["goals"] = goal_results(goals, row["element_ids"], evaluate(set(row["element_ids"])))
