@@ -59,7 +59,7 @@ def test_fr16_9_page_lists_each_option_with_label_goal_result_and_twin():
     assert "candidate" in text
     assert "no complete trip" in text
     assert 'data-goal-status="unmet"' in text and 'data-goal-status="met"' in text
-    assert "same works as" in text
+    assert "Same works as" in text
     assert "No complete trip forms from the picks" in text
     assert 'href="#F70"' in text and 'href="#F72"' in text and 'href="#F73"' in text
 
