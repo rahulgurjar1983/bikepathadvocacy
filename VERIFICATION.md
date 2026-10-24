@@ -2712,3 +2712,13 @@ uv run --frozen pytest tests/test_option_sets.py tests/test_proposal_inputs.py -
 
 Expect: 18 passed, including the budget, currency and impact cases.
 Artifact: `artifacts/C1.7/propose-fixture-options.json`
+
+Part 4: the report page shows each built option with its label, goal results and twin works, and every kind that could not be built, with figures F87 and up for the counts. The report frontier keeps `option_sets`. It is shown on the test grid, where no complete trip forms; it is not a Bayside run.
+
+```bash
+uv run --frozen pytest tests/test_option_page.py -q
+uv run --frozen python -I artifacts/C1.7/collect_page.py artifacts/C1.7/option-section.html
+```
+
+Expect: 4 passed; the section lists the three unbuilt kinds with a reason.
+Artifact: `artifacts/C1.7/option-section.html`
