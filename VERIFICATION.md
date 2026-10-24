@@ -2693,3 +2693,13 @@ uv run --frozen python -I artifacts/C1.7/collect.py
 
 Expect: 11 passed; the second command prints stages in the order one, three, two with stage three recomputed alone, the two same-works options joined to the first, and one unmet goal.
 Artifact: `artifacts/C1.7/fixture-options.json`
+
+Part 2: `bikeplan propose` saves `option_sets` in `frontier.json`: stage plan with non-prefix closures, baseline, first stage, parking-retention and broader options, and goals from the proposal inputs. It is shown on a test snapshot only, where no complete trip forms, so each kind says why it is unbuilt. It is not a Bayside run.
+
+```bash
+uv run --frozen pytest tests/test_option_sets.py tests/test_propose_command.py -q -k fr16_9
+uv run --frozen python -I artifacts/C1.7/collect_run.py artifacts/C1.7/propose-fixture-options.json
+```
+
+Expect: 15 passed; the file lists the baseline and one broader option row, and a reason for each unbuilt kind.
+Artifact: `artifacts/C1.7/propose-fixture-options.json`

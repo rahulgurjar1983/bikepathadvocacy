@@ -1670,3 +1670,5 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - Release v2026.10.23-pr290 shows every W1.9 measure met on the real Bayside page, with both pictures attached. Artifact: `artifacts/W1.9/release-proof.txt`. The row is closed.
 
 - C1.7: `option_sets.py` takes an `evaluate(element_set)` callback (wrap `complete_trips`); stage closures are recomputed, never prefixes.
+
+- C1.7 part 2: `shortlist_option_sets` in `propose.py` evaluates on the solved graph; broader network is the shipped-scale curve's last package. Run `artifacts/C1.7/collect_run.py` with `-I`; it fakes a `tests` package because an installed `tests` package shadows ours.
