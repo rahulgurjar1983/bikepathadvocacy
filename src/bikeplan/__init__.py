@@ -97,6 +97,8 @@ def build_parser() -> argparse.ArgumentParser:
             leaf.add_argument(
                 "--full", action="store_true", help="Also recompute the community results"
             )
+            leaf.add_argument("--region", help="Region file, to recompute from inputs")
+            leaf.add_argument("--snapshot", help="Snapshot folder, to recompute from inputs")
     stress = commands.add_parser("stress", help=STRESS_HELP, description=STRESS_HELP)
     stress.add_argument("region", help="Region file")
     stress.add_argument("--snapshot", required=True, help="Snapshot folder")
@@ -350,13 +352,20 @@ def run(path: str, snapshot: str, out: str, proposal_inputs=None) -> int:
     return 0
 
 
-def verify(directory: str, full: bool = False) -> int:
+def verify(
+    directory: str, full: bool = False, region: str | None = None, snapshot: str | None = None
+) -> int:
+    if (region is None) != (snapshot is None) or (region and not full):
+        print("fail inputs: --region and --snapshot go together with --full", file=sys.stderr)
+        return 1
     try:
-        results = verify_outputs(directory, full)
+        results = verify_outputs(directory, full, region, snapshot)
     except (OSError, ValueError, KeyError) as error:
         print(f"fail inputs: {error!r}", file=sys.stderr)
         return 1
     failed = 0
+    if full and region is None:
+        print("structural only: no region and snapshot, so nothing was recomputed")
     for name, problems in results:
         if problems:
             failed += 1
@@ -494,7 +503,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "run":
         return run(args.region, args.snapshot, args.out, args.proposal_inputs)
     if args.command == "verify":
-        return verify(args.directory, args.full)
+        return verify(args.directory, args.full, args.region, args.snapshot)
     if args.command == "report":
         return report(args.region, args.snapshot, args.out, args.proposal_inputs)
     if args.command == "review":
