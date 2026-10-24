@@ -182,6 +182,20 @@ def place_rows(marks: list, steps: list, rec: int) -> list:
     return rows
 
 
+def stage_opens(marks: list, steps: list) -> dict:
+    if not all("partners" in step["totals"] for step in steps):
+        return {}
+    opens = {}
+    for number in range(1, len(steps)):
+        before, after = steps[number - 1]["totals"]["partners"], steps[number]["totals"]["partners"]
+        opens[number] = [
+            position
+            for position, mark in enumerate(marks)
+            if before.get(mark.get("id"), []) != after.get(mark.get("id"), [])
+        ]
+    return opens
+
+
 def report_data(
     options,
     choice,
@@ -209,6 +223,8 @@ def report_data(
         if line["work"] is not None:
             ends.setdefault(line["work"], []).extend(line["line"])
     places = {index: centre(points) for index, points in ends.items()}
+    opens = stage_opens(marks, steps)
+    others = [item for item in options if item["id"] != choice["pick"]]
     lines = []
     for line in pick["lines"]:
         index = line["work"]
@@ -232,6 +248,12 @@ def report_data(
             "slow": item["speed_km"],
             "stage": 1 if owner_step.get(index, len(steps)) <= rec else 2,
             "at": places.get(index),
+            "opens": opens.get(owner_step.get(index), []),
+            "alt": [
+                number
+                for number, other in enumerate(others)
+                if any(found["street"] == item["street"] for found in other["works"])
+            ],
         }
         for index, item in enumerate(pick["works"])
         if not item.get("spot")
@@ -268,6 +290,7 @@ def report_data(
         },
         "lines": lines,
         "works": works,
+        "others": [item["name"] for item in others],
         "spots": spot_list(pick, places),
         "places": place_rows(marks, steps, rec),
         "stages": {
