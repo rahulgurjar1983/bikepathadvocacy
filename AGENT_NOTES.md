@@ -1668,3 +1668,5 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 ### W1.9 part 7
 
 - Release v2026.10.23-pr290 shows every W1.9 measure met on the real Bayside page, with both pictures attached. Artifact: `artifacts/W1.9/release-proof.txt`. The row is closed.
+
+- C1.7: `option_sets.py` takes an `evaluate(element_set)` callback (wrap `complete_trips`); stage closures are recomputed, never prefixes.

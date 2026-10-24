@@ -1,0 +1,125 @@
+{
+  "goals": [
+    {
+      "id": "g-site",
+      "reason": "no_complete_trip",
+      "status": "unmet"
+    }
+  ],
+  "options": {
+    "options": [
+      {
+        "element_ids": [],
+        "id": "baseline",
+        "identical_to": null,
+        "kind": "baseline",
+        "parking_spaces": 0,
+        "people": 0.0,
+        "trip_count": 0
+      },
+      {
+        "element_ids": [
+          "a",
+          "b"
+        ],
+        "id": "first",
+        "identical_to": null,
+        "kind": "first_stage",
+        "parking_spaces": 15,
+        "people": 100.0,
+        "trip_count": 1
+      },
+      {
+        "element_ids": [
+          "a",
+          "b"
+        ],
+        "id": "keep",
+        "identical_to": "first",
+        "kind": "parking_retention",
+        "parking_spaces": 15,
+        "people": 100.0,
+        "trip_count": 1
+      },
+      {
+        "element_ids": [
+          "a",
+          "b",
+          "c"
+        ],
+        "id": "broad",
+        "identical_to": null,
+        "kind": "broader_network",
+        "parking_spaces": 17,
+        "people": 150.0,
+        "trip_count": 2
+      }
+    ],
+    "unbuilt": {
+      "parking_retention": "Same works as first; no distinct option"
+    }
+  },
+  "stages": {
+    "problems": [],
+    "stages": [
+      {
+        "depends_on": [],
+        "elements": [
+          "a"
+        ],
+        "gained_trips": [],
+        "id": "one",
+        "later_work": [
+          "b",
+          "c"
+        ],
+        "people_gained": 0.0,
+        "purpose": "enabling",
+        "standalone_access_claim": false
+      },
+      {
+        "depends_on": [],
+        "elements": [
+          "c"
+        ],
+        "gained_trips": [
+          {
+            "destination": "site-12",
+            "origin": 10
+          }
+        ],
+        "id": "three",
+        "later_work": [
+          "a",
+          "b"
+        ],
+        "people_gained": 50.0,
+        "purpose": "route",
+        "standalone_access_claim": true
+      },
+      {
+        "depends_on": [
+          "one"
+        ],
+        "elements": [
+          "a",
+          "b"
+        ],
+        "gained_trips": [
+          {
+            "destination": "site-3",
+            "origin": 0
+          }
+        ],
+        "id": "two",
+        "later_work": [
+          "c"
+        ],
+        "people_gained": 100.0,
+        "purpose": "route",
+        "standalone_access_claim": true
+      }
+    ],
+    "valid": true
+  }
+}

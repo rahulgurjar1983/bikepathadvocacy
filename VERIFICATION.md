@@ -2681,3 +2681,15 @@ grep -c "axe violations with a street card open: 0 of at most 0, met" /tmp/w19re
 
 Expect: 1 line; the real Bayside page has 0 serious or critical axe violations at load, with a place card and with a street card open, 0 Tab misses and 4,133,342 bytes of at most 16,777,216, and `checks.html` says 0 fail. The release holds `au-nsw-bayside-phone.png` and `au-nsw-bayside-desktop.png`.
 Artifact: `artifacts/W1.9/release-proof.txt`
+
+### C1.7
+
+Part 1 only: stage plans, option comparison and goal results on a hand-counted fixture. It is not wired into a proposal, report or Bayside run.
+
+```bash
+uv run --frozen pytest tests/test_option_sets.py -q
+uv run --frozen python -I artifacts/C1.7/collect.py
+```
+
+Expect: 11 passed; the second command prints stages in the order one, three, two with stage three recomputed alone, the two same-works options joined to the first, and one unmet goal.
+Artifact: `artifacts/C1.7/fixture-options.json`
