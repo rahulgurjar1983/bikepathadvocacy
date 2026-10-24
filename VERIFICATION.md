@@ -2672,7 +2672,7 @@ uv run --frozen pytest tests/test_w1_14_inner_west.py -q
 Expect: 3 passed. The row closes when a release from main uploads with every check met on Bayside and Inner West.
 Artifact: `artifacts/W1.14/inner-west.txt`
 
-### W1.9 release proof
+### W1.9
 
 ```sh
 gh release download v2026.10.23-pr290 -p checks.html -D /tmp/w19rel
