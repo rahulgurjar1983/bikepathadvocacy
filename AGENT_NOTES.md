@@ -1672,3 +1672,5 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - C1.7: `option_sets.py` takes an `evaluate(element_set)` callback (wrap `complete_trips`); stage closures are recomputed, never prefixes.
 
 - C1.7 part 2: `shortlist_option_sets` in `propose.py` evaluates on the solved graph; broader network is the shipped-scale curve's last package. Run `artifacts/C1.7/collect_run.py` with `-I`; it fakes a `tests` package because an installed `tests` package shadows ours.
+
+- C1.7 part 4: `option_page.py` reads `frontier["option_sets"]`; `frontier_data` in `change.py` must copy it or the run drops it. Figures are two counts then two per option, so the id range grows with options.
