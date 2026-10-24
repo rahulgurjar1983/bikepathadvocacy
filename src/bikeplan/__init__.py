@@ -118,11 +118,15 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--snapshot", required=True, help="Snapshot folder")
     run.add_argument("--out", required=True, help="Output directory")
     run.add_argument("--proposal-inputs", help="Public sourced proposal metadata file")
+    run.add_argument("--cache-dir", help="Folder for the reusable graph")
+    run.add_argument("--log", help="File for the time, memory and cache record")
     report = commands.add_parser("report", help=REPORT_HELP, description=REPORT_HELP)
     report.add_argument("region", help="Region file")
     report.add_argument("--snapshot", required=True, help="Snapshot folder")
     report.add_argument("--out", required=True, help="Output directory")
     report.add_argument("--proposal-inputs", help="Public sourced proposal metadata file")
+    report.add_argument("--cache-dir", help="Folder for the reusable graph")
+    report.add_argument("--log", help="File for the time, memory and cache record")
     review = commands.add_parser("review", help=REVIEW_HELP, description=REVIEW_HELP)
     review.add_argument("route", help="Route file")
     review.add_argument("--claims", required=True, help="Claims file")
@@ -339,10 +343,12 @@ def propose(path: str, snapshot: str, out: str, proposal_inputs=None) -> int:
     return 0
 
 
-def run(path: str, snapshot: str, out: str, proposal_inputs=None) -> int:
+def run(path: str, snapshot: str, out: str, proposal_inputs=None, cache=None, log=None) -> int:
     try:
         region = load_region(path)
-        summary = run_all(region, load_profile(region.profile), snapshot, out, proposal_inputs)
+        summary = run_all(
+            region, load_profile(region.profile), snapshot, out, proposal_inputs, cache, log
+        )
     except (ConfigError, OSError) as error:
         print(error, file=sys.stderr)
         return 1
@@ -375,11 +381,11 @@ def verify(
     return 1 if failed else 0
 
 
-def report(path: str, snapshot: str, out: str, proposal_inputs=None) -> int:
+def report(path: str, snapshot: str, out: str, proposal_inputs=None, cache=None, log=None) -> int:
     try:
         region = load_region(path)
         profile = load_profile(region.profile)
-        figures = write_report(region, profile, snapshot, out, proposal_inputs)
+        figures = write_report(region, profile, snapshot, out, proposal_inputs, cache, log)
     except (ConfigError, OSError) as error:
         print(error, file=sys.stderr)
         return 1
@@ -501,11 +507,15 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "propose":
         return propose(args.region, args.snapshot, args.out, args.proposal_inputs)
     if args.command == "run":
-        return run(args.region, args.snapshot, args.out, args.proposal_inputs)
+        return run(
+            args.region, args.snapshot, args.out, args.proposal_inputs, args.cache_dir, args.log
+        )
     if args.command == "verify":
         return verify(args.directory, args.full, args.region, args.snapshot)
     if args.command == "report":
-        return report(args.region, args.snapshot, args.out, args.proposal_inputs)
+        return report(
+            args.region, args.snapshot, args.out, args.proposal_inputs, args.cache_dir, args.log
+        )
     if args.command == "review":
         return review(args.route, args.claims, args.region, args.snapshot, args.out, args.reply)
     if args.command == "shots":

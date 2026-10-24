@@ -3,11 +3,13 @@ import hashlib
 import io
 import json
 import tempfile
+import time
 from importlib.metadata import version
 from pathlib import Path
 
 from bikeplan.access import write_access
 from bikeplan.backdrop import backdrop_layers
+from bikeplan.cache import cached_build, graph_key, write_log
 from bikeplan.change import (
     change_figures,
     frontier_data,
@@ -225,14 +227,19 @@ MAP_SUMS = "MAP-SHA256SUMS"
 
 
 def build_all(
-    region, profile, snapshot: str | Path, proposal_inputs=None
+    region, profile, snapshot: str | Path, proposal_inputs=None, cache=None, used=None
 ) -> tuple[dict, dict, dict, list[dict]]:
     metadata = load_proposal_inputs(proposal_inputs)
     _, failed = verify_snapshot(snapshot)
     if failed:
         raise SnapshotError("; ".join(failed))
     manifest = read_json(Path(snapshot) / "manifest.json")
-    graph = build(snapshot, region, profile)
+    if cache is None:
+        graph = build(snapshot, region, profile)
+    else:
+        graph, state = cached_build(cache, snapshot, region, profile)
+        if used is not None:
+            used.update(cache=state, key="graph-" + graph_key(snapshot, region, profile))
     weights = {name: item.weight for name, item in region.destinations.items()}
     scores = score_edges(graph, profile)
     features, stress = network_features(graph, profile, region.proposals.disruption_weights, scores)
@@ -431,6 +438,10 @@ def build_all(
     return summary, outputs, files, figures
 
 
+def record(used: dict) -> tuple:
+    return used.get("cache", "none"), used.get("key", "")
+
+
 def write_files(target: Path, contents: dict) -> list[str]:
     target.mkdir(parents=True, exist_ok=True)
     lines = []
@@ -440,20 +451,38 @@ def write_files(target: Path, contents: dict) -> list[str]:
     return lines
 
 
-def run_all(region, profile, snapshot: str | Path, out: str | Path, proposal_inputs=None) -> dict:
-    summary, outputs, _, _ = build_all(region, profile, snapshot, proposal_inputs)
+def run_all(
+    region,
+    profile,
+    snapshot: str | Path,
+    out: str | Path,
+    proposal_inputs=None,
+    cache=None,
+    log=None,
+) -> dict:
+    started, cpu, used = time.monotonic(), time.process_time(), {}
+    summary, outputs, _, _ = build_all(region, profile, snapshot, proposal_inputs, cache, used)
     check_leaks(outputs["report.html"].decode(), out, snapshot)
     lines = write_files(Path(out), outputs)
     (Path(out) / "outputs.sha256").write_text("".join(lines))
+    if log is not None:
+        write_log(log, started, cpu, *record(used))
     return summary
 
 
 def write_report(
-    region, profile, snapshot: str | Path, out: str | Path, proposal_inputs=None
+    region,
+    profile,
+    snapshot: str | Path,
+    out: str | Path,
+    proposal_inputs=None,
+    cache=None,
+    log=None,
 ) -> list[dict]:
     if region.report.author is None:
         raise ConfigError("report.author is missing: the report needs the name and suburb")
-    _, outputs, files, figures = build_all(region, profile, snapshot, proposal_inputs)
+    started, cpu, used = time.monotonic(), time.process_time(), {}
+    _, outputs, files, figures = build_all(region, profile, snapshot, proposal_inputs, cache, used)
     check_leaks(outputs["report.html"].decode(), out, snapshot)
     check_leaks(files["map.html"].decode(), out, snapshot)
     layers = {name: blob for name, blob in files.items() if name.startswith(f"{LAYER_FOLDER}/")}
@@ -466,4 +495,6 @@ def write_report(
     if layers:
         inner = write_files(folder, {name.split("/", 1)[1]: blob for name, blob in layers.items()})
         (folder / "SHA256SUMS").write_text("".join(inner))
+    if log is not None:
+        write_log(log, started, cpu, *record(used))
     return figures
