@@ -77,6 +77,15 @@ OUTPUT_CHECKS = {
     "FR-13.10": (no_local_paths, "holds no local path"),
     "FR-13.13": (small_enough, "is at most 8 MB"),
 }
+UNPROVED_PARTS = {
+    "FR-13.10": [
+        "the same bytes on a second build: the check finds no host path but does not rebuild"
+    ],
+    "FR-15.8": [
+        "the stop and scores recomputed from the region and snapshot: the release does not "
+        "yet run verify --full --region --snapshot on each report folder"
+    ],
+}
 REPORT_CHECKS = {
     "FR-17.11": (no_survey, "holds no survey text, plan, ask or layer"),
 }
@@ -592,6 +601,7 @@ def status_of(
     output: list[str] | None = None,
     has_check: bool = False,
     measured: bool = False,
+    unproved=(),
 ) -> str:
     if found is None and measured:
         return "fails" if output else "met"
@@ -599,7 +609,7 @@ def status_of(
         return "not built yet"
     if found["failed"] or output:
         return "fails"
-    return "met" if has_check else "tested only"
+    return "met" if has_check and not unproved else "tested only"
 
 
 def code(text: str) -> str:
@@ -691,7 +701,8 @@ def entry(
     spec_id, requirement, plan, found, figures, section, output, release_files, measured=()
 ) -> str:
     check = checker(spec_id)
-    status = status_of(found, output, check is not None, bool(measured))
+    unproved = UNPROVED_PARTS.get(spec_id, ())
+    status = status_of(found, output, check is not None, bool(measured), unproved)
     if found is None and measured:
         result = "Measured: " + "; ".join(measured) + "."
     elif found is None:
@@ -702,6 +713,8 @@ def entry(
             result += " Output check: " + ("; ".join(output) if output else "passed.")
         if measured:
             result += " Measured: " + "; ".join(measured) + "."
+        if unproved:
+            result += " Not yet proved by the outputs of this release: " + "; ".join(unproved) + "."
     command = f'uv run pytest -k "{prefix_of(spec_id)}" -q'
     expected = plan or "Every test named for this requirement passes."
     return (
@@ -735,6 +748,7 @@ def build_page(root: Path, junit: Path, release: Path):
             outputs.get(spec_id),
             checker(spec_id) is not None,
             bool(measured.get(spec_id)),
+            UNPROVED_PARTS.get(spec_id, ()),
         )
         for spec_id in ids
     }
