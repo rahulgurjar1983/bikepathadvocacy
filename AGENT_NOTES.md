@@ -1680,3 +1680,5 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 ## C1.8 tips
 
 The street card lives in `showStreet`, `showWork` and `workCard` in `report_template.html`. A work is found by `#find-work-N`, where N is its index plus one. Stash only `src` when you amend tests: `git stash -q -- src`.
+
+- C1.8 part 2: print CSS lives twice, in `report_template.html` and the `EXTRA_CSS` string in `report_page.py`; both must keep `#result` visible, so hide `#find .wrap>:not(#result)`, never `#find`. Test print with CDP `Emulation.setEmulatedMedia`.

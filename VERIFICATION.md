@@ -2747,5 +2747,5 @@ Artifact: `artifacts/C1.7/bayside-options.json`
 uv run pytest tests/test_street_plan.py tests/test_find_place.py -q
 ```
 
-Expect: every test passes. A street card, or a work found by its ID such as "Work 4", shows the selected package and stage, a map button, a list link, the unmeasured building effects, each survey gap, the cost and the next decision. Part 1 of the row; print of the card, the named-street route and destination text and alternatives are still open.
+Expect: every test passes. A street card, or a work found by its ID such as "Work 4", shows the selected package and stage, a map button, a list link, the unmeasured building effects, each survey gap, the cost and the next decision. Part 2 adds both end points, the lasting change set apart from temporary works, the building-effects mitigation gap, and print of the open card (buttons hidden). Still open: route completed, destinations, alternatives and the byte measure.
 Artifact: `artifacts/C1.8/street-plan-tests.txt`
