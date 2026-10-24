@@ -30,6 +30,7 @@ from bikeplan.fit import FIXES, fixed_edge, junction_fixes, segment_fit
 from bikeplan.fit import cross_section as fit_cross_section
 from bikeplan.neighbourhoods import area_inputs, package_areas
 from bikeplan.network import bike_segments
+from bikeplan.option_sets import build_option_sets
 from bikeplan.proposal_inputs import attach_metadata, enrich_projects, load_proposal_inputs
 from bikeplan.schools import site_coverage, snapshot_school_inputs
 from bikeplan.stress import edge_aaa, own_lts, raise_for_crossings, score_edges
@@ -1254,6 +1255,40 @@ def survey_layer(planning: Planning) -> dict:
     return {"type": "FeatureCollection", "features": features}
 
 
+def shortlist_option_sets(graph, region, people, trip_inputs, picked, shipped, metadata):
+    destinations, links, movements = trip_inputs
+    catalog = shipped["works_catalog"]
+
+    def evaluate(selected):
+        return complete_trips(
+            graph,
+            people,
+            destinations,
+            links,
+            movements,
+            set(selected),
+            region.access.reach_m,
+            region.access.detour_max,
+            region.access.last_leg_m,
+        )
+
+    def parking(selected):
+        return sum(
+            catalog[name]["parking_spaces"]["removed"] or 0 for name in selected if name in catalog
+        )
+
+    broader = shipped["trip_packages"][-1]["element_ids"] if shipped["trip_packages"] else []
+    goals = (metadata["contents"] or {}).get("goals", [])
+    return build_option_sets(
+        [{"id": pick["id"], "elements": pick["elements"]} for pick in picked],
+        broader,
+        evaluate,
+        people,
+        parking,
+        goals,
+    )
+
+
 def write_propose(
     graph,
     region,
@@ -1422,5 +1457,9 @@ def write_propose(
         },
     }
     attach_metadata(frontier, metadata)
+    shipped = next(curve for curve in curves if curve["id"] == "shipped")
+    frontier["option_sets"] = shortlist_option_sets(
+        graph, region, resident.people, trip_inputs, picked, shipped, metadata
+    )
     (out / "frontier.json").write_text(json.dumps(frontier, indent=2) + "\n")
     return records
