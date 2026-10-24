@@ -75,7 +75,7 @@ The approved order is proposal and trade-offs, network map, options, neighbourho
 
 ## Later data and run work
 
-- [ ] **Q1.11** [reasoning] Reuse immutable graph and access work with versioned cache keys; cold and warm output bytes match; fast and full modes have labels (FR-15.16). Build times on release runners: Bayside 1,833 s (run 40016043603) then 2,329 s (run 40031384232); Inner West 3,527 s and 9.6 GB peak, then past the limit. Bring each council build under 45 minutes.
+- [~] **Q1.11** [reasoning] Reuse immutable graph and access work with versioned cache keys; cold and warm output bytes match; fast and full modes have labels (FR-15.16). Build times on release runners: Bayside 1,833 s (run 40016043603) then 2,329 s (run 40031384232); Inner West 3,527 s and 9.6 GB peak, then past the limit. Bring each council build under 45 minutes.
 
 ## Phase S: Scaffold (operator)
 

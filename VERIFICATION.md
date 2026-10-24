@@ -2781,3 +2781,15 @@ uv run pytest tests/test_checks_parts.py -v
 
 Expect: both cases pass. A requirement listed in `UNPROVED_PARTS` shows `tested only` on the checks page and names each part the release outputs do not yet prove; FR-13.10 and FR-15.8 are listed.
 Artifact: `artifacts/Q1.9/parts.txt`
+
+### Q1.11
+
+```bash
+uv run pytest tests/test_cache.py -v
+uv run bikeplan report regions/au-nsw-burwood.yaml --snapshot data/cache/au-nsw-burwood/2026-10-01 --out /tmp/c-cold --cache-dir /tmp/q111cache --log artifacts/Q1.11/burwood-cold.json
+uv run bikeplan report regions/au-nsw-burwood.yaml --snapshot data/cache/au-nsw-burwood/2026-10-01 --out /tmp/c-warm --cache-dir /tmp/q111cache --log artifacts/Q1.11/burwood-warm.json
+diff -r /tmp/c-cold /tmp/c-warm
+```
+
+Expect: five tests pass. The diff prints nothing. Each log names `mode` full, `cache` cold or warm, wall time, CPU, peak memory, runner and key. Burwood took 396.9 s cold and 247.4 s warm; the same build took 1,376 s before this row.
+Artifact: `artifacts/Q1.11/burwood-cold.json`
