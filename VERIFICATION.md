@@ -2747,8 +2747,9 @@ Artifact: `artifacts/C1.7/bayside-options.json`
 uv run pytest tests/test_street_plan.py tests/test_find_place.py -q
 ```
 
-Expect: every test passes. A street card, or a work found by its ID such as "Work 4", shows the selected package and stage, a map button, a list link, the unmeasured building effects, each survey gap, the cost and the next decision. Part 2 adds both end points, the lasting change set apart from temporary works, the building-effects mitigation gap, and print of the open card (buttons hidden). Part 3 adds the route the stage completes with its destinations, each alternative option for the street, and the byte measure on the test page (`artifacts/C1.8/bytes.txt`: 227,386 of 8,388,608 bytes). Still open: the byte measure on a real Bayside release page.
-Artifact: `artifacts/C1.8/street-plan-tests.txt`
+Expect: every test passes. A street card, or a work found by its ID such as "Work 4", shows the selected package and stage, a map button, a list link, the unmeasured building effects, each survey gap, the cost and the next decision. Part 2 adds both end points, the lasting change set apart from temporary works, the building-effects mitigation gap, and print of the open card (buttons hidden). Part 3 adds the route the stage completes with its destinations, each alternative option for the street, and the byte measure on the test page (`artifacts/C1.8/bytes.txt`: 227,386 of 8,388,608 bytes). Part 4 measures the real release pages: Bayside 4,168,793 and Inner West 4,723,796 of 8,388,608 bytes, with the street search script inline.
+Measure: `gh release download v2026.10.24-pr305 -p '*-report.html' -D /tmp/rel && wc -c /tmp/rel/*-report.html`
+Artifact: `artifacts/C1.8/release-bytes.txt`, `artifacts/C1.8/street-plan-tests.txt`
 
 ### C1.9
 
