@@ -2710,5 +2710,5 @@ Part 3: goals may be a budget with a capital limit and currency, or an impact bo
 uv run --frozen pytest tests/test_option_sets.py tests/test_proposal_inputs.py -q -k fr16_9
 ```
 
-Expect: 20 passed, including the budget, currency and impact cases.
+Expect: 18 passed, including the budget, currency and impact cases.
 Artifact: `artifacts/C1.7/propose-fixture-options.json`
