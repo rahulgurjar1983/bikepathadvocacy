@@ -2740,3 +2740,12 @@ uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/a
 
 Expect: the run takes about 58 minutes and 6.9 GB. `frontier.json` holds `option_sets` with the baseline and a broader row identical to it, no stages, and a reason for the three unbuilt kinds: "No complete trip forms from the picks". No school entrance link is proved (see C1.2), so no complete trip forms. `report.html` carries `option-comparison`.
 Artifact: `artifacts/C1.7/bayside-options.json`
+
+### C1.8
+
+```bash
+uv run pytest tests/test_street_plan.py tests/test_find_place.py -q
+```
+
+Expect: every test passes. A street card, or a work found by its ID such as "Work 4", shows the selected package and stage, a map button, a list link, the unmeasured building effects, each survey gap, the cost and the next decision. Part 1 of the row; print of the card, the named-street route and destination text and alternatives are still open.
+Artifact: `artifacts/C1.8/street-plan-tests.txt`
