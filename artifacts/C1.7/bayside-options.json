@@ -1,0 +1,42 @@
+{
+  "option_sets": {
+    "comparison": {
+      "options": [
+        {
+          "element_ids": [],
+          "id": "baseline",
+          "identical_to": null,
+          "kind": "baseline",
+          "parking_spaces": 0,
+          "people": 0.0,
+          "trip_count": 0
+        },
+        {
+          "element_ids": [],
+          "id": "broader_network",
+          "identical_to": "baseline",
+          "kind": "broader_network",
+          "parking_spaces": 0,
+          "people": 0.0,
+          "trip_count": 0
+        }
+      ],
+      "unbuilt": {
+        "broader_network": "No complete trip forms from the picks",
+        "first_stage": "No complete trip forms from the picks",
+        "parking_retention": "No complete trip forms from the picks"
+      }
+    },
+    "options": [],
+    "stage_plan": {
+      "problems": [],
+      "stages": [],
+      "valid": true
+    }
+  },
+  "peak_rss_kb": 6856436,
+  "report_has_option_comparison": true,
+  "row": "C1.7",
+  "snapshot": "2026-10-22",
+  "wall": "57:38"
+}
