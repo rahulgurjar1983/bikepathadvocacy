@@ -2669,5 +2669,5 @@ The FR-19.6 check applies only to a region whose run lists corridor segments. Th
 uv run --frozen pytest tests/test_w1_14_inner_west.py -q
 ```
 
-Expect: 4 passed. The row closes when a release from main uploads with every check met on Bayside and Inner West.
+Expect: 3 passed. The row closes when a release from main uploads with every check met on Bayside and Inner West.
 Artifact: `artifacts/W1.14/inner-west.txt`
