@@ -1,0 +1,5 @@
+command: bikeplan verify /tmp/q18b/report --full --region regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-22
+exit: 0
+ok hashes
+ok recompute
+wall: 46:21 (report build before it: 58:26), peak RSS 2377332 kB

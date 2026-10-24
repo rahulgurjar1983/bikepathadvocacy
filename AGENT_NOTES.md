@@ -1698,4 +1698,5 @@ The street card lives in `showStreet`, `showWork` and `workCard` in `report_temp
 ### Q1.8 notes
 
 - `recompute.py` reruns `write_access` and `write_propose` on the region and snapshot, then compares with the saved files. Saved `frontier.json` picks hold a baseline rank 0 that the fresh run lacks; drop it before comparing. Wrap `km_by_lts` in a dict before `canon`, or its parent key is lost.
-- Left under Q1.8: the release workflow (an input) must pass `--region` and `--snapshot` to `verify --full`, and no real Bayside recompute has run (it repeats the hour-long build).
+- Part 2: a `report` folder has no `projects.json`, so `verify` checks `SHA256SUMS` and recomputes only the frontier scenarios. A real Bayside run passed (build 58 min, verify 46 min).
+- Left under Q1.8: the release workflow and `scripts/release.sh` (inputs) must run `verify --full --region --snapshot` on each built report folder.
