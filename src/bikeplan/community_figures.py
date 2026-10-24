@@ -129,7 +129,7 @@ def community_figures(frontier, proposal, text, number):
 
 
 def delivery_figures(frontier, proposal, text, number):
-    curve, packages, identity = selected_package(frontier, proposal)
+    _, packages, identity = selected_package(frontier, proposal)
     package = packages[identity["rank"]]
     contents = frontier["proposal_metadata"]["contents"] or {}
     selected = set(package["element_ids"])
