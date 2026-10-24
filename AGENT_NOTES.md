@@ -1656,6 +1656,12 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - Part 3 added `bikeplan.neighbourhood_view` and wired it in `run.py` after the school section. Figures exist only when the package has areas, so the legacy figure ranges stay at 86 on the test grid. Left: a fresh Bayside run (about an hour) and full-check recipes under C1.9.
 - Part 4 replaced the JSON dump with plain sentences (no `<code>`, no survey word, work links shown as `junction work 1`; IDs stay in `data-work-id`). This removes the FR-17.11 and FR-20.19 causes named in W1.14 notes. Left: a fresh Bayside run and full-check recipes under C1.9.
 
+### C1.6 real-package block (2026-10-24)
+
+- Release v2026.10.23-pr290 (Bayside) has one package and its `works` list is empty, so every ward shows 0 m. FR-16.8 asks for benefits and impacts on the same real package, so the real case cannot be shown while the shipped settings pick no works.
+- Check: `gh release download v2026.10.23-pr290 -p au-nsw-bayside.tar.gz` then `python3 -I -c "import json;d=json.load(open('proposal.json'));print(len(d['packages']),[len(p['works']) for p in d['packages']])"`.
+- Ask: a row that makes the shipped Bayside run pick a package with works (spec 17 pick and FR-16.3), then C1.6 reruns its real proof. Code and fixtures for the rule are done and tested.
+
 ### W1.14 notes
 
 - FR-17.12 is met. Release run 40016043603 built Bayside and Inner West with the fixed count, but the upload still failed. `checks: fails: FR-17.11, FR-19.6, FR-20.19`.
