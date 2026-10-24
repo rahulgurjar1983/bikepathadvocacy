@@ -347,11 +347,11 @@ def build_all(
     )
     paths_text = json.dumps({"items": paths}, sort_keys=True) + "\n"
     figures += path_figures(paths, paths_text, int(figures[-1]["id"][1:]) + 1)
+    option_number = int(figures[-1]["id"][1:]) + 1
+    figures += compare_figures(frontier, frontier_bytes.decode(), option_number)
     school_number = int(figures[-1]["id"][1:]) + 1
     figures += school_figures(frontier, frontier_bytes.decode(), school_number)
     figures += neighbourhood_figures(proposal, proposal_bytes, school_number + 1)
-    option_number = int(figures[-1]["id"][1:]) + 1
-    figures += compare_figures(frontier, frontier_bytes.decode(), option_number)
     data = report_data(
         options,
         choice,
