@@ -154,3 +154,82 @@ def test_fr16_11_print_shows_the_street_card_with_its_package_and_hides_the_butt
         assert not driver.find_element(By.CSS_SELECTOR, "#result a.listlink").is_displayed()
     finally:
         driver.quit()
+
+
+def alternative_pick():
+    from tests.test_report_page import pick
+
+    other = pick()
+    other["id"] = "direct"
+    other["name"] = "Direct roads"
+    other["works"] = [
+        work("Ash Street", "quietway", 1.0, 0),
+        work("Cedar Lane", "quietway", 1.0, 0),
+    ]
+    return other
+
+
+@pytest.fixture(scope="module")
+def alternatives_page(tmp_path_factory):
+    found, number = plan_pick()
+    path = tmp_path_factory.mktemp("alts") / "report.html"
+    path.write_text(page_for(data_for(options=[found, alternative_pick()], marks=PLACES)))
+    return path, number
+
+
+def test_fr16_11_each_work_records_the_places_its_stage_joins_and_the_options_that_share_its_street(
+    alternatives_page,
+):
+    found, _ = plan_pick()
+    data = data_for(options=[found, alternative_pick()], marks=PLACES)
+    assert data["others"] == ["Direct roads"]
+    by_street = {item["i"]: item for item in data["works"]}
+    assert by_street[0]["opens"] == [0, 1]
+    assert by_street[0]["alt"] == [0]
+    assert by_street[4]["opens"] == []
+    assert by_street[4]["alt"] == []
+
+
+def test_fr16_11_the_card_names_the_route_the_stage_completes_and_its_destinations(
+    alternatives_page,
+):
+    path, number = alternatives_page
+    driver = open_hash(path, "#find-work-1")
+    try:
+        text = street_cards(driver)[0].text
+        assert "Route completed: joins Oak School and Elm Station" in text
+    finally:
+        driver.quit()
+    driver = open_hash(path, f"#find-work-{number}")
+    try:
+        text = street_cards(driver)[0].text
+        assert "Not recorded: places this work joins" in text
+    finally:
+        driver.quit()
+
+
+def test_fr16_11_the_card_states_each_alternative_option_for_the_street(alternatives_page):
+    path, number = alternatives_page
+    driver = open_hash(path, "#find-work-1")
+    try:
+        assert "Alternative Direct roads: also builds on this street" in (
+            street_cards(driver)[0].text
+        )
+    finally:
+        driver.quit()
+    driver = open_hash(path, f"#find-work-{number}")
+    try:
+        assert "Alternative Direct roads: does not build on this street" in (
+            street_cards(driver)[0].text
+        )
+    finally:
+        driver.quit()
+
+
+def test_fr16_11_the_card_says_when_no_alternative_was_built(plan_page):
+    path, number = plan_page
+    driver = open_hash(path, f"#find-work-{number}")
+    try:
+        assert "Alternatives: none built for this report" in street_cards(driver)[0].text
+    finally:
+        driver.quit()
