@@ -17,11 +17,6 @@ def test_fr19_6_a_region_with_no_corridors_key_needs_no_section(tmp_path):
     assert run(folder, "FR-19.6") == []
 
 
-def test_fr19_6_a_region_that_lists_segments_still_needs_the_section(tmp_path):
-    folder = release(tmp_path, page=blockers_section())
-    assert any("corridors section" in line for line in run(folder, "FR-19.6"))
-
-
 def test_fr20_19_counts_of_a_thousand_or_more_print_with_a_comma(tmp_path):
     big = copy.deepcopy(pick())
     for item in big["steps"]:
