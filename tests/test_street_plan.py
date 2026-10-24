@@ -118,3 +118,39 @@ def test_fr16_11_the_card_holds_at_390_px_without_sideways_scroll(plan_page):
         )
     finally:
         driver.quit()
+
+
+def test_fr16_11_the_card_names_both_endpoints_of_the_work(plan_page):
+    path, number = plan_page
+    driver = open_hash(path, f"#find-work-{number}")
+    try:
+        text = street_cards(driver)[0].text
+        assert "Ends: -33.9600, 151.1600 to -33.9590, 151.1610" in text
+    finally:
+        driver.quit()
+
+
+def test_fr16_11_the_card_separates_lasting_changes_from_temporary_works(plan_page):
+    path, number = plan_page
+    driver = open_hash(path, f"#find-work-{number}")
+    try:
+        text = street_cards(driver)[0].text
+        assert "Lasting change: Shared path beside the road, 400 m" in text
+        assert text.index("Lasting change") < text.index("Temporary works")
+        assert "Not recorded: how building effects will be reduced" in text
+    finally:
+        driver.quit()
+
+
+def test_fr16_11_print_shows_the_street_card_with_its_package_and_hides_the_buttons(plan_page):
+    path, _ = plan_page
+    driver = open_hash(path, "#find-ash-street")
+    try:
+        driver.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "print"})
+        result = driver.find_element(By.ID, "result")
+        assert result.is_displayed()
+        assert "My pick" in result.text and "Ash Street" in result.text
+        assert not driver.find_element(By.CSS_SELECTOR, "#result button.maplink").is_displayed()
+        assert not driver.find_element(By.CSS_SELECTOR, "#result a.listlink").is_displayed()
+    finally:
+        driver.quit()

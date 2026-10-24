@@ -28,7 +28,8 @@ EVIDENCE_CSS = (
     "#network-map{height:24rem;border:1px solid #444}"
     ".tiles .tile:last-child:nth-child(odd){grid-column:1/-1}"
     ".tile .n,.tile.cost .n{font-size:max(2.5rem,var(--num))}"
-    "@media print{#find,#streets,#plans,#cost,#evidence{display:none!important}}"
+    "@media print{#find .wrap>:not(#result),#streets,#plans,#cost,#evidence"
+    "{display:none!important}}"
 )
 
 

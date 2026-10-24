@@ -198,7 +198,7 @@ footer{padding:36px 0 60px;color:var(--ink-3);font-size:var(--step--1)}
   .bar{grid-template-columns:96px 1fr 46px}
 }
 @media print{
-  .mockbar,.stages,.mapctl,.touchhint,.search,.chips,#result,.copy,#find,#streets,#plans,#cost,#how{display:none!important}
+  .mockbar,.stages,.mapctl,.touchhint,.search,.chips,.copy,.maplink,.listlink,#find:not(:has(#result.show)),#find .wrap>:not(#result),#streets,#plans,#cost,#how{display:none!important}
   body{background:#fff;font-size:11pt}
   .hero-grid{grid-template-columns:1fr}.mapbox{min-height:380px;break-inside:avoid}#spotlist li:nth-child(n+6){display:none}
   section.band{padding:18px 0;break-inside:avoid-page}
@@ -727,9 +727,13 @@ function showPlace(p){
   res.classList.add("show");focusMap(p.at,16);
 }
 function workNote(w){
+  const ln=D.lines.find(l=>l.w===w.i),pt=c=>c[1].toFixed(4)+", "+c[0].toFixed(4),ends=ln&&ln.c.length?pt(ln.c[0])+" to "+pt(ln.c[ln.c.length-1]):"";
   const gaps=[];if(!w.sec||w.sec.w==null)gaps.push("road width");gaps.push("parking use and driveway access");
   return '<p class="plan"><b>My pick</b> · '+(w.stage===1?"First stage":"Full plan")+' · Work '+(w.i+1)+'</p>'+
+   (ends?'<p class="xn">Ends: '+ends+'</p>':"")+
+   '<p><b>Lasting change:</b> '+FIX[w.fix]+', '+lenText(w.km)+'</p>'+
    '<p class="xn">Temporary works: effects during building are not measured.</p>'+
+   '<p class="xn">Not recorded: how building effects will be reduced.</p>'+
    gaps.map(g=>'<p class="xn">Not recorded: '+g+'.</p>').join("")+
    '<p class="xn">'+(w.cost==null?"Cost: not priced.":"Cost: about $"+Number(w.cost.toPrecision(2))+" million.")+'</p>'+
    '<p class="xn">'+(w.stage===1?"Next decision: council funds the design of this stage.":"Later decision: after the first stage is built.")+'</p>'+
