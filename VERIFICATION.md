@@ -2731,3 +2731,12 @@ uv run --frozen python -I artifacts/C1.7/collect_page.py artifacts/C1.7/option-s
 
 Expect: 4 passed; the section lists the three unbuilt kinds with a reason.
 Artifact: `artifacts/C1.7/option-section.html`
+
+Part 5: fresh Bayside run on the 22 October snapshot.
+
+```bash
+uv run --frozen bikeplan run regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-22 --out /tmp/bikeplan-C1.7-real
+```
+
+Expect: the run takes about 58 minutes and 6.9 GB. `frontier.json` holds `option_sets` with the baseline and a broader row identical to it, no stages, and a reason for the three unbuilt kinds: "No complete trip forms from the picks". No school entrance link is proved (see C1.2), so no complete trip forms. `report.html` carries `option-comparison`.
+Artifact: `artifacts/C1.7/bayside-options.json`
