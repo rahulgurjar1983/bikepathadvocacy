@@ -350,13 +350,13 @@ def build_all(
     figures += path_figures(paths, paths_text, int(figures[-1]["id"][1:]) + 1)
     option_number = int(figures[-1]["id"][1:]) + 1
     figures += compare_figures(frontier, frontier_bytes.decode(), option_number)
-    school_number = int(figures[-1]["id"][1:]) + 1
-    figures += school_figures(frontier, frontier_bytes.decode(), school_number)
-    figures += neighbourhood_figures(proposal, proposal_bytes, school_number + 1)
     community = community_figures(
         frontier, proposal, frontier_bytes.decode(), int(figures[-1]["id"][1:]) + 1
     )
     figures += community
+    school_number = int(figures[-1]["id"][1:]) + 1
+    figures += school_figures(frontier, frontier_bytes.decode(), school_number)
+    figures += neighbourhood_figures(proposal, proposal_bytes, school_number + 1)
     data = report_data(
         options,
         choice,
