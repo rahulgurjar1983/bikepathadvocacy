@@ -120,7 +120,7 @@ def community_section(figures):
     )
     return (
         '<section id="independent-checks"><h2>Independent checks of the headline numbers</h2>'
-        "<p>Each line below is rebuilt by a short Python recipe from frontier.json alone. "
+        "<p>Each line below is rebuilt by a short program from frontier.json alone. "
         "A match with the saved proposal shows the two agree.</p>"
         f"<ul>{items}</ul></section>"
     )
