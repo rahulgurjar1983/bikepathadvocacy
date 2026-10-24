@@ -4,11 +4,11 @@ from pathlib import Path
 
 import networkx as nx
 import pytest
-from bikeplan.cache import CacheError, cached_build, graph_key, load_graph
 from shapely.geometry import LineString
 from shapely.geometry.base import BaseGeometry
 
 from bikeplan import main
+from bikeplan.cache import CacheError, cached_build, graph_key, load_graph
 from bikeplan.config import load_profile, load_region
 from bikeplan.network import build
 from bikeplan.traffic import edge_matches
