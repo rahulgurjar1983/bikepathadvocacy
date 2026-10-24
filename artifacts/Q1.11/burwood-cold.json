@@ -1,0 +1,14 @@
+{
+  "cache": "cold",
+  "cpu_s": 396.713,
+  "key": "graph-2b4cd25ef9ad30bb281f27716b3c3332cbba8b48336edcb9cb3f5121af8cedb3",
+  "mode": "full",
+  "peak_rss_mb": 3546.3,
+  "runner": {
+    "cpus": 4,
+    "github_runner": "",
+    "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3"
+  },
+  "wall_s": 396.92
+}

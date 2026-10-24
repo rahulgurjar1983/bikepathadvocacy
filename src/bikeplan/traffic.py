@@ -28,19 +28,29 @@ def bearing_gap(first: float, second: float) -> float:
     return min(gap, 180 - gap)
 
 
-def segment_overlap(edge: LineString, segment: LineString) -> float:
-    near = edge.intersection(segment.buffer(SEGMENT_REACH_M))
+def segment_overlap(
+    edge: LineString, segment: LineString, edge_zone=None, segment_zone=None
+) -> float:
+    edge_zone = edge.buffer(SEGMENT_REACH_M) if edge_zone is None else edge_zone
+    segment_zone = segment.buffer(SEGMENT_REACH_M) if segment_zone is None else segment_zone
+    near = edge.intersection(segment_zone)
     ours = chord_bearing(near)
-    theirs = chord_bearing(segment.intersection(edge.buffer(SEGMENT_REACH_M)))
+    theirs = chord_bearing(segment.intersection(edge_zone))
     if ours is None or theirs is None or bearing_gap(ours, theirs) > SEGMENT_BEARING_DEG:
         return 0.0
     return near.length / edge.length
 
 
-def match_segment(edge: LineString, lines: list, index: STRtree) -> int | None:
+def match_segment(
+    edge: LineString, lines: list, index: STRtree, zones: dict | None = None
+) -> int | None:
+    zones = {} if zones is None else zones
     best, best_share = None, SEGMENT_MIN_SHARE
-    for position in sorted(index.query(edge.buffer(SEGMENT_REACH_M))):
-        share = segment_overlap(edge, lines[position])
+    edge_zone = edge.buffer(SEGMENT_REACH_M)
+    for position in sorted(index.query(edge_zone)):
+        if position not in zones:
+            zones[position] = lines[position].buffer(SEGMENT_REACH_M)
+        share = segment_overlap(edge, lines[position], edge_zone, zones[position])
         if share >= best_share and (best is None or share > best_share):
             best, best_share = int(position), share
     return best
@@ -48,6 +58,7 @@ def match_segment(edge: LineString, lines: list, index: STRtree) -> int | None:
 
 def edge_matches(graph, lines: list, only=None):
     index = STRtree(lines)
+    zones: dict = {}
     for u, v, data in graph.edges(data=True):
         if only is not None and not only(data):
             continue
@@ -56,7 +67,7 @@ def edge_matches(graph, lines: list, only=None):
             line = LineString([(graph.nodes[n]["x"], graph.nodes[n]["y"]) for n in (u, v)])
         if line.length == 0:
             continue
-        found = match_segment(line, lines, index)
+        found = match_segment(line, lines, index, zones)
         if found is not None:
             yield data, found
 

@@ -1705,3 +1705,10 @@ The street card lives in `showStreet`, `showWork` and `workCard` in `report_temp
 
 - `UNPROVED_PARTS` in `checks.py` maps a spec ID to the parts its release check does not prove. Any entry caps the status at `tested only`. Old tests need FR-13.6 and FR-13.13 to stay `met`, so they are not listed. Remove an entry only when a check on the release files proves that part.
 - Page text uses no apostrophe in the new phrase: `html.escape` turns it into `&#x27;`.
+
+### Q1.11 notes
+
+- 61% of a Burwood build was `network.build`, and nearly all of that was `Polygon.buffer` in `traffic.py` (1.26 million calls). Segment buffers are now made once per line. Profile with `cProfile` around `main()` before guessing.
+- `--cache-dir` stores `graph-<key>.pkl`. The key hashes schema, every snapshot file, the config and the code (`code_record`). Any source edit changes the key, so the cache never goes stale; a file whose stored key differs raises `CacheError`.
+- Reports built before a source edit differ from later ones only in the code hash and hashes that follow from it. Mask 64-hex strings to compare.
+- Left on Q1.11: the fast shortlist mode, reuse of the access work across scenarios, a release run with the cache wired into the workflow (an input), and Inner West timing on a release runner.
