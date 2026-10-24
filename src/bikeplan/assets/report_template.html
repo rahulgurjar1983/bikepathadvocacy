@@ -471,7 +471,7 @@ function setNumbers(v){
   document.getElementById("t-park").textContent=fmt(v.park);
   const tc=document.getElementById("t-cost");if(tc&&v.cost)tc.textContent=money(v.cost);
   document.getElementById("t-sch-l").textContent="of "+nSch+" schools with an all-ages ride";
-  document.getElementById("scoreline").innerHTML="<b>"+Math.round(v.score)+"%</b> of "+st.today.trips+" short trips between these places are all-ages.";
+  document.getElementById("scoreline").innerHTML="<b>"+Math.round(v.score)+"%</b> of "+fmt(st.today.trips)+" short trips between these places are all-ages.";
 }
 function setStage(k){
   stage=k;
@@ -491,7 +491,7 @@ document.getElementById("play").addEventListener("click",()=>{
       document.getElementById("t-km").textContent=Math.round(s.km);
       document.getElementById("t-sch").textContent=s.schools;
       document.getElementById("t-park").textContent=fmt(s.park);
-      document.getElementById("scoreline").innerHTML="<b>"+Math.round(s.score)+"%</b> of "+st.today.trips+" short trips between these places are all-ages.";
+      document.getElementById("scoreline").innerHTML="<b>"+Math.round(s.score)+"%</b> of "+fmt(st.today.trips)+" short trips between these places are all-ages.";
       k++;}
     else{clearInterval(playing);playing=null;setStage(2);}
   },dt);
@@ -607,7 +607,7 @@ document.getElementById("spot-bars").innerHTML=[["Today",st.today.score,C.notyet
 const sl=document.getElementById("spotlist");
 const listSpots=D.spots.slice(0,10);
 listSpots.forEach(s=>{const li=document.createElement("li");
-  li.innerHTML='<button type="button"><span class="num">'+s.n+'</span><span><b>'+streetName(s.street)+'</b><span class="what">'+KIND[s.kind]+(s.owner?" · TfNSW road":"")+'</span></span><span class="tr">'+s.trips+'<small>'+(s.trips===1?"trip":"trips")+'</small></span></button>';
+  li.innerHTML='<button type="button"><span class="num">'+s.n+'</span><span><b>'+streetName(s.street)+'</b><span class="what">'+KIND[s.kind]+(s.owner?" · TfNSW road":"")+'</span></span><span class="tr">'+fmt(s.trips)+'<small>'+(s.trips===1?"trip":"trips")+'</small></span></button>';
   li.firstChild.addEventListener("click",()=>{document.getElementById("top").scrollIntoView({behavior:reduce?"auto":"smooth"});map.flyTo(ll(s.at),17,{animate:!reduce});spotMarkers[s.n-1].openTooltip();});
   sl.appendChild(li);});
 document.getElementById("spotmore").textContent=spotsN>10?"And "+(spotsN-10)+" more spot"+(spotsN-10===1?"":"s")+" that hold back fewer trips.":"";
@@ -715,7 +715,7 @@ function showPlace(p){
   const sp=D.spots.filter(s=>s.at&&dist(s.at,p.at)<500);
   const ward=D.wards.find(w=>w.poly.some(pg=>inside(p.at,pg[0])));
   const names=(p.j||[]).map(i=>D.places[i].name).sort();
-  const trip=(id,n,t)=>'<div class="fact" id="'+id+'"><b>'+n+'</b><span>'+t+'</span></div>';
+  const trip=(id,n,t)=>'<div class="fact" id="'+id+'"><b>'+fmt(n)+'</b><span>'+t+'</span></div>';
   const trips=p.t?'<div class="facts">'+trip("pc-today",p.t[0],"safe trips today")+trip("pc-first",p.t[1],"at the first stage")+trip("pc-full",p.t[2],"in the full plan")+'</div>':"";
   const joins=p.t?'<p class="eyebrow">Joined by an all-ages trip in the full plan</p>'+(names.length?'<ul class="worklist" id="pc-joins">'+names.slice(0,8).map(n=>'<li>'+esc(n)+'</li>').join("")+'</ul>'+(names.length>8?'<p><small>and '+(names.length-8)+' more</small></p>':""):'<p id="pc-joins"><small>None yet.</small></p>'):"";
   res.innerHTML='<div class="result-grid"><div><p class="eyebrow">'+({school:"School",station:"Station",town_centre:"Town centre"}[p.type])+(ward?" · "+ward.name:"")+'</p><h3>'+esc(p.name)+'</h3>'+trips+joins+

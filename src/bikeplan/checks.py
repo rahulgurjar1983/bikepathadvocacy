@@ -358,7 +358,9 @@ def blockers_page_problems(text: str, data: dict) -> list[str]:
     return problems
 
 
-def spec_figure_problems(release: Path, spec: str, page_problems) -> list[str]:
+def spec_figure_problems(
+    release: Path, spec: str, page_problems, applies=lambda data: True
+) -> list[str]:
     problems = []
     found = 0
     for archive in region_archives(release):
@@ -373,6 +375,8 @@ def spec_figure_problems(release: Path, spec: str, page_problems) -> list[str]:
             continue
         text = report.read_text(encoding="utf-8")
         data = json.loads(files["options.json"])
+        if not applies(data):
+            continue
         digest = hashlib.sha256(files["options.json"]).hexdigest()
         figures = [item for item in json.loads(files["figures.json"]) if item["spec"] == spec]
         problems += [f"{name}: {line}" for line in page_problems(text, data)]
@@ -392,7 +396,12 @@ def spec_figure_problems(release: Path, spec: str, page_problems) -> list[str]:
 
 
 def corridor_problems(release: Path) -> list[str]:
-    return spec_figure_problems(release, "spec 19", corridor_page_problems)
+    return spec_figure_problems(
+        release,
+        "spec 19",
+        corridor_page_problems,
+        lambda data: bool((data.get("corridors") or {}).get("segments")),
+    )
 
 
 def blocker_problems(release: Path) -> list[str]:

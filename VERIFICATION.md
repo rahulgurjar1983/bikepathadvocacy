@@ -2660,3 +2660,14 @@ uv run --frozen pytest tests/test_checks_opening.py -q -k "extra or other_option
 
 Expect: 5 passed. The row closes when a Bayside release from main uploads with FR-17.12 met.
 Artifact: `artifacts/W1.14/result.txt`
+
+### W1.14 Inner West
+
+The FR-19.6 check applies only to a region whose run lists corridor segments. The page prints each count of 1,000 or more with a comma.
+
+```bash
+uv run --frozen pytest tests/test_w1_14_inner_west.py -q
+```
+
+Expect: 3 passed. The row closes when a release from main uploads with every check met on Bayside and Inner West.
+Artifact: `artifacts/W1.14/inner-west.txt`
