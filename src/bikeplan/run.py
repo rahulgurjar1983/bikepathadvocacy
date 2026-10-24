@@ -12,6 +12,7 @@ from bikeplan.change import (
     change_figures,
     frontier_data,
 )
+from bikeplan.community_figures import community_figures, community_section
 from bikeplan.config import ConfigError, config_hash
 from bikeplan.cost import load_rates
 from bikeplan.council import compact_council, compact_wards
@@ -352,6 +353,10 @@ def build_all(
     school_number = int(figures[-1]["id"][1:]) + 1
     figures += school_figures(frontier, frontier_bytes.decode(), school_number)
     figures += neighbourhood_figures(proposal, proposal_bytes, school_number + 1)
+    community = community_figures(
+        frontier, proposal, frontier_bytes.decode(), int(figures[-1]["id"][1:]) + 1
+    )
+    figures += community
     data = report_data(
         options,
         choice,
@@ -379,6 +384,7 @@ def build_all(
             + school_section(frontier, f"F{school_number}")
             + neighbourhood_section(proposal, f"F{school_number + 1}", f"F{school_number + 2}")
             + option_section(frontier, option_number)
+            + community_section(community)
             + f"<script>{(ASSETS / 'option_view.js').read_text()}</script>"
             + method_section()
             + assumptions_section(profile)
