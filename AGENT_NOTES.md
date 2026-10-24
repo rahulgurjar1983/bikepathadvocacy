@@ -1691,3 +1691,4 @@ The street card lives in `showStreet`, `showWork` and `workCard` in `report_temp
 - Old tests lock F24 and F25 `inputs` to `proposal.json`, so independent recipes need new figure IDs and FR-0.35 range edits. Not done yet.
 - Test helper `tests/community_folder.py` builds a small folder with the real builders. Real run and release archives give 0 problems because no trip is proved.
 - Release archives lack `projects.json`; call `community_problems` on them directly.
+- C1.9 part 2: `community_figures.py` figures sit after `compare_figures` and before `school_figures`, because an old test needs the school figure to be last on the test grid. Recipes bake in the selected scenario and rank from `proposal.json` identity, then read only `frontier.json`. Avoid the word Python in page text; it is a glossary term.
