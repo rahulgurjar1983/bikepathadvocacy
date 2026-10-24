@@ -198,7 +198,7 @@ footer{padding:36px 0 60px;color:var(--ink-3);font-size:var(--step--1)}
   .bar{grid-template-columns:96px 1fr 46px}
 }
 @media print{
-  .mockbar,.stages,.mapctl,.touchhint,.search,.chips,.copy,.maplink,.listlink,#find .wrap>:not(#result),#streets,#plans,#cost,#how{display:none!important}
+  .mockbar,.stages,.mapctl,.touchhint,.search,.chips,.copy,.maplink,.listlink,#find:not(:has(#result.show)),#find .wrap>:not(#result),#streets,#plans,#cost,#how{display:none!important}
   body{background:#fff;font-size:11pt}
   .hero-grid{grid-template-columns:1fr}.mapbox{min-height:380px;break-inside:avoid}#spotlist li:nth-child(n+6){display:none}
   section.band{padding:18px 0;break-inside:avoid-page}
