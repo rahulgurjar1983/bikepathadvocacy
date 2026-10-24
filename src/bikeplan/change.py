@@ -116,6 +116,7 @@ def frontier_data(raw: dict, before: float, kinds: list, shapes: dict) -> dict:
         "trip_sources": raw.get("trip_sources", {}),
         "school_sources": raw.get("school_sources", {}),
         "proposal_metadata": raw.get("proposal_metadata"),
+        **({"option_sets": raw["option_sets"]} if "option_sets" in raw else {}),
     }
 
 

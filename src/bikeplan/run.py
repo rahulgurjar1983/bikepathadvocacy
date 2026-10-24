@@ -31,6 +31,8 @@ from bikeplan.map_page import map_page
 from bikeplan.neighbourhood_view import neighbourhood_figures, neighbourhood_section
 from bikeplan.network import bike_segments, build
 from bikeplan.network_report import choose
+from bikeplan.option_page import option_figures as compare_figures
+from bikeplan.option_page import option_section
 from bikeplan.page import (
     ASSETS,
     assumptions_section,
@@ -348,6 +350,8 @@ def build_all(
     school_number = int(figures[-1]["id"][1:]) + 1
     figures += school_figures(frontier, frontier_bytes.decode(), school_number)
     figures += neighbourhood_figures(proposal, proposal_bytes, school_number + 1)
+    option_number = int(figures[-1]["id"][1:]) + 1
+    figures += compare_figures(frontier, frontier_bytes.decode(), option_number)
     data = report_data(
         options,
         choice,
@@ -374,6 +378,7 @@ def build_all(
             option_view(proposal)
             + school_section(frontier, f"F{school_number}")
             + neighbourhood_section(proposal, f"F{school_number + 1}", f"F{school_number + 2}")
+            + option_section(frontier, option_number)
             + f"<script>{(ASSETS / 'option_view.js').read_text()}</script>"
             + method_section()
             + assumptions_section(profile)
