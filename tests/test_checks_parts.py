@@ -1,9 +1,8 @@
-from tests.test_checks import (  # noqa: F401, F811
-    GOOD_REPORT,
+from tests.test_checks import (
     build,
     entries,
     status_of,
-    tree,
+    tree,  # noqa: F401
 )
 from tests.test_checks_community import release as community_release
 
@@ -21,15 +20,15 @@ JUNIT = """<testsuites><testsuite>
 </testsuite></testsuites>"""
 
 
-def part_tree(tree, extra=""):
-    root, junit, out = tree
+def part_tree(request, extra=""):
+    root, junit, out = request.getfixturevalue("tree")
     (root / "specs/13-x.md").write_text(SPEC + extra)
     junit.write_text(JUNIT)
     return root, junit, out
 
 
-def test_fr15_8_a_path_check_alone_does_not_make_determinism_met(tree, tmp_path):
-    code, out = build(part_tree(tree))
+def test_fr15_8_a_path_check_alone_does_not_make_determinism_met(request):
+    code, out = build(part_tree(request))
     found = entries(out)["FR-13.10"]
     assert code == 0
     assert status_of(found) == "tested only"
@@ -37,8 +36,8 @@ def test_fr15_8_a_path_check_alone_does_not_make_determinism_met(tree, tmp_path)
     assert "same bytes" in found
 
 
-def test_fr15_8_a_release_without_the_stop_recompute_is_not_met(tree, tmp_path):
-    root, junit, out = part_tree(tree, EIGHT)
+def test_fr15_8_a_release_without_the_stop_recompute_is_not_met(request):
+    root, junit, out = part_tree(request, EIGHT)
     community_release(junit.parent / "release")
     code, out = build((root, junit, out))
     found = entries(out)["FR-15.8"]
