@@ -2671,3 +2671,13 @@ uv run --frozen pytest tests/test_w1_14_inner_west.py -q
 
 Expect: 3 passed. The row closes when a release from main uploads with every check met on Bayside and Inner West.
 Artifact: `artifacts/W1.14/inner-west.txt`
+
+### W1.9
+
+```sh
+gh release download v2026.10.23-pr290 -p checks.html -D /tmp/w19rel
+grep -c "axe violations with a street card open: 0 of at most 0, met" /tmp/w19rel/checks.html
+```
+
+Expect: 1 line; the real Bayside page has 0 serious or critical axe violations at load, with a place card and with a street card open, 0 Tab misses and 4,133,342 bytes of at most 16,777,216, and `checks.html` says 0 fail. The release holds `au-nsw-bayside-phone.png` and `au-nsw-bayside-desktop.png`.
+Artifact: `artifacts/W1.9/release-proof.txt`
