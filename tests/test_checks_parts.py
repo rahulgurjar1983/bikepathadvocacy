@@ -1,4 +1,4 @@
-from tests.test_checks import (  # noqa: F401
+from tests.test_checks import (  # noqa: F401, F811
     GOOD_REPORT,
     build,
     entries,
