@@ -87,6 +87,7 @@ These rulings answer the loop's open input asks of 16 and 17 October 2026.
 | W1.6 | FR-20.8 and FR-20.19 already hold on base, so a test of them cannot fail first. They move to the proof row W1.12 under FR-0.27; W1.6 no longer cites them and closes on its shipped parts. |
 | C1.13 | On 22 October 2026 the owner ruled: "Allow report to be bigger if required for all features". FR-20.22 now allows 16 MB, the most a claude.ai artifact page may hold. Saved tests that pin the 4 MB limit, such as the padded page in `tests/test_page_measures.py`, may pin 16 MB instead; all their other checks stay. No part, layer or map detail may be cut to meet the limit. |
 | C1.2 and other spec 16 rows | Paused behind the W rows. Spec 20 gives councillors and residents their place, street and ward views. |
+| C1.6 | On 24 October 2026 the operator found that the spec 16 package in `proposal.json` of release pr289 has no works (`element_ids` is empty and `option_packages` is an empty list), while my pick in `options.json` has 538 works. So the neighbourhood section shows 0 m of works in every Bayside ward, which disagrees with the ward cards. As the Q1.6 ruling says, one record drives the page: my pick at its stage. FR-16.8 allocates the works of that record, the same works the FR-20.5 ward cards and the street changes use. Each area's km of works equals its ward card's km. FR-16.8 shows no survey needs, since the report holds no survey. The real proof is the Bayside release: each ward shows more than 0 m and matches its card. |
 
 ## 5. Test plan
 
