@@ -129,18 +129,37 @@ def route_goal(goal, elements, result):
     return "met", None
 
 
-def goal_results(goals, elements, result, capital=None):
+def budget_goal(goal, capital):
+    if capital is None:
+        return "unproved", "cost_unknown"
+    if goal.get("currency") and capital.get("currency") != goal["currency"]:
+        return "unproved", "cost_currency_differs"
+    if capital["high"] <= goal["capital_limit"]:
+        return "met", None
+    return "unmet", "capital_above_limit"
+
+
+def impact_goal(goal, impact):
+    if impact is None:
+        return "unproved", "impact_unknown"
+    limit = goal.get("max_parking_spaces")
+    if limit is not None and impact["parking_spaces"] > limit:
+        return "unmet", "parking_above_limit"
+    minimum = goal.get("min_people")
+    if minimum is not None and impact["people"] < minimum:
+        return "unmet", "people_below_minimum"
+    return "met", None
+
+
+def goal_results(goals, elements, result, capital=None, impact=None):
     found = []
     for goal in goals:
         if not goal.get("source"):
             status, reason = "unproved", "goal_has_no_source"
         elif goal.get("kind") == "budget":
-            if capital is None:
-                status, reason = "unproved", "cost_unknown"
-            elif capital["high"] <= goal["capital_limit"]:
-                status, reason = "met", None
-            else:
-                status, reason = "unmet", "capital_above_limit"
+            status, reason = budget_goal(goal, capital)
+        elif goal.get("kind") == "impact":
+            status, reason = impact_goal(goal, impact)
         else:
             status, reason = route_goal(goal, elements, result)
         found.append({"id": goal["id"], "status": status, "reason": reason})
@@ -194,7 +213,7 @@ def stage_options(plan, parking):
     return options
 
 
-def build_option_sets(picks, broader, evaluate, people, parking, goals):
+def build_option_sets(picks, broader, evaluate, people, parking, goals, capital=None):
     stages = pick_stages(picks, evaluate)
     enabling = {
         item["id"]
@@ -219,5 +238,12 @@ def build_option_sets(picks, broader, evaluate, people, parking, goals):
             comparison["unbuilt"][kind] = "No complete trip forms from the picks"
     labelled = label_packages(kept, goals)
     for row in labelled:
-        row["goals"] = goal_results(goals, row["element_ids"], evaluate(set(row["element_ids"])))
+        elements = row["element_ids"]
+        row["goals"] = goal_results(
+            goals,
+            elements,
+            evaluate(set(elements)),
+            capital(set(elements)) if capital else None,
+            {"people": row["people"], "parking_spaces": row["parking_spaces"]},
+        )
     return {"stage_plan": plan, "comparison": comparison, "options": labelled}

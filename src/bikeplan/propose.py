@@ -31,7 +31,12 @@ from bikeplan.fit import cross_section as fit_cross_section
 from bikeplan.neighbourhoods import area_inputs, package_areas
 from bikeplan.network import bike_segments
 from bikeplan.option_sets import build_option_sets
-from bikeplan.proposal_inputs import attach_metadata, enrich_projects, load_proposal_inputs
+from bikeplan.proposal_inputs import (
+    attach_metadata,
+    cost_totals,
+    enrich_projects,
+    load_proposal_inputs,
+)
 from bikeplan.schools import site_coverage, snapshot_school_inputs
 from bikeplan.stress import edge_aaa, own_lts, raise_for_crossings, score_edges
 from bikeplan.trips import complete_trips, resident_outcomes, snapshot_trip_inputs
@@ -1277,8 +1282,14 @@ def shortlist_option_sets(graph, region, people, trip_inputs, picked, shipped, m
             catalog[name]["parking_spaces"]["removed"] or 0 for name in selected if name in catalog
         )
 
+    contents = metadata["contents"] or {}
+
+    def capital(selected):
+        total = cost_totals(contents, set(selected), catalog, "capital")
+        return total if total["status"] == "sourced_range" else None
+
     broader = shipped["trip_packages"][-1]["element_ids"] if shipped["trip_packages"] else []
-    goals = (metadata["contents"] or {}).get("goals", [])
+    goals = contents.get("goals", [])
     return build_option_sets(
         [{"id": pick["id"], "elements": pick["elements"]} for pick in picked],
         broader,
@@ -1286,6 +1297,7 @@ def shortlist_option_sets(graph, region, people, trip_inputs, picked, shipped, m
         people,
         parking,
         goals,
+        capital,
     )
 
 

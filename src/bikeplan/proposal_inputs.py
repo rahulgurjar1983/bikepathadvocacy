@@ -59,7 +59,18 @@ SCHEMA = object_schema(
     {
         "version": {"const": 1},
         "public": {"const": True},
-        "goals": array_schema({"destination_ids": IDS, "element_ids": IDS, "description": TEXT}),
+        "goals": array_schema(
+            {
+                "destination_ids": IDS,
+                "element_ids": IDS,
+                "description": TEXT,
+                "kind": {"enum": ["route", "budget", "impact"]},
+                "capital_limit": {"type": "number", "minimum": 0},
+                "currency": MONEY["currency"],
+                "max_parking_spaces": {"type": "integer", "minimum": 0},
+                "min_people": {"type": "number", "minimum": 0},
+            }
+        ),
         "route_options": array_schema({**SCOPE, "goal_ids": IDS, "name": TEXT}, ["name"]),
         "areas": array_schema(
             {
