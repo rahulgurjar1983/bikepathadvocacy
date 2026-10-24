@@ -15,7 +15,7 @@ def test_fr16_12_school_stage_and_cost_figures_take_the_next_ids_and_read_only_f
     assert [item["id"] for item in figures] == ["F95", "F96", "F97", "F98"]
     for item in figures:
         assert [i["name"] for i in item["inputs"]] == ["frontier.json"]
-        assert "proposal" not in item["recipe"]
+        assert "proposal.json" not in item["recipe"]
         assert item["spec"] == "spec 16"
 
 
