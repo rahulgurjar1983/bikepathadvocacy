@@ -12,7 +12,7 @@ from bikeplan.change import (
     change_figures,
     frontier_data,
 )
-from bikeplan.community_figures import community_figures, community_section
+from bikeplan.community_figures import community_figures, community_section, delivery_figures
 from bikeplan.config import ConfigError, config_hash
 from bikeplan.cost import load_rates
 from bikeplan.council import compact_council, compact_wards
@@ -352,6 +352,9 @@ def build_all(
     figures += compare_figures(frontier, frontier_bytes.decode(), option_number)
     community = community_figures(
         frontier, proposal, frontier_bytes.decode(), int(figures[-1]["id"][1:]) + 1
+    )
+    community += delivery_figures(
+        frontier, proposal, frontier_bytes.decode(), int(community[-1]["id"][1:]) + 1
     )
     figures += community
     school_number = int(figures[-1]["id"][1:]) + 1
