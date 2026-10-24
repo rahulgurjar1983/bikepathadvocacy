@@ -150,3 +150,74 @@ def goal_results(goals, elements, result, capital=None):
 def label_packages(rows, goals):
     label = "goal_tested" if goals else "candidate"
     return [{**row, "label": label} for row in rows]
+
+
+def pick_stages(picks, evaluate):
+    baseline = trip_keys(evaluate(set()))
+    stages, earlier = [], []
+    for pick in picks:
+        alone = trip_keys(evaluate(set(pick["elements"]))) - baseline
+        stages.append(
+            {
+                "id": pick["id"],
+                "element_ids": list(pick["elements"]),
+                "depends_on": [] if alone else list(earlier),
+                "purpose": "route",
+            }
+        )
+        earlier.append(pick["id"])
+    return stages
+
+
+def stage_options(plan, parking):
+    useful = [item for item in plan["stages"] if item["gained_trips"]]
+    options = []
+    if useful:
+        options.append(
+            {"id": "first_stage", "kind": "first_stage", "element_ids": useful[0]["elements"]}
+        )
+        lightest = min(
+            useful,
+            key=lambda item: (
+                parking(set(item["elements"])) / max(item["people_gained"], 1.0),
+                item["id"],
+            ),
+        )
+        options.append(
+            {
+                "id": "parking_retention",
+                "kind": "parking_retention",
+                "element_ids": lightest["elements"],
+                "retains_parking_of": "first_stage",
+            }
+        )
+    return options
+
+
+def build_option_sets(picks, broader, evaluate, people, parking, goals):
+    stages = pick_stages(picks, evaluate)
+    enabling = {
+        item["id"]
+        for item in stages
+        if not item["depends_on"] and not trip_keys(evaluate(set(item["element_ids"])))
+    }
+    for item in stages:
+        if item["id"] in enabling:
+            item["purpose"] = "enabling"
+    plan = stage_plan(stages, evaluate, people)
+    options = stage_options(plan, parking)
+    options.append({"id": "broader_network", "kind": "broader_network", "element_ids": broader})
+    comparison = compare_options(options, evaluate, people, parking)
+    rows = {row["id"]: row for row in comparison["options"]}
+    kept = []
+    for item in options:
+        row = rows[item["id"]]
+        if row["trip_count"]:
+            kept.append(row)
+    for kind in KINDS:
+        if not any(row["kind"] == kind for row in kept):
+            comparison["unbuilt"][kind] = "No complete trip forms from the picks"
+    labelled = label_packages(kept, goals)
+    for row in labelled:
+        row["goals"] = goal_results(goals, row["element_ids"], evaluate(set(row["element_ids"])))
+    return {"stage_plan": plan, "comparison": comparison, "options": labelled}
