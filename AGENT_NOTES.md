@@ -1684,3 +1684,10 @@ The street card lives in `showStreet`, `showWork` and `workCard` in `report_temp
 - C1.8 part 2: print CSS lives twice, in `report_template.html` and the `EXTRA_CSS` string in `report_page.py`; both must keep `#result` visible, so hide `#find .wrap>:not(#result)`, never `#find`. Test print with CDP `Emulation.setEmulatedMedia`.
 
 - C1.8 part 3: `stage_opens` in `report_page.py` lists the places whose partners change at a work's stage; works carry `opens` and `alt` (indexes into `data["others"]`). Measure page bytes by copying a script into `tests/` for one run: `-I` runs cannot import `tests`.
+
+### C1.9 notes
+
+- `verify --full` (flag, so the old `verify` ok-list test stays intact) runs `community_problems` in `community_verify.py`. It reuses `verify_parking` and `delivery_record`; the rest is plain recomputation from `frontier.json` (baseline is `trip_packages[0]`, like `site_coverage`).
+- Old tests lock F24 and F25 `inputs` to `proposal.json`, so independent recipes need new figure IDs and FR-0.35 range edits. Not done yet.
+- Test helper `tests/community_folder.py` builds a small folder with the real builders. Real run and release archives give 0 problems because no trip is proved.
+- Release archives lack `projects.json`; call `community_problems` on them directly.

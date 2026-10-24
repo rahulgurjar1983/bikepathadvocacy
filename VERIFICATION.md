@@ -2749,3 +2749,13 @@ uv run pytest tests/test_street_plan.py tests/test_find_place.py -q
 
 Expect: every test passes. A street card, or a work found by its ID such as "Work 4", shows the selected package and stage, a map button, a list link, the unmeasured building effects, each survey gap, the cost and the next decision. Part 2 adds both end points, the lasting change set apart from temporary works, the building-effects mitigation gap, and print of the open card (buttons hidden). Part 3 adds the route the stage completes with its destinations, each alternative option for the street, and the byte measure on the test page (`artifacts/C1.8/bytes.txt`: 227,386 of 8,388,608 bytes). Still open: the byte measure on a real Bayside release page.
 Artifact: `artifacts/C1.8/street-plan-tests.txt`
+
+### C1.9
+
+```bash
+uv run pytest tests/test_community_verify.py -q
+uv run bikeplan verify <run output folder> --full
+```
+
+Expect: every test passes. `verify --full` adds a `community` check that recomputes route witnesses, school-site sets, resident unions, works totals, parking arithmetic, stage dependencies and costs from `frontier.json` and the saved source metadata, and compares the selected package in `proposal.json`. Each of 29 rehashed changes fails it. Run on the 24 October Bayside and Inner West release archives it finds 0 problems, because no complete trip forms there (`artifacts/C1.9/release-check.txt`). Still open: independent figure recipes under new IDs, the release checks page claim under FR-15.8, and a run with proved trips.
+Artifact: `artifacts/C1.9/release-check.txt`
