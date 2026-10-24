@@ -1676,3 +1676,7 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - C1.7 part 4: `option_page.py` reads `frontier["option_sets"]`; `frontier_data` in `change.py` must copy it or the run drops it. Figures are two counts then two per option, so the id range grows with options.
 
 - C1.7 part 5: Bayside 22 October run (57 min, 6.9 GB) builds only baseline plus an identical broader row; first stage and parking retention are unbuilt because no complete trip forms (no proved school entrance, see C1.2). Artifact: `artifacts/C1.7/bayside-options.json`.
+
+## C1.8 tips
+
+The street card lives in `showStreet`, `showWork` and `workCard` in `report_template.html`. A work is found by `#find-work-N`, where N is its index plus one. Stash only `src` when you amend tests: `git stash -q -- src`.
