@@ -2703,3 +2703,12 @@ uv run --frozen python -I artifacts/C1.7/collect_run.py artifacts/C1.7/propose-f
 
 Expect: 15 passed; the file lists the baseline and one broader option row, and a reason for each unbuilt kind.
 Artifact: `artifacts/C1.7/propose-fixture-options.json`
+
+Part 3: goals may be a budget with a capital limit and currency, or an impact bound on parking spaces and people reached. Each is tested for every built option from sourced costs; an unknown cost or a different currency is unproved. It is shown on fixtures only, not a Bayside run.
+
+```bash
+uv run --frozen pytest tests/test_option_sets.py tests/test_proposal_inputs.py -q -k fr16_9
+```
+
+Expect: 20 passed, including the budget, currency and impact cases.
+Artifact: `artifacts/C1.7/propose-fixture-options.json`
