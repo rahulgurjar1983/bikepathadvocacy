@@ -1694,3 +1694,8 @@ The street card lives in `showStreet`, `showWork` and `workCard` in `report_temp
 - C1.9 part 2: `community_figures.py` figures sit after `compare_figures` and before `school_figures`, because an old test needs the school figure to be last on the test grid. Recipes bake in the selected scenario and rank from `proposal.json` identity, then read only `frontier.json`. Avoid the word Python in page text; it is a glossary term.
 - C1.9 part 3: `delivery_figures` is a separate function from `community_figures` so the old four-ID test stays intact; `run.py` joins both into one independent-checks section. The cost figure sums capital records by overlap and does not apply the currency compatibility rule, so mixed-currency data needs a later row.
 - C1.9 part 4: `community_release_problems` in `checks.py` is the FR-15.8 release check. Independent figures are those whose only input is `frontier.json`. Archives without the three files fail, not skip.
+
+### Q1.8 notes
+
+- `recompute.py` reruns `write_access` and `write_propose` on the region and snapshot, then compares with the saved files. Saved `frontier.json` picks hold a baseline rank 0 that the fresh run lacks; drop it before comparing. Wrap `km_by_lts` in a dict before `canon`, or its parent key is lost.
+- Left under Q1.8: the release workflow (an input) must pass `--region` and `--snapshot` to `verify --full`, and no real Bayside recompute has run (it repeats the hour-long build).
