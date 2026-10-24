@@ -1700,3 +1700,8 @@ The street card lives in `showStreet`, `showWork` and `workCard` in `report_temp
 - `recompute.py` reruns `write_access` and `write_propose` on the region and snapshot, then compares with the saved files. Saved `frontier.json` picks hold a baseline rank 0 that the fresh run lacks; drop it before comparing. Wrap `km_by_lts` in a dict before `canon`, or its parent key is lost.
 - Part 2: a `report` folder has no `projects.json`, so `verify` checks `SHA256SUMS` and recomputes only the frontier scenarios. A real Bayside run passed (build 58 min, verify 46 min).
 - Left under Q1.8: the release workflow and `scripts/release.sh` (inputs) must run `verify --full --region --snapshot` on each built report folder.
+
+### Q1.9 notes
+
+- `UNPROVED_PARTS` in `checks.py` maps a spec ID to the parts its release check does not prove. Any entry caps the status at `tested only`. Old tests need FR-13.6 and FR-13.13 to stay `met`, so they are not listed. Remove an entry only when a check on the release files proves that part.
+- Page text uses no apostrophe in the new phrase: `html.escape` turns it into `&#x27;`.
