@@ -1664,3 +1664,7 @@ G1.1 tip: `bikeplan region new "<name> Council New South Wales" --pick 1 --id au
 - W1.14 stays open until a release uploads. Next row: show areas as plain words and remove the JSON dump, then read the FR-19.6 message.
 
 - Fresh Bayside run (snapshot 2026-10-22, 1:09:39 wall, 6.8 GB peak) built the neighbourhood section with five council wards and their sources, but `projects 0`: every ward shows 0 m of works and no unplaced works, so only the empty case is proved on real data. The row stays open until a package with works exists. Check with `python3 -c "import json;a=json.load(open('/tmp/bikeplan-C1.6-proof/proposal.json'))['selected']['local_areas'];print([x['works']['length_m'] for x in a['areas']])"`.
+
+### W1.9 part 7
+
+- Release v2026.10.23-pr290 shows every W1.9 measure met on the real Bayside page, with both pictures attached. Artifact: `artifacts/W1.9/release-proof.txt`. The row is closed.

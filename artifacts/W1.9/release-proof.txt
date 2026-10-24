@@ -1,0 +1,7 @@
+release v2026.10.23-pr290 checks.html
+16 met, 239 tested only, 0 fail
+Output check: passed. Measured: au-nsw-bayside-report.html: serious or critical axe-core violations at load: 0 of at most 0, met
+au-nsw-bayside-report.html: serious or critical axe violations with a place card open: 0 of at most 0, met
+au-nsw-bayside-report.html: serious or critical axe violations with a street card open: 0 of at most 0, met
+au-nsw-bayside-report.html: named controls the Tab key misses: 0 of at most 0, met
+ailed. Output check: passed. Measured: au-nsw-bayside-report.html: page size in bytes: 4,133,342 of at most 16,777,216, met
