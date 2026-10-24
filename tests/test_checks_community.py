@@ -42,7 +42,7 @@ def test_fr15_8_a_clean_release_passes_the_full_community_check(tmp_path):
 
 def test_fr15_8_a_tampered_route_fails_the_release_check(tmp_path):
     def edit(data):
-        data["frontier.json"]["scenarios"][0]["trip_packages"][1]["strict"][0]["edges"] = []
+        data["frontier.json"]["scenarios"][0]["trip_packages"][1]["works"]["unique_roads"] += 2
 
     release(tmp_path, tampered(build(), edit))
     found = checks.community_release_problems(tmp_path)
