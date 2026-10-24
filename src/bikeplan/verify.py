@@ -4,7 +4,7 @@ import math
 from pathlib import Path
 
 from bikeplan.community_verify import community_problems
-from bikeplan.recompute import recompute_problems
+from bikeplan.recompute import recompute_problems, report_recompute_problems
 
 TOLERANCE = 0.0011
 DISRUPTION = ("parking_spaces", "lane_km", "speed_km", "signals", "refuges")
@@ -16,7 +16,10 @@ def read(folder: Path, name: str):
 
 def hashes(folder: Path) -> list[str]:
     problems = []
-    for line in (folder / "outputs.sha256").read_text().splitlines():
+    sums = folder / "outputs.sha256"
+    if not sums.is_file():
+        sums = folder / "SHA256SUMS"
+    for line in sums.read_text().splitlines():
         digest, name = line.split("  ", 1)
         path = folder / name
         if not path.is_file():
@@ -144,6 +147,10 @@ def verify_outputs(
 ) -> list[tuple[str, list[str]]]:
     folder = Path(directory)
     results = [("hashes", hashes(folder))]
+    if not (folder / "projects.json").is_file():
+        if full and region is not None:
+            results.append(("recompute", report_recompute_problems(folder, region, snapshot)))
+        return results
     projects = read(folder, "projects.json")
     summary = read(folder, "summary.json")
     results += [(name, check(projects, summary)) for name, check in CHECKS]
