@@ -730,7 +730,7 @@ function workNote(w){
   const gaps=[];if(!w.sec||w.sec.w==null)gaps.push("road width");gaps.push("parking use and driveway access");
   return '<p class="plan"><b>My pick</b> · '+(w.stage===1?"First stage":"Full plan")+' · Work '+(w.i+1)+'</p>'+
    '<p class="xn">Temporary works: effects during building are not measured.</p>'+
-   gaps.map(g=>'<p class="xn">Not surveyed: '+g+'.</p>').join("")+
+   gaps.map(g=>'<p class="xn">Not recorded: '+g+'.</p>').join("")+
    '<p class="xn">'+(w.cost==null?"Cost: not priced.":"Cost: about $"+Number(w.cost.toPrecision(2))+" million.")+'</p>'+
    '<p class="xn">'+(w.stage===1?"Next decision: council funds the design of this stage.":"Later decision: after the first stage is built.")+'</p>'+
    '<p>'+(w.at?'<button type="button" class="maplink" data-at="'+w.at.join(",")+'">Show on the map</button> ':"")+'<a class="listlink" href="#streets">See the list of changes</a></p>';
