@@ -79,7 +79,7 @@ def test_fr16_9_a_pair_of_fixes_only_helps_together_and_the_first_stage_claims_n
     first, second = plan["stages"]
     assert first["standalone_access_claim"] is False
     assert first["gained_trips"] == []
-    assert first["later_work"] == ["b"]
+    assert first["later_work"] == ["b", "c"]
     assert second["standalone_access_claim"] is True
     assert second["elements"] == ["a", "b"]
     assert second["gained_trips"] == [{"origin": 0, "destination": "site-3"}]
@@ -188,7 +188,8 @@ def test_fr16_9_a_lower_parking_variant_is_shown_with_its_actual_difference():
     result = compare_options(options, evaluator(), PEOPLE, parking_by_element)
     keep = {row["id"]: row for row in result["options"]}["keep"]
     assert keep["retention"] == {"reference": "first", "result": "lower", "difference": -8}
-    assert keep["trip_count"] == 0
+    assert keep["trip_count"] == 1
+    assert keep["people"] == 50.0
 
 
 def goals():
