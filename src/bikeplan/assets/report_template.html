@@ -731,6 +731,8 @@ function workNote(w){
   const gaps=[];if(!w.sec||w.sec.w==null)gaps.push("road width");gaps.push("parking use and driveway access");
   return '<p class="plan"><b>My pick</b> · '+(w.stage===1?"First stage":"Full plan")+' · Work '+(w.i+1)+'</p>'+
    (ends?'<p class="xn">Ends: '+ends+'</p>':"")+
+   '<p class="xn">'+(w.opens.length?"Route completed: joins "+w.opens.map(i=>D.places[i].name).join(", ").replace(/, ([^,]*)$/," and $1")+".":"Not recorded: places this work joins.")+'</p>'+
+   (D.others.length?D.others.map((n,k)=>'<p class="xn">Alternative '+esc(n)+': '+(w.alt.includes(k)?"also builds on this street.":"does not build on this street.")+'</p>').join(""):'<p class="xn">Alternatives: none built for this report.</p>')+
    '<p><b>Lasting change:</b> '+FIX[w.fix]+', '+lenText(w.km)+'</p>'+
    '<p class="xn">Temporary works: effects during building are not measured.</p>'+
    '<p class="xn">Not recorded: how building effects will be reduced.</p>'+
