@@ -688,8 +688,9 @@ document.getElementById("ask-h").textContent=(NUM[asks.length]||asks.length)+" s
 const idx=[];
 D.places.forEach(p=>idx.push({label:p.name,kind:{school:"School",station:"Station",town_centre:"Town centre"}[p.type],go:()=>showPlace(p)}));
 [...new Set(D.works.map(w=>w.street).filter(named))].sort().forEach(s=>idx.push({label:s,kind:"Street",go:()=>showStreet(s)}));
+D.works.forEach(w=>idx.push({label:"Work "+(w.i+1)+": "+(named(w.street)?w.street:FIX[w.fix]),kind:"Work ID",slug:"work-"+(w.i+1),go:()=>showWork(w)}));
 D.wards.forEach(w=>idx.push({label:w.name,kind:"Ward",go:()=>showWard(w)}));
-idx.forEach(e=>e.slug=slug(e.label));
+idx.forEach(e=>{e.slug=e.slug||slug(e.label);});
 const q=document.getElementById("q"),ql=document.getElementById("qlist");let hits=[],sel=-1;
 function render(){ql.innerHTML=hits.map((h,i)=>'<li role="option" id="o'+i+'" aria-selected="'+(i===sel)+'">'+h.label+'<small>'+h.kind+'</small></li>').join("");
   ql.hidden=!hits.length;q.setAttribute("aria-expanded",String(!!hits.length));q.setAttribute("aria-activedescendant",sel>=0?"o"+sel:"");
@@ -725,15 +726,29 @@ function showPlace(p){
    '<p style="margin-top:12px">'+copyBtn()+'</p></div><div>'+(near[0]?'<p class="eyebrow">The main change nearby</p>'+secPair(near.sort((a,b)=>b.km-a.km)[0]):'')+'</div></div>';
   res.classList.add("show");focusMap(p.at,16);
 }
-function showStreet(s){
-  const ws=D.works.filter(w=>w.street===s);if(!ws.length)return;
-  res.innerHTML='<div class="result-grid"><div><p class="eyebrow">Street</p><h3>'+esc(s)+'</h3><div class="facts"><div class="fact"><b>'+lenText(ws.reduce((a,w)=>a+w.km,0))+'</b><span>of works</span></div><div class="fact"><b>'+fmt(ws.reduce((a,w)=>a+w.park,0))+'</b><span>parking spaces change</span></div><div class="fact"><b>'+(ws.some(w=>w.stage===1)?"First":"Later")+'</b><span>stage</span></div></div><p style="margin-top:12px">'+copyBtn()+'</p></div><div>'+
-   ws.map(w=>'<article class="swork"><p><b>'+FIX[w.fix]+'</b></p><p><b>'+lenText(w.km)+'</b> · '+(w.stage===1?"First stage":"Full plan")+' · '+(w.park?w.park+" parking space"+(w.park===1?"":"s"):"No parking lost")+' · '+(w.lane?w.lane.toFixed(1)+" km of traffic lane":"No traffic lane lost")+'</p>'+secPair(w)+'</article>').join("")+'</div></div>';
+function workNote(w){
+  const gaps=[];if(!w.sec||w.sec.w==null)gaps.push("road width");gaps.push("parking use and driveway access");
+  return '<p class="plan"><b>My pick</b> · '+(w.stage===1?"First stage":"Full plan")+' · Work '+(w.i+1)+'</p>'+
+   '<p class="xn">Temporary works: effects during building are not measured.</p>'+
+   gaps.map(g=>'<p class="xn">Not surveyed: '+g+'.</p>').join("")+
+   '<p class="xn">'+(w.cost==null?"Cost: not priced.":"Cost: about $"+Number(w.cost.toPrecision(2))+" million.")+'</p>'+
+   '<p class="xn">'+(w.stage===1?"Next decision: council funds the design of this stage.":"Later decision: after the first stage is built.")+'</p>'+
+   '<p>'+(w.at?'<button type="button" class="maplink" data-at="'+w.at.join(",")+'">Show on the map</button> ':"")+'<a class="listlink" href="#streets">See the list of changes</a></p>';
+}
+function workCard(ws,title,kind){
+  res.innerHTML='<div class="result-grid"><div><p class="eyebrow">'+kind+'</p><h3>'+esc(title)+'</h3><div class="facts"><div class="fact"><b>'+lenText(ws.reduce((a,w)=>a+w.km,0))+'</b><span>of works</span></div><div class="fact"><b>'+fmt(ws.reduce((a,w)=>a+w.park,0))+'</b><span>parking spaces change</span></div><div class="fact"><b>'+(ws.some(w=>w.stage===1)?"First":"Later")+'</b><span>stage</span></div></div><p style="margin-top:12px">'+copyBtn()+'</p></div><div>'+
+   ws.map(w=>'<article class="swork"><p><b>'+FIX[w.fix]+'</b></p><p><b>'+lenText(w.km)+'</b> · '+(w.stage===1?"First stage":"Full plan")+' · '+(w.park?w.park+" parking space"+(w.park===1?"":"s"):"No parking lost")+' · '+(w.lane?w.lane.toFixed(1)+" km of traffic lane":"No traffic lane lost")+'</p>'+secPair(w)+workNote(w)+'</article>').join("")+'</div></div>';
   res.classList.add("show");
+  res.querySelectorAll("button.maplink").forEach(b=>b.addEventListener("click",()=>{const at=b.dataset.at.split(",").map(Number);document.getElementById("top").scrollIntoView({behavior:reduce?"auto":"smooth"});focusMap(at,17);}));
   const pts=ws.filter(w=>w.at).map(w=>ll(w.at));
   document.getElementById("top").scrollIntoView({behavior:reduce?"auto":"smooth"});
   if(pts.length)map.flyToBounds(L.latLngBounds(pts).pad(0.4),{maxZoom:17,animate:!reduce});
 }
+function showStreet(s){
+  const ws=D.works.filter(w=>w.street===s);if(!ws.length)return;
+  workCard(ws,s,"Street");
+}
+function showWork(w){workCard([w],named(w.street)?w.street+", work "+(w.i+1):"Work "+(w.i+1)+": "+FIX[w.fix],"Work");}
 function showWard(w){
   res.innerHTML='<p class="eyebrow">Ward</p><div class="card ward" style="cursor:auto">'+wardCardHtml(w,"r")+'</div><p style="margin-top:12px">'+copyBtn()+'</p>';
   res.classList.add("show");if(lw.getAttribute("aria-pressed")!=="true")lw.click();
