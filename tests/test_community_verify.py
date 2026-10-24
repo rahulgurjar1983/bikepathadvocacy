@@ -1,8 +1,9 @@
 import json
 
 import pytest
-from bikeplan.community_verify import community_problems
 
+from bikeplan import main
+from bikeplan.community_verify import community_problems
 from bikeplan.verify import verify_outputs
 from tests.community_folder import build, rehash, tampered, write
 from tests.test_run import COMMITTED, run_command
@@ -196,7 +197,7 @@ def test_fr15_7_a_changed_stored_value_with_matching_hashes_names_what_differs(t
 
 def test_fr15_7_the_verify_command_runs_the_community_checks_on_a_real_run(tmp_path):
     assert run_command(COMMITTED, tmp_path / "out") == 0
-    results = dict(verify_outputs(tmp_path / "out"))
+    results = dict(verify_outputs(tmp_path / "out", full=True))
     assert results["community"] == []
     assert all(not found for found in results.values())
 
@@ -208,6 +209,20 @@ def test_fr15_7_the_verify_command_fails_a_rehashed_real_run(tmp_path):
     data["scenarios"][0]["trip_packages"][1]["works"]["unique_roads"] += 4
     (out / "frontier.json").write_text(json.dumps(data, indent=2) + "\n")
     rehash(out)
-    results = dict(verify_outputs(out))
+    results = dict(verify_outputs(out, full=True))
     assert results["hashes"] == []
     assert results["community"]
+
+
+def test_fr15_7_the_full_flag_prints_and_fails_the_community_check(tmp_path, capsys):
+    assert run_command(COMMITTED, tmp_path / "out") == 0
+    out = tmp_path / "out"
+    capsys.readouterr()
+    assert main(["verify", str(out), "--full"]) == 0
+    assert "ok community" in capsys.readouterr().out
+    data = json.loads((out / "frontier.json").read_text())
+    data["scenarios"][0]["trip_packages"][1]["works"]["unique_roads"] += 4
+    (out / "frontier.json").write_text(json.dumps(data, indent=2) + "\n")
+    rehash(out)
+    assert main(["verify", str(out), "--full"]) == 1
+    assert "fail community" in capsys.readouterr().err
