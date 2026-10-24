@@ -80,26 +80,26 @@ def test_fr16_11_map_and_list_links_work_without_a_network(plan_page):
         driver.quit()
 
 
-def test_fr16_11_the_card_keeps_unknown_construction_effects_and_survey_gaps_visible(plan_page):
+def test_fr16_11_the_card_keeps_unknown_construction_effects_and_record_gaps_visible(plan_page):
     path, number = plan_page
     driver = open_hash(path, f"#find-work-{number}")
     try:
         text = street_cards(driver)[0].text
         assert "Temporary works: effects during building are not measured" in text
-        assert "Not surveyed: road width" in text
-        assert "Not surveyed: parking use and driveway access" in text
+        assert "Not recorded: road width" in text
+        assert "Not recorded: parking use and driveway access" in text
         assert "Cost: not priced" in text
         assert "Later decision" in text
     finally:
         driver.quit()
 
 
-def test_fr16_11_a_known_width_is_not_listed_as_a_survey_gap(plan_page):
+def test_fr16_11_a_known_width_is_not_listed_as_a_record_gap(plan_page):
     path, _ = plan_page
     driver = open_hash(path, "#find-ash-street")
     try:
         text = street_cards(driver)[0].text
-        assert "Not surveyed: road width" not in text
+        assert "Not recorded: road width" not in text
         assert "Next decision: council funds the design of this stage" in text
     finally:
         driver.quit()
