@@ -2766,3 +2766,9 @@ Artifact: `artifacts/C1.9/release-check.txt`
 Command: `bikeplan run regions/test-grid.yaml --snapshot tests/fixtures/test-grid/snapshot --out /tmp/q18/out && bikeplan verify /tmp/q18/out --full --region regions/test-grid.yaml --snapshot tests/fixtures/test-grid/snapshot`
 Expect: exit 0 and `ok recompute`. The check rebuilds the graph, then recomputes the starting and final score, each project element's fix, flag and margin, the lane and street safety lengths, each scenario's picks, stop and truncation. It compares them with the saved files. Eleven tests in `tests/test_recompute.py` change a saved value, update every hash, and still see `fail recompute`. Without `--region` and `--snapshot`, `--full` prints `structural only`.
 Artifact: `artifacts/Q1.8/verify.txt`
+
+### Q1.8 report folder
+
+Command: `bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-22 --out /tmp/q18b/report && bikeplan verify /tmp/q18b/report --full --region regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-22`
+Expect: exit 0, `ok hashes` and `ok recompute`. A report folder has no project files, so the check recomputes each scenario's picks, stop and truncation from the region and snapshot. Five tests in `tests/test_recompute_report.py` cover it, with rehashed changes to the stop and a pick failing.
+Artifact: `artifacts/Q1.8/bayside-verify.txt`

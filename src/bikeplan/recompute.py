@@ -107,3 +107,12 @@ def recompute_problems(folder: str | Path, region_path, snapshot) -> list[str]:
         region.proposals.recommend_ratio,
     )
     return problems
+
+
+def report_recompute_problems(folder: str | Path, region_path, snapshot) -> list[str]:
+    fresh = fresh_outputs(region_path, snapshot)
+    return scenario_problems(
+        read_json(Path(folder) / "frontier.json")["scenarios"],
+        fresh["frontier"],
+        fresh["region"].proposals.recommend_ratio,
+    )
