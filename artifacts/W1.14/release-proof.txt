@@ -1,0 +1,5 @@
+release v2026.10.24-pr293 (run 40044210994, main 174ec38) uploaded 18 files
+gh release download v2026.10.24-pr293 -p checks.html
+    257 0 fail
+      1 1 fail
+1
