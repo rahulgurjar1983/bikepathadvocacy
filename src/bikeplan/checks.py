@@ -14,6 +14,7 @@ from pathlib import Path
 import shapely
 from shapely.geometry import LineString, Point
 
+from bikeplan.community_verify import community_problems
 from bikeplan.map_checks import map_problems
 from bikeplan.page_measures import SPEC_IDS, measures
 from bikeplan.report import FIGURES, MAP_FIGURE
@@ -178,6 +179,38 @@ def opening_problems(release: Path) -> list[str]:
             problems += [f"{name} {line}" for line in recipe_problems(figures, Path(folder))]
     if not found:
         problems.append("no region report in the release holds options.json")
+    return problems
+
+
+def community_release_problems(release: Path) -> list[str]:
+    problems = []
+    found = 0
+    for archive in region_archives(release):
+        files = archive_files(archive, ("figures.json", "frontier.json", "proposal.json"))
+        if not files:
+            continue
+        found += 1
+        name = archive.name.removesuffix(".tar.gz")
+        absent = [n for n in ("figures.json", "frontier.json", "proposal.json") if n not in files]
+        if absent:
+            problems += [
+                f"{name}: {n} is missing, so the community results are unproved" for n in absent
+            ]
+            continue
+        figures = [
+            item
+            for item in json.loads(files["figures.json"])
+            if [i["name"] for i in item["inputs"]] == ["frontier.json"]
+        ]
+        if not figures:
+            problems.append(f"{name}: no independent figure reads frontier.json alone")
+        with tempfile.TemporaryDirectory() as folder:
+            for key in ("frontier.json", "proposal.json"):
+                Path(folder, key).write_bytes(files[key])
+            problems += [f"{name}: {line}" for line in community_problems(folder)]
+            problems += [f"{name} {line}" for line in recipe_problems(figures, Path(folder))]
+    if not found:
+        problems.append("no region archive in the release holds the community results")
     return problems
 
 
@@ -444,6 +477,11 @@ RELEASE_CHECKS = {
         "opens in a browser with no console error and no network request, shows the counts "
         "of its data, holds every work in a street change and uses valid layer files and "
         "Google links",
+    ),
+    "FR-15.8": (
+        community_release_problems,
+        "recomputes every route, school set, resident union, local work, parking count, stage "
+        "and cost from frontier.json, and each independent figure recipe prints its value",
     ),
     "FR-17.15": (
         audit_problems,
