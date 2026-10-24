@@ -2772,3 +2772,12 @@ Artifact: `artifacts/Q1.8/verify.txt`
 Command: `bikeplan report regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-22 --out /tmp/q18b/report && bikeplan verify /tmp/q18b/report --full --region regions/au-nsw-bayside.yaml --snapshot data/cache/au-nsw-bayside/2026-10-22`
 Expect: exit 0, `ok hashes` and `ok recompute`. A report folder has no project files, so the check recomputes each scenario's picks, stop and truncation from the region and snapshot. Five tests in `tests/test_recompute_report.py` cover it, with rehashed changes to the stop and a pick failing.
 Artifact: `artifacts/Q1.8/bayside-verify.txt`
+
+### Q1.9
+
+```bash
+uv run pytest tests/test_checks_parts.py -v
+```
+
+Expect: both cases pass. A requirement listed in `UNPROVED_PARTS` shows `tested only` on the checks page and names each part the release outputs do not yet prove; FR-13.10 and FR-15.8 are listed.
+Artifact: `artifacts/Q1.9/parts.txt`

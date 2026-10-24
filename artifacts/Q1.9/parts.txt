@@ -1,0 +1,3 @@
+tests/test_checks_parts.py::test_fr15_8_a_path_check_alone_does_not_make_determinism_met PASSED [ 50%]
+tests/test_checks_parts.py::test_fr15_8_a_release_without_the_stop_recompute_is_not_met PASSED [100%]
+============================== 2 passed in 2.61s ===============================
